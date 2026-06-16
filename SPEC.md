@@ -1,8 +1,5 @@
 # a2ui-github — High-Level Spec
 
-> **Status:** High-level spec agreed in the first design session (2026-06-16) via a `/grill-me` interview.
-> **Scope of this document:** It records *only* what was decided in that session — no more. Anything not decided is listed under **Deferred** and will be resolved when we next touch that branch. Do not treat absence of detail here as a decision.
->
 > **Targeted protocol version:** A2UI **v0.9.1** (authority per `CLAUDE.md`).
 
 ---
