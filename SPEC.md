@@ -75,9 +75,7 @@ Polyglot monorepo. **Yarn 4 (Berry) workspaces** for the TS side, following a2ui
 
 ```
 a2ui-github/                       # Yarn 4 workspace root (private)
-  primer-a2ui-adapter/             # THE publishable package
-    src/lib/{catalog.ts, catalog-id.ts, components/}
-    catalogs/v0.9.1/catalog.json
+  primer-a2ui-adapter/             # THE publishable package, a2ui catalog
   client/                          # thin React + Primer demo FE (@a2ui/react + adapter + @primer/react)
   agent/                           # Python (uv) — NOT a yarn workspace
                                    # google-adk + a2a-sdk[http-server] + a2ui-agent-sdk + GitHub MCP
