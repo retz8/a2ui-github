@@ -45,7 +45,6 @@ Includes: metadata, markdown description, review state, CI checks, reviewers, co
 - **Catalog abstraction level:** a curated **GitHub-semantic Primer vocabulary** (mid/high-level components that encode GitHub's visual language) **plus** core layout/text/input primitives. Not all of Primer; not primitives-only. The catalog grows lazily as flows need more.
 - **Token / styling exposure:** Primer design tokens exposed as **enumerated, validated props** on layout primitives (mapped by the adapter to Primer React). Not a full `sx` passthrough.
 - **Primer knowledge at runtime:** bake curated Primer guidance into the agent's context; fixed catalog; graceful degradation. **No** live doc-fetching at generation time.
-- **Catalog-authoring (build-time):** invest in a **catalog-authoring harness** that wraps Primer components into the catalog + adapter, driven by the agent's out-of-catalog "wants." (Design deferred — see **Deferred**.)
 
 ## 5. Transport & topology
 
@@ -65,7 +64,7 @@ Adopt the official a2ui sample stack wholesale (confirmed: all official samples,
   - `components/` — the Primer React wrapper components.
   - `catalogs/v0.9.1/catalog.json` — the declarative JSON catalog the agent reads (hosted at the catalog-ID URL).
 - The a2ui React renderer is **just an npm dependency** (`@a2ui/react`), not something we build.
-- **Demo scaffolding (not published as packages):** the thin React FE app, the Python ADK agent + GitHub MCP, and the catalog-authoring harness.
+- **Demo scaffolding (not published as packages):** the thin React FE app and the Python ADK agent + GitHub MCP.
 
 ## 7. Repository structure
 
@@ -83,8 +82,6 @@ a2ui-github/                       # Yarn 4 workspace root (private)
       catalogs/v0.9.1/catalog.json
   apps/
     web/                           # thin React + Primer demo FE (@a2ui/react + adapter + @primer/react)
-  tools/
-    catalog-harness/               # catalog-authoring tooling (TS)
   agent/                           # Python (uv) — NOT a yarn workspace
                                    # google-adk + a2a-sdk[http-server] + a2ui-agent-sdk + GitHub MCP
 ```
@@ -93,7 +90,6 @@ a2ui-github/                       # Yarn 4 workspace root (private)
 
 These are explicitly open and will be decided when their branch is next touched:
 
-- Catalog-authoring harness design.
 - GitHub MCP specifics (which server, auth).
 - The agent's short-term "template memory" mechanism.
 - Agent-internal design (prompt strategy, etc.).
