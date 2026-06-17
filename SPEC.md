@@ -78,7 +78,7 @@ Polyglot monorepo. **Yarn 4 (Berry) workspaces** for the TS side (mirroring a2ui
 ```
 a2ui-github/                       # Yarn 4 workspace root (private)
   packages/
-    github-a2ui-adapter/           # THE publishable package
+    primer-a2ui-adapter/           # THE publishable package
       src/lib/{catalog.ts, catalog-id.ts, components/}
       catalogs/v0.9.1/catalog.json
   apps/
