@@ -14,8 +14,6 @@
 ## 2. Interaction architecture
 
 - **Agent round-trip, generative on each navigation.** A click fires an action event; the agent generates the resulting view. "Agent round-trip, not server round-trip" — the agent is the new backend-for-frontend.
-- **Rejected:** pre-bundling all views into one upfront payload.
-- **Rejected:** deterministic per-view templates, and an external view-type cache.
 - **Cross-visit consistency is the agent's responsibility** (e.g. `openPR(42)` and `openPR(30)` should yield near-consistent UI). An agent-owned short-term "template memory" idea was raised but **deferred** to the agent-design phase (do not design it yet).
 
 ## 3. Demo
@@ -53,7 +51,6 @@ Adopt the official a2ui sample stack wholesale:
 - **Transport:** **A2A**, using A2A's streaming method for progressive A2UI rendering.
 - **Agentic BE:** **Python + ADK**, hosted as an **A2A server**, with **GitHub MCP** plugged into the ADK agent.
 - **Renderer FE:** **React + Primer**, consuming the A2UI stream via the sample's **A2A client middleware**; uses the published `@a2ui/react` renderer (`npm i @a2ui/react`).
-- **Rejected:** SSE+POST transport; a TypeScript-only agent.
 - **Note:** Composer (`a2ui-project/composer`) is only a client-side renderer/dev workbench — not the demo vehicle.
 
 ## 6. Deliverables & what we ship
@@ -70,7 +67,6 @@ Adopt the official a2ui sample stack wholesale:
 
 Polyglot monorepo. **Yarn 4 (Berry) workspaces** for the TS side, following a2ui's Yarn 4 tooling (`nodeLinker: node-modules`, `packageManager: yarn@4.x`). The **Python `agent/` is managed by `uv`, outside the yarn workspaces**.
 
-- **Rejected:** turborepo. `wireit` is optional and skipped for now.
 - `@a2ui/react` is available on **public npm**.
 
 ```
