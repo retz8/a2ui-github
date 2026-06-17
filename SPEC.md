@@ -9,19 +9,19 @@
 - **Generative UI: the agent is the frontend, not a BFF.** The agent owns the UI/UX logic — page flow, layout, and what a screen looks like — and composes screens live from catalog primitives.
 - **Never invent components outside Primer/React.** The catalog is Primer primitives only. Anything complex (e.g. a diff view) is the agent composing a view from existing primitives — *not* a bespoke custom component.
 - **Don't over-determine the agent.** We give it important constraints + knowledge and trust it to make UI/flow decisions. Less dev-specified logic than today's apps, not more.
-- **A2UI is composition-only — no raw HTML.** Verified against the v0.9.1 schema: components validate against `catalog.json#/$defs/anyComponent` (a closed union, `additionalProperties: false`); there is no raw-HTML escape hatch.
+- **A2UI is composition-only — no raw HTML.**
 
 ## 2. Interaction architecture
 
 - **Agent round-trip, generative on each navigation.** A click fires an action event; the agent generates the resulting view. "Agent round-trip, not server round-trip" — the agent is the new backend-for-frontend.
-- **Rejected:** pre-bundling all views into one upfront payload (defeats the purpose of having an agent).
+- **Rejected:** pre-bundling all views into one upfront payload.
 - **Rejected:** deterministic per-view templates, and an external view-type cache.
 - **Cross-visit consistency is the agent's responsibility** (e.g. `openPR(42)` and `openPR(30)` should yield near-consistent UI). An agent-owned short-term "template memory" idea was raised but **deferred** to the agent-design phase (do not design it yet).
 
 ## 3. Demo
 
-- **Anchor flow:** "the maintainer's morning" — PR triage on the real **`a2ui-project/a2ui`** repository (chosen partly so it can be presented to the a2ui community later).
-- **Persona framing:** repo-level **maintainer triage**, **viewer-agnostic** prompts. Not "PRs waiting on my review" — `review-requested:@me` returns empty for the user's account. Confirmed that `gh` / GitHub MCP can fetch PRs from the a2ui repo.
+- **Anchor flow:** "the maintainer's morning" — PR triage on the real **`a2ui-project/a2ui`** repository.
+- **Persona framing:** repo-level **maintainer triage**, **viewer-agnostic** prompts. Not "PRs waiting on my review".
 - **Action scope:** **read-only** against the real repo. Write-actions (approve / comment / label) are rendered as **compose-and-confirm** UI that stops short of the real POST — no mutation of the live community repo. (A full read+write loop on a seeded sandbox repo is a possible future upgrade.)
 
 ### 3.1 Demo prompt arc (5 beats)
@@ -48,13 +48,13 @@ Includes: metadata, markdown description, review state, CI checks, reviewers, co
 
 ## 5. Transport & topology
 
-Adopt the official a2ui sample stack wholesale (confirmed: all official samples, including the React one, use A2A + ADK):
+Adopt the official a2ui sample stack wholesale:
 
 - **Transport:** **A2A**, using A2A's streaming method for progressive A2UI rendering.
 - **Agentic BE:** **Python + ADK**, hosted as an **A2A server**, with **GitHub MCP** plugged into the ADK agent.
 - **Renderer FE:** **React + Primer**, consuming the A2UI stream via the sample's **A2A client middleware**; uses the published `@a2ui/react` renderer (`npm i @a2ui/react`).
 - **Rejected:** SSE+POST transport; a TypeScript-only agent.
-- **Note:** Composer (`a2ui-project/composer`) is only a client-side renderer/dev workbench — not the demo vehicle, since it doesn't give control over the agent.
+- **Note:** Composer (`a2ui-project/composer`) is only a client-side renderer/dev workbench — not the demo vehicle.
 
 ## 6. Deliverables & what we ship
 
@@ -68,22 +68,21 @@ Adopt the official a2ui sample stack wholesale (confirmed: all official samples,
 
 ## 7. Repository structure
 
-Polyglot monorepo. **Yarn 4 (Berry) workspaces** for the TS side (mirroring a2ui; `nodeLinker: node-modules`, `packageManager: yarn@4.x`). The **Python `agent/` is managed by `uv`, outside the yarn workspaces**.
+Polyglot monorepo. **Yarn 4 (Berry) workspaces** for the TS side, following a2ui's Yarn 4 tooling (`nodeLinker: node-modules`, `packageManager: yarn@4.x`). The **Python `agent/` is managed by `uv`, outside the yarn workspaces**.
 
-- **Rejected:** turborepo (ecosystem alignment with a2ui + the repo is too small to justify it). `wireit` is optional and skipped for now.
-- Turborepo would not remove the need for `uv` — a JS task-orchestrator and a Python dependency-manager are orthogonal.
-- `@a2ui/react` is confirmed available on **public npm** (its package version is independent of the targeted protocol version).
+- **Rejected:** turborepo. `wireit` is optional and skipped for now.
+- `@a2ui/react` is available on **public npm**.
 
 ```
 a2ui-github/                       # Yarn 4 workspace root (private)
-  packages/
-    primer-a2ui-adapter/           # THE publishable package
-      src/lib/{catalog.ts, catalog-id.ts, components/}
-      catalogs/v0.9.1/catalog.json
-  apps/
-    web/                           # thin React + Primer demo FE (@a2ui/react + adapter + @primer/react)
+  primer-a2ui-adapter/             # THE publishable package
+    src/lib/{catalog.ts, catalog-id.ts, components/}
+    catalogs/v0.9.1/catalog.json
+  client/                          # thin React + Primer demo FE (@a2ui/react + adapter + @primer/react)
   agent/                           # Python (uv) — NOT a yarn workspace
                                    # google-adk + a2a-sdk[http-server] + a2ui-agent-sdk + GitHub MCP
+
+# root package.json: "workspaces": ["primer-a2ui-adapter", "client"]   (agent/ excluded — uv-managed)
 ```
 
 ## 8. Deferred (not decided in this session)
