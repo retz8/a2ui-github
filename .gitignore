@@ -1,0 +1,14 @@
+node_modules
+.DS_Store
+dist
+*.tsbuildinfo
+.env
+.vite/
+coverage/
+
+# Yarn Modern
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/sdks
+.yarn/cache

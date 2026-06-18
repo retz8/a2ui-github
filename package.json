@@ -1,0 +1,22 @@
+{
+  "name": "a2ui-github",
+  "private": true,
+  "packageManager": "yarn@4.13.0",
+  "workspaces": [
+    "primer-a2ui-adapter",
+    "client"
+  ],
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.5.0",
+    "prettier": "^3.6.2",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.46.0"
+  }
+}
