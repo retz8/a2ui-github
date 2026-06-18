@@ -17,12 +17,14 @@ Closes a session. See [`_dev/harness/daily-workflow.md`](../../../_dev/harness/d
 
 2. **Branch on session outcome:**
 
-   **Done** — sub-task complete:
+   **Done — spec written:** the phase's spec is complete and its `N.M` sub-tasks are inlined into `_dev/TODO.md`. The commit (step 1) is all that's needed — the phase stays `[WIP]` (sub-tasks remain) and is now a spec'd phase. **No handoff doc.**
+
+   **Done — sub-task complete:**
    - Tick its `N.M` checkbox in `_dev/TODO.md` (on `main`).
    - If it was the **last** sub-task of the phase, ask the user whether to mark `## Phase N` `[done]`.
    - **Ask the user to confirm the merge.** Only on confirmation: merge the sub-task branch (`phase-<N>/<M>-<kebab>`) into `main`, then remove its worktree. Never merge unprompted.
 
-   **Mid-session** — not done:
+   **Mid-session** — work genuinely unfinished (spec or sub-task):
    - Overwrite the handoff doc (on `main`), kept short: where things stand, what's next, any open thread.
      - Spec work → `_dev/docs/handoff/phase-<N>.md`
      - Sub-task work → `_dev/docs/handoff/task-<N.M>.md`
