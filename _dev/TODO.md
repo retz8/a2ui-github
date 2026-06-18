@@ -7,7 +7,7 @@ Stand up the monorepo workspace and a green build.
 A minimal FE space to render A2UI surfaces through our catalog, and the first Primer component taken end-to-end.
 
 ## Phase 3 — Catalog-writing harness
-The repeatable component-authoring workflow, captured as a project skill.
+The repeatable component-authoring workflow, captured as a project skill. Also set up the daily-work harness's deferred autonomous layer (nightly routine + its GitHub issue/label machinery) here, ready for Phase 4.
 
 ## Phase 4 — Catalog build-out
 The Primer primitives and GitHub-semantic components the demo needs.

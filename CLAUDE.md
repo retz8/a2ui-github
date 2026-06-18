@@ -42,6 +42,14 @@ This project targets a single protocol version at a time.
 
 Catalog-authoring and renderer-design conventions live in the `a2ui-sdk-design` skill (read per the top instruction before that work).
 
+### Daily-work harness
+
+The dev workflow (phases → sub-tasks, dispatch, branching, wrap-up) is mapped in [`_dev/harness/daily-workflow.md`](_dev/harness/daily-workflow.md). Operational rules it relies on:
+
+- **`_dev/` lives on `main`.** `_dev/TODO.md` and everything under `_dev/docs/` and `_dev/harness/` is edited and committed on `main` only — never on a worktree/sub-task branch. Worktree branches carry implementation code only.
+- **Implementation plans go to `_dev/docs/plan/`** as `task-<N.M>-<short>.md` — `superpowers:writing-plans` must emit there.
+- **Commit convention:** conventional commits — `<type>(phase-<N>): …` for phase/sub-task work, bare `<type>: …` off-phase.
+
 ---
 
 ## 4. Maintenance & Update Policy
