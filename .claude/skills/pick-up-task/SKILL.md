@@ -19,9 +19,10 @@ The session's dispatcher. **Read [`_dev/harness/daily-workflow.md`](../../../_de
 3. **Spec track** (fresh phase, on `main`): on go-ahead, mark `## Phase N` `[WIP]` on `main`, then hand to `grill-me` → `grill-to-spec` (writes `_dev/docs/spec/phase-<N>-*.md`) → inline numbered `N.M` sub-tasks into `_dev/TODO.md`, including which can run in parallel. Pickup stops; the user drives the grill.
 
 4. **Sub-task track** (spec'd phase, after the user picks a sub-task from step 2):
+   - **Mark `[WIP]`.** Once the sub-task is picked, mark its `N.M` checkbox `[WIP]` on `main`.
    - **Brief the chosen sub-task, then stop.** Give a short context summary — what the sub-task should achieve, drawn from both TODO and the phase spec. Do **not** proceed past this. Wait for the user's go-ahead.
    - **On go-ahead**, offer three routes (planning stays on `main`): (a) `grill-me` deeper, (b) `superpowers:writing-plans` → `_dev/docs/plan/task-<N.M>-*.md`, (c) Claude Code plan mode → implementation.
-   - **Only when implementation begins**, mark the `N.M` checkbox `[WIP]` on `main`, then create or resume the worktree off `main` (`phase-<N>/<M>-<kebab>`) and run `rebase-with-main`. The worktree holds code only; `_dev/` stays on `main`.
+   - **Only when implementation begins**, create or resume the worktree off `main` (`phase-<N>/<M>-<kebab>`) and run `rebase-with-main`. The worktree holds code only; `_dev/` stays on `main`.
 
 5. **Stop.** Pickup ends here; the user drives what happens next. Closing a session is `wrap-up`'s job, not this skill's.
 
