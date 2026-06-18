@@ -1,0 +1,7 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$comment": "TODO(phase-2): real Primer/GitHub-semantic catalog. Placeholder only.",
+  "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
+  "components": {},
+  "functions": {}
+}
