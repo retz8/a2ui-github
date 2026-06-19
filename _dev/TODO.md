@@ -14,7 +14,7 @@ Order: 1.1 first. 1.2 and 1.3 are parallel-eligible after 1.1 (1.3's adapter-imp
 A minimal FE space to render A2UI surfaces through our catalog, and the first Primer component taken end-to-end.
 
 ## Phase 2.5 — Templatization baseline
-Extract the general daily-work harness into a plugin (dogfooded by this repo), and lift an FE-only baseline template from the post-Phase-2 shape — a checkpoint extraction, not a release. Plan: `_dev/docs/templatization-plan.md`.
+Lift an FE-only baseline template from the post-Phase-2 shape — a checkpoint extraction, not a release. Plan: `_dev/docs/templatization-plan.md`.
 
 ## Phase 3 — Catalog-writing harness
 The repeatable component-authoring workflow, captured as a project skill. Also set up the daily-work harness's deferred autonomous layer (nightly routine + its GitHub issue/label machinery) here, ready for Phase 4.
