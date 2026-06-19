@@ -22,4 +22,14 @@ corepack enable
 yarn install
 ```
 
-Build and test commands live in each workspace's own `package.json`.
+Root scripts orchestrate the whole repo in dependency order:
+
+```bash
+yarn build:all      # build every workspace (adapter before client)
+yarn typecheck:all  # type-check every workspace
+yarn lint:all       # lint the repo
+yarn test:all       # run every workspace's tests
+yarn verify:all     # build + typecheck + lint + test, in that order
+```
+
+Each workspace also exposes its own commands in its `package.json`.
