@@ -13,6 +13,9 @@ Order: 1.1 first. 1.2 and 1.3 are parallel-eligible after 1.1 (1.3's adapter-imp
 ## Phase 2 — Test space & first catalog component
 A minimal FE space to render A2UI surfaces through our catalog, and the first Primer component taken end-to-end.
 
+## Phase 2.5 — Templatization baseline
+Extract the general daily-work harness into a plugin (dogfooded by this repo), and lift an FE-only baseline template from the post-Phase-2 shape — a checkpoint extraction, not a release. Plan: `_dev/docs/templatization-plan.md`.
+
 ## Phase 3 — Catalog-writing harness
 The repeatable component-authoring workflow, captured as a project skill. Also set up the daily-work harness's deferred autonomous layer (nightly routine + its GitHub issue/label machinery) here, ready for Phase 4.
 
@@ -24,6 +27,9 @@ The agent that generates A2UI surfaces from the catalog, against the live GitHub
 
 ## Phase 6 — Demo integration
 The full maintainer-triage arc running end-to-end on the live a2ui repo.
+
+## Post-Phase 6 — Template finalization
+Additively fold the catalog-writing skill (Phase 3) and the agent scaffold (Phase 5) into the template repo; finalize as the adoptable A2UI template — its first real use. Plan: `_dev/docs/templatization-plan.md`.
 
 ## Backlog
 - Diff viewer (stretch)
