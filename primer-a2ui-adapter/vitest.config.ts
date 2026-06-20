@@ -6,5 +6,11 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
+    css: true,
+    server: {
+      deps: {
+        inline: [/@primer\/react/],
+      },
+    },
   },
 });
