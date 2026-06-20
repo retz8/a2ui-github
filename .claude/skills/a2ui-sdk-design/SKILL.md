@@ -27,3 +27,11 @@ For the targeted version, analyze these core files to inform your design, typica
 2. **Component & Function Catalogs (`catalogs/<catalog-name>/catalog.json`)**: Authoritative definitions of supported visual components and registered evaluation/validation functions. Use the standard catalog as the structural reference when authoring the Primer/React catalog in this project.
 3. **Protocol Semantics (`docs/a2ui_protocol.md`)**: Semantic foundation covering message stream structures, pointer scopes, and two-way binding agreements.
 4. **SDK APIs and architecture design (`docs/renderer_guide.md`)**: Required mechanics for state layer separation, reactive models, and component subscription lifecycles to prevent memory leaks. This is the primary reference for the thin React renderer in this project.
+
+## Catalog Authoring Conventions
+
+### Descriptions target the agent, not the renderer
+
+`catalog.json` `description` fields are read by the **generating agent** (the LLM that emits A2UI) to choose components and set props. Describe **semantics** — what the component does and what each prop controls — and **never name the implementing design system or renderer library** in a description. Write "Font size.", not "Primer font size."; "Displays a run of text.", not "Primer Text." The rendering library is a client-side implementation detail the agent has no use for, and naming it risks leaking the brand into user-facing copy or implying knowledge the agent doesn't need.
+
+This governs the description prose only. The **prop surface and enum values stay a faithful 1:1 of the design-system component's real API** — that fidelity is the contract; the de-branding applies purely to the agent/human-facing text.
