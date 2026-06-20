@@ -35,3 +35,14 @@ For the targeted version, analyze these core files to inform your design, typica
 `catalog.json` `description` fields are read by the **generating agent** (the LLM that emits A2UI) to choose components and set props. Describe **semantics** — what the component does and what each prop controls — and **never name the implementing design system or renderer library** in a description. Write "Font size.", not "Primer font size."; "Displays a run of text.", not "Primer Text." The rendering library is a client-side implementation detail the agent has no use for, and naming it risks leaking the brand into user-facing copy or implying knowledge the agent doesn't need.
 
 This governs the description prose only. The **prop surface and enum values stay a faithful 1:1 of the design-system component's real API** — that fidelity is the contract; the de-branding applies purely to the agent/human-facing text.
+
+### Bound runtime state uses `Dynamic*`; fixed configuration stays plain
+
+A value/scalar prop's type is decided by whether data or interaction drives it at render time:
+
+- **Bound runtime state** — composes the matching `CommonSchemas.Dynamic*` wrapper (`literal | {path} | {call}`) so an agent can data-bind it. A `disabled` tracking form validity, a `loading` tracking an async op, a displayed `value`/`label`/`count`.
+- **Fixed authoring-time configuration** — set once, never data-driven — stays a plain `z.boolean()`/`z.string()`/`z.number()`. A layout `block`/`labelWrap`, a `validationRegexp`, a `min`/`max`.
+
+Enums are always plain `z.enum` — there is no `DynamicEnum` common type.
+
+The basic catalog is the reference for the split: `CheckBox.value` / `TextField.value` / `Slider.value` / `label` are `Dynamic*`; `Slider.min` / `Slider.max` / `TextField.validationRegexp` are plain.

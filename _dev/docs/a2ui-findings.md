@@ -2,7 +2,7 @@
 
 Running notes on friction and principles discovered while translating a real design
 system (Primer/React) into an A2UI catalog. These are general — they feed the Phase 3
-catalog-writing harness, not just one component. Captured during the Phase 2.1 grill.
+catalog-writing harness, not just one component. Captured during the Phase 2.1–2.2 grills.
 
 ## 1. Content-via-`children` components force a synthetic content prop
 
@@ -35,17 +35,28 @@ concern the protocol has no opinion about. Consequence for authoring:
   `whiteSpace` on Primer `Text`) — there is no shared primitive to lean on, and they are
   validated/enumerated locally.
 
-## 3. Strict translation omits the protocol's optional commons
+## 3. Faithful translation carries the commons a component's real type exposes
 
-The basic catalog spreads a shared `CommonProps` base (`accessibility?` + a numeric
-layout `weight?`) into every component. These are **basic-catalog choices, not framework
-requirements**: the binder strips the envelope fields (`component`, `id`) itself, and
-component schemas are authored as **props-only `z.object({...}).strict()`**.
+Schemas are authored **props-only** as `z.object({...}).strict()` (the binder strips the
+envelope fields `component`/`id` itself; `unevaluatedProperties: false` mirrors `.strict()`
+in `catalog.json`). What that prop surface *contains* is dictated by the component's
+**actual TypeScript type**, not by a uniform catalog-wide base.
 
-A faithful translation therefore carries **only the component's real prop surface** —
-it does not inherit `accessibility`/layout-`weight` just because the basic catalog does.
-`.strict()` (and `unevaluatedProperties: false` in `catalog.json`) is the mechanism that
-enforces "no props beyond the real ones."
+The basic catalog spreads a shared base (`accessibility?` + a numeric layout `weight?`)
+into *every* component — a basic-catalog choice, not a framework requirement. But omitting
+commons **wholesale** (the original 2.1 stance) is equally wrong. The correct rule is
+**per-component fidelity** — carry a protocol common exactly when the component's real type
+exposes that capability:
+
+- Primer `Button` is typed `… & React.ButtonHTMLAttributes<HTMLButtonElement>`; the
+  `aria-*` slice of that spread is genuine accessibility surface, so Button carries
+  `accessibility` (composing `CommonSchemas.AccessibilityAttributes`, as a nested
+  `accessibility: {label?, description?}` prop — the shape `ComponentCommon` uses upstream).
+- Primer `Text` is `PolymorphicProps<As, 'span', {size, weight, whiteSpace}>` with no such
+  spread — so `Text` carries **no** `accessibility`.
+
+Consistency across the catalog is therefore per-component fidelity, **not** a uniform base.
+`.strict()` / `unevaluatedProperties: false` still enforces "no props beyond the real ones."
 
 **Open consequence (Phase 4):** the protocol's per-child layout `weight` is a number;
 Primer's `Text.weight` is a font-weight enum. Under strict translation `weight` means the
@@ -74,3 +85,17 @@ Until that generator exists (the Phase 3 harness), hand-author both forms and gu
 with a **structural parity test** — name-set + required-set + enum-set per component, plus
 function name/arg-set — which tolerates the deliberate `$ref`-vs-inline and
 wire-vs-resolved differences rather than demanding byte-equality.
+
+## 5. A2UI has no common type for general HTML attributes (protocol gap)
+
+`AccessibilityAttributes` is the **only** slice of a React component's `*HTMLAttributes`
+surface that A2UI can represent. Translating a design system built on
+`React.ButtonHTMLAttributes<HTMLButtonElement>` (and siblings), only the `aria-*` portion
+maps to a protocol common; the rest — `type`, `name`, `value`, `form`, `tabIndex`,
+`data-*`, and event handlers (which instead map to `Action`) — has **no A2UI
+representation and is dropped**.
+
+This is a protocol gap, not merely an authoring choice: any design-system-native catalog
+that faithfully translates HTML-attribute-bearing components will hit it. **Candidate A2UI
+OSS contribution:** a general `HtmlAttributes` common type (or an extensible escape hatch)
+so these props have a home rather than being silently dropped.
