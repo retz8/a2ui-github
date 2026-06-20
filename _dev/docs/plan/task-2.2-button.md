@@ -473,6 +473,8 @@ Replace `primer-a2ui-adapter/src/catalog.parity.test.ts` with:
 ```ts
 import {describe, it, expect} from 'vitest';
 import {readFileSync} from 'node:fs';
+import {fileURLToPath} from 'node:url';
+import {resolve, dirname} from 'node:path';
 import {z} from 'zod';
 import {TextApi} from './components/text';
 import {ButtonApi} from './components/button';
@@ -489,7 +491,10 @@ type JsonFunction = {
 };
 
 const catalog = JSON.parse(
-  readFileSync(new URL('../catalogs/v0.9.1/catalog.json', import.meta.url), 'utf8'),
+  readFileSync(
+    resolve(dirname(fileURLToPath(import.meta.url)), '../catalogs/v0.9.1/catalog.json'),
+    'utf8',
+  ),
 ) as {
   components: Record<string, JsonComponent>;
   functions: Record<string, JsonFunction>;
