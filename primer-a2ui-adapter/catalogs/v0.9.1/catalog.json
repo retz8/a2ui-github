@@ -1,7 +1,67 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$comment": "TODO(phase-2): real Primer/GitHub-semantic catalog. Placeholder only.",
+  "$id": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
   "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
-  "components": {},
-  "functions": {}
+  "components": {
+    "Text": {
+      "type": "object",
+      "description": "Primer Text. Renders text with Primer typography props.",
+      "properties": {
+        "component": {"const": "Text"},
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The text content to display."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["span", "p", "div", "label", "strong", "em", "small"],
+          "default": "span",
+          "description": "The HTML element to render."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "Primer font size."
+        },
+        "weight": {
+          "type": "string",
+          "enum": ["light", "normal", "medium", "semibold"],
+          "description": "Primer font weight."
+        },
+        "whiteSpace": {
+          "type": "string",
+          "enum": ["normal", "nowrap", "pre", "pre-wrap", "pre-line"],
+          "description": "CSS white-space behavior."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    }
+  },
+  "functions": {
+    "consoleLog": {
+      "type": "object",
+      "description": "Logs a message to the browser console. A local client-side effect.",
+      "args": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+            "description": "The message to log."
+          }
+        },
+        "required": ["message"],
+        "additionalProperties": false
+      },
+      "returnType": "void"
+    }
+  },
+  "$defs": {
+    "anyComponent": {
+      "oneOf": [{"$ref": "#/components/Text"}]
+    },
+    "anyFunction": {
+      "oneOf": [{"$ref": "#/functions/consoleLog"}]
+    }
+  }
 }
