@@ -42,18 +42,23 @@
     "consoleLog": {
       "type": "object",
       "description": "Logs a message to the browser console. A local client-side effect.",
-      "args": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
-            "description": "The message to log."
-          }
+      "properties": {
+        "call": {"const": "consoleLog"},
+        "args": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The message to log."
+            }
+          },
+          "required": ["message"],
+          "additionalProperties": false
         },
-        "required": ["message"],
-        "additionalProperties": false
+        "returnType": {"const": "void"}
       },
-      "returnType": "void"
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
     }
   },
   "$defs": {

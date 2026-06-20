@@ -13,7 +13,7 @@ const catalog = JSON.parse(
   ),
 ) as {
   components: Record<string, {properties: Record<string, {enum?: string[]}>; required: string[]}>;
-  functions: Record<string, {args: {properties: Record<string, unknown>}}>;
+  functions: Record<string, {properties: {args: {properties: Record<string, unknown>}}}>;
   $defs: {anyComponent: {oneOf: {$ref: string}[]}; anyFunction: {oneOf: {$ref: string}[]}};
 };
 
@@ -85,7 +85,7 @@ describe('consoleLog: zod ↔ catalog.json parity', () => {
   it('arg-name sets match', () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const zodArgs = Object.keys((consoleLog.schema as z.ZodObject<any>).shape).sort();
-    const jsonArgs = Object.keys(catalog.functions.consoleLog.args.properties).sort();
+    const jsonArgs = Object.keys(catalog.functions.consoleLog.properties.args.properties).sort();
     expect(jsonArgs).toEqual(zodArgs);
   });
 });
