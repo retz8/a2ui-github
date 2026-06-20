@@ -804,7 +804,7 @@ Stand up chromium visual-regression. The Claude-Chrome check is the gate: confir
 
 **Interfaces:**
 - Consumes: the running app via `vite preview` at `http://localhost:4173`, addressed by `/?fixture=<name>`.
-- Produces: committed baseline PNGs under `client/e2e/__snapshots__/` and a `test:e2e` script.
+- Produces: committed baseline PNGs under `client/e2e/visual.spec.ts-snapshots/` and a `test:e2e` script.
 
 - [ ] **Step 1: Add Playwright dep + script**
 
@@ -914,7 +914,7 @@ Run:
 yarn workspace client test:e2e --update-snapshots
 ```
 
-Expected: 5 baseline PNGs created under `client/e2e/__snapshots__/`. Then verify they pass clean:
+Expected: 5 baseline PNGs created under `client/e2e/visual.spec.ts-snapshots/`. Then verify they pass clean:
 
 ```bash
 yarn workspace client test:e2e
@@ -944,7 +944,7 @@ git commit -m "test(phase-2): add chromium Playwright visual baselines for the t
 |---|---|
 | vitest: catalog render of `Text`/`Button` | Task 2 (`render.test.tsx`) |
 | vitest: both action paths, transport mocked client-side | Task 3 (`actions.test.tsx`) |
-| Playwright: committed visual-regression baselines of Primer `Text`/`Button` | Task 5 (`visual.spec.ts` + `__snapshots__`) |
+| Playwright: committed visual-regression baselines of Primer `Text`/`Button` | Task 5 (`visual.spec.ts` + `visual.spec.ts-snapshots/`) |
 | Claude-Chrome: dev-time live confirmation of Primer styling | Task 5, Step 5 (gate) |
 | Test-space topology: one `MessageProcessor`, canned-local in, `event` to handler | Tasks 2–4 (`FixtureView` + `TestSpace`) |
 | Variant fidelity (visual) | Task 1 `button-variants` fixture + Task 5 baseline |
