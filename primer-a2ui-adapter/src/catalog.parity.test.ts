@@ -33,8 +33,8 @@ const ENVELOPE_FIELDS = ['component', 'id'];
 
 function unwrap(field: z.ZodTypeAny): z.ZodTypeAny {
   let f = field;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   while (f instanceof z.ZodOptional || f instanceof z.ZodDefault) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     f = f instanceof z.ZodOptional ? f.unwrap() : (f._def as any).innerType;
   }
   return f;
@@ -49,7 +49,6 @@ function refName(ref: string): string {
   return ref.split('/').pop() as string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function shapeOf(api: {schema: z.ZodTypeAny}): Record<string, z.ZodTypeAny> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (api.schema as z.ZodObject<any>).shape as Record<string, z.ZodTypeAny>;
