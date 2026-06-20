@@ -5,7 +5,7 @@
   "components": {
     "Text": {
       "type": "object",
-      "description": "Primer Text. Renders text with Primer typography props.",
+      "description": "Displays a run of text with configurable typography.",
       "properties": {
         "component": {"const": "Text"},
         "text": {
@@ -21,12 +21,12 @@
         "size": {
           "type": "string",
           "enum": ["small", "medium", "large"],
-          "description": "Primer font size."
+          "description": "Font size."
         },
         "weight": {
           "type": "string",
           "enum": ["light", "normal", "medium", "semibold"],
-          "description": "Primer font weight."
+          "description": "Font weight."
         },
         "whiteSpace": {
           "type": "string",
