@@ -1,10 +1,12 @@
-import {render, screen} from '@testing-library/react';
-import {describe, expect, it} from 'vitest';
+import {describe, it, expect, afterEach} from 'vitest';
+import {render, screen, cleanup} from '@testing-library/react';
 import {App} from './App';
 
-describe('client bootstrap', () => {
-  it('renders the bootstrap heading through Primer', () => {
+afterEach(cleanup);
+
+describe('App', () => {
+  it('mounts the test space with a fixture selector', () => {
     render(<App />);
-    expect(screen.getByRole('heading', {name: 'bootstrap OK'})).toBeInTheDocument();
+    expect(screen.getByTestId('fixture-select')).toBeInTheDocument();
   });
 });
