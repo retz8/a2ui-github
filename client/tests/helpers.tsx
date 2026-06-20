@@ -3,6 +3,7 @@ import {render} from '@testing-library/react';
 import {BaseStyles, ThemeProvider} from '@primer/react';
 import {FixtureView} from '../src/test-space/FixtureView';
 import type {Fixture} from '../src/fixtures';
+import type {ActionListener} from '@a2ui/web_core/v0_9';
 
 export function renderWithPrimer(ui: ReactElement) {
   return render(
@@ -12,6 +13,6 @@ export function renderWithPrimer(ui: ReactElement) {
   );
 }
 
-export function renderFixture(fixture: Fixture) {
-  return renderWithPrimer(<FixtureView fixture={fixture} />);
+export function renderFixture(fixture: Fixture, opts: {actionHandler?: ActionListener} = {}) {
+  return renderWithPrimer(<FixtureView fixture={fixture} actionHandler={opts.actionHandler} />);
 }
