@@ -10,6 +10,10 @@ describe('PRIMER_CATALOG', () => {
     expect(PRIMER_CATALOG.components.has('Text')).toBe(true);
   });
 
+  it('registers the Button component', () => {
+    expect(PRIMER_CATALOG.components.has('Button')).toBe(true);
+  });
+
   it('registers the consoleLog function', () => {
     expect(PRIMER_CATALOG.functions.has('consoleLog')).toBe(true);
   });

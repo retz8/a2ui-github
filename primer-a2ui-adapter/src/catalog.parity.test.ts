@@ -4,7 +4,18 @@ import {fileURLToPath} from 'node:url';
 import {resolve, dirname} from 'node:path';
 import {z} from 'zod';
 import {TextApi} from './components/text';
+import {ButtonApi} from './components/button';
 import {consoleLog} from './functions/console-log';
+
+type JsonProp = {const?: string; enum?: string[]};
+type JsonComponent = {properties: Record<string, JsonProp>; required: string[]};
+type JsonFunction = {
+  properties: {
+    call: {const?: string};
+    args: {properties: Record<string, unknown>; required?: string[]};
+    returnType: {const?: string};
+  };
+};
 
 const catalog = JSON.parse(
   readFileSync(
@@ -12,8 +23,8 @@ const catalog = JSON.parse(
     'utf8',
   ),
 ) as {
-  components: Record<string, {properties: Record<string, {enum?: string[]}>; required: string[]}>;
-  functions: Record<string, {properties: {args: {properties: Record<string, unknown>}}}>;
+  components: Record<string, JsonComponent>;
+  functions: Record<string, JsonFunction>;
   $defs: {anyComponent: {oneOf: {$ref: string}[]}; anyFunction: {oneOf: {$ref: string}[]}};
 };
 
@@ -38,54 +49,99 @@ function refName(ref: string): string {
   return ref.split('/').pop() as string;
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const textShape = (TextApi.schema as z.ZodObject<any>).shape as Record<string, z.ZodTypeAny>;
+// Returns the zod object's top-level .shape. For a component Api this is the props object;
+// for a function implementation, `.schema` IS the args object schema, so .shape yields the arg names.
+function shapeOf(api: {schema: z.ZodTypeAny}): Record<string, z.ZodTypeAny> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return (api.schema as z.ZodObject<any>).shape as Record<string, z.ZodTypeAny>;
+}
 
-describe('Text: zod ↔ catalog.json parity', () => {
-  const jsonProps = catalog.components.Text.properties;
-  const jsonPropNames = Object.keys(jsonProps).filter((k) => !ENVELOPE_FIELDS.includes(k));
+// Component registry: zod ComponentApi keyed by component name.
+const COMPONENTS = {Text: TextApi, Button: ButtonApi} as const;
+// Function registry: FunctionImplementation keyed by function name.
+const FUNCTIONS = {consoleLog} as const;
+
+describe.each(Object.entries(COMPONENTS))('component %s: zod ↔ catalog.json parity', (name, api) => {
+  const jsonComponent = catalog.components[name];
+  const zodShape = shapeOf(api);
+
+  it('is declared in catalog.json', () => {
+    expect(jsonComponent, `catalog.json is missing component ${name}`).toBeDefined();
+  });
 
   it('property-name sets match (excluding envelope fields)', () => {
-    expect(jsonPropNames.sort()).toEqual(Object.keys(textShape).sort());
+    const jsonNames = Object.keys(jsonComponent.properties)
+      .filter((k) => !ENVELOPE_FIELDS.includes(k))
+      .sort();
+    expect(jsonNames).toEqual(Object.keys(zodShape).sort());
   });
 
   it('required sets match (excluding envelope fields)', () => {
-    const jsonRequired = catalog.components.Text.required
-      .filter((k) => !ENVELOPE_FIELDS.includes(k))
-      .sort();
-    const zodRequired = Object.entries(textShape)
+    const jsonRequired = jsonComponent.required.filter((k) => !ENVELOPE_FIELDS.includes(k)).sort();
+    const zodRequired = Object.entries(zodShape)
       .filter(([, v]) => !v.isOptional())
       .map(([k]) => k)
       .sort();
     expect(jsonRequired).toEqual(zodRequired);
   });
 
-  it('enum value sets match per styling prop', () => {
-    for (const key of ['as', 'size', 'weight', 'whiteSpace']) {
-      const zodEnum = enumValues(textShape[key]);
-      expect(zodEnum, `zod enum for ${key}`).not.toBeNull();
-      const jsonEnum = jsonProps[key]?.enum ?? [];
-      expect([...jsonEnum].sort(), `json enum for ${key}`).toEqual([...(zodEnum as string[])].sort());
+  it('enum value sets match per enum prop', () => {
+    for (const [key, field] of Object.entries(zodShape)) {
+      const zodEnum = enumValues(field);
+      if (!zodEnum) continue; // non-enum props ($ref/Dynamic/plain) — tolerated, not compared
+      const jsonEnum = jsonComponent.properties[key]?.enum ?? [];
+      expect([...jsonEnum].sort(), `enum for ${name}.${key}`).toEqual([...zodEnum].sort());
     }
   });
 
-  it('anyComponent oneOf covers exactly the declared components', () => {
+  it('component discriminator const equals the component key', () => {
+    expect(jsonComponent.properties.component?.const).toBe(name);
+  });
+});
+
+describe('anyComponent oneOf covers exactly the declared components', () => {
+  it('matches the components map', () => {
     const refNames = catalog.$defs.anyComponent.oneOf.map((r) => refName(r.$ref)).sort();
     expect(refNames).toEqual(Object.keys(catalog.components).sort());
   });
 });
 
-describe('consoleLog: zod ↔ catalog.json parity', () => {
-  it('function name appears in functions and anyFunction', () => {
-    expect(Object.keys(catalog.functions)).toContain(consoleLog.name);
+describe.each(Object.entries(FUNCTIONS))('function %s: zod ↔ catalog.json parity', (name, fn) => {
+  const jsonFn = catalog.functions[name];
+
+  it('is declared in functions and anyFunction', () => {
+    expect(Object.keys(catalog.functions)).toContain(name);
     const refNames = catalog.$defs.anyFunction.oneOf.map((r) => refName(r.$ref));
-    expect(refNames).toContain(consoleLog.name);
+    expect(refNames).toContain(name);
   });
 
   it('arg-name sets match', () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const zodArgs = Object.keys((consoleLog.schema as z.ZodObject<any>).shape).sort();
-    const jsonArgs = Object.keys(catalog.functions.consoleLog.properties.args.properties).sort();
+    const zodArgs = Object.keys(shapeOf(fn)).sort();
+    const jsonArgs = Object.keys(jsonFn.properties.args.properties).sort();
     expect(jsonArgs).toEqual(zodArgs);
+  });
+
+  it('args required-ness matches (all zod args are required)', () => {
+    const zodRequired = Object.entries(shapeOf(fn))
+      .filter(([, v]) => !v.isOptional())
+      .map(([k]) => k)
+      .sort();
+    const jsonRequired = [...(jsonFn.properties.args.required ?? [])].sort();
+    expect(jsonRequired).toEqual(zodRequired);
+  });
+
+  it('call discriminator const equals the function key', () => {
+    expect(jsonFn.properties.call?.const).toBe(name);
+  });
+
+  it('returnType const matches the zod returnType', () => {
+    expect(jsonFn.properties.returnType?.const).toBe(fn.returnType);
+  });
+});
+
+describe('anyFunction oneOf covers exactly the declared functions', () => {
+  it('matches the functions map', () => {
+    const refNames = catalog.$defs.anyFunction.oneOf.map((r) => refName(r.$ref)).sort();
+    expect(refNames).toEqual(Object.keys(catalog.functions).sort());
   });
 });
