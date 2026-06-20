@@ -49,6 +49,8 @@ function refName(ref: string): string {
   return ref.split('/').pop() as string;
 }
 
+// Returns the zod object's top-level .shape. For a component Api this is the props object;
+// for a function implementation, `.schema` IS the args object schema, so .shape yields the arg names.
 function shapeOf(api: {schema: z.ZodTypeAny}): Record<string, z.ZodTypeAny> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (api.schema as z.ZodObject<any>).shape as Record<string, z.ZodTypeAny>;

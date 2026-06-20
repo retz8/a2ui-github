@@ -17,7 +17,7 @@ type ButtonViewProps = {
   block?: boolean;
   labelWrap?: boolean;
   loadingAnnouncement?: string;
-  count?: string;
+  count?: string; // Primer accepts number | string; the binder only ever resolves DynamicString to a string here.
   accessibility?: ResolvedAccessibility;
   onClick?: () => void;
   children?: ReactNode;
