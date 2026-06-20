@@ -7,6 +7,12 @@ import type {Fixture} from './types';
 
 export type {Fixture} from './types';
 
+export {textFixture} from './text';
+export {textBoundFixture} from './text-bound';
+export {buttonFnFixture} from './button-fn';
+export {buttonEventFixture} from './button-event';
+export {buttonVariantsFixture} from './button-variants';
+
 export const FIXTURES: Fixture[] = [
   textFixture,
   textBoundFixture,

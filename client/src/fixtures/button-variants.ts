@@ -4,7 +4,7 @@ import type {Fixture} from './types';
 
 const VARIANTS = ['default', 'primary', 'invisible', 'danger', 'link'] as const;
 
-function variantSurface(variant: string): A2uiMessage[] {
+function variantSurface(variant: (typeof VARIANTS)[number]): A2uiMessage[] {
   const surfaceId = `variant-${variant}`;
   return [
     {version: 'v0.9', createSurface: {surfaceId, catalogId: PRIMER_CATALOG_ID}},
