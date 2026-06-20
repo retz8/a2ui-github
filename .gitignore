@@ -6,6 +6,10 @@ dist
 .vite/
 coverage/
 
+# Claude Code worktrees (native EnterWorktree) + SDD scratch ledger
+.claude/worktrees/
+.superpowers/
+
 # Yarn Modern
 .yarn/*
 !.yarn/patches
