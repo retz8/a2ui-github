@@ -36,6 +36,71 @@
       },
       "required": ["component", "text"],
       "unevaluatedProperties": false
+    },
+    "Button": {
+      "type": "object",
+      "description": "An interactive button that triggers an action when clicked.",
+      "properties": {
+        "component": {"const": "Button"},
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The ID of the component used as the button's label. Use a Text component; do not define it inline."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the button is clicked."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "primary", "invisible", "danger", "link"],
+          "default": "default",
+          "description": "The visual style. 'primary' marks the main call-to-action; 'danger' a destructive action."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "The button size."
+        },
+        "alignContent": {
+          "type": "string",
+          "enum": ["start", "center"],
+          "description": "How the content is aligned within the button."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button is disabled and cannot be clicked."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button shows a loading state."
+        },
+        "inactive": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button looks disabled but still accepts interaction."
+        },
+        "count": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "A count value displayed alongside the label."
+        },
+        "block": {
+          "type": "boolean",
+          "description": "Whether the button fills the width of its container."
+        },
+        "labelWrap": {
+          "type": "boolean",
+          "description": "Whether the label wraps to multiple lines when it is longer than the button width."
+        },
+        "loadingAnnouncement": {
+          "type": "string",
+          "description": "Text announced to assistive technologies while the button is loading."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility attributes (label, description) for assistive technologies."
+        }
+      },
+      "required": ["component", "child", "action"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -63,7 +128,7 @@
   },
   "$defs": {
     "anyComponent": {
-      "oneOf": [{"$ref": "#/components/Text"}]
+      "oneOf": [{"$ref": "#/components/Text"}, {"$ref": "#/components/Button"}]
     },
     "anyFunction": {
       "oneOf": [{"$ref": "#/functions/consoleLog"}]
