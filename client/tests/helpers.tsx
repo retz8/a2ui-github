@@ -14,5 +14,6 @@ export function renderWithPrimer(ui: ReactElement) {
 }
 
 export function renderFixture(fixture: Fixture, opts: {actionHandler?: ActionListener} = {}) {
-  return renderWithPrimer(<FixtureView fixture={fixture} actionHandler={opts.actionHandler} />);
+  const makeActionHandler = opts.actionHandler ? () => opts.actionHandler! : undefined;
+  return renderWithPrimer(<FixtureView fixture={fixture} makeActionHandler={makeActionHandler} />);
 }
