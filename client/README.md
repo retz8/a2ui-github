@@ -26,9 +26,28 @@ The client sends `event` actions to `VITE_A2A_SERVER_URL` (default `http://local
 VITE_A2A_SERVER_URL=http://localhost:10002 yarn workspace client run dev
 ```
 
-When developing over a VS Code tunnel, the forwarded localhost port is reachable at its
-`https://<id>-10002.<region>.devtunnels.ms` URL; point the var there if the browser origin cannot
-reach localhost directly. The server's CORS policy already allows localhost and `*.devtunnels.ms`.
+### Over a VS Code dev tunnel
+
+When the browser reaches the app through a tunnel (not the same machine as the servers),
+`localhost` resolves to the browser's machine, not the server host. The client **and** the agent
+card must both use the tunnel URL — otherwise the card resolves but its advertised `message/send`
+endpoint points at an unreachable `localhost` (you'll see the card fetch succeed, then a `404` on
+`localhost`). Forward ports `5173` (client) and `10002` (agent) and set both to **Public** visibility
+(a private port returns `401` to cross-origin fetches).
+
+```bash
+# Agent — advertise the tunnel URL in its agent card (not localhost):
+cd agent && uv run python -m deterministic_agent \
+  --host localhost --port 10002 \
+  --base-url https://<id>-10002.<region>.devtunnels.ms
+
+# Client (separate terminal) — point at the same agent tunnel URL:
+VITE_A2A_SERVER_URL=https://<id>-10002.<region>.devtunnels.ms \
+  yarn workspace client run dev
+```
+
+First visit to each tunnel host shows a one-time "you are connecting to a dev tunnel" interstitial —
+click **Continue**. The server's CORS policy already allows `localhost` and `*.devtunnels.ms`.
 
 ## Manual round-trip verification (not in CI)
 

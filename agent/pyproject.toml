@@ -24,3 +24,7 @@ dev = [
 asyncio_mode = "auto"
 pythonpath = ["."]
 testpaths = ["tests"]
+filterwarnings = [
+    # Third-party: starlette's TestClient deprecates its httpx backend. Not our code.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]

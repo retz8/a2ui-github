@@ -43,8 +43,12 @@ def build_agent_card(base_url: str) -> AgentCard:
     )
 
 
-def build_app(host: str, port: int):
-    base_url = f"http://{host}:{port}"
+def build_app(host: str, port: int, base_url: str | None = None):
+    # The agent card advertises `base_url` as its service endpoint; the A2A client
+    # POSTs message/send there. Defaults to the bind address, but must be set to a
+    # tunnel/proxy URL when the client reaches the server through one (otherwise the
+    # card would advertise an unreachable localhost).
+    base_url = base_url or f"http://{host}:{port}"
     handler = DefaultRequestHandler(
         agent_executor=DeterministicAgentExecutor(),
         task_store=InMemoryTaskStore(),

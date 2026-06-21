@@ -43,4 +43,3 @@ Additively fold the catalog-writing skill (Phase 4) and the agent scaffold (Phas
 - Diff viewer (stretch)
 - Agent template memory
 - Read + write loop on a seeded sandbox repo
-- Agent-server public-URL override (`--base-url`/`--public-url`) — the deterministic server advertises a localhost agent-card URL (derived from bind host:port), which can't survive a tunnel/remote/demo deployment. Needed for Phase 6/7.
