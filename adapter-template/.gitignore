@@ -1,0 +1,28 @@
+node_modules
+.DS_Store
+dist
+*.tsbuildinfo
+.env
+.vite/
+coverage/
+
+# Python (agent/, uv-managed)
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+
+# Playwright (client/)
+test-results/
+playwright-report/
+
+# Claude Code worktrees (native EnterWorktree) + SDD scratch ledger
+.claude/worktrees/
+.superpowers/
+
+# Yarn Modern
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/sdks
+.yarn/cache
