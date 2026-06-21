@@ -30,7 +30,7 @@ class DeterministicAgentExecutor(AgentExecutor):
     """Returns a canned, catalog-conformant A2UI response on every action."""
 
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
-        action = _extract_action(context) or {"name": "", "surfaceId": ""}
+        action = _extract_action(context) or {"name": "", "surfaceId": ""}  # no parseable A2UI action -> unknown-event fallback
         messages = build_response(action)
         parts: list[Part] = [create_a2ui_part(msg, version="v0.9") for msg in messages]
 

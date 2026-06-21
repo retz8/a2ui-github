@@ -45,5 +45,5 @@ def test_validate_rejects_an_undeclared_property():
             },
         }
     ]
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         validate_payload(payload)

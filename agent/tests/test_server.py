@@ -14,9 +14,9 @@ def test_default_port_is_10002():
 
 def test_cors_regex_allows_localhost_and_devtunnel_but_not_arbitrary():
     pattern = re.compile(CORS_ORIGIN_REGEX)
-    assert pattern.match("http://localhost:5173")
-    assert pattern.match("https://vnw20xbg-5173.asse.devtunnels.ms")
-    assert not pattern.match("https://evil.com")
+    assert pattern.fullmatch("http://localhost:5173")
+    assert pattern.fullmatch("https://vnw20xbg-5173.asse.devtunnels.ms")
+    assert not pattern.fullmatch("https://evil.com")
 
 
 def test_agent_card_advertises_streaming_and_the_a2ui_v09_extension():

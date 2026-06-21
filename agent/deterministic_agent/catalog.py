@@ -6,7 +6,7 @@ import copy
 import functools
 from pathlib import Path
 
-from a2ui.schema.catalog import CatalogConfig
+from a2ui.schema.catalog import A2uiCatalog, CatalogConfig
 from a2ui.schema.constants import VERSION_0_9
 from a2ui.schema.manager import A2uiSchemaManager
 
@@ -36,7 +36,7 @@ def _schema_manager() -> A2uiSchemaManager:
     )
 
 
-def get_catalog():
+def get_catalog() -> A2uiCatalog:
     return _schema_manager().get_selected_catalog()
 
 

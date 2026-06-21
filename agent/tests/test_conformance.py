@@ -26,5 +26,5 @@ def test_validator_rejects_non_conformant_component():
             },
         }
     ]
-    with pytest.raises(Exception):
+    with pytest.raises(ValueError):
         validate_payload(bad)
