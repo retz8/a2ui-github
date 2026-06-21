@@ -1,0 +1,30 @@
+[project]
+name = "{{agentPkg}}"
+version = "0.1.0"
+description = "Deterministic A2A server — a token-free local A2UI round-trip harness."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "a2ui-agent-sdk>=0.2.4,<0.3.0",
+    "a2a-sdk[http-server]>=0.3.0,<0.4.0",
+    "uvicorn>=0.40.0",
+    "click>=8.1.8",
+]
+
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.0",
+    "pytest-asyncio>=1.3.0",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+pythonpath = ["."]
+testpaths = ["tests"]
+filterwarnings = [
+    # Third-party: starlette's TestClient deprecates its httpx backend. Not our code.
+    "ignore:Using `httpx` with `starlette.testclient` is deprecated",
+]

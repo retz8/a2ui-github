@@ -1,4 +1,4 @@
-"""Locates the sibling primer-a2ui-adapter catalog.json and validates A2UI against it."""
+"""Locates the sibling {{adapterPkg}} catalog.json and validates A2UI against it."""
 
 from __future__ import annotations
 
@@ -10,14 +10,14 @@ from a2ui.schema.catalog import A2uiCatalog, CatalogConfig
 from a2ui.schema.constants import VERSION_0_9
 from a2ui.schema.manager import A2uiSchemaManager
 
-_CATALOG_RELPATH = ("primer-a2ui-adapter", "catalogs", "v0.9.1", "catalog.json")
+_CATALOG_RELPATH = ("{{adapterPkg}}", "catalogs", "{{version}}", "catalog.json")
 
 
 def _repo_root() -> Path:
     # catalog.py -> deterministic_agent -> agent -> <repo root>
     root = Path(__file__).resolve().parents[2]
-    assert (root / "primer-a2ui-adapter").is_dir(), (
-        f"expected the monorepo root containing primer-a2ui-adapter at {root}"
+    assert (root / "{{adapterPkg}}").is_dir(), (
+        f"expected the monorepo root containing {{adapterPkg}} at {root}"
     )
     return root
 
@@ -45,7 +45,7 @@ def supported_catalog_ids() -> list[str]:
 
 
 def validate_payload(payload: list[dict]) -> None:
-    """Raises if the payload's components do not conform to the Primer catalog.
+    """Raises if the payload's components do not conform to the adapter catalog.
 
     `id` is the framework-owned component envelope field (not modeled by the
     catalog, like the JS parity test's excluded ['component', 'id']); it is

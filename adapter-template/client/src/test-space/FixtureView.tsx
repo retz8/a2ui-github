@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import type {ActionListener, A2uiMessage} from '@a2ui/web_core/v0_9';
 import {A2uiSurface} from '@a2ui/react/v0_9';
-import {CATALOG} from 'primer-a2ui-adapter';
+import {CATALOG} from '{{adapterPkg}}';
 import type {Fixture} from '../fixtures';
 
 /** Renders every surface produced by one fixture's canned messages. */
