@@ -31,6 +31,6 @@ export function extractA2uiMessages(result: Task | Message): A2uiMessage[] {
     result.kind === 'task' ? (result.status.message?.parts ?? []) : result.parts;
   return parts
     .filter((p): p is Extract<Part, {kind: 'data'}> => p.kind === 'data')
-    .map(p => p.data)
+    .map(p => p.data as unknown)
     .filter((d): d is A2uiMessage => (d as {version?: unknown}).version === A2UI_VERSION);
 }
