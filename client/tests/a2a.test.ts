@@ -2,7 +2,7 @@ import {describe, it, expect, beforeEach, afterEach, vi} from 'vitest';
 import type {Task, Message, MessageSendParams, SendMessageResponse} from '@a2a-js/sdk';
 import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
 import {buildActionMessageParams, extractA2uiMessages} from '../src/a2a/messages';
-import {createA2AActionHandler} from '../src/a2a/createA2AActionHandler';
+import {createA2AActionHandler, agentCardUrl} from '../src/a2a/createA2AActionHandler';
 
 const action = {
   name: 'submit',
@@ -150,5 +150,21 @@ describe('createA2AActionHandler', () => {
     await handler(action);
     expect(apply).not.toHaveBeenCalled();
     expect(errSpy).toHaveBeenCalledWith('[A2UI:a2a]', expect.any(Error));
+  });
+});
+
+describe('agentCardUrl', () => {
+  const CARD = '/.well-known/agent-card.json';
+
+  it('appends the card path to a base URL without a trailing slash', () => {
+    expect(agentCardUrl('https://host.example')).toBe(`https://host.example${CARD}`);
+  });
+
+  it('collapses a trailing slash instead of producing a double slash', () => {
+    expect(agentCardUrl('https://host.example/')).toBe(`https://host.example${CARD}`);
+  });
+
+  it('collapses multiple trailing slashes', () => {
+    expect(agentCardUrl('http://localhost:10002///')).toBe(`http://localhost:10002${CARD}`);
   });
 });

@@ -5,6 +5,11 @@ import {buildActionMessageParams, extractA2uiMessages} from './messages';
 
 const AGENT_CARD_PATH = '/.well-known/agent-card.json';
 
+/** Build the agent-card URL, tolerating trailing slash(es) on the base URL. */
+export function agentCardUrl(serverUrl: string): string {
+  return `${serverUrl.replace(/\/+$/, '')}${AGENT_CARD_PATH}`;
+}
+
 /** The slice of A2AClient the handler needs; lets tests inject a fake. */
 export interface A2AMessageSender {
   sendMessage(params: MessageSendParams): Promise<SendMessageResponse>;
@@ -37,7 +42,7 @@ export function createA2AActionHandler(opts: A2AActionHandlerOptions): ActionLis
     // Lazily resolve the agent card once; clear the cache on failure so a later
     // click retries (e.g. after the dev server is started).
     if (!senderPromise) {
-      senderPromise = A2AClient.fromCardUrl(`${serverUrl}${AGENT_CARD_PATH}`).catch(err => {
+      senderPromise = A2AClient.fromCardUrl(agentCardUrl(serverUrl)).catch(err => {
         senderPromise = undefined;
         throw err;
       });
