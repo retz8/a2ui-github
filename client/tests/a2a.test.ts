@@ -1,7 +1,8 @@
-import {describe, it, expect} from 'vitest';
-import type {Task, Message} from '@a2a-js/sdk';
+import {describe, it, expect, beforeEach, afterEach, vi} from 'vitest';
+import type {Task, Message, MessageSendParams, SendMessageResponse} from '@a2a-js/sdk';
 import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
 import {buildActionMessageParams, extractA2uiMessages} from '../src/a2a/messages';
+import {createA2AActionHandler} from '../src/a2a/createA2AActionHandler';
 
 const action = {
   name: 'submit',
@@ -68,5 +69,78 @@ describe('extractA2uiMessages', () => {
       status: {state: 'completed'},
     } as unknown as Task;
     expect(extractA2uiMessages(task)).toEqual([]);
+  });
+});
+
+describe('createA2AActionHandler', () => {
+  const a2uiMsg = {
+    version: 'v0.9',
+    updateComponents: {
+      surfaceId: 'button-event',
+      components: [{id: 'label', component: 'Text', text: 'done'}],
+    },
+  };
+  const okResponse = {
+    jsonrpc: '2.0',
+    id: 1,
+    result: {
+      kind: 'task',
+      id: 't1',
+      contextId: 'c1',
+      status: {
+        state: 'completed',
+        message: {
+          kind: 'message',
+          role: 'agent',
+          messageId: 'm1',
+          parts: [{kind: 'data', data: a2uiMsg}],
+        },
+      },
+    } as Task,
+  } as SendMessageResponse;
+
+  let errSpy: ReturnType<typeof vi.spyOn>;
+  beforeEach(() => {
+    errSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+  });
+  afterEach(() => errSpy.mockRestore());
+
+  it('marshals the action, sends it, and applies the extracted messages', async () => {
+    const sendMessage = vi.fn().mockResolvedValue(okResponse);
+    const apply = vi.fn();
+    const handler = createA2AActionHandler({apply, client: {sendMessage}});
+
+    await handler(action);
+
+    expect(sendMessage).toHaveBeenCalledTimes(1);
+    const sent = sendMessage.mock.calls[0][0] as MessageSendParams;
+    expect(sent.message.parts[0]).toEqual({kind: 'data', data: {version: 'v0.9', action}});
+    expect(apply).toHaveBeenCalledWith([a2uiMsg]);
+  });
+
+  it('catch-and-logs a thrown send failure without applying', async () => {
+    const sendMessage = vi.fn().mockRejectedValue(new Error('wire down'));
+    const apply = vi.fn();
+    const handler = createA2AActionHandler({apply, client: {sendMessage}});
+
+    await handler(action);
+
+    expect(apply).not.toHaveBeenCalled();
+    expect(errSpy).toHaveBeenCalledWith('[A2UI:a2a]', expect.any(Error));
+  });
+
+  it('catch-and-logs a JSON-RPC error response without applying', async () => {
+    const sendMessage = vi.fn().mockResolvedValue({
+      jsonrpc: '2.0',
+      id: 1,
+      error: {code: -32000, message: 'nope'},
+    } as SendMessageResponse);
+    const apply = vi.fn();
+    const handler = createA2AActionHandler({apply, client: {sendMessage}});
+
+    await handler(action);
+
+    expect(apply).not.toHaveBeenCalled();
+    expect(errSpy).toHaveBeenCalled();
   });
 });
