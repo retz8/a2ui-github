@@ -15,11 +15,16 @@ export const buttonEventFixture: Fixture = {
             component: 'Button',
             child: 'label',
             variant: 'primary',
+            disabled: {path: '/submitted'},
             action: {event: {name: 'submit', context: {}}},
           },
           {id: 'label', component: 'Text', text: 'Send event'},
         ],
       },
+    },
+    {
+      version: 'v0.9',
+      updateDataModel: {surfaceId: 'button-event', path: '/', value: {submitted: false}},
     },
   ],
 };
