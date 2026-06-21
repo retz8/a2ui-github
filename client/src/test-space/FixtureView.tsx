@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
-import type {ActionListener} from '@a2ui/web_core/v0_9';
+import type {ActionListener, A2uiMessage} from '@a2ui/web_core/v0_9';
 import {A2uiSurface} from '@a2ui/react/v0_9';
 import {PRIMER_CATALOG} from 'primer-a2ui-adapter';
 import type {Fixture} from '../fixtures';
@@ -8,15 +8,20 @@ import type {Fixture} from '../fixtures';
 /** Renders every surface produced by one fixture's canned messages. */
 export function FixtureView({
   fixture,
-  actionHandler,
+  makeActionHandler,
 }: {
   fixture: Fixture;
-  actionHandler?: ActionListener;
+  makeActionHandler?: (apply: (messages: A2uiMessage[]) => void) => ActionListener;
 }) {
   const [processor] = useState(() => {
-    // TODO(2.5): replace the injected dev-stub actionHandler with the real A2A
-    // client middleware so `event` actions go out over the wire to the server.
-    const p = new MessageProcessor([PRIMER_CATALOG], actionHandler);
+    // Late-binding: `apply` reaches the processor that is created right below.
+    // The handler only fires on a click, long after construction, so the
+    // temporal cycle is harmless.
+    let target: {processMessages: (m: A2uiMessage[]) => void} | undefined;
+    const apply = (messages: A2uiMessage[]) => target?.processMessages(messages);
+    const handler = makeActionHandler?.(apply);
+    const p = new MessageProcessor([PRIMER_CATALOG], handler);
+    target = p;
     p.processMessages(fixture.messages);
     return p;
   });
