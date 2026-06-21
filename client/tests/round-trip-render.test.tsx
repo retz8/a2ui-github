@@ -1,5 +1,5 @@
 import {describe, it, expect, afterEach} from 'vitest';
-import {screen, cleanup, waitFor} from '@testing-library/react';
+import {screen, cleanup, waitFor, act} from '@testing-library/react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import {A2uiSurface} from '@a2ui/react/v0_9';
 import {PRIMER_CATALOG} from 'primer-a2ui-adapter';
@@ -21,26 +21,28 @@ describe('round-trip re-render', () => {
 
     // Apply the canned response the deterministic server returns for `submit`
     // (surfaceId stamped, as the server does before sending).
-    processor.processMessages([
-      {
-        version: 'v0.9',
-        updateDataModel: {surfaceId: 'button-event', path: '/submitted', value: true},
-      },
-      {
-        version: 'v0.9',
-        updateComponents: {
-          surfaceId: 'button-event',
-          components: [
-            {id: 'label', component: 'Text', text: '✅ Sent — server received submit'},
-          ],
+    await act(async () => {
+      processor.processMessages([
+        {
+          version: 'v0.9',
+          updateDataModel: {surfaceId: 'button-event', path: '/submitted', value: true},
         },
-      },
-    ]);
+        {
+          version: 'v0.9',
+          updateComponents: {
+            surfaceId: 'button-event',
+            components: [
+              {id: 'label', component: 'Text', text: '✅ Sent — server received submit'},
+            ],
+          },
+        },
+      ]);
+    });
 
     // After: label flipped and the button disabled (binds to /submitted).
     await waitFor(() =>
       expect(screen.getByText('✅ Sent — server received submit')).toBeInTheDocument(),
     );
-    expect(screen.getByRole('button')).toBeDisabled();
+    expect(screen.getByRole('button', {name: '✅ Sent — server received submit'})).toBeDisabled();
   });
 });
