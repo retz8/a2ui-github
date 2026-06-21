@@ -5,7 +5,7 @@ import {buildActionMessageParams, extractA2uiMessages} from '../src/a2a/messages
 import {createA2AActionHandler, agentCardUrl} from '../src/a2a/createA2AActionHandler';
 
 const action = {
-  name: 'submit',
+  name: 'example-event',
   surfaceId: 'surface-1',
   sourceComponentId: 'root',
 } as unknown as A2uiClientAction;
@@ -26,7 +26,7 @@ describe('buildActionMessageParams', () => {
 describe('extractA2uiMessages', () => {
   const a2uiMsg = {
     version: 'v0.9',
-    updateDataModel: {surfaceId: 'surface-1', path: '/submitted', value: true},
+    updateDataModel: {surfaceId: 'surface-1', path: '/example', value: true},
   };
 
   it('pulls version-tagged DataParts off a completed task status message', () => {
@@ -75,7 +75,7 @@ describe('extractA2uiMessages', () => {
 describe('createA2AActionHandler', () => {
   const a2uiMsg = {
     version: 'v0.9',
-    updateDataModel: {surfaceId: 'surface-1', path: '/received', value: true},
+    updateDataModel: {surfaceId: 'surface-1', path: '/example', value: true},
   };
   const okResponse = {
     jsonrpc: '2.0',
