@@ -141,6 +141,14 @@ describe('createA2AActionHandler', () => {
     await handler(action);
 
     expect(apply).not.toHaveBeenCalled();
-    expect(errSpy).toHaveBeenCalled();
+    expect(errSpy).toHaveBeenCalledWith('[A2UI:a2a]', expect.objectContaining({code: -32000}));
+  });
+
+  it('catch-and-logs when neither client nor serverUrl is provided', async () => {
+    const apply = vi.fn();
+    const handler = createA2AActionHandler({apply});
+    await handler(action);
+    expect(apply).not.toHaveBeenCalled();
+    expect(errSpy).toHaveBeenCalledWith('[A2UI:a2a]', expect.any(Error));
   });
 });
