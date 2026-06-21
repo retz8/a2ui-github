@@ -1,4 +1,4 @@
-"""Deterministic AgentExecutor: returns canned A2UI for the incoming action."""
+"""Deterministic AgentExecutor: returns a component-free acknowledgement for the incoming action."""
 
 from __future__ import annotations
 
@@ -27,7 +27,7 @@ def _extract_action(context: RequestContext) -> dict | None:
 
 
 class DeterministicAgentExecutor(AgentExecutor):
-    """Returns a canned, catalog-conformant A2UI response on every action."""
+    """Returns a component-free proof-of-receipt on every action (stub — wire canned responses in responses.py)."""
 
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
         action = _extract_action(context) or {"name": "", "surfaceId": ""}  # no parseable A2UI action -> unknown-event fallback
