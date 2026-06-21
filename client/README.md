@@ -39,10 +39,10 @@ endpoint points at an unreachable `localhost` (you'll see the card fetch succeed
 # Agent — advertise the tunnel URL in its agent card (not localhost):
 cd agent && uv run python -m deterministic_agent \
   --host localhost --port 10002 \
-  --base-url https://<id>-10002.<region>.devtunnels.ms
+  --base-url https://vnw20xbg-10002.asse.devtunnels.ms
 
 # Client (separate terminal) — point at the same agent tunnel URL:
-VITE_A2A_SERVER_URL=https://<id>-10002.<region>.devtunnels.ms \
+VITE_A2A_SERVER_URL=https://vnw20xbg-10002.asse.devtunnels.ms \
   yarn workspace client run dev
 ```
 
