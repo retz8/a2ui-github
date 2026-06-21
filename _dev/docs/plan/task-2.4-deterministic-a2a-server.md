@@ -16,7 +16,8 @@
 - **`agent/` lives outside the yarn workspaces** — it is uv-managed only; do not add it to the root `package.json` `workspaces`.
 - **No ADK/LLM/MCP/API key** — the response is canned and deterministic. Use only the SDK's `a2a.parts`, `a2a.extension`, and `schema` helpers; never an LLM runner.
 - **Protocol version literal is `"v0.9"`** on every emitted and consumed message; the SDK version constant is **`VERSION_0_9`** (`"0.9"`) — this matches the catalog's `$ref` namespace, the client wire version, and the extension URI `https://a2ui.org/a2a-extension/a2ui/v0.9`. Do not use `VERSION_0_9_1`.
-- **Conformance uses `RELAXED_VALIDATION`** (keeps catalog schema checks; tolerates the missing surface root, which legitimately lives in the client fixture, not the server response).
+- **SDK is PyPI `a2ui-agent-sdk` `>=0.2.4,<0.3.0`** (pin the 0.2.x line — the A2UI fork's dev tree has a different, newer API; 0.2.4 is what the code below is verified against). There is **no `a2ui-core` dependency** and no `a2ui.core.*` imports.
+- **Conformance = `catalog.validator.validate(stripped, strict_integrity=False)`**, where `stripped` is the payload with each component's framework-owned `id` envelope field removed before validation (the catalog does not model `id`, exactly as the JS parity test excludes `['component','id']`). `strict_integrity=False` skips the root/orphan topology checks, since the surface root lives in the client fixture, not the server's partial update. This keeps full leaf-level schema validation (verified: undeclared prop, unknown component, and bad enum all reject).
 - **Default server port `10002`**; CORS allows localhost and `*.<region>.devtunnels.ms`.
 - **Commit convention:** `feat(phase-2): …` / `test(phase-2): …` / `chore(phase-2): …`.
 - **`_dev/` is never touched on a worktree branch** — this plan produces code only (the `agent/` tree plus one `client/` fixture edit).
@@ -207,10 +208,10 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'deterministic_agent.c
 
 from __future__ import annotations
 
+import copy
 import functools
 from pathlib import Path
 
-from a2ui.core.validating import RELAXED_VALIDATION
 from a2ui.schema.catalog import CatalogConfig
 from a2ui.schema.constants import VERSION_0_9
 from a2ui.schema.manager import A2uiSchemaManager
@@ -250,9 +251,24 @@ def supported_catalog_ids() -> list[str]:
 
 
 def validate_payload(payload: list[dict]) -> None:
-    """Raises if the payload does not conform to the Primer catalog (RELAXED config)."""
-    get_catalog().validator.validate(payload, config=RELAXED_VALIDATION)
+    """Raises if the payload's components do not conform to the Primer catalog.
+
+    `id` is the framework-owned component envelope field (not modeled by the
+    catalog, like the JS parity test's excluded ['component', 'id']); it is
+    stripped before validation. strict_integrity=False skips root/orphan
+    topology checks, since the surface root lives in the client fixture, not
+    the server's partial update.
+    """
+    probe = copy.deepcopy(payload)
+    for message in probe:
+        update = message.get("updateComponents")
+        if isinstance(update, dict):
+            for component in update.get("components", []):
+                component.pop("id", None)
+    get_catalog().validator.validate(probe, strict_integrity=False)
 ```
+
+> Also pin the SDK in `agent/pyproject.toml`: change the dependency `"a2ui-agent-sdk"` to `"a2ui-agent-sdk>=0.2.4,<0.3.0"` and add `agent/pyproject.toml` to this task's commit. (The fork's newer API — `a2ui.core.validating`, `ValidationConfig` — is NOT on PyPI; pinning the 0.2.x line keeps the verified API.)
 
 - [ ] **Step 4: Run the test to verify it passes**
 
