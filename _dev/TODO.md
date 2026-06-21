@@ -21,8 +21,15 @@ One component (`Text` + `Button`) taken completely through the stack — render 
 
 Order: 2.1 → 2.2 → (2.3 ∥ 2.4) → 2.5. 2.3 and 2.4 are parallel-eligible after 2.2 (both depend only on the catalog, not each other); 2.5 needs 2.3 + 2.4.
 
-## Phase 3 — Templatization baseline
-Lift an FE-only baseline template from the post-Phase-2 shape — a checkpoint extraction, not a release. Plan: `_dev/docs/templatization-plan.md`.
+## Phase 3 — Templatization baseline [WIP]
+Lift an FE + deterministic-agent baseline template from the post-Phase-2 shape — a checkpoint extraction, not a release. Spec: `_dev/docs/spec/phase-3-templatization-baseline.md`. Plan: `_dev/docs/templatization-plan.md`.
+
+- [ ] **3.1** Templatized code tree — create `adapter-template/` and extract the adapter + client + deterministic-agent scaffolds: domain content stripped (empty `components/`/`fixtures/`, stubbed executor, no `console-log`), placeholdered in contents **and** paths (token-named adapter dir), root build config carried. Structural completeness; green is proven in 3.4.
+- [ ] **3.2** Templatized docs + `.claude/` — `SPEC.md` (placeholders + §3 authoring stub), `CLAUDE.md` (placeholders + pinned-ref fetch recipe parameterized by `{{version}}` + harness pointer, sync-spec machinery dropped), `README`, and a clean `settings.json` (no hook, harness not pre-enabled).
+- [ ] **3.3** Init skill — data-driven mechanical fill core (token scan → content+path substitution → dir rename → no-`{{...}}`-left assertion), plus the Claude-Code steps: §3 interview, `a2ui-sdk-design` fetch and harness install (both authored, live-run deferred), guarded self-delete.
+- [ ] **3.4** Verification — materialization smoke test (copy → fill with Primer/a2ui-github values → full `build:all`/`typecheck`/`lint`/`test:all` + agent `uv sync`/`pytest` green, zero tokens left, init files still present) + the agnosticism grep. The only place "green" is proven.
+
+Order: (3.1 ∥ 3.2) → 3.3 → 3.4. 3.1 and 3.2 are parallel-eligible (code vs prose surfaces). 3.3 needs the placeholder inventory 3.1+3.2 define; 3.4 needs both the template content and a runnable init.
 
 ## Phase 4 — Catalog-writing harness
 The repeatable component-authoring workflow, captured as a project skill. Also set up the daily-work harness's deferred autonomous layer (nightly routine + its GitHub issue/label machinery) here, ready for Phase 5.
