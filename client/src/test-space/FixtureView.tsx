@@ -2,7 +2,7 @@ import {useEffect, useState} from 'react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import type {ActionListener, A2uiMessage} from '@a2ui/web_core/v0_9';
 import {A2uiSurface} from '@a2ui/react/v0_9';
-import {PRIMER_CATALOG} from 'primer-a2ui-adapter';
+import {CATALOG} from 'primer-a2ui-adapter';
 import type {Fixture} from '../fixtures';
 
 /** Renders every surface produced by one fixture's canned messages. */
@@ -17,10 +17,11 @@ export function FixtureView({
     // Late-binding: `apply` reaches the processor that is created right below.
     // The handler only fires on a click, long after construction, so the
     // temporal cycle is harmless.
+    // eslint-disable-next-line prefer-const
     let target: {processMessages: (m: A2uiMessage[]) => void} | undefined;
     const apply = (messages: A2uiMessage[]) => target?.processMessages(messages);
     const handler = makeActionHandler?.(apply);
-    const p = new MessageProcessor([PRIMER_CATALOG], handler);
+    const p = new MessageProcessor([CATALOG], handler);
     target = p;
     p.processMessages(fixture.messages);
     return p;

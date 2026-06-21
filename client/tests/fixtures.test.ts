@@ -1,5 +1,5 @@
 import {describe, it, expect} from 'vitest';
-import {PRIMER_CATALOG_ID} from 'primer-a2ui-adapter';
+import {CATALOG_ID} from 'primer-a2ui-adapter';
 import {FIXTURES, getFixture} from '../src/fixtures';
 
 describe('fixtures', () => {
@@ -18,7 +18,7 @@ describe('fixtures', () => {
         expect(m.version).toBe('v0.9');
       }
       for (const m of creates as Array<{createSurface: {catalogId: string}}>) {
-        expect(m.createSurface.catalogId).toBe(PRIMER_CATALOG_ID);
+        expect(m.createSurface.catalogId).toBe(CATALOG_ID);
       }
     }
   });

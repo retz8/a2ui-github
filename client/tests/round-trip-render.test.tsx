@@ -2,7 +2,7 @@ import {describe, it, expect, afterEach} from 'vitest';
 import {screen, cleanup, waitFor, act} from '@testing-library/react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import {A2uiSurface} from '@a2ui/react/v0_9';
-import {PRIMER_CATALOG} from 'primer-a2ui-adapter';
+import {CATALOG} from 'primer-a2ui-adapter';
 import {renderWithPrimer} from './helpers';
 import {buttonEventFixture} from '../src/fixtures/button-event';
 
@@ -10,7 +10,7 @@ afterEach(cleanup);
 
 describe('round-trip re-render', () => {
   it('re-renders an existing surface when the server-style response is applied', async () => {
-    const processor = new MessageProcessor([PRIMER_CATALOG]);
+    const processor = new MessageProcessor([CATALOG]);
     processor.processMessages(buttonEventFixture.messages);
     const surface = Array.from(processor.model.surfacesMap.values())[0];
 

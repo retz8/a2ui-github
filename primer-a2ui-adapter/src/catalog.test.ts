@@ -1,24 +1,24 @@
 import {describe, it, expect} from 'vitest';
-import {PRIMER_CATALOG, PRIMER_CATALOG_ID} from './index';
+import {CATALOG, CATALOG_ID} from './index';
 
-describe('PRIMER_CATALOG', () => {
+describe('CATALOG', () => {
   it('carries the catalog id', () => {
-    expect(PRIMER_CATALOG.id).toBe(PRIMER_CATALOG_ID);
+    expect(CATALOG.id).toBe(CATALOG_ID);
   });
 
   it('registers the Text component', () => {
-    expect(PRIMER_CATALOG.components.has('Text')).toBe(true);
+    expect(CATALOG.components.has('Text')).toBe(true);
   });
 
   it('registers the Button component', () => {
-    expect(PRIMER_CATALOG.components.has('Button')).toBe(true);
+    expect(CATALOG.components.has('Button')).toBe(true);
   });
 
   it('registers the consoleLog function', () => {
-    expect(PRIMER_CATALOG.functions.has('consoleLog')).toBe(true);
+    expect(CATALOG.functions.has('consoleLog')).toBe(true);
   });
 
   it('exposes a function invoker', () => {
-    expect(typeof PRIMER_CATALOG.invoker).toBe('function');
+    expect(typeof CATALOG.invoker).toBe('function');
   });
 });

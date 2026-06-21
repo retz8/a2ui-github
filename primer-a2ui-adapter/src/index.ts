@@ -1,2 +1,2 @@
-export {PRIMER_CATALOG} from './catalog';
-export {PRIMER_CATALOG_ID} from './catalog-id';
+export {CATALOG} from './catalog';
+export {CATALOG_ID} from './catalog-id';

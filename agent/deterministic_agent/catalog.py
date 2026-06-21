@@ -32,7 +32,7 @@ def catalog_json_path() -> Path:
 def _schema_manager() -> A2uiSchemaManager:
     return A2uiSchemaManager(
         version=VERSION_0_9,
-        catalogs=[CatalogConfig.from_path("primer", str(catalog_json_path()))],
+        catalogs=[CatalogConfig.from_path("adapter", str(catalog_json_path()))],
     )
 
 
