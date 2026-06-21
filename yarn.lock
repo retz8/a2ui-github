@@ -5,6 +5,26 @@ __metadata:
   version: 8
   cacheKey: 10c0
 
+"@a2a-js/sdk@npm:^0.3.13":
+  version: 0.3.13
+  resolution: "@a2a-js/sdk@npm:0.3.13"
+  dependencies:
+    uuid: "npm:^11.1.0"
+  peerDependencies:
+    "@bufbuild/protobuf": ^2.10.2
+    "@grpc/grpc-js": ^1.11.0
+    express: ^4.21.2 || ^5.1.0
+  peerDependenciesMeta:
+    "@bufbuild/protobuf":
+      optional: true
+    "@grpc/grpc-js":
+      optional: true
+    express:
+      optional: true
+  checksum: 10c0/066c621329c397baeedf7460c8ac74973f520f88574b65119ca0414c8f4279fa03d0875795da4e46f1ae9870142e6d1a0a0a04daabf4c8e25f52bf98e525ab9d
+  languageName: node
+  linkType: hard
+
 "@a2ui/markdown-it@npm:^0.0.4":
   version: 0.0.4
   resolution: "@a2ui/markdown-it@npm:0.0.4"
@@ -1440,6 +1460,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "client@workspace:client"
   dependencies:
+    "@a2a-js/sdk": "npm:^0.3.13"
     "@a2ui/react": "npm:^0.10.1"
     "@a2ui/web_core": "npm:^0.10.1"
     "@playwright/test": "npm:^1.61.0"
@@ -3191,6 +3212,15 @@ __metadata:
   dependencies:
     punycode: "npm:^2.1.0"
   checksum: 10c0/4ef57b45aa820d7ac6496e9208559986c665e49447cb072744c13b66925a362d96dd5a46c4530a6b8e203e5db5fe849369444440cb22ecfc26c679359e5dfa3c
+  languageName: node
+  linkType: hard
+
+"uuid@npm:^11.1.0":
+  version: 11.1.1
+  resolution: "uuid@npm:11.1.1"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 10c0/9e3af58eba872ece5a5e76f4773a94fc78a0ef2c2444c38dbe6b42f41dadf76c01850fd783604f27986f6195e6286aef064d45987d401b2a33127b98ddf7c0c5
   languageName: node
   linkType: hard
 
