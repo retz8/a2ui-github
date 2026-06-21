@@ -22,7 +22,7 @@ export function buildActionMessageParams(action: A2uiClientAction): MessageSendP
  * message carries the canned A2UI as version-tagged DataParts. A direct agent
  * Message reply is also supported.
  *
- * TODO(phase-5): streaming — when the real agent generates progressively, call
+ * TODO(phase-6): streaming — when the real agent generates progressively, call
  * this per chunk over sendMessageStream's A2AStreamEventData (Task |
  * TaskStatusUpdateEvent) instead of against one terminal Task.
  */

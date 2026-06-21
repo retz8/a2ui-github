@@ -3,7 +3,7 @@
 Catalog props/components intentionally deferred during authoring, keyed by the phase that
 picks them up. Read the relevant section when starting that phase.
 
-## Phase 4 — Catalog build-out
+## Phase 5 — Catalog build-out
 
 ### Button — element-typed visual props
 

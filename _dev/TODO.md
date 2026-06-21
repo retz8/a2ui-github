@@ -21,26 +21,26 @@ One component (`Text` + `Button`) taken completely through the stack — render 
 
 Order: 2.1 → 2.2 → (2.3 ∥ 2.4) → 2.5. 2.3 and 2.4 are parallel-eligible after 2.2 (both depend only on the catalog, not each other); 2.5 needs 2.3 + 2.4.
 
-## Phase 2.5 — Templatization baseline
+## Phase 3 — Templatization baseline
 Lift an FE-only baseline template from the post-Phase-2 shape — a checkpoint extraction, not a release. Plan: `_dev/docs/templatization-plan.md`.
 
-## Phase 3 — Catalog-writing harness
-The repeatable component-authoring workflow, captured as a project skill. Also set up the daily-work harness's deferred autonomous layer (nightly routine + its GitHub issue/label machinery) here, ready for Phase 4.
+## Phase 4 — Catalog-writing harness
+The repeatable component-authoring workflow, captured as a project skill. Also set up the daily-work harness's deferred autonomous layer (nightly routine + its GitHub issue/label machinery) here, ready for Phase 5.
 
-## Phase 4 — Catalog build-out
+## Phase 5 — Catalog build-out
 The Primer primitives and GitHub-semantic components the demo needs.
 
-## Phase 5 — Agent
+## Phase 6 — Agent
 The agent that generates A2UI surfaces from the catalog, against the live GitHub repo.
 
-## Phase 6 — Demo integration
+## Phase 7 — Demo integration
 The full maintainer-triage arc running end-to-end on the live a2ui repo.
 
-## Post-Phase 6 — Template finalization
-Additively fold the catalog-writing skill (Phase 3) and the agent scaffold (Phase 5) into the template repo; finalize as the adoptable A2UI template — its first real use. Plan: `_dev/docs/templatization-plan.md`.
+## Post-Phase 7 — Template finalization
+Additively fold the catalog-writing skill (Phase 4) and the agent scaffold (Phase 6) into the template repo; finalize as the adoptable A2UI template — its first real use. Plan: `_dev/docs/templatization-plan.md`.
 
 ## Backlog
 - Diff viewer (stretch)
 - Agent template memory
 - Read + write loop on a seeded sandbox repo
-- Agent-server public-URL override (`--base-url`/`--public-url`) — the deterministic server advertises a localhost agent-card URL (derived from bind host:port), which can't survive a tunnel/remote/demo deployment. Needed for Phase 5/6.
+- Agent-server public-URL override (`--base-url`/`--public-url`) — the deterministic server advertises a localhost agent-card URL (derived from bind host:port), which can't survive a tunnel/remote/demo deployment. Needed for Phase 6/7.

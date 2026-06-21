@@ -55,4 +55,4 @@ The template vendors none of A2UI's own content. It pins a protocol version (`{{
 **Track B — A2UI template (baseline early, enriched late).**
 1. **After Phase 2** — extract the baseline template: workspace + build config, adapter scaffold (placeholders), the minimal FE space + first catalog component as the worked example, `SPEC.md` / `CLAUDE.md` (placeholders), init skill, pinned-ref spec-fetch. FE-only — no agent yet. This is a **checkpoint extraction, not a release**.
 2. Continue building `a2ui-github` as the reference; correct the baseline as the shape firms up.
-3. **After `a2ui-github` is done** — additively fold in the catalog-writing skill (Phase 3) and the agent scaffold (Phase 5, domain / MCP placeholders). Finalize as the adoptable template — its first real use.
+3. **After `a2ui-github` is done** — additively fold in the catalog-writing skill (Phase 4) and the agent scaffold (Phase 6, domain / MCP placeholders). Finalize as the adoptable template — its first real use.

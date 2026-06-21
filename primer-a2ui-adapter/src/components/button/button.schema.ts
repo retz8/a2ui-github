@@ -17,7 +17,7 @@ import {CommonSchemas} from '@a2ui/web_core/v0_9';
  * - `accessibility` is carried because Button's type spreads React.ButtonHTMLAttributes (the
  *   aria-* slice); it maps to CommonSchemas.AccessibilityAttributes. See finding #3.
  *
- * Deferred to Phase 4 (element-typed -> not JSON-serializable; carry as ComponentId children
+ * Deferred to Phase 5 (element-typed -> not JSON-serializable; carry as ComponentId children
  * once an Icon component exists — see _dev/docs/deferred-catalog-work.md):
  *   icon, leadingVisual, trailingVisual, trailingAction.
  *

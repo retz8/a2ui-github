@@ -1,7 +1,7 @@
 # A2UI catalog-authoring findings
 
 Running notes on friction and principles discovered while translating a real design
-system (Primer/React) into an A2UI catalog. These are general — they feed the Phase 3
+system (Primer/React) into an A2UI catalog. These are general — they feed the Phase 4
 catalog-writing harness, not just one component. Captured during the Phase 2.1–2.2 grills.
 
 ## 1. Content-via-`children` components force a synthetic content prop
@@ -58,7 +58,7 @@ exposes that capability:
 Consistency across the catalog is therefore per-component fidelity, **not** a uniform base.
 `.strict()` / `unevaluatedProperties: false` still enforces "no props beyond the real ones."
 
-**Open consequence (Phase 4):** the protocol's per-child layout `weight` is a number;
+**Open consequence (Phase 5):** the protocol's per-child layout `weight` is a number;
 Primer's `Text.weight` is a font-weight enum. Under strict translation `weight` means the
 *font* weight, so the protocol's *layout* weight has nowhere to live. Revisit when
 Row/Column arrive — that is where layout weight first matters.
@@ -81,7 +81,7 @@ runtime **zod** form (render + binder); the **agent/server** consumes the declar
   **wire-vs-resolved arg divergence** (e.g. a function arg is `DynamicString` on the wire
   but the resolved `string` at execute time — a generator can't infer which to emit).
 
-Until that generator exists (the Phase 3 harness), hand-author both forms and guard them
+Until that generator exists (the Phase 4 harness), hand-author both forms and guard them
 with a **structural parity test** — name-set + required-set + enum-set per component, plus
 function name/arg-set — which tolerates the deliberate `$ref`-vs-inline and
 wire-vs-resolved differences rather than demanding byte-equality.
