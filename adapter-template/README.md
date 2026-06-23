@@ -14,6 +14,13 @@ The repository is a polyglot monorepo:
 
 > 🚧 **In active development.** APIs, structure, and catalog contents are still moving.
 
+## First: materialize this template
+
+This repo is an **unfilled template** — it carries placeholder tokens and an `init` skill that
+turns it into a real A2UI app. On a fresh clone, run the **`init` skill** (it collects 8 values,
+interviews you for the demo, fills every placeholder via `fill.mjs`, optionally installs the
+daily-work harness, then self-deletes). Do this **before** the build steps below.
+
 ## Getting started
 
 The TypeScript workspaces use **Yarn 4** (via [corepack](https://nodejs.org/api/corepack.html)):
