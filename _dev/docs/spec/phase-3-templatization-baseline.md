@@ -23,9 +23,9 @@ The deterministic A2A server is treated as reusable infrastructure (a token-free
 
 The baseline is assembled and version-controlled inside `a2ui-github` at the repo root as `adapter-template/`, kept next to the reference instance it is derived from so corrections through Phases 4–7 are a local diff. Promotion to a standalone `git init` repo — and the first real init-against-a-clone — is deferred to the post-Phase-7 finalization.
 
-### 4. Placeholder split: code subset vs. prose; no domain tokens yet
+### 4. Placeholder split: code/config subset vs. prose
 
-Every placeholder in code/config must have a real referent that makes the scaffold build, so code/config carry only the build-relevant subset (`{{Library}}`, `{{libraryPkg}}`, `{{adapterPkg}}`, `{{version}}`, `{{repoSlug}}`). `{{Domain}}` and `{{mcp}}` are **absent from the baseline entirely** — they have nothing to bind to with only the deterministic stub, and arrive with the real agent post-Phase-7. Prose docs (`SPEC.md`, `CLAUDE.md`) are mostly domain-agnostic copy-paste + token substitution per the templatization plan; only SPEC.md §3 Demo is manually authored at init.
+Every placeholder in code/config must have a real referent that makes the scaffold build, so code/config carry only the build-relevant subset (`{{adapterPkg}}`, `{{agentPkg}}`, `{{Library}}`, `{{libraryPkg}}`, `{{version}}`, `{{repoSlug}}`). `{{Domain}}` and `{{mcp}}` live in prose only (`SPEC.md`, `README`) — they have no build referent, so they stay off the build surface while remaining part of the templatized prose. Prose docs are mostly domain-agnostic copy-paste + token substitution per the templatization plan; only SPEC.md §3 Demo is manually authored at init.
 
 ### 5. Placeholders span paths, and substitution is data-driven
 
@@ -33,11 +33,11 @@ The adapter package name (`primer-a2ui-adapter`) is the `{{adapterPkg}}` token *
 
 ### 6. Spec sourcing drops the fork and the hook
 
-The baseline carries no sibling `../A2UI` fork, no `sync-spec` hook, and no wiring for it. `adapter-template/CLAUDE.md` §2 replaces that machinery with pinned-ref canonical prose plus a **concrete fetch recipe parameterized by `{{version}}`** for reading `a2ui-project/a2ui` at that ref. The build has no spec-time dependency (`CommonSchemas` etc. come from `@a2ui/*` npm packages). `a2ui-sdk-design` is **not vendored**; the init skill fetches it at the pinned ref.
+The baseline carries no sibling `../A2UI` fork, no `sync-spec` hook, and no wiring for it. `adapter-template/CLAUDE.md` §2 replaces that machinery with pinned-ref canonical prose plus a **concrete fetch recipe parameterized by `{{version}}`** for reading `a2ui-project/a2ui` at that ref. The build has no spec-time dependency (`CommonSchemas` etc. come from `@a2ui/*` npm packages). `a2ui-sdk-design` is **vendored** into the template's `.claude/skills/` as default content (not fetched), with its Specifications Navigation rewritten to use the same `{{version}}`-parameterized pinned-ref fetch from `a2ui-project/a2ui`.
 
-### 7. Init skill: all five steps authored, mechanical fill data-driven
+### 7. Init skill: all steps authored, mechanical fill via a standalone script
 
-Init is authored complete (fill, §3 interview, `a2ui-sdk-design` fetch, harness-plugin install, self-delete) and structured to survive Phase 4–7 corrections. The mechanical placeholder-fill is **data-driven** — scan for `{{...}}` tokens, prompt once per token, substitute contents+paths — not a hardcoded per-file edit list. The core loop (fill, §3 interview, self-delete) is smoke-tested this phase; the fetch and harness-install steps are authored with concrete commands but their **live end-to-end run is deferred** to the post-Phase-7 dogfood.
+Init is authored complete and structured to survive Phase 4–7 corrections. Its phases: collect the 8 tokens, demo-arc interview, run the fill + author SPEC §3 prose, install the harness plugin, guarded self-delete. The mechanical placeholder-fill is a **standalone non-interactive script** that substitutes the known 8-token set across contents+paths, renames the token-named directories, and asserts no `{{...}}` remain — no scan step, no hardcoded per-file edit list. The fill script is smoke-tested this phase (3.4); the Claude-only steps (demo-arc interview, §3 authoring, harness-plugin install) are authored with concrete commands but their **live end-to-end run is deferred** to the post-Phase-7 dogfood; self-delete is authored and structurally guarded so the smoke test never triggers it.
 
 ### 8. Self-delete is guarded so the smoke test never triggers it
 
@@ -49,13 +49,13 @@ Verification is two parts. (a) **Materialization smoke test:** copy `adapter-tem
 
 ### 10. Extraction manifest
 
-**Excluded (reference instance only):** `_dev/` entirely (a harness artifact, not a template artifact); the `sync-spec` hook and its settings wiring; the vendored `a2ui-sdk-design` skill; `settings.local.json`, `.claude/worktrees/`; `node_modules/`, `.venv/`, and lockfiles (`yarn.lock`, `uv.lock`); all domain/example content (`Text`/`Button`, fixtures, canned responses, `console-log`, component-specific tests).
+**Excluded (reference instance only):** `_dev/` entirely (a harness artifact, not a template artifact); the `sync-spec` hook and its settings wiring; `settings.local.json`, `.claude/worktrees/`; the `.agents/` skill-symlink indirection; `node_modules/`, `.venv/`, and lockfiles (`yarn.lock`, `uv.lock`); all domain/example content (`Text`/`Button`, fixtures, canned responses, `console-log`, component-specific tests).
 
-**Included (as placeholdered scaffold + plumbing + smoke tests):** the adapter scaffold (catalog envelope over `CommonSchemas`, empty `components/`, `catalog.json` empty `$defs`, barrel, placeholdered package); the client (test-space wiring + `a2a/` action-handler + app shell, empty `fixtures/`); the agent (deterministic-server plumbing + stubbed executor + entry point + placeholdered `pyproject.toml` + README + pytest smoke scaffolding); root build config; `SPEC.md` + `CLAUDE.md` + `README` (placeholdered); `.claude/` carrying the init skill and a clean `settings.json` (no hook, harness not pre-enabled).
+**Included (as placeholdered scaffold + plumbing + smoke tests):** the adapter scaffold (catalog envelope over `CommonSchemas`, empty `components/`, `catalog.json` empty `$defs`, barrel, placeholdered package); the client (test-space wiring + `a2a/` action-handler + app shell, empty `fixtures/`); the agent (deterministic-server plumbing + stubbed executor + entry point + placeholdered `pyproject.toml` + README + pytest smoke scaffolding); root build config plus the root fill script (added to the eslint `ignores`); `SPEC.md` + `CLAUDE.md` + `README` (placeholdered); `.claude/` carrying the init skill (self-deleting), the permanent vendored skill set (`a2ui-sdk-design` edited + the 7 superpowers skills as real, de-referenced directories), and a clean `settings.json` (no hook, harness not pre-enabled).
 
 ### 11. CLI is a deferred delivery vehicle; the fill core stays separable
 
-A future `npx` scaffolder and the init skill are two vehicles over one materialization core. The CLI is deferred to post-Phase-7; the baseline builds toward it only by keeping the mechanical fill core (token scan → content/path substitution → dir rename → no-tokens assertion) cleanly separable from the Claude-Code-only steps (§3 interview, fetch, harness install). No CLI seam, `bin/`, or publish wiring is added now.
+The init skill and a future CLI are two delivery vehicles for the same materialization; the CLI is deferred to post-Phase-7. The baseline builds toward it by keeping the mechanical fill (values-file input → content/path substitution → dir rename → no-tokens assertion) cleanly separable from the Claude-only steps (demo-arc interview, §3 authoring, harness install, self-delete) — the CLI subsumes exactly the token collection plus the fill. The fill is a standalone node script now; the CLI may reimplement it (e.g. in Rust), with the locked design carrying over. No CLI seam, `bin/`, or publish wiring is added now.
 
 ### 12. Doc and settings minor locks
 
@@ -69,7 +69,7 @@ A future `npx` scaffolder and the init skill are two vehicles over one materiali
 
 ## Open items (deferred by decision)
 
-- The real domain/LLM agent and the `{{Domain}}`/`{{mcp}}` tokens — folded in post-Phase-7.
-- Live end-to-end runs of init's `a2ui-sdk-design` fetch and harness-plugin install — proven at the post-Phase-7 dogfood.
-- The `npx` CLI delivery vehicle — built post-Phase-7 over the separable fill core.
+- The real domain/LLM agent — folded in post-Phase-7. (The `{{Domain}}`/`{{mcp}}` tokens already ship in prose.)
+- Live end-to-end runs of init's Claude-only steps (demo-arc interview, §3 authoring, harness-plugin install) — proven at the post-Phase-7 dogfood.
+- The CLI delivery vehicle (npx or otherwise) — built post-Phase-7; the locked fill design carries over.
 - Promotion of `adapter-template/` to a standalone repo — post-Phase-7 finalization.
