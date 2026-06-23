@@ -5,8 +5,6 @@ uv-managed Python project (outside the yarn workspaces). Hosts
 round-trip without an LLM — a token-free local test harness. Your real domain
 agent lives in a separate module slot alongside it.
 
-<!-- setup & usage prose: authored in 3.2 -->
-
 ## Setup
 
 ```bash
