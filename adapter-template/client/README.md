@@ -9,8 +9,9 @@ so no LLM is involved during development. `functionCall` actions run locally;
 `event` actions go over A2A to the server and the response feeds back into the
 same processor to re-render.
 
-<!-- setup requirements (theme provider, vite CSS-inline) & full usage prose:
-     authored in 3.2 -->
+The app shell wraps the surface in {{Library}}'s theme/base-styles provider so catalog components
+render with the design system's tokens; consult {{Library}}'s docs for the exact provider setup.
+Pick a fixture in the test space to load a known-good A2UI message into the processor.
 
 ## Commands
 
