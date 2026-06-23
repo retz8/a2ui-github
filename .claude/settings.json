@@ -17,6 +17,7 @@
     ]
   },
   "enabledPlugins": {
-    "daily-work-harness@retz8-harness": true
+    "daily-work-harness@retz8-harness": true,
+    "superpowers@claude-plugins-official": true
   }
 }
