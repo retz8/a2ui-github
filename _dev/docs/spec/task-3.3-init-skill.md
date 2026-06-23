@@ -6,7 +6,7 @@ Authors the init skill that materializes a real instance from `adapter-template/
 
 - A standalone mechanical-fill script at the template root.
 - The init skill that drives materialization: token collection, demo-arc interview, fill, plugin install, self-delete.
-- The template's permanent `.claude/skills/` content (`a2ui-sdk-design`), plus the plugins enabled in `settings.json`.
+- The template's permanent `.claude/skills/` content: the vendored skill set the materialized instance keeps.
 - Out of scope: running the verification (3.4), and the future CLI delivery vehicle.
 
 ## Locked decisions
@@ -38,7 +38,7 @@ The init skill performs five phases, in order:
 1. **Collect all 8 tokens** → values file. This step is the future-CLI seam — the CLI replaces exactly this step with flags.
 2. **Demo-arc interview** → the SPEC §3 Demo narrative (Claude judgment).
 3. **Run the fill script** on the values file, and **author the SPEC §3 Demo prose** (replacing the authoring stub).
-4. **Enable the daily-work harness + superpowers plugins** in `settings.json` (opt-in, default-yes).
+4. **Install the daily-work harness plugin** (opt-in, default-yes).
 5. **Guarded self-delete.**
 
 ### 7. Mechanical fill is separable from the Claude-only steps
@@ -53,20 +53,21 @@ Self-delete exists only in the init skill's terminal step. The 3.4 smoke test in
 
 `a2ui-sdk-design` ships in the template's `.claude/skills/` as default content (not fetched). Its Specifications Navigation section is rewritten: the `../A2UI` sibling-fork / sync-spec / `upstream/main` machinery is replaced with the pinned-ref fetch from `a2ui-project/a2ui` parameterized by `{{version}}` (matching `CLAUDE.md` §2). The `a2ui-github` self-reference and the Primer examples are genericized to placeholders.
 
-### 10. The superpowers skill set comes from the plugin, not vendored
+### 10. The superpowers skill set is vendored, not installed
 
-The planning/execution skills the nightly routine depends on (`writing-plans`, `subagent-driven-development`, and their closure) come from the **superpowers plugin** (`superpowers@claude-plugins-official`), enabled in the committed `settings.json`. A repo-scoped nightly inherits the plugin from those committed settings, getting the whole self-consistent skill set with no `.claude/skills/` copies and no `skills-lock.json`. Init step 4 enables this plugin alongside the harness.
+The planning/execution skills the nightly routine depends on (`writing-plans`, `subagent-driven-development`, and their closure: `executing-plans`, `finishing-a-development-branch`, `requesting-code-review`, `test-driven-development`, `using-git-worktrees`) are vendored into the template's `.claude/skills/` as **real, de-referenced directories** — the symlink + `.agents/` indirection used in the reference instance is flattened. The hard `superpowers:` references form a closed set within the vendored skills. The superpowers plugin is therefore **not** installed at init (step 4 installs the harness only).
 
-### 11. Only `a2ui-sdk-design` is vendored; it is permanent template content
+### 11. Vendored skills are permanent template content
 
-`a2ui-sdk-design` — the project's own skill, in no plugin — is the only vendored skill; it survives materialization and is never self-deleted. Only the init skill and the root fill script self-delete.
+All vendored skills (`a2ui-sdk-design` + the 7 above) survive materialization and are never self-deleted; only the init skill and the root fill script self-delete.
 
 ## Invariants
 
 - The fill script is non-interactive — values in, filled tree out; it never prompts.
-- The superpowers skills come from the plugin enabled in the committed `settings.json` (so the nightly inherits them); only `a2ui-sdk-design`, the project's own skill, is vendored.
+- The template ships a self-contained skill set — no hard reference to a skill outside the vendored set, and no reliance on an installed plugin for the vendored skills.
 
 ## Open items
 
 - The Rust CLI publish vehicle, and whether it reuses or reimplements the fill script — deferred to post-Phase-7.
-- Whether a headless/cron nightly honors `enabledPlugins` and installs from the marketplace at startup — plugin mode assumes yes (mirrors the harness plugin); to be confirmed in Phase 4.
+- Whether a headless/cron nightly run loads marketplace plugins (affecting the harness install) — deferred to Phase 4, where the nightly routine is built.
+- One soft dangling doc pointer (`../using-superpowers/references/` in `executing-plans`) — accepted as-is; `using-superpowers` is not vendored.
