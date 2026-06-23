@@ -31,7 +31,7 @@ Key capabilities:
 This project targets a single protocol version at a time.
 
 - **Authority Rule:** Default to version **{{version}}** as the primary authority, unless the user specifies otherwise.
-- **Read the spec from canonical, pinned by `{{version}}`.** There is no sibling fork and no `sync-spec` hook. Read `a2ui-project/a2ui` directly via a throwaway shallow clone, deriving the spec path from `{{version}}` by replacing dots with underscores (`{{version}}` `v0.9.1` → `specification/v0_9_1/`):
+- **Read the spec from canonical, pinned by `{{version}}`.** There is no sibling fork and no `sync-spec` hook. Read `a2ui-project/a2ui` directly via a throwaway shallow clone, deriving the spec path from `{{version}}` by replacing dots with underscores (`v0.9.1` → `specification/v0_9_1/`):
 
   ```bash
   tmp=$(mktemp -d) && git clone --depth 1 https://github.com/a2ui-project/a2ui "$tmp"
