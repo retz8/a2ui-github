@@ -65,9 +65,10 @@ All vendored skills (`a2ui-sdk-design` + the 7 above) survive materialization an
 
 - The fill script is non-interactive — values in, filled tree out; it never prompts.
 - The template ships a self-contained skill set — no hard reference to a skill outside the vendored set, and no reliance on an installed plugin for the vendored skills.
+- The cloud nightly routine (created via the `schedule` skill) loads only `.claude/skills/`, not plugins. Every skill the routine needs — the superpowers planning/execution set — is therefore vendored into `.claude/skills/`, not supplied via a plugin.
 
 ## Open items
 
 - The Rust CLI publish vehicle, and whether it reuses or reimplements the fill script — deferred to post-Phase-7.
-- Whether a headless/cron nightly run loads marketplace plugins (affecting the harness install) — deferred to Phase 4, where the nightly routine is built.
+- Whether the daily-work harness skills must likewise be vendored into `.claude/skills/` for the cloud routine (which loads only skills, not the harness plugin) — resolved in Phase 4 when the autonomous layer is built.
 - One soft dangling doc pointer (`../using-superpowers/references/` in `executing-plans`) — accepted as-is; `using-superpowers` is not vendored.
