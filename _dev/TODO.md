@@ -21,7 +21,7 @@ One component (`Text` + `Button`) taken completely through the stack — render 
 
 Order: 2.1 → 2.2 → (2.3 ∥ 2.4) → 2.5. 2.3 and 2.4 are parallel-eligible after 2.2 (both depend only on the catalog, not each other); 2.5 needs 2.3 + 2.4.
 
-## Phase 3 — Templatization baseline [WIP]
+## Phase 3 — Templatization baseline [done]
 Lift an FE + deterministic-agent baseline template from the post-Phase-2 shape — a checkpoint extraction, not a release. Spec: `_dev/docs/spec/phase-3-templatization-baseline.md`. Plan: `_dev/docs/templatization-plan.md`.
 
 - [x] **3.1** Templatized code tree — create `adapter-template/` and extract the adapter + client + deterministic-agent scaffolds: domain content stripped (empty `components/`/`fixtures/`, stubbed executor, no `console-log`), placeholdered in contents **and** paths (token-named adapter dir), root build config carried. Structural completeness; green is proven in 3.4.
