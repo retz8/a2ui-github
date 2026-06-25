@@ -98,6 +98,55 @@ function verifyInstance(dir) {
   console.log('\nsmoke: verify stage OK — JS/TS + agent green');
 }
 
+// Build-surface file types only (prose .md is out of scope per spec decision #9).
+const CODE_EXT = new Set(['.ts', '.tsx', '.js', '.mjs', '.cjs', '.json', '.py', '.toml']);
+// Tooling/skills + verification machinery are not the build surface.
+const AGNO_EXCLUDE_NAMES = new Set(['node_modules', '.venv', 'dist', '.git', '.yarn', '.claude']);
+// Accidental-shaping identifiers: the reference library (Primer) and domain (GitHub).
+const SHAPING_RE = /primer|github/i;
+// Allowed hits: files that reference github.com as the HOSTING host (catalog $id invariant),
+// not as the library/domain being shaped around. These are architectural constants, not shaping.
+const AGNO_ALLOW_RELPATHS = new Set([
+  // catalog-id.ts: builds the catalog URL hosted on github.com (§6 host invariant).
+  '{{adapterPkg}}/src/catalog-id.ts',
+  // catalog.json: the $id/$catalogId fields embed the github.com host invariant.
+  '{{adapterPkg}}/catalogs/{{version}}/catalog.json',
+  // test_catalog.py: asserts catalog ID starts with https://github.com/ (host invariant check).
+  'agent/tests/test_catalog.py',
+]);
+
+function extname(name) {
+  const i = name.lastIndexOf('.');
+  return i < 0 ? '' : name.slice(i);
+}
+
+function checkAgnosticism() {
+  const offenders = [];
+  const walk = (dir) => {
+    for (const name of readdirSync(dir)) {
+      if (AGNO_EXCLUDE_NAMES.has(name)) continue;
+      // Skip verification machinery (same files excluded from the copy).
+      if (name === SELF) continue;
+      const abs = join(dir, name);
+      const relp = relative(SRC, abs).split(sep).join('/');
+      const st = statSync(abs);
+      if (st.isDirectory()) {
+        walk(abs);
+      } else if (CODE_EXT.has(extname(name)) && !AGNO_ALLOW_RELPATHS.has(relp)) {
+        const body = readFileSync(abs, 'utf8');
+        body.split('\n').forEach((line, i) => {
+          if (SHAPING_RE.test(line)) offenders.push(`${relp}:${i + 1}: ${line.trim()}`);
+        });
+      }
+    }
+  };
+  walk(SRC);
+  if (offenders.length > 0) {
+    throw new Error(`template is library/domain-shaped (build surface):\n  - ${offenders.join('\n  - ')}`);
+  }
+  console.log('smoke: agnosticism OK — no Primer/GitHub identifiers on the build surface');
+}
+
 function assertMaterialized(dir) {
   const offenders = [];
   for (const {abs, relp, dir: isDir} of walkAll(dir, dir, [])) {
@@ -118,24 +167,28 @@ function assertMaterialized(dir) {
 }
 
 async function main() {
+  checkAgnosticism(); // operates on the original template, independent of the copy
+
   const dir = copyTemplate();
   console.log(`smoke: copied template → ${dir}`);
-  if (!existsSync(join(dir, 'fill.mjs'))) throw new Error('copy missing fill.mjs');
-  if (!existsSync(join(dir, '.claude/skills/init/SKILL.md'))) throw new Error('copy missing init skill');
-  if (existsSync(join(dir, SELF))) throw new Error('smoke-test.mjs should not be copied');
+  try {
+    if (!existsSync(join(dir, 'fill.mjs'))) throw new Error('copy missing fill.mjs');
+    if (!existsSync(join(dir, '.claude/skills/init/SKILL.md'))) throw new Error('copy missing init skill');
+    if (existsSync(join(dir, SELF))) throw new Error('smoke-test.mjs should not be copied');
 
-  runFill(dir);
-  // Sanity: the token-named adapter dir was renamed by fill.
-  if (!existsSync(join(dir, 'primer-a2ui-adapter'))) {
-    throw new Error('fill did not rename {{adapterPkg}} → primer-a2ui-adapter');
+    runFill(dir);
+    if (!existsSync(join(dir, 'primer-a2ui-adapter'))) {
+      throw new Error('fill did not rename {{adapterPkg}} → primer-a2ui-adapter');
+    }
+    assertMaterialized(dir);
+    verifyInstance(dir);
+
+    rmSync(dir, {recursive: true, force: true});
+    console.log('\nsmoke: SMOKE TEST PASSED');
+  } catch (err) {
+    console.error(`\nsmoke: left temp instance for inspection → ${dir}`);
+    throw err;
   }
-  console.log('smoke: fill stage OK');
-
-  assertMaterialized(dir);
-
-  verifyInstance(dir);
-
-  rmSync(dir, {recursive: true, force: true});
 }
 
 main().catch((err) => {
