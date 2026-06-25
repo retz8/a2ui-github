@@ -79,6 +79,25 @@ function walkAll(dir, root, acc) {
   return acc;
 }
 
+function run(cmd, cwd) {
+  console.log(`\nsmoke: $ ${cmd}   (cwd: ${cwd})`);
+  execSync(cmd, {cwd, stdio: 'inherit'});
+}
+
+function verifyInstance(dir) {
+  // JS/TS workspace. No yarn.lock ships in the template, so this generates one.
+  run('yarn install', dir);
+  run('yarn build:all', dir);
+  run('yarn typecheck:all', dir);
+  run('yarn lint:all', dir);
+  run('yarn test:all', dir);
+  // Python agent. uv sync creates agent/.venv (ignored by the template eslint).
+  const agent = join(dir, 'agent');
+  run('uv sync', agent);
+  run('uv run pytest', agent);
+  console.log('\nsmoke: verify stage OK — JS/TS + agent green');
+}
+
 function assertMaterialized(dir) {
   const offenders = [];
   for (const {abs, relp, dir: isDir} of walkAll(dir, dir, [])) {
@@ -113,6 +132,8 @@ async function main() {
   console.log('smoke: fill stage OK');
 
   assertMaterialized(dir);
+
+  verifyInstance(dir);
 
   rmSync(dir, {recursive: true, force: true});
 }
