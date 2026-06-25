@@ -31,20 +31,35 @@ Lift an FE + deterministic-agent baseline template from the post-Phase-2 shape �
 
 Order: (3.1 ∥ 3.2) → 3.3 → 3.4. 3.1 and 3.2 are parallel-eligible (code vs prose surfaces). 3.3 needs the placeholder inventory 3.1+3.2 define; 3.4 needs both the template content and a runnable init.
 
-## Phase 4 — Catalog-writing harness
-The repeatable component-authoring workflow, captured as a project skill. Also set up the daily-work harness's deferred autonomous layer (nightly routine + its GitHub issue/label machinery) here, ready for Phase 5.
+## Phase 4 — Catalog-component authoring skill [WIP]
+Capture the repeatable component-authoring workflow (proven by hand in Phase 2) as the `new-catalog-component` project skill; validate it by walking against the shipped `Text`/`Button`. Spec: `_dev/docs/spec/phase-4-catalog-authoring-skill.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
-## Phase 5 — Catalog build-out
+- [ ] **4.1** Adapter-authoring procedure — capture the adapter-side loop, validated against the `Text`/`Button` adapter artifacts.
+- [ ] **4.2** Client-authoring procedure — capture the client-side loop, validated against the `Text`/`Button` client artifacts.
+- [ ] **4.3** Agent-fixture procedure — capture the deterministic-agent side, validated against `Button`'s deterministic fixture.
+- [ ] **4.4** Skill assembly + end-to-end validation — stitch the surfaces into the coherent `SKILL.md` and run the full end-to-end walk against `Text` + `Button`.
+
+Order: (4.1 ∥ 4.2 ∥ 4.3) → 4.4. The three surface procedures are parallel-eligible (independent surfaces, mirroring Phase 2); 4.4 needs all three.
+
+## Phase 5 — Autonomous-run layer
+Near-rewrite of the daily-work harness's autonomous mechanism, shipped in `../daily-work-harness` (not this repo), ready for the Phase-6 build-out. Spec: `_dev/docs/spec/phase-5-autonomous-run-layer.md`. Handles below are non-restrictive — 5.1 in particular may ship more than named.
+
+- [ ] **5.1** Autonomous producing routine — the nightly routine that picks a startable `N.M` off `main`, runs it, and opens a gated `phase-<N>/<M>-*` PR; GitHub issue/label machinery folded in; establishes the autonomous-run protocol.
+- [ ] **5.2** `review-nightly` rewrite — the morning triage/merge counterpart consuming that protocol.
+
+Order: 5.1 → 5.2 (the consuming side follows the contract the producing side defines). Cross-repo: commits land in `../daily-work-harness`; tracked here, no `a2ui-github` worktree.
+
+## Phase 6 — Catalog build-out
 The Primer primitives and GitHub-semantic components the demo needs.
 
-## Phase 6 — Agent
+## Phase 7 — Agent
 The agent that generates A2UI surfaces from the catalog, against the live GitHub repo.
 
-## Phase 7 — Demo integration
+## Phase 8 — Demo integration
 The full maintainer-triage arc running end-to-end on the live a2ui repo.
 
-## Post-Phase 7 — Template finalization
-Additively fold the catalog-writing skill (Phase 4) and the agent scaffold (Phase 6) into the template repo; finalize as the adoptable A2UI template — its first real use. Plan: `_dev/docs/templatization-plan.md`.
+## Post-Phase 8 — Template finalization
+Additively fold the catalog-authoring skill (Phase 4) and the agent scaffold (Phase 7) into the template repo; finalize as the adoptable A2UI template — its first real use. Plan: `_dev/docs/templatization-plan.md`.
 
 ## Backlog
 - Diff viewer (stretch)
