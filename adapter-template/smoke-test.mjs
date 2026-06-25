@@ -10,10 +10,11 @@
 // Run manually:  node adapter-template/smoke-test.mjs
 // Never mutates the real adapter-template/. Wired into nothing.
 
-import {cpSync, mkdtempSync, existsSync, rmSync} from 'node:fs';
+import {cpSync, mkdtempSync, existsSync, rmSync, writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join, basename, dirname} from 'node:path';
 import {fileURLToPath} from 'node:url';
+import {execSync} from 'node:child_process';
 
 const SRC = dirname(fileURLToPath(import.meta.url)); // adapter-template/
 const SELF = basename(fileURLToPath(import.meta.url)); // smoke-test.mjs
@@ -39,14 +40,42 @@ function copyTemplate() {
   return dest;
 }
 
+// The reference instance's own values — filling with these proves the template
+// reproduces the post-Phase-2 shape.
+const REF_VALUES = {
+  adapterPkg: 'primer-a2ui-adapter',
+  agentPkg: 'a2ui-github-agent',
+  Library: 'Primer',
+  libraryPkg: '@primer/react',
+  version: 'v0.9.1',
+  repoSlug: 'retz8/a2ui-github',
+  Domain: 'GitHub maintainer triage',
+  mcp: 'GitHub MCP',
+};
+
+function runFill(dir) {
+  writeFileSync(join(dir, 'init.values.json'), JSON.stringify(REF_VALUES, null, 2));
+  const out = execSync('node fill.mjs init.values.json', {cwd: dir, encoding: 'utf8'});
+  if (!out.includes('0 tokens left')) {
+    throw new Error(`fill did not report success:\n${out}`);
+  }
+  console.log(`smoke: ${out.trim()}`);
+}
+
 async function main() {
   const dir = copyTemplate();
   console.log(`smoke: copied template → ${dir}`);
-  // Sanity: init machinery copied, verification machinery not.
   if (!existsSync(join(dir, 'fill.mjs'))) throw new Error('copy missing fill.mjs');
   if (!existsSync(join(dir, '.claude/skills/init/SKILL.md'))) throw new Error('copy missing init skill');
   if (existsSync(join(dir, SELF))) throw new Error('smoke-test.mjs should not be copied');
-  console.log('smoke: copy stage OK');
+
+  runFill(dir);
+  // Sanity: the token-named adapter dir was renamed by fill.
+  if (!existsSync(join(dir, 'primer-a2ui-adapter'))) {
+    throw new Error('fill did not rename {{adapterPkg}} → primer-a2ui-adapter');
+  }
+  console.log('smoke: fill stage OK');
+
   rmSync(dir, {recursive: true, force: true});
 }
 
