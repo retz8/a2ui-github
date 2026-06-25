@@ -10,9 +10,9 @@
 // Run manually:  node adapter-template/smoke-test.mjs
 // Never mutates the real adapter-template/. Wired into nothing.
 
-import {cpSync, mkdtempSync, existsSync, rmSync, writeFileSync} from 'node:fs';
+import {cpSync, mkdtempSync, existsSync, rmSync, writeFileSync, readFileSync, readdirSync, statSync} from 'node:fs';
 import {tmpdir} from 'node:os';
-import {join, basename, dirname} from 'node:path';
+import {join, basename, dirname, relative, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {execSync} from 'node:child_process';
 
@@ -62,6 +62,42 @@ function runFill(dir) {
   console.log(`smoke: ${out.trim()}`);
 }
 
+const TOKEN_RE = /\{\{[^}]+\}\}/;
+// Mirror fill.mjs's exclusions: init machinery keeps its literal {{...}} docs.
+const ASSERT_EXCLUDE_NAMES = new Set(['node_modules', '.venv', 'dist', '.git', '.yarn']);
+const ASSERT_EXCLUDE_RELPATHS = new Set(['.claude/skills/init', 'fill.mjs', 'init.values.json']);
+
+function walkAll(dir, root, acc) {
+  for (const name of readdirSync(dir)) {
+    const abs = join(dir, name);
+    const relp = relative(root, abs).split(sep).join('/');
+    if (ASSERT_EXCLUDE_NAMES.has(name) || ASSERT_EXCLUDE_RELPATHS.has(relp)) continue;
+    const st = statSync(abs);
+    acc.push({abs, relp, dir: st.isDirectory()});
+    if (st.isDirectory()) walkAll(abs, root, acc);
+  }
+  return acc;
+}
+
+function assertMaterialized(dir) {
+  const offenders = [];
+  for (const {abs, relp, dir: isDir} of walkAll(dir, dir, [])) {
+    if (TOKEN_RE.test(basename(abs))) offenders.push(`${relp} (name)`);
+    if (!isDir) {
+      const body = readFileSync(abs, 'utf8');
+      if (!body.includes('\0') && TOKEN_RE.test(body)) offenders.push(`${relp} (content)`);
+    }
+  }
+  if (offenders.length > 0) {
+    throw new Error(`residual {{...}} tokens in materialized instance:\n  - ${offenders.join('\n  - ')}`);
+  }
+  // Init machinery must survive fill (self-delete is a separate adopter-only step).
+  for (const f of ['fill.mjs', 'init.values.json', '.claude/skills/init/SKILL.md']) {
+    if (!existsSync(join(dir, f))) throw new Error(`init machinery missing after fill: ${f}`);
+  }
+  console.log('smoke: assertions OK — 0 tokens left, init machinery present');
+}
+
 async function main() {
   const dir = copyTemplate();
   console.log(`smoke: copied template → ${dir}`);
@@ -75,6 +111,8 @@ async function main() {
     throw new Error('fill did not rename {{adapterPkg}} → primer-a2ui-adapter');
   }
   console.log('smoke: fill stage OK');
+
+  assertMaterialized(dir);
 
   rmSync(dir, {recursive: true, force: true});
 }
