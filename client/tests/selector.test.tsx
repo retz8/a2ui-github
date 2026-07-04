@@ -2,6 +2,7 @@ import {describe, it, expect, afterEach, beforeEach} from 'vitest';
 import {render, screen, cleanup, fireEvent, within} from '@testing-library/react';
 import {BaseStyles, ThemeProvider} from '@primer/react';
 import {TestSpace} from '../src/test-space/TestSpace';
+import {FIXTURES} from '../src/fixtures';
 
 function renderTestSpace() {
   return render(
@@ -20,7 +21,7 @@ describe('TestSpace selector', () => {
   it('lists every fixture and defaults to the first', () => {
     renderTestSpace();
     const select = screen.getByTestId('fixture-select') as HTMLSelectElement;
-    expect(within(select).getAllByRole('option')).toHaveLength(5);
+    expect(within(select).getAllByRole('option')).toHaveLength(FIXTURES.length);
     expect(select.value).toBe('text');
     expect(screen.getByText('Hello from Primer')).toBeInTheDocument();
   });
