@@ -4,16 +4,19 @@
 
 This step consumes the component's decision doc — the header, the prop-surface table
 (`prop | decision | synthetic? | A2UI type | description`), the functions list, and the
-deferrals list — produced by the Design skill's adapter section. It mechanically
-materializes the adapter artifacts and their tests from that table. It takes **no human
-input**: every judgment call (carry/drop/defer, synthetic props, A2UI type selection,
-descriptions) already happened in Design; this step transcribes.
+dropped/deferred props list — produced by the Design skill's adapter section. It
+mechanically materializes the adapter artifacts and their tests from that table. It takes
+**no human input**: every judgment call (carry/drop/defer, synthetic props, A2UI type
+selection, descriptions) already happened in Design; this step transcribes. The
+dropped/deferred rows produce no artifact of their own — they exist so the surface is
+provably complete.
 
 ### The mechanical loop
 
-Walk the decision doc's prop-surface table once and produce, in order, the seven adapter
+Walk the decision doc's prop-surface table once and produce, in order, the nine adapter
 artifacts below. Each carried row drives one line in the schema, one field in the render,
-and one property in the `catalog.json` entry — the same table, read three times.
+one property in the `catalog.json` entry, and one or more test cases — the same table,
+read four times.
 
 #### 1. Zod schema — `src/components/<name>/<name>.schema.ts`
 
@@ -53,6 +56,49 @@ export const ButtonApi = {
 } as const;
 
 export type ButtonProps = z.infer<typeof ButtonApi.schema>;
+```
+
+Pair the schema with its test, `src/components/<name>/<name>.schema.test.ts`. Its cases
+are derived mechanically from the same table — no case here is a judgment call:
+
+- a minimal-valid parse using only the `carry (required)` rows
+- a full-surface parse using every carried row
+- one missing-required-prop rejection per `carry (required)` row
+- one unknown-prop rejection (the schema's `.strict()`)
+- one out-of-enum rejection per enum-typed row
+- one data-binding acceptance per `Dynamic*`-typed row (e.g. `{path: '/foo'}`)
+
+Model (teaching-sized excerpt of `button.schema.test.ts`):
+
+```ts
+import {describe, it, expect} from 'vitest';
+import {ButtonApi} from './button.schema';
+
+const action = {event: {name: 'submit'}};
+
+describe('ButtonApi.schema', () => {
+  it('accepts a minimal valid Button (child + action)', () => {
+    expect(ButtonApi.schema.safeParse({child: 'label-1', action}).success).toBe(true);
+  });
+
+  it('requires child', () => {
+    expect(ButtonApi.schema.safeParse({action}).success).toBe(false);
+  });
+
+  it('rejects unknown props (strict)', () => {
+    expect(ButtonApi.schema.safeParse({child: 'l', action, color: 'red'}).success).toBe(false);
+  });
+
+  it('rejects out-of-enum variant', () => {
+    expect(ButtonApi.schema.safeParse({child: 'l', action, variant: 'ghost'}).success).toBe(false);
+  });
+
+  it('accepts a data-binding for disabled (DynamicBoolean)', () => {
+    expect(
+      ButtonApi.schema.safeParse({child: 'l', action, disabled: {path: '/canSubmit'}}).success,
+    ).toBe(true);
+  });
+});
 ```
 
 #### 2. Render — `src/components/<name>/<name>.tsx`
@@ -135,6 +181,48 @@ passes straight through:
 export const TextComponent = createComponentImplementation(TextApi, ({props}) => (
   <TextView text={props.text} as={props.as} />
 ));
+```
+
+Pair the render with its test, `src/components/<name>/<name>.test.tsx`. It renders the
+`View` directly with resolved plain props — never through the renderer/binder — and
+asserts:
+
+- the content/label renders (a `ComponentId`/synthetic row's built child, or a synthetic
+  value row's resolved value)
+- the resolved `onClick` fires on interaction, when the table has an `Action` row
+- representative prop passthrough (a couple of the remaining carried rows, resolved to
+  plain props)
+
+The missing-`ThemeProvider` warning tolerance noted above for the render step applies
+here too — it is not a defect to chase down.
+
+Model (teaching-sized excerpt of `button.test.tsx`):
+
+```tsx
+import {describe, it, expect, vi, afterEach} from 'vitest';
+import {render, screen, cleanup, fireEvent} from '@testing-library/react';
+import {ButtonView} from './button';
+
+afterEach(cleanup);
+
+describe('ButtonView', () => {
+  it('renders its child content as the label', () => {
+    render(<ButtonView>Save</ButtonView>);
+    expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+  });
+
+  it('fires onClick when clicked (the resolved action)', () => {
+    const onClick = vi.fn();
+    render(<ButtonView onClick={onClick}>Save</ButtonView>);
+    fireEvent.click(screen.getByRole('button'));
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('honors disabled', () => {
+    render(<ButtonView disabled>Save</ButtonView>);
+    expect(screen.getByRole('button')).toBeDisabled();
+  });
+});
 ```
 
 #### 3. Folder barrel — `src/components/<name>/index.ts`
@@ -251,10 +339,45 @@ For each functions-list entry (`name`, `args`, `returnType`):
    );
    ```
 
-2. **Catalog registration** — add the function to the `new Catalog(...)` functions array
+2. **Function unit test** — `src/functions/<name>.test.ts`, paired with the
+   implementation. Asserts:
+
+   - the declared api — `name` and `returnType` match the functions-list entry
+   - arg validation from the zod schema — a valid-args parse and a missing-required-arg
+     rejection
+   - the effect on `execute`
+
+   Model (`console-log.test.ts`):
+
+   ```ts
+   import {describe, it, expect, vi} from 'vitest';
+   import type {DataContext} from '@a2ui/web_core/v0_9';
+   import {consoleLog} from './console-log';
+
+   describe('consoleLog function', () => {
+     it('declares its api', () => {
+       expect(consoleLog.name).toBe('consoleLog');
+       expect(consoleLog.returnType).toBe('void');
+     });
+
+     it('validates its args (message required)', () => {
+       expect(consoleLog.schema.safeParse({message: 'hi'}).success).toBe(true);
+       expect(consoleLog.schema.safeParse({}).success).toBe(false);
+     });
+
+     it('logs the message when executed', () => {
+       const spy = vi.spyOn(console, 'log').mockImplementation(() => undefined);
+       consoleLog.execute({message: 'hello'}, {} as DataContext);
+       expect(spy).toHaveBeenCalledWith('[A2UI]', 'hello');
+       spy.mockRestore();
+     });
+   });
+   ```
+
+3. **Catalog registration** — add the function to the `new Catalog(...)` functions array
    in `src/catalog.ts` (alongside the components array).
 
-3. **`catalog.json`** — add a `functions.<name>` entry (`call` discriminator const,
+4. **`catalog.json`** — add a `functions.<name>` entry (`call` discriminator const,
    `args` object typed with the wire `Dynamic*` per arg, `returnType` const,
    `unevaluatedProperties: false`) and add its `$ref` to `$defs.anyFunction.oneOf`. The
    entry's top-level `"description"` and each arg's `"description"` are copied verbatim
@@ -287,7 +410,7 @@ For each functions-list entry (`name`, `args`, `returnType`):
    }
    ```
 
-4. **Parity registry entry** — add the function to the `FUNCTIONS` registry map in
+5. **Parity registry entry** — add the function to the `FUNCTIONS` registry map in
    `src/catalog.parity.test.ts`: `const FUNCTIONS = {consoleLog} as const;`. The existing
    `describe.each(Object.entries(FUNCTIONS))` loop and the `anyFunction` coverage check
    already cover it.

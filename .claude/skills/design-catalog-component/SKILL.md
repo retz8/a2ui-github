@@ -100,7 +100,10 @@ The component decision doc is one markdown file per component with:
   - A **functions list** — name, args, returnType, a de-branded function-level
     description, and a de-branded description per arg — for each local function the
     component needs (e.g. an effect invoked from an `Action`).
-  - A **deferrals list** — prop, reason — for every prop deferred above.
+  - A **dropped/deferred props list** — prop, reason — for every prop dropped or
+    deferred above. A categorical drop (e.g. the non-`aria-*` slice of an inherited
+    HTML-attribute spread) may be recorded as one grouped row rather than one row per
+    attribute.
 
 #### Example (modelled on Button; teaching-sized, not the full component)
 
@@ -121,11 +124,12 @@ Functions:
 |---|---|---|---|
 | `consoleLog` | `message: string` (The message to log.) | `void` | Logs a message to the browser console. A local client-side effect. |
 
-Deferrals:
+Dropped/deferred props:
 
 | prop | reason |
 |---|---|
 | `icon` | Element-typed; not JSON-serializable. Carry as a `ComponentId` child once an Icon component exists. |
+| `type`, `name`, `tabIndex`, `data-*`, and the rest of the non-`aria-*` `ButtonHTMLAttributes` spread | Dropped: no A2UI representation. |
 
 ### Append-convention
 
