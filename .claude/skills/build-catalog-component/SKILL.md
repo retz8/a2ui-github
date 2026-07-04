@@ -33,10 +33,10 @@ A2UI type:
 A row's decision cell carries its required-ness: `carry (required)` → no `.optional()`;
 bare `carry` → `.optional()`. A row's `A2UI type` cell may also carry a `(default: X)`
 annotation — it does **not** produce a zod `.default(X)`; the annotation surfaces only
-in `catalog.json` (step 4). `ComponentApi` is **props-only** — it never includes `component` or `id` (the
-framework owns those envelope fields) — and the `.object()` ends `.strict()`, forbidding
-any prop outside the transcribed surface. Export `{name, schema}` as `const` plus the
-inferred `<Name>Props` type.
+in `catalog.json` (step 4). `ComponentApi` is **props-only** — it never includes
+`component` or `id` (the framework owns those envelope fields) — and the `.object()`
+ends `.strict()`, forbidding any prop outside the transcribed surface. Export
+`{name, schema}` as `const` plus the inferred `<Name>Props` type.
 
 Model (teaching-sized excerpt of `button.schema.ts`):
 
@@ -250,9 +250,9 @@ the same way as the zod translation:
 Every property object also carries a `"description"` — **copied verbatim from the
 decision doc's description column, never re-authored at build time.** Likewise, the
 entry's own top-level `"description"` is copied verbatim from the decision doc's
-component-level description. When a row's
-`A2UI type` cell carries a `(default: X)` annotation, add a `"default": X` key to that
-property's object. Add the framework `"component"` discriminator property
+component-level description. When a row's `A2UI type` cell carries a `(default: X)`
+annotation, add a `"default": X` key to that property's object. Add the framework
+`"component"` discriminator property
 (`{"const": "<Name>"}`), set `"required"` to the rows marked `carry (required)` in the
 decision doc plus `"component"`, and close the object with
 `"unevaluatedProperties": false`. Finally, add `{"$ref": "#/components/<Name>"}` to
