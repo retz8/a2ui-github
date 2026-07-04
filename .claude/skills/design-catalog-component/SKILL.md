@@ -175,6 +175,7 @@ accumulate the scenario(s) it introduces into the fixture set, per this mapping:
 | `Action` | one fixture **per action shape** it accepts (`functionCall`, `event`) |
 | a **visually-distinct** enum | a **gallery** fixture — one surface per enum value |
 | a **visually-distinct** `Dynamic*`/config prop (e.g. `disabled`, `loading`, `block`, `count`) | a fixture with that state **set** |
+| a **child/slot** `ComponentId` prop (e.g. Button's `child`) | **no fixture of its own** — exercised as the content of every fixture of its parent |
 | a **non-visual** prop (e.g. `accessibility`, `loadingAnnouncement`) | **no fixture** — a render-test assertion instead |
 
 **Single-axis by default:** each fixture isolates one prop's scenario, all other props at
@@ -189,7 +190,7 @@ baselined fixture, a non-visual prop via a render-test assertion.
 
 The client design call runs through the same three-stage human gate defined above
 (present the derived surface → propose, marking unclear rows `not sure` → resolve, then
-lock). Do not restate the gate mechanics here. The fixture-set brainstorm from the
+lock) — the mechanics are not repeated here. The fixture-set brainstorm from the
 prop-walk is the core of this call's proposal stage; the genuine `not sure` residue is
 thin — mainly the **visual-vs-non-visual** classification of a prop and
 **semantic-coupling** calls.

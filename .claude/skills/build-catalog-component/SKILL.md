@@ -467,8 +467,10 @@ The bound counterpart (`text-bound.ts`) keeps the same shape and adds one messag
 `{version: 'v0.9', updateDataModel: {surfaceId: 'text-bound', path: '/', value:
 {greeting: 'Bound hello'}}}` — with the component's prop set to `{path: '/greeting'}`
 instead of the literal string. `button-fn.ts` and `button-event.ts` follow the same
-`createSurface`/`updateComponents` shape, differing only in the `action` cell: a
-`functionCall` (`{call, args, returnType}`) or an `event` (`{name, context}`).
+`createSurface`/`updateComponents` shape, differing in the `action` cell — a
+`functionCall` (`{call, args, returnType}`) or an `event` (`{name, context}`) — the
+shipped `button-event.ts` additionally carries an incidental `disabled` binding and
+data-model message predating the single-axis standard.
 
 A gallery fixture (`button-variants.ts`) factors the per-value surface into a helper and
 flat-maps it over the enum:
@@ -575,7 +577,11 @@ confirmed.
 
 #### 7. Generate + commit Playwright baselines
 
-`yarn workspace client test:e2e --update-snapshots` produces one PNG per fixture under
+Before running `--update-snapshots`, add each newly **baselined** fixture's name to the
+`FIXTURE_NAMES` list in `client/e2e/visual.spec.ts` — the list is an explicit selection,
+not a barrel-derived one, so only fixture-table rows marked `baselined? yes` join it; a
+fixture left off the list silently gets no PNG. `yarn workspace client test:e2e
+--update-snapshots` then produces one PNG per fixture under
 `client/e2e/visual.spec.ts-snapshots/` — a gallery fixture yields one `fullPage` PNG
 covering all of its surfaces, not one per enum value. Then `yarn workspace client
 test:e2e` re-runs to confirm the new baselines are clean. The baseline's file name is
