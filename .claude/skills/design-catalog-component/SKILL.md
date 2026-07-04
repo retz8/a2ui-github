@@ -157,3 +157,85 @@ or rewrite an existing section.
 The doc is well-structured markdown, read by a human and by the Build LLM — nothing
 parses it programmatically. The bar is **completeness and unambiguity**: it must contain
 everything an autonomous Build run needs, so that run requires no human in the loop.
+
+## Client section
+
+This step produces the **client section** of the same component decision doc, appended
+after the adapter section. Its fixture set is derived from the locked adapter
+prop-surface table — the client design call cannot start until that table is locked.
+
+### The prop-walk
+
+Walk the locked adapter prop-surface table prop-by-prop; for each **carried** prop,
+accumulate the scenario(s) it introduces into the fixture set, per this mapping:
+
+| Prop kind (from the adapter table) | Scenario(s) it introduces |
+|---|---|
+| content-bearing `Dynamic*` (a synthetic value prop) | a **literal** fixture + a **bound** fixture (proves path binding) |
+| `Action` | one fixture **per action shape** it accepts (`functionCall`, `event`) |
+| a **visually-distinct** enum | a **gallery** fixture — one surface per enum value |
+| a **visually-distinct** `Dynamic*`/config prop (e.g. `disabled`, `loading`, `block`, `count`) | a fixture with that state **set** |
+| a **non-visual** prop (e.g. `accessibility`, `loadingAnnouncement`) | **no fixture** — a render-test assertion instead |
+
+**Single-axis by default:** each fixture isolates one prop's scenario, all other props at
+defaults; combine props into one fixture only when semantically coupled (e.g. `loading`
++ `loadingAnnouncement`).
+
+**Exhaustiveness:** the deduped union of these scenarios is the fixture set. Every
+carried prop must appear in the coverage map (format below) — a visual prop via a
+baselined fixture, a non-visual prop via a render-test assertion.
+
+### The design call (human gate)
+
+The client design call runs through the same three-stage human gate defined above
+(present the derived surface → propose, marking unclear rows `not sure` → resolve, then
+lock). Do not restate the gate mechanics here. The fixture-set brainstorm from the
+prop-walk is the core of this call's proposal stage; the genuine `not sure` residue is
+thin — mainly the **visual-vs-non-visual** classification of a prop and
+**semantic-coupling** calls.
+
+### Client-section format
+
+Continuing the same decision doc, the client section consists of:
+
+- A **fixture table** with columns
+  `fixture | exercises (coverage axis) | component state / canned values | baselined?`.
+  Canned values live in-cell: literal strings; bound fixtures as `{path}` plus the
+  data-model value that resolves it; events as `{name, context}`; enum values spelled
+  out. A gallery is one row noting "one surface per enum value."
+- A **prop-coverage map** with columns `adapter prop | covered by` — every carried
+  adapter-table prop maps to the fixture(s) that exercise it, or to `render-test
+  assertion` for a non-visual prop. This map is the completeness contract: a missing row
+  means the fixture set is incomplete.
+
+As with the adapter section, the client section is appended to the same decision doc and
+never restructures the adapter section already there (per the append-convention above).
+
+#### Example (modelled on Button + Text; teaching-sized, not every prop)
+
+Fixture table (Button):
+
+| fixture | exercises | component state / canned values | baselined? |
+|---|---|---|---|
+| `button-fn` | interaction — functionCall path | `child`→`label` ("Run local function"); `variant: primary`; `action: functionCall consoleLog {message: "button-fn clicked"}` | yes |
+| `button-event` | interaction — event path | `child`→`label` ("Send event"); `variant: primary`; `action: event {name: "submit", context: {}}` | yes |
+| `button-variants` | visual enum — `variant` | one surface per `['default','primary','invisible','danger','link']`; each `child`→`label` (the variant name); `action: functionCall consoleLog {message: <variant>}` | yes (one PNG) |
+| `button-disabled` | visually-distinct state — `disabled` | `child`→`label` ("Disabled"); `disabled: true`; `action: event {name: "noop", context: {}}` | yes |
+
+Prop-coverage map (Button):
+
+| adapter prop | covered by |
+|---|---|
+| `child` | every button fixture (the label) |
+| `action` | `button-fn` (functionCall) + `button-event` (event) |
+| `variant` | `button-variants` |
+| `disabled` | `button-disabled` |
+| `accessibility` | render-test assertion (non-visual) |
+
+The shipped repo predates this exhaustive standard, so `button-disabled` above is an
+example of a fixture the prop-walk *would* generate that the current repo does not yet
+carry (backfill deferred).
+
+Text's content axis, in the same format: `text` (literal, `text: "Hello from Primer"`)
+and `text-bound` (bound, `text: {path: "/greeting"}` + data model
+`{greeting: "Bound hello"}`) — demonstrating the content-channel rule (literal + bound).
