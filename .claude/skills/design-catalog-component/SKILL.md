@@ -39,7 +39,9 @@ one decision per prop:
     (a prop typed to accept a rendered element/node) — recording a reason for each.
   - Otherwise **carry** the prop into the schema. Record required-ness in the same
     decision cell: `carry (required)` when the prop is required, bare `carry` when it's
-    optional.
+    optional. As a heuristic: the synthetic content channel and the primary interaction
+    prop are required; a real prop's required-ness otherwise follows its installed type
+    unless the design deliberately tightens it.
   - When the component's official documentation specifies a default value for a carried
     prop, record it as an annotation in that row's `A2UI type` cell, e.g.
     `z.enum([...]) (default: "span")`. Only record a default when the doc documents one.
@@ -85,18 +87,24 @@ Only **spec-navigation** — reading the upstream protocol spec itself — point
 The component decision doc is one markdown file per component with:
 
 - **A component-level header**: the component name, its official documentation URL,
-  and a reference to its resolved type (where the real prop surface was resolved from).
+  a reference to its resolved type (where the real prop surface was resolved from), and
+  a de-branded component-level description (becomes the `catalog.json` entry's
+  `description`).
 - **One section per surface.** This step's output is the **adapter section**,
   consisting of:
-  - A **prop-surface table** with columns `prop | decision (carry/drop/defer) | synthetic? | A2UI type | description`.
-    Required-ness lives inside the `decision` cell (`carry (required)` vs bare `carry`);
-    a documented default lives inside the `A2UI type` cell (e.g. `(default: "span")`).
-    No extra columns are added for either.
-  - A **functions list** — name, args, returnType — for each local function the
+  - A **prop-surface table** with columns `prop | decision | synthetic? | A2UI type | description`,
+    where `decision` is one of carry/drop/defer. Required-ness lives inside the
+    `decision` cell (`carry (required)` vs bare `carry`); a documented default lives
+    inside the `A2UI type` cell (e.g. `(default: "span")`). No extra columns are added
+    for either.
+  - A **functions list** — name, args, returnType, a de-branded function-level
+    description, and a de-branded description per arg — for each local function the
     component needs (e.g. an effect invoked from an `Action`).
   - A **deferrals list** — prop, reason — for every prop deferred above.
 
 #### Example (modelled on Button; teaching-sized, not the full component)
+
+Component-level description: An interactive button that triggers an action when clicked.
 
 | prop | decision | synthetic? | A2UI type | description |
 |---|---|---|---|---|
@@ -109,9 +117,9 @@ The component decision doc is one markdown file per component with:
 
 Functions:
 
-| name | args | returnType |
-|---|---|---|
-| `consoleLog` | `message: string` | `void` |
+| name | args | returnType | description |
+|---|---|---|---|
+| `consoleLog` | `message: string` (The message to log.) | `void` | Logs a message to the browser console. A local client-side effect. |
 
 Deferrals:
 

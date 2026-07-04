@@ -11,7 +11,7 @@ descriptions) already happened in Design; this step transcribes.
 
 ### The mechanical loop
 
-Walk the decision doc's prop-surface table once and produce, in order, the six adapter
+Walk the decision doc's prop-surface table once and produce, in order, the seven adapter
 artifacts below. Each carried row drives one line in the schema, one field in the render,
 and one property in the `catalog.json` entry — the same table, read three times.
 
@@ -30,7 +30,7 @@ A2UI type:
 A row's decision cell carries its required-ness: `carry (required)` → no `.optional()`;
 bare `carry` → `.optional()`. A row's `A2UI type` cell may also carry a `(default: X)`
 annotation — this does **not** produce a zod `.default(X)`; the shipped schemas never
-call `.default()`, so the annotation is transcribed only into `catalog.json` (step 3),
+call `.default()`, so the annotation is transcribed only into `catalog.json` (step 4),
 not here. `ComponentApi` is **props-only** — it never includes `component` or `id` (the
 framework owns those envelope fields) — and the `.object()` ends `.strict()`, forbidding
 any prop outside the transcribed surface. Export `{name, schema}` as `const` plus the
@@ -137,7 +137,21 @@ export const TextComponent = createComponentImplementation(TextApi, ({props}) =>
 ));
 ```
 
-#### 3. `catalog.json` entry — `catalogs/<version>/catalog.json`
+#### 3. Folder barrel — `src/components/<name>/index.ts`
+
+Re-export the component implementation and its `Api` (plus the inferred props type) from
+the component folder's barrel — `src/catalog.ts` imports the component from this barrel,
+not from the `.tsx`/`.schema.ts` files directly.
+
+Model (`src/components/button/index.ts`):
+
+```ts
+export {ButtonComponent} from './button';
+export {ButtonApi} from './button.schema';
+export type {ButtonProps} from './button.schema';
+```
+
+#### 4. `catalog.json` entry — `catalogs/<version>/catalog.json`
 
 Add a `components.<Name>` entry whose `properties` mirror the schema key-for-key, keyed
 the same way as the zod translation:
@@ -148,7 +162,9 @@ the same way as the zod translation:
 - a plain fixed-configuration type → `{"type": "<string|boolean|number>"}`
 
 Every property object also carries a `"description"` — **copied verbatim from the
-decision doc's description column, never re-authored at build time.** When a row's
+decision doc's description column, never re-authored at build time.** Likewise, the
+entry's own top-level `"description"` is copied verbatim from the decision doc's
+component-level description. When a row's
 `A2UI type` cell carries a `(default: X)` annotation, add a `"default": X` key to that
 property's object (this is the only place the annotation surfaces — the zod schema in
 step 1 gets no `.default()`). Add the framework `"component"` discriminator property
@@ -181,14 +197,14 @@ Model (excerpt of the `Button` entry in `catalog.json`):
 }
 ```
 
-#### 4. Parity registry entry — `src/catalog.parity.test.ts`
+#### 5. Parity registry entry — `src/catalog.parity.test.ts`
 
 Add the component's `<Name>Api` to the `COMPONENTS` registry map:
 `const COMPONENTS = {Text: TextApi, Button: ButtonApi} as const;`. The existing
 `describe.each(Object.entries(COMPONENTS))` loop and the `anyComponent` coverage check
 already cover the new entry — there is no per-component assertion to write.
 
-#### 5. Catalog registration — `src/catalog.ts`
+#### 6. Catalog registration — `src/catalog.ts`
 
 Import the component implementation and add it to the `new Catalog(...)` components
 array:
@@ -201,7 +217,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
 );
 ```
 
-#### 6. Catalog smoke test — `src/catalog.test.ts`
+#### 7. Catalog smoke test — `src/catalog.test.ts`
 
 Add one assertion inside the existing `describe('CATALOG', …)` block:
 
@@ -213,9 +229,8 @@ it('registers the Button component', () => {
 
 ### Optional: local-function sub-loop
 
-Only when the decision doc's functions list has an entry — i.e. one of the component's
-`action` rows targets a local `functionCall` rather than an `event`. If the doc's
-functions list is empty, skip this sub-loop entirely.
+Only when the decision doc's functions list is non-empty. If the doc's functions list is
+empty, skip this sub-loop entirely.
 
 For each functions-list entry (`name`, `args`, `returnType`):
 
@@ -241,7 +256,10 @@ For each functions-list entry (`name`, `args`, `returnType`):
 
 3. **`catalog.json`** — add a `functions.<name>` entry (`call` discriminator const,
    `args` object typed with the wire `Dynamic*` per arg, `returnType` const,
-   `unevaluatedProperties: false`) and add its `$ref` to `$defs.anyFunction.oneOf`.
+   `unevaluatedProperties: false`) and add its `$ref` to `$defs.anyFunction.oneOf`. The
+   entry's top-level `"description"` and each arg's `"description"` are copied verbatim
+   from the decision doc's function-level and per-arg descriptions, never re-authored at
+   build time — same rule as the component and prop descriptions above.
 
    Model (`functions.consoleLog` in `catalog.json`):
 
