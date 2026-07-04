@@ -411,3 +411,179 @@ For each functions-list entry (`name`, `args`, `returnType`):
    `src/catalog.parity.test.ts`: `const FUNCTIONS = {consoleLog} as const;`. The existing
    `describe.each(Object.entries(FUNCTIONS))` loop and the `anyFunction` coverage check
    already cover it.
+
+## Client section
+
+This step consumes the decision doc's **client section** — the fixture table
+(`fixture | exercises (coverage axis) | component state / canned values | baselined?`)
+and the prop-coverage map (`adapter prop | covered by`), canned values included —
+produced by the Design skill's client section. It mechanically materializes the
+fixtures, integration tests, and visual baselines from that table. It takes **no human
+input**: the Claude-Chrome bless in step 6 below is Claude's own agent verification of
+the render, not a human judgment call.
+
+**Infra assumption.** The test-space scaffold — `TestSpace`, `FixtureView`,
+`tests/helpers.tsx`, the `FIXTURES` barrel, `playwright.config.ts` — and the A2A wire
+are one-time infrastructure that already exists; this loop only *consumes* it and never
+stands it up. If any of that scaffold is missing, that is a scaffold/template concern
+outside this loop, not something this loop builds. The mock boundary is fixed for
+everything this loop authors: `functionCall` runs locally against the catalog's
+registered function; `event` goes to the injected handler. There is no real transport
+here — wiring the test space (or a fixture) to a live A2A backend is 4.3's concern.
+
+### The mechanical loop
+
+Walk the decision doc's fixture table once, row by row, and produce the seven steps
+below in order. Two of the seven — steps 3 and 5 — are no-ops given the current
+scaffold; call them out explicitly rather than skipping silently.
+
+#### 1. Author fixture files — `client/src/fixtures/<name>.ts`
+
+One file per fixture-table row, transcribing that row's canned component state and
+values into an `A2uiMessage[]`: a `createSurface` with `CATALOG_ID` and `version:
+'v0.9'`, then an `updateComponents` carrying a `root` component; a bound fixture adds an
+`updateDataModel` resolving the path. A gallery row (a visually-distinct enum) becomes
+one file emitting one surface per enum value instead of a single surface.
+
+Model, the literal-content fixture (`text.ts`):
+
+```ts
+export const textFixture: Fixture = {
+  name: 'text',
+  messages: [
+    {version: 'v0.9', createSurface: {surfaceId: 'text', catalogId: CATALOG_ID}},
+    {
+      version: 'v0.9',
+      updateComponents: {
+        surfaceId: 'text',
+        components: [{id: 'root', component: 'Text', text: 'Hello from Primer'}],
+      },
+    },
+  ],
+};
+```
+
+The bound counterpart (`text-bound.ts`) keeps the same shape and adds one message —
+`{version: 'v0.9', updateDataModel: {surfaceId: 'text-bound', path: '/', value:
+{greeting: 'Bound hello'}}}` — with the component's prop set to `{path: '/greeting'}`
+instead of the literal string. `button-fn.ts` and `button-event.ts` follow the same
+`createSurface`/`updateComponents` shape, differing only in the `action` cell: a
+`functionCall` (`{call, args, returnType}`) or an `event` (`{name, context}`).
+
+A gallery fixture (`button-variants.ts`) factors the per-value surface into a helper and
+flat-maps it over the enum:
+
+```ts
+const VARIANTS = ['default', 'primary', 'invisible', 'danger', 'link'] as const;
+
+function variantSurface(variant: (typeof VARIANTS)[number]): A2uiMessage[] {
+  const surfaceId = `variant-${variant}`;
+  return [
+    {version: 'v0.9', createSurface: {surfaceId, catalogId: CATALOG_ID}},
+    {
+      version: 'v0.9',
+      updateComponents: {surfaceId, components: [/* … the variant's surface … */]},
+    },
+  ];
+}
+
+export const buttonVariantsFixture: Fixture = {
+  name: 'button-variants',
+  messages: VARIANTS.flatMap(variantSurface),
+};
+```
+
+#### 2. Register in the fixtures barrel — `client/src/fixtures/index.ts`
+
+Add each new fixture to the `FIXTURES` array and export it by name, alongside the
+existing entries:
+
+```ts
+export {buttonVariantsFixture} from './button-variants';
+
+export const FIXTURES: Fixture[] = [
+  textFixture,
+  textBoundFixture,
+  buttonFnFixture,
+  buttonEventFixture,
+  buttonVariantsFixture,
+];
+```
+
+#### 3. Structural test auto-covers — no edit
+
+`client/tests/fixtures.test.ts` derives its assertions from `FIXTURES` itself
+(non-empty, unique names, every `createSurface` on `CATALOG_ID`/`v0.9`, every surface
+has a `root`) — a new fixture is picked up the moment it lands in the barrel (step 2).
+This is a genuine no-op: nothing here is edited per component.
+
+#### 4. Render/action unit tests — `render.test.tsx` / `actions.test.tsx`
+
+Assertions run through the **full renderer**, via `renderFixture` (`MessageProcessor` →
+`A2uiSurface`), never against the `View` directly — that's the adapter section's tests,
+not this one. Which assertion to add follows the fixture's coverage axis from the
+coverage map:
+
+- content renders — every fixture
+- a bound prop resolves from the data model — the bound fixture
+- `functionCall` runs the registered local function and the injected handler is **not**
+  called — the functionCall fixture
+- `event` dispatches to the injected handler with `{name, surfaceId,
+  sourceComponentId}` — the event fixture
+- a visually-distinct state is honoured through the renderer (e.g. `disabled` → the
+  underlying element is disabled) — that state's fixture
+
+Model:
+
+```tsx
+// render — integration through the real renderer
+it('renders a literal Text', () => {
+  renderFixture(textFixture);
+  expect(screen.getByText('Hello from Primer')).toBeInTheDocument();
+});
+
+// action path-1 — functionCall local, handler untouched
+it('runs the registered consoleLog locally, not via the handler', () => {
+  const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+  const handler = vi.fn();
+  renderFixture(buttonFnFixture, {actionHandler: handler});
+  fireEvent.click(screen.getByRole('button', {name: 'Run local function'}));
+  expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'button-fn clicked');
+  expect(handler).not.toHaveBeenCalled();
+  logSpy.mockRestore();
+});
+```
+
+#### 5. Selector test — largely a no-op
+
+`TestSpace` renders one `<option>` per entry in `FIXTURES`
+(`FIXTURES.map(f => <option key={f.name} value={f.name}>{f.name}</option>)`), so a new
+fixture appears in the selector the instant it lands in the barrel (step 2) — there is
+no per-component selector code to write, and `selector.test.tsx`'s behavioural
+assertions (default selection, swap-on-change, URL deep-link) exercise this generically
+with no new case. Mirrors the adapter parity loop.
+
+One thing this step does **not** yet auto-cover: `selector.test.tsx`'s option-*count*
+assertion is still a hardcoded literal, not derived from `FIXTURES.length` (Task 2's
+structural-test refactor was scoped to `fixtures.test.ts` only) — bump that literal by
+one alongside step 2's barrel edit. Treat it as a known follow-up on the test file, not
+a new test to author.
+
+#### 6. Claude-Chrome bless (bless-before-freeze)
+
+The agent — not a human — drives the browser to `/?fixture=<name>`, at the tunnel URL,
+for every new fixture and confirms the render against the component's documented
+appearance (the decision doc header's official documentation URL). This is the
+correctness gate before any baseline is frozen: the Phase-5 nightly prompt owns skipping
+this step where Claude-Chrome is unavailable, and **skipping the bless means skipping
+step 7 too** — never freeze a baseline for a render nobody, human or agent, has
+confirmed.
+
+#### 7. Generate + commit Playwright baselines
+
+`yarn workspace client test:e2e --update-snapshots` produces one PNG per fixture under
+`client/e2e/visual.spec.ts-snapshots/` — a gallery fixture yields one `fullPage` PNG
+covering all of its surfaces, not one per enum value. Then `yarn workspace client
+test:e2e` re-runs to confirm the new baselines are clean. The baseline's file name is
+derived mechanically from the fixture name; there is no separate naming decision to
+make.
