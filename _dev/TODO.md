@@ -31,15 +31,17 @@ Lift an FE + deterministic-agent baseline template from the post-Phase-2 shape �
 
 Order: (3.1 ∥ 3.2) → 3.3 → 3.4. 3.1 and 3.2 are parallel-eligible (code vs prose surfaces). 3.3 needs the placeholder inventory 3.1+3.2 define; 3.4 needs both the template content and a runnable init.
 
-## Phase 4 — Catalog-component authoring skill [WIP]
-Capture the repeatable component-authoring workflow (proven by hand in Phase 2) as the `new-catalog-component` project skill; validate it by walking against the shipped `Text`/`Button`. Spec: `_dev/docs/spec/phase-4-catalog-authoring-skill.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
+## Phase 4 — Catalog-component authoring skills [WIP]
+Capture the repeatable component-authoring workflow (proven by hand in Phase 2) as TWO coupled project skills — `design-catalog-component` (interactive, human-gated) and `build-catalog-component` (autonomous-capable) — coupled through the per-component decision doc; validate by walking against the shipped `Text`/`Button`. Spec: `_dev/docs/spec/phase-4-catalog-authoring-skill.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
-- [WIP] **4.1** Adapter-authoring procedure — capture the adapter-side loop, validated against the `Text`/`Button` adapter artifacts.
-- [ ] **4.2** Client-authoring procedure — capture the client-side loop, validated against the `Text`/`Button` client artifacts.
-- [ ] **4.3** Agent-fixture procedure — capture the deterministic-agent side, validated against `Button`'s deterministic fixture.
-- [ ] **4.4** Skill assembly + end-to-end validation — stitch the surfaces into the coherent `SKILL.md` and run the full end-to-end walk against `Text` + `Button`.
+Each surface sub-task (4.1–4.3) writes its design steps into the Design `SKILL.md` and its build/test steps into the Build & Test `SKILL.md` — building up both skills incrementally; 4.4 finalizes each.
 
-Order: 4.1 → 4.2 → 4.3 → 4.4, fully sequential. The client (4.2) and agent-fixture (4.3) procedures both build on the catalog-level component shape 4.1 settles (create → test), so each is authored against the settled prior surfaces rather than in parallel; 4.4 assembles all three.
+- [ ] **4.1** Adapter surface — adapter design procedure (prop-surface decision checklist → decision doc; establishes the decision-doc contract) + adapter build/test procedure, validated against the `Text`/`Button` adapter artifacts.
+- [ ] **4.2** Client surface — client design + build/test procedures, validated against the `Text`/`Button` client artifacts.
+- [ ] **4.3** Agent-fixture surface — agent design + build/test procedures, validated against `Button`'s deterministic fixture.
+- [ ] **4.4** Finalize both skills + end-to-end validation — `SKILL.md` frontmatter/overview/orchestration for each skill, and the full end-to-end walk (design → decision doc → build all three) against `Text` + `Button`.
+
+Order: 4.1 → 4.2 → 4.3 → 4.4, strictly sequential — the surface sub-tasks share a write target (the two `SKILL.md` files). 4.1 establishes the decision-doc contract the later surfaces append to.
 
 ## Phase 5 — Autonomous-run layer
 Near-rewrite of the daily-work harness's autonomous mechanism, shipped in `../daily-work-harness` (not this repo), ready for the Phase-6 build-out. Spec: `_dev/docs/spec/phase-5-autonomous-run-layer.md`. Handles below are non-restrictive — 5.1 in particular may ship more than named.
