@@ -65,6 +65,7 @@ Additively fold the catalog-authoring skill (Phase 4) and the agent scaffold (Ph
 
 ## Backlog
 - Registry-driven catalog smoke test (at Phase 6 start): replace the per-component `has()` assertions in `catalog.test.ts` with one exact-set assertion against the parity test's `COMPONENTS`/`FUNCTIONS` registry; update the Build skill's steps 5/7 to the single registry touch-point in the same change.
+- Client fixture backfill: the shipped `Text`/`Button` client fixtures + Playwright baselines lag the exhaustive per-prop standard the catalog-authoring skills now prescribe — `Button` ships 3 of 11 prop-walk fixtures, `Text` 2 of 6. Backfill the missing fixtures + baselines. Sets enumerated in `_dev/docs/new-components/{text,button}.md`.
 - Diff viewer (stretch)
 - Agent template memory
 - Read + write loop on a seeded sandbox repo
