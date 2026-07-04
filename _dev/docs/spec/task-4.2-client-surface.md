@@ -25,7 +25,7 @@ The fixture set must cover all of a component's scenarios — every state-bearin
 
 ### 4. Derivation is a prop-walk, single-axis by default
 
-The fixture set is derived by walking the locked adapter prop-surface table prop-by-prop, mapping each carried prop to the scenario(s) it introduces (content-bearing `Dynamic*` → a literal and a bound fixture; `Action` → one fixture per action shape; a visually-distinct enum → a gallery over all its values; a visually-distinct `Dynamic*`/config prop → a fixture with that state set; a non-visual prop → a render-test assertion, no fixture). Each fixture isolates one prop's scenario with all other props at defaults; props are combined into a single fixture only when semantically coupled. The union, deduped, is the exhaustive fixture set.
+The fixture set is derived by walking the locked adapter prop-surface table prop-by-prop, mapping each carried prop to the scenario(s) it introduces (content-bearing `Dynamic*` → a literal and a bound fixture; `Action` → one fixture per action shape; a visually-distinct enum → a gallery over all its values; a visually-distinct `Dynamic*`/config prop → a fixture with that state set; a child/slot `ComponentId` prop → no fixture of its own, exercised as the content of every fixture of its parent; a non-visual prop → a render-test assertion, no fixture). Each fixture isolates one prop's scenario with all other props at defaults; props are combined into a single fixture only when semantically coupled. The union, deduped, is the exhaustive fixture set.
 
 ### 5. The client section of the decision doc
 
@@ -49,15 +49,15 @@ The Build client flow is: materialize fixtures → run the render/action unit te
 
 ### 10. Build loop with an infra-assumption preamble; structural + selector tests auto-cover
 
-The client build/test procedure is authored as an ordered per-component loop opening with an explicit statement that the test-space scaffold and wire pre-exist and are only consumed. With the structural test refactored (decision 11), both the structural test and the selector test auto-cover new fixtures via the `FIXTURES` loop, so the per-component loop adds no per-fixture edit to either.
+The client build/test procedure is authored as an ordered per-component loop opening with an explicit statement that the test-space scaffold and wire pre-exist and are only consumed. With the structural and selector tests refactored (decision 11), both auto-cover new fixtures via the `FIXTURES` loop, so the per-component loop adds no per-fixture edit to either. The e2e baseline list (`FIXTURE_NAMES` in `client/e2e/visual.spec.ts`) is an explicit selection: the loop adds each fixture-table row marked `baselined? yes` to it before the freeze.
 
-### 11. Sole product-code change: refactor the structural fixtures test
+### 11. Sole product-code change: derive the structural and selector tests from `FIXTURES`
 
-The only product-code change in 4.2 is refactoring `client/tests/fixtures.test.ts` to derive its assertions from `FIXTURES` (dropping the hardcoded fixture count and exact name-list, keeping the looped per-fixture invariants). Everything else in 4.2 is prose in the two `SKILL.md` files. Validation is a read-through that reproduces the shipped five fixtures and enumerates the additional fixtures the exhaustive rules would generate; the refactored structural test is additionally run green once.
+The only product-code changes in 4.2 are two test derivations: `client/tests/fixtures.test.ts` derives its assertions from `FIXTURES` (dropping the hardcoded fixture count and exact name-list, keeping the looped per-fixture invariants), and `client/tests/selector.test.tsx` derives its option-count from `FIXTURES.length` (dropping the hardcoded count). Everything else in 4.2 is prose in the two `SKILL.md` files. Validation is a read-through that reproduces the shipped five fixtures and enumerates the additional fixtures the exhaustive rules would generate; the refactored structural test is additionally run green once.
 
 ## Invariants
 
-- 4.2 appends only to the two `SKILL.md` files, with the single `fixtures.test.ts` refactor as the sole product-code change; no other product code is written.
+- 4.2 appends only to the two `SKILL.md` files, with the two test derivations (decision 11) as the sole product-code changes; no other product code is written.
 - The Build & Test skill's client section takes no human input; the Claude-Chrome blessing is agent verification, not human input.
 - Teaching-sized inline snippets modelled on the shipped files, not full reproduction (carried from 4.1).
 
