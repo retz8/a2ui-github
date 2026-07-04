@@ -82,6 +82,24 @@ one decision per prop:
 Only **spec-navigation** — reading the upstream protocol spec itself — points to the
 `a2ui-sdk-design` skill. The conventions above are self-contained here.
 
+### The design call (human gate)
+
+Run the call in three stages — never as one table dump:
+
+1. **Present the real prop list.** Every prop the installed types expose, before any
+   A2UI judgment — own props and inherited spreads shown as such — so the human sees
+   the full ground truth the decisions are made against.
+2. **Present the proposed A2UI prop table.** The checklist applied to every prop. Where
+   a checklist rule decides cleanly, state the decision explicitly. Mark every row whose
+   decision is *not* clear-cut as **`not sure`** — typical cases: bound-state-vs-config
+   borderlines, tightening an optional prop to required, defer-vs-carry edges, a
+   questionable synthetic prop.
+3. **Resolve the `not sure` props one by one with the human.** For each, in turn: state
+   the prop's semantics, the plausible options, and the tradeoff — then the human
+   decides and the row is filled. Do not batch them into a single question.
+
+Only after every row is decided does the human lock the table and the doc get written.
+
 ### Decision-doc format
 
 The component decision doc is one markdown file per component with:
