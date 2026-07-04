@@ -554,20 +554,14 @@ it('runs the registered consoleLog locally, not via the handler', () => {
 });
 ```
 
-#### 5. Selector test — largely a no-op
+#### 5. Selector test auto-covers — no edit
 
 `TestSpace` renders one `<option>` per entry in `FIXTURES`
-(`FIXTURES.map(f => <option key={f.name} value={f.name}>{f.name}</option>)`), so a new
-fixture appears in the selector the instant it lands in the barrel (step 2) — there is
-no per-component selector code to write, and `selector.test.tsx`'s behavioural
-assertions (default selection, swap-on-change, URL deep-link) exercise this generically
-with no new case. Mirrors the adapter parity loop.
-
-One thing this step does **not** yet auto-cover: `selector.test.tsx`'s option-*count*
-assertion is still a hardcoded literal, not derived from `FIXTURES.length` (Task 2's
-structural-test refactor was scoped to `fixtures.test.ts` only) — bump that literal by
-one alongside step 2's barrel edit. Treat it as a known follow-up on the test file, not
-a new test to author.
+(`FIXTURES.map(f => <option key={f.name} value={f.name}>{f.name}</option>)`), and
+`client/tests/selector.test.tsx` derives its option-count assertion from
+`FIXTURES.length` — so a new fixture is covered the moment it lands in the barrel
+(step 2). No per-component selector code or test case is written. This is a genuine
+no-op, mirroring step 3 and the adapter parity loop.
 
 #### 6. Claude-Chrome bless (bless-before-freeze)
 
