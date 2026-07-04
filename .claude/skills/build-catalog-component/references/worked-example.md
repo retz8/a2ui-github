@@ -19,13 +19,47 @@ export const ButtonApi = {
       child: CommonSchemas.ComponentId,
       action: CommonSchemas.Action,
       variant: z.enum(['default', 'primary', 'invisible', 'danger', 'link']).optional(),
+      size: z.enum(['small', 'medium', 'large']).optional(),
+      alignContent: z.enum(['start', 'center']).optional(),
       disabled: CommonSchemas.DynamicBoolean.optional(),
+      loading: CommonSchemas.DynamicBoolean.optional(),
+      inactive: CommonSchemas.DynamicBoolean.optional(),
+      count: CommonSchemas.DynamicString.optional(),
+      block: z.boolean().optional(),
+      labelWrap: z.boolean().optional(),
+      loadingAnnouncement: z.string().optional(),
       accessibility: CommonSchemas.AccessibilityAttributes.optional(),
     })
     .strict(),
 } as const;
 
 export type ButtonProps = z.infer<typeof ButtonApi.schema>;
+```
+
+Button's full carried surface: the `Action`/`ComponentId`/`AccessibilityAttributes` commons,
+the `variant`/`size`/`alignContent` enums, the `disabled`/`loading`/`inactive` bound booleans,
+`count` as a bound display value (`DynamicString`, from a `number | string` real type), and the
+`block`/`labelWrap`/`loadingAnnouncement` fixed-config plains. Deferred (element-typed):
+`icon`, `leadingVisual`, `trailingVisual`, `trailingAction`.
+
+The Text schema — `primer-a2ui-adapter/src/components/text/text.schema.ts` — is the display-side
+counterpart: the synthetic `text` (`DynamicString`), the polymorphic `as` carried as a curated
+tag-name enum, and the `size`/`weight`/`whiteSpace` enums; it carries **no** `accessibility`
+(a display primitive has no author-facing a11y channel).
+
+```ts
+export const TextApi = {
+  name: 'Text',
+  schema: z
+    .object({
+      text: CommonSchemas.DynamicString,
+      as: z.enum(['span', 'p', 'div', 'label', 'strong', 'em', 'small']).optional(),
+      size: z.enum(['small', 'medium', 'large']).optional(),
+      weight: z.enum(['light', 'normal', 'medium', 'semibold']).optional(),
+      whiteSpace: z.enum(['normal', 'nowrap', 'pre', 'pre-wrap', 'pre-line']).optional(),
+    })
+    .strict(),
+} as const;
 ```
 
 `ComponentApi` is props-only — never `component`/`id` (the framework owns those envelope

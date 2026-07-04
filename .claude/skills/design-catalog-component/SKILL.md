@@ -78,9 +78,17 @@ Walk every real prop (plus any synthetic prop introduced below) and make one dec
 - **Carry / drop / defer.**
   - **Drop** props with no A2UI representation. In particular, the non-`aria-*` slice of an
     inherited HTML-attribute spread (`type`, `name`, `tabIndex`, `data-*`, and similar) has no
-    protocol representation and is dropped.
+    protocol representation and is dropped. Named styling passthroughs (`className`, `style`) are
+    dropped on the same basis.
   - **Defer** props that are not JSON-serializable — most commonly element-typed props (a prop
     typed to accept a rendered element/node) — recording a reason for each.
+  - **Polymorphic element-type selectors** (a prop like `as` typed as `React.ElementType` — an
+    element *type*, not a rendered node) fit neither rule above. Decide per component: **carry**
+    it as a curated `z.enum` of the semantically-meaningful tag names when it selects among
+    display-equivalent elements (a display primitive — e.g. Text's `as` →
+    `z.enum(['span','p','div','label','strong','em','small'])`); **drop** it when it switches the
+    component's behavior or identity (e.g. a button rendering as a link, expressed through a
+    variant instead). Mark `not sure` when the intent is unclear.
   - Otherwise **carry** the prop into the schema. Record required-ness in the decision cell:
     `carry (required)` when required, bare `carry` when optional. Heuristic: the synthetic
     content channel and the primary interaction prop are required; a real prop's required-ness
@@ -107,11 +115,18 @@ Walk every real prop (plus any synthetic prop introduced below) and make one dec
   - **Interaction** (a click/press/etc. handler) → `Action`.
   - **A reference to another component as content** → `ComponentId`.
   - **Accessibility** → `AccessibilityAttributes`.
+  - **Union-typed value** (e.g. `number | string`) → pick the `Dynamic*` matching how the value
+    is used; a display value is `DynamicString` even when it is usually numeric (example:
+    Button's `count`).
 
-- **Per-component fidelity.** Carry a protocol common only where the component's real type
-  exposes that capability — never as a uniform base. Button carries `accessibility` because its
-  real type spreads `ButtonHTMLAttributes` (the `aria-*` surface); Text's real type has no such
-  spread, so Text carries no `accessibility`.
+- **Per-component fidelity.** Carry a protocol common only where it is a meaningful
+  author-facing capability of *this* component — never as a uniform base, and never merely
+  because the installed type incidentally inherits it. Most components inherit an `aria-*`
+  surface either way (Button through its `ButtonHTMLAttributes` spread, a polymorphic component
+  like Text through its host-element spread), so "the type exposes aria" does not by itself
+  justify carrying `accessibility`. Carry it where the component has genuine author-facing
+  accessibility needs — typically interactive components: Button carries `accessibility`, a plain
+  display primitive like Text carries none. When unclear, mark it `not sure`.
 
 - **De-branded description.** Author each prop's semantic description in domain terms — what
   the prop does. Never name the design system or renderer; the description is read by the
