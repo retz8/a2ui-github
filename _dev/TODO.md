@@ -38,7 +38,7 @@ Each surface sub-task (4.1–4.3) writes its design steps into the Design `SKILL
 
 - [x] **4.1** Adapter surface — adapter design procedure (prop-surface decision checklist → decision doc; establishes the decision-doc contract) + adapter build/test procedure, validated against the `Text`/`Button` adapter artifacts.
 - [x] **4.2** Client surface — client design + build/test procedures, validated against the `Text`/`Button` client artifacts.
-- [ ] **4.3** Agent-fixture surface — agent design + build/test procedures, validated against `Button`'s deterministic fixture.
+- [WIP] **4.3** Agent-fixture surface — agent design + build/test procedures, validated against `Button`'s deterministic fixture.
 - [ ] **4.4** Finalize both skills + end-to-end validation — `SKILL.md` frontmatter/overview/orchestration for each skill, and the full end-to-end walk (design → decision doc → build all three) against `Text` + `Button`.
 
 Order: 4.1 → 4.2 → 4.3 → 4.4, strictly sequential — the surface sub-tasks share a write target (the two `SKILL.md` files). 4.1 establishes the decision-doc contract the later surfaces append to.
