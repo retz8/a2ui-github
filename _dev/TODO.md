@@ -37,7 +37,7 @@ Capture the repeatable component-authoring workflow (proven by hand in Phase 2) 
 Each surface sub-task (4.1–4.3) writes its design steps into the Design `SKILL.md` and its build/test steps into the Build & Test `SKILL.md` — building up both skills incrementally; 4.4 finalizes each.
 
 - [x] **4.1** Adapter surface — adapter design procedure (prop-surface decision checklist → decision doc; establishes the decision-doc contract) + adapter build/test procedure, validated against the `Text`/`Button` adapter artifacts.
-- [ ] **4.2** Client surface — client design + build/test procedures, validated against the `Text`/`Button` client artifacts.
+- [WIP] **4.2** Client surface — client design + build/test procedures, validated against the `Text`/`Button` client artifacts.
 - [ ] **4.3** Agent-fixture surface — agent design + build/test procedures, validated against `Button`'s deterministic fixture.
 - [ ] **4.4** Finalize both skills + end-to-end validation — `SKILL.md` frontmatter/overview/orchestration for each skill, and the full end-to-end walk (design → decision doc → build all three) against `Text` + `Button`.
 
@@ -64,6 +64,7 @@ The full maintainer-triage arc running end-to-end on the live a2ui repo.
 Additively fold the catalog-authoring skill (Phase 4) and the agent scaffold (Phase 7) into the template repo; finalize as the adoptable A2UI template — its first real use. Plan: `_dev/docs/templatization-plan.md`.
 
 ## Backlog
+- Registry-driven catalog smoke test (at Phase 6 start): replace the per-component `has()` assertions in `catalog.test.ts` with one exact-set assertion against the parity test's `COMPONENTS`/`FUNCTIONS` registry; update the Build skill's steps 5/7 to the single registry touch-point in the same change.
 - Diff viewer (stretch)
 - Agent template memory
 - Read + write loop on a seeded sandbox repo
