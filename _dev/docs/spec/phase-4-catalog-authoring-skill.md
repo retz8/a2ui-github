@@ -36,7 +36,14 @@ The phase decomposes by the three Phase-2 surfaces (adapter / client / agent), e
 - **4.3** — agent-fixture procedure, validated against `Button`'s deterministic fixture.
 - **4.4** — skill assembly into the coherent `SKILL.md` plus the full end-to-end validation walk against `Text` + `Button`.
 
-The per-sub-task file layout (single `SKILL.md` vs. `SKILL.md` + per-surface reference docs) is a 4.x-internal decision left to each sub-task's grill.
+### 6. File layout — `SKILL.md` + per-surface reference docs
+
+The skill lives at `.claude/skills/new-catalog-component/`. Each surface procedure is its own reference doc under `references/`; the top-level `SKILL.md` is the overview and the orchestration that routes to them. This layout is fixed across all four sub-tasks — not a per-sub-task choice:
+
+- **4.1** → `references/adapter.md`
+- **4.2** → `references/client.md`
+- **4.3** → `references/agent-fixture.md`
+- **4.4** → `SKILL.md` (frontmatter, overview, orchestration) + the end-to-end validation walk.
 
 ## Invariants
 
@@ -45,4 +52,4 @@ The per-sub-task file layout (single `SKILL.md` vs. `SKILL.md` + per-surface ref
 
 ## Open items
 
-- Per-sub-task file layout of the skill — left to each sub-task's grill.
+- None.
