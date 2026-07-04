@@ -37,7 +37,12 @@ one decision per prop:
     similar) has no protocol representation and is dropped.
   - **Defer** props that are not JSON-serializable — most commonly element-typed props
     (a prop typed to accept a rendered element/node) — recording a reason for each.
-  - Otherwise **carry** the prop into the schema.
+  - Otherwise **carry** the prop into the schema. Record required-ness in the same
+    decision cell: `carry (required)` when the prop is required, bare `carry` when it's
+    optional.
+  - When the component's official documentation specifies a default value for a carried
+    prop, record it as an annotation in that row's `A2UI type` cell, e.g.
+    `z.enum([...]) (default: "span")`. Only record a default when the doc documents one.
 
 - **Synthetic-content-prop rule.** When a component takes its content through
   `children` as raw content (text, not references to other components), introduce a
@@ -84,6 +89,9 @@ The component decision doc is one markdown file per component with:
 - **One section per surface.** This step's output is the **adapter section**,
   consisting of:
   - A **prop-surface table** with columns `prop | decision (carry/drop/defer) | synthetic? | A2UI type | description`.
+    Required-ness lives inside the `decision` cell (`carry (required)` vs bare `carry`);
+    a documented default lives inside the `A2UI type` cell (e.g. `(default: "span")`).
+    No extra columns are added for either.
   - A **functions list** — name, args, returnType — for each local function the
     component needs (e.g. an effect invoked from an `Action`).
   - A **deferrals list** — prop, reason — for every prop deferred above.
@@ -92,9 +100,9 @@ The component decision doc is one markdown file per component with:
 
 | prop | decision | synthetic? | A2UI type | description |
 |---|---|---|---|---|
-| `child` | carry | yes | `ComponentId` | The component used as the button's label. |
-| `action` | carry | no | `Action` | The action performed when the button is clicked. |
-| `variant` | carry | no | `z.enum(['default','primary','invisible','danger','link'])` | The visual style; `primary` marks the main call-to-action. |
+| `child` | carry (required) | yes | `ComponentId` | The component used as the button's label. |
+| `action` | carry (required) | no | `Action` | The action performed when the button is clicked. |
+| `variant` | carry | no | `z.enum(['default','primary','invisible','danger','link']) (default: "default")` | The visual style; `primary` marks the main call-to-action. |
 | `disabled` | carry | no | `DynamicBoolean` | Whether the button is disabled and cannot be clicked. |
 | `accessibility` | carry | no | `AccessibilityAttributes` | Accessibility label/description for assistive technologies. |
 | `icon` | defer | — | — | Element-typed; not JSON-serializable. Carry as a `ComponentId` child once an Icon component exists. |

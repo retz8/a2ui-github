@@ -27,11 +27,14 @@ A2UI type:
 - an enum decision → a local `z.enum([...])` (there is no `DynamicEnum`)
 - a plain fixed-configuration type → `z.boolean()` / `z.string()` / `z.number()`
 
-Every field not present in the row as required is `.optional()`. `ComponentApi` is
-**props-only** — it never includes `component` or `id` (the framework owns those envelope
-fields) — and the `.object()` ends `.strict()`, forbidding any prop outside the
-transcribed surface. Export `{name, schema}` as `const` plus the inferred `<Name>Props`
-type.
+A row's decision cell carries its required-ness: `carry (required)` → no `.optional()`;
+bare `carry` → `.optional()`. A row's `A2UI type` cell may also carry a `(default: X)`
+annotation — this does **not** produce a zod `.default(X)`; the shipped schemas never
+call `.default()`, so the annotation is transcribed only into `catalog.json` (step 3),
+not here. `ComponentApi` is **props-only** — it never includes `component` or `id` (the
+framework owns those envelope fields) — and the `.object()` ends `.strict()`, forbidding
+any prop outside the transcribed surface. Export `{name, schema}` as `const` plus the
+inferred `<Name>Props` type.
 
 Model (teaching-sized excerpt of `button.schema.ts`):
 
@@ -145,9 +148,12 @@ the same way as the zod translation:
 - a plain fixed-configuration type → `{"type": "<string|boolean|number>"}`
 
 Every property object also carries a `"description"` — **copied verbatim from the
-decision doc's description column, never re-authored at build time.** Add the framework
-`"component"` discriminator property (`{"const": "<Name>"}`), set `"required"` to the
-table's required rows plus `"component"`, and close the object with
+decision doc's description column, never re-authored at build time.** When a row's
+`A2UI type` cell carries a `(default: X)` annotation, add a `"default": X` key to that
+property's object (this is the only place the annotation surfaces — the zod schema in
+step 1 gets no `.default()`). Add the framework `"component"` discriminator property
+(`{"const": "<Name>"}`), set `"required"` to the rows marked `carry (required)` in the
+decision doc plus `"component"`, and close the object with
 `"unevaluatedProperties": false`. Finally, add `{"$ref": "#/components/<Name>"}` to
 `$defs.anyComponent.oneOf`.
 
@@ -166,6 +172,7 @@ Model (excerpt of the `Button` entry in `catalog.json`):
     "variant": {
       "type": "string",
       "enum": ["default", "primary", "invisible", "danger", "link"],
+      "default": "default",
       "description": "The visual style. 'primary' marks the main call-to-action; 'danger' a destructive action."
     }
   },
