@@ -301,7 +301,7 @@ component, so it gets no row — the way the client section does not re-document
 
 | event | response messages | visibility coupling |
 |---|---|---|
-| `submit` | 1. `updateDataModel {path: '/submitted', value: true}` · 2. `updateComponents [{id: 'label', component: 'Text', text: '✅ Sent — server received submit'}]` (surfaceId echoed — stamped at build, not authored) | `button-event` · `disabled ← /submitted` · initial `/submitted = false` |
+| `submit` | 1. `updateDataModel {path: '/submitted', value: true}` · 2. `updateComponents [{id: 'label', component: 'Text', text: '✅ Sent — server received submit'}]` (surfaceId echoed — stamped at runtime, not authored) | `button-event` · `disabled ← /submitted` · initial `/submitted = false` |
 
 The response exercises both mechanisms: the label swap is self-visible; the
 `/submitted` write is visible only through the `disabled ← /submitted` coupling, which is
