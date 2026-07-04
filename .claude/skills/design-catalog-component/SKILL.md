@@ -22,9 +22,7 @@ Locate the component's type in the installed package's type declarations and fol
 intersections and spreads to enumerate every real prop. Then reconcile that surface
 against the official doc: the doc gives the documented surface and its meaning; the
 types give the exhaustive surface, including anything the doc omits that must still be
-carried or explicitly dropped. Neither source alone is sufficient — the types can expose
-props the doc doesn't mention (e.g. an inherited HTML-attribute spread), and the doc
-supplies the semantic meaning the types alone don't carry.
+carried or explicitly dropped.
 
 ### Prop-surface decision checklist
 
@@ -52,9 +50,8 @@ one decision per prop:
   prop is the A2UI-idiomatic content channel. Example: `text` on Text. When a
   component's content is itself a nested component reference rather than raw content,
   the synthetic prop is typed as a `ComponentId` instead of a value — example: `child`
-  on Button. A synthetic value prop still needs an A2UI type, decided by the same
-  A2UI-type-selection rule below (a displayed value bound to data is typically
-  `DynamicString` — example: `text` on Text).
+  on Button. A synthetic value prop still gets its A2UI type from the type-selection
+  rule below (typically `DynamicString`).
 
 - **A2UI type selection**, per carried prop:
   - **Bound runtime state** (drives at render time from data or an async operation) →
@@ -111,10 +108,9 @@ The component decision doc is one markdown file per component with:
 - **One section per surface.** This step's output is the **adapter section**,
   consisting of:
   - A **prop-surface table** with columns `prop | decision | synthetic? | A2UI type | description`,
-    where `decision` is one of carry/drop/defer. Required-ness lives inside the
-    `decision` cell (`carry (required)` vs bare `carry`); a documented default lives
-    inside the `A2UI type` cell (e.g. `(default: "span")`). No extra columns are added
-    for either.
+    where `decision` is one of carry/drop/defer. Required-ness and defaults stay in-cell
+    annotations as decided in the checklist (`carry (required)`; `(default: "span")` in
+    the `A2UI type` cell) — no extra columns.
   - A **functions list** — name, args, returnType, a de-branded function-level
     description, and a de-branded description per arg — for each local function the
     component needs (e.g. an effect invoked from an `Action`).
@@ -134,7 +130,7 @@ Component-level description: An interactive button that triggers an action when 
 | `variant` | carry | no | `z.enum(['default','primary','invisible','danger','link']) (default: "default")` | The visual style; `primary` marks the main call-to-action. |
 | `disabled` | carry | no | `DynamicBoolean` | Whether the button is disabled and cannot be clicked. |
 | `accessibility` | carry | no | `AccessibilityAttributes` | Accessibility label/description for assistive technologies. |
-| `icon` | defer | — | — | Element-typed; not JSON-serializable. Carry as a `ComponentId` child once an Icon component exists. |
+| `icon` | defer | — | — | — |
 
 Functions:
 

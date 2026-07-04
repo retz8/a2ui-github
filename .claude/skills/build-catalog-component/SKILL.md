@@ -32,9 +32,8 @@ A2UI type:
 
 A row's decision cell carries its required-ness: `carry (required)` → no `.optional()`;
 bare `carry` → `.optional()`. A row's `A2UI type` cell may also carry a `(default: X)`
-annotation — this does **not** produce a zod `.default(X)`; the shipped schemas never
-call `.default()`, so the annotation is transcribed only into `catalog.json` (step 4),
-not here. `ComponentApi` is **props-only** — it never includes `component` or `id` (the
+annotation — it does **not** produce a zod `.default(X)`; the annotation surfaces only
+in `catalog.json` (step 4). `ComponentApi` is **props-only** — it never includes `component` or `id` (the
 framework owns those envelope fields) — and the `.object()` ends `.strict()`, forbidding
 any prop outside the transcribed surface. Export `{name, schema}` as `const` plus the
 inferred `<Name>Props` type.
@@ -193,8 +192,7 @@ asserts:
 - representative prop passthrough (a couple of the remaining carried rows, resolved to
   plain props)
 
-The missing-`ThemeProvider` warning tolerance noted above for the render step applies
-here too — it is not a defect to chase down.
+The missing-`ThemeProvider` warning tolerance from the render notes applies here too.
 
 Model (teaching-sized excerpt of `button.test.tsx`):
 
@@ -254,8 +252,7 @@ decision doc's description column, never re-authored at build time.** Likewise, 
 entry's own top-level `"description"` is copied verbatim from the decision doc's
 component-level description. When a row's
 `A2UI type` cell carries a `(default: X)` annotation, add a `"default": X` key to that
-property's object (this is the only place the annotation surfaces — the zod schema in
-step 1 gets no `.default()`). Add the framework `"component"` discriminator property
+property's object. Add the framework `"component"` discriminator property
 (`{"const": "<Name>"}`), set `"required"` to the rows marked `carry (required)` in the
 decision doc plus `"component"`, and close the object with
 `"unevaluatedProperties": false`. Finally, add `{"$ref": "#/components/<Name>"}` to
@@ -317,8 +314,8 @@ it('registers the Button component', () => {
 
 ### Optional: local-function sub-loop
 
-Only when the decision doc's functions list is non-empty. If the doc's functions list is
-empty, skip this sub-loop entirely.
+Run this sub-loop only when the decision doc's functions list is non-empty; otherwise
+skip it entirely.
 
 For each functions-list entry (`name`, `args`, `returnType`):
 
