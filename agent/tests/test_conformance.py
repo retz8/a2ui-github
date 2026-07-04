@@ -1,13 +1,13 @@
 import pytest
 
 from deterministic_agent.catalog import validate_payload
+from deterministic_agent.responses import _EVENT_FIXTURES
 from tests.helpers import run_executor
 
-SUBMIT = {"name": "submit", "surfaceId": "button-event", "sourceComponentId": "root", "context": {}}
 
-
-async def test_emitted_submit_payload_conforms_to_catalog():
-    payload = await run_executor(SUBMIT)
+@pytest.mark.parametrize("event", sorted(_EVENT_FIXTURES))
+async def test_emitted_event_payload_conforms_to_catalog(event):
+    payload = await run_executor({"name": event, "surfaceId": "test", "context": {}})
     validate_payload(payload)  # must not raise
 
 
