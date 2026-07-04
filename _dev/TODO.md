@@ -34,12 +34,12 @@ Order: (3.1 ∥ 3.2) → 3.3 → 3.4. 3.1 and 3.2 are parallel-eligible (code vs
 ## Phase 4 — Catalog-component authoring skill [WIP]
 Capture the repeatable component-authoring workflow (proven by hand in Phase 2) as the `new-catalog-component` project skill; validate it by walking against the shipped `Text`/`Button`. Spec: `_dev/docs/spec/phase-4-catalog-authoring-skill.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
-- [ ] **4.1** Adapter-authoring procedure — capture the adapter-side loop, validated against the `Text`/`Button` adapter artifacts.
+- [WIP] **4.1** Adapter-authoring procedure — capture the adapter-side loop, validated against the `Text`/`Button` adapter artifacts.
 - [ ] **4.2** Client-authoring procedure — capture the client-side loop, validated against the `Text`/`Button` client artifacts.
 - [ ] **4.3** Agent-fixture procedure — capture the deterministic-agent side, validated against `Button`'s deterministic fixture.
 - [ ] **4.4** Skill assembly + end-to-end validation — stitch the surfaces into the coherent `SKILL.md` and run the full end-to-end walk against `Text` + `Button`.
 
-Order: (4.1 ∥ 4.2 ∥ 4.3) → 4.4. The three surface procedures are parallel-eligible (independent surfaces, mirroring Phase 2); 4.4 needs all three.
+Order: 4.1 → 4.2 → 4.3 → 4.4, fully sequential. The client (4.2) and agent-fixture (4.3) procedures both build on the catalog-level component shape 4.1 settles (create → test), so each is authored against the settled prior surfaces rather than in parallel; 4.4 assembles all three.
 
 ## Phase 5 — Autonomous-run layer
 Near-rewrite of the daily-work harness's autonomous mechanism, shipped in `../daily-work-harness` (not this repo), ready for the Phase-6 build-out. Spec: `_dev/docs/spec/phase-5-autonomous-run-layer.md`. Handles below are non-restrictive — 5.1 in particular may ship more than named.
