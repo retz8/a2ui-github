@@ -587,3 +587,123 @@ covering all of its surfaces, not one per enum value. Then `yarn workspace clien
 test:e2e` re-runs to confirm the new baselines are clean. The baseline's file name is
 derived mechanically from the fixture name; there is no separate naming decision to
 make.
+
+## Agent section
+
+This step consumes the decision doc's **agent section** — the event-response table
+(`event | response messages (ordered, with canned values) | visibility coupling (client
+fixture · bound prop ← path · initial value)`) — produced by the Design skill's agent
+section. It mechanically materializes the agent fixture, its mapping entry, the paired
+client fixture's coupling edit, and their tests from that table. It takes **no human
+input**: the round-trip bless in this section's verification gate is Claude's own agent
+verification of the response, not a human judgment call.
+
+**Infra assumption.** The `DeterministicAgentExecutor` and its response-building,
+surfaceId-stamping, and unknown-event-fallback machinery, the catalog-conformance
+validator, the server wiring, and the `run_executor` test harness are one-time
+infrastructure that already exists; this loop only *consumes* it and never stands it up.
+If any of that infra is missing, that is a scaffold/template concern outside this loop.
+The A2A round-trip wire — what carries an `event` from the client to the agent and the
+response back — is documented here, since it is what makes this section's event story
+complete, but it too is consumed infra: never something this loop stands up, and not a
+per-component build step.
+
+### The mechanical loop
+
+Walk the decision doc's event-response table once and produce, per event, the three
+steps below in order.
+
+#### 1. Author the response fixture — `agent/deterministic_agent/fixtures/<event>.json`
+
+Transcribe that row's ordered messages and canned values verbatim. `surfaceId` is
+**omitted** — it is stamped at runtime by `_stamp_surface`, so authoring one in is wrong.
+
+Model (`submit.json`):
+
+```json
+[
+  { "version": "v0.9", "updateDataModel": { "path": "/submitted", "value": true } },
+  { "version": "v0.9", "updateComponents": {
+    "components": [ { "id": "label", "component": "Text", "text": "✅ Sent — server received submit" } ] } }
+]
+```
+
+#### 2. Register the mapping — `agent/deterministic_agent/responses.py`
+
+Add one entry to `_EVENT_FIXTURES`, keyed on the event name:
+
+```python
+_EVENT_FIXTURES = {"submit": "submit.json"}
+```
+
+#### 3. Coupling edit — amend the paired client event fixture in place
+
+Amend `client/src/fixtures/<name>.ts` — the same file the Client section authored —
+adding the bound prop and an initial `updateDataModel`. This is not a new fixture; it is
+an edit to the existing one.
+
+Model (`button-event.ts`): the root `Button` gains `disabled: {path: '/submitted'}`, and
+a trailing `{version: 'v0.9', updateDataModel: {path: '/', value: {submitted: false}}}`
+initializes the data model — so the server's `/submitted = true` write, once applied,
+visibly disables the button.
+
+### Test structure
+
+Maps 1:1 onto the client surface's split between an authored per-fixture case and an
+auto-covering structural test.
+
+#### Response-content test — the one authored per-event case (`agent/tests/test_responses.py`)
+
+Asserts `build_response(action)` returns the row's messages, in order, with the
+surfaceId echoed onto every operation.
+
+Model:
+
+```python
+def test_submit_returns_data_model_then_components_with_surface_echoed():
+    msgs = build_response({"name": "submit", "surfaceId": "button-event", "context": {}})
+    assert msgs[0]["updateDataModel"] == {"surfaceId": "button-event", "path": "/submitted", "value": True}
+    assert msgs[1]["updateComponents"]["components"][0]["text"] == "✅ Sent — server received submit"
+```
+
+#### Conformance auto-covers — no edit (`agent/tests/test_conformance.py`)
+
+Its positive case is parametrized over `_EVENT_FIXTURES`, so a new event is picked up the
+moment its mapping entry lands (step 2 above). This is a genuine no-op — the agent-side
+analog of the client's structural/selector auto-cover and the adapter parity loop.
+Nothing here is edited per component.
+
+#### Executor test — untouched (`agent/tests/test_executor.py`)
+
+The executor is component-agnostic and proven once on `submit`; a new event walks the
+identical `run_executor` path through the same executor code. It is one-time infra,
+proven once, not a per-event case.
+
+### Build notes (not optional style choices)
+
+- `surfaceId` is omitted in the fixture and stamped at runtime; authoring one in is
+  wrong.
+- The response is a partial update (`updateComponents`/`updateDataModel`) only, never a
+  re-`createSurface` — the surface already exists in the client processor.
+- The response's component `id`s must match the paired client fixture's `id`s for the
+  swap to land (e.g. `id: 'label'`); this is fixed at design time — transcribe it
+  exactly.
+- The data-model path must match the coupled prop's binding (e.g. `/submitted`); fixed
+  at design time — transcribe it exactly.
+- Conformance passes on a partial, rootless fragment by design (RELAXED validation; the
+  framework-owned `id` is stripped before validation) — validator-infra behavior, not a
+  per-event choice.
+
+### Verification gate — the round-trip bless
+
+The agent — not a human — drives the browser at the tunnel URL with the deterministic
+server **running** (`uv run python -m deterministic_agent`), selects the paired fixture,
+triggers the event, and confirms the post-event render matches the designed response
+(label flipped, button disabled) — the round-trip analog of the client surface's static
+bless.
+
+This gate is not tied to any committed artifact — the Phase-5 nightly prompt owns
+skipping it where Claude-Chrome is unavailable, deferring live-integration confirmation
+to `review-nightly`. The CI proofs (response content, conformance, the client
+bound-fixture render test, the reactivity/round-trip-render infra test) carry the
+autonomous PR in the meantime.
