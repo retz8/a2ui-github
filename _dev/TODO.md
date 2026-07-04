@@ -31,7 +31,7 @@ Lift an FE + deterministic-agent baseline template from the post-Phase-2 shape �
 
 Order: (3.1 ∥ 3.2) → 3.3 → 3.4. 3.1 and 3.2 are parallel-eligible (code vs prose surfaces). 3.3 needs the placeholder inventory 3.1+3.2 define; 3.4 needs both the template content and a runnable init.
 
-## Phase 4 — Catalog-component authoring skills [WIP]
+## Phase 4 — Catalog-component authoring skills [done]
 Capture the repeatable component-authoring workflow (proven by hand in Phase 2) as TWO coupled project skills — `design-catalog-component` (interactive, human-gated) and `build-catalog-component` (autonomous-capable) — coupled through the per-component decision doc; validate by walking against the shipped `Text`/`Button`. Spec: `_dev/docs/spec/phase-4-catalog-authoring-skill.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
 Each surface sub-task (4.1–4.3) writes its design steps into the Design `SKILL.md` and its build/test steps into the Build & Test `SKILL.md` — building up both skills incrementally; 4.4 finalizes each.
@@ -39,7 +39,7 @@ Each surface sub-task (4.1–4.3) writes its design steps into the Design `SKILL
 - [x] **4.1** Adapter surface — adapter design procedure (prop-surface decision checklist → decision doc; establishes the decision-doc contract) + adapter build/test procedure, validated against the `Text`/`Button` adapter artifacts.
 - [x] **4.2** Client surface — client design + build/test procedures, validated against the `Text`/`Button` client artifacts.
 - [x] **4.3** Agent-fixture surface — agent design + build/test procedures, validated against `Button`'s deterministic fixture.
-- [WIP] **4.4** Finalize both skills + end-to-end validation — `SKILL.md` frontmatter/overview/orchestration for each skill, and the full end-to-end walk (design → decision doc → build all three) against `Text` + `Button`.
+- [x] **4.4** Finalize both skills + end-to-end validation — `SKILL.md` frontmatter/overview/orchestration for each skill, and the full end-to-end walk (design → decision doc → build all three) against `Text` + `Button`.
 
 Order: 4.1 → 4.2 → 4.3 → 4.4, strictly sequential — the surface sub-tasks share a write target (the two `SKILL.md` files). 4.1 establishes the decision-doc contract the later surfaces append to.
 
