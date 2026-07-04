@@ -240,3 +240,69 @@ carry (backfill deferred).
 Text's content axis, in the same format: `text` (literal, `text: "Hello from Primer"`)
 and `text-bound` (bound, `text: {path: "/greeting"}` + data model
 `{greeting: "Bound hello"}`) — demonstrating the content-channel rule (literal + bound).
+
+## Agent section
+
+This step produces the **agent section** of the same component decision doc, appended
+after the client section. Its response set is derived from the locked adapter
+prop-surface table — specifically, its `event`-shaped `Action` rows, in the order they
+appear there.
+
+### The design call
+
+Walk each `event`-shaped `Action` the component emits; for each event name, design the
+canned A2UI response the deterministic agent returns. The response is an **invented**
+design artifact — "what would a plausible server do in reaction to this event?" — not a
+derivation from anything upstream. The component's doc-header official documentation URL
+is the plausibility reference: it grounds what a real reaction to the event would
+sensibly look like, without dictating one.
+
+**No-agent-surface rule.** The `functionCall` action shape runs locally client-side and
+never reaches the agent, so it produces no agent fixture. A component with no
+event-shaped action (e.g. Text) gets no agent section at all — the analog of "Text
+carries no accessibility."
+
+### Output is response + coupling, one unit
+
+The design call's output per event is the response messages, with concrete canned
+values, together with the visibility coupling that renders them.
+
+**The visibility principle.** A response should drive both update mechanisms where the
+component supports them — `updateComponents` (a component swap, self-visible) and
+`updateDataModel` (a path write, visible only when a rendered prop binds that path) —
+and every data-model write must bind to a rendered prop in the paired client event
+fixture, else the write is invisible and untestable. Realizing the coupling edits the
+paired client event fixture in place (the bound prop + an initial data-model value).
+
+**The design call (human gate).** The agent design call runs through the same
+three-stage human gate already defined in this skill (present the derived surface →
+propose, marking unclear rows `not sure` → resolve, then lock); the mechanics are not
+restated here. Uniquely for this surface, the residue is **thick**: because the response
+is invented rather than derived, the proposal itself is the judgment — which data-model
+path to write, what confirmation content, which prop to couple — so the human's review is
+substantive co-design, not a rubber-stamp.
+
+As with the earlier sections, the agent section is appended to the same decision doc and
+never restructures the adapter or client sections already there (per the append-convention
+above).
+
+### Agent-section format
+
+Continuing the same decision doc, the agent section consists of one **event-response
+table**, one row per event the component emits, with columns
+`event | response messages (ordered, with canned values) | visibility coupling (client fixture · bound prop ← path · initial value)`.
+Response and coupling live in one table because they are one design unit per event.
+
+**Fallback note:** the unknown-event fallback is infra behavior, not authored per
+component, so it gets no row — the way the client section does not re-document
+`TestSpace`.
+
+#### Example (teaching-sized, modelled on Button)
+
+| event | response messages | visibility coupling |
+|---|---|---|
+| `submit` | 1. `updateDataModel {path: '/submitted', value: true}` · 2. `updateComponents [{id: 'label', component: 'Text', text: '✅ Sent — server received submit'}]` (surfaceId echoed — stamped at build, not authored) | `button-event` · `disabled ← /submitted` · initial `/submitted = false` |
+
+The response exercises both mechanisms: the label swap is self-visible; the
+`/submitted` write is visible only through the `disabled ← /submitted` coupling, which is
+the half that proves two-way data binding on the component itself.
