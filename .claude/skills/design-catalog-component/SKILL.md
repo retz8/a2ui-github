@@ -1,0 +1,159 @@
+# Design Catalog Component
+
+## Adapter section
+
+This step produces the **adapter section** of the component decision doc, at the
+project's component-decision location (this project:
+`_dev/docs/new-components/<component-name>.md`).
+
+### Inputs
+
+Two inputs, both required:
+
+1. **The component's official documentation URL** — human-provided. This is the source
+   of the documented prop surface and the prose semantics that become the eventual
+   `catalog.json` descriptions.
+2. **The component's real prop surface** — agent-resolved from its installed type
+   declarations.
+
+### Real-prop resolution method
+
+Locate the component's type in the installed package's type declarations and follow
+intersections and spreads to enumerate every real prop. Then reconcile that surface
+against the official doc: the doc gives the documented surface and its meaning; the
+types give the exhaustive surface, including anything the doc omits that must still be
+carried or explicitly dropped.
+
+### Prop-surface decision checklist
+
+Walk every real prop found above (plus any synthetic prop introduced below) and make
+one decision per prop:
+
+- **Carry / drop / defer.**
+  - **Drop** props with no A2UI representation. In particular, the non-`aria-*` slice
+    of an inherited HTML-attribute spread (`type`, `name`, `tabIndex`, `data-*`, and
+    similar) has no protocol representation and is dropped.
+  - **Defer** props that are not JSON-serializable — most commonly element-typed props
+    (a prop typed to accept a rendered element/node) — recording a reason for each.
+  - Otherwise **carry** the prop into the schema. Record required-ness in the same
+    decision cell: `carry (required)` when the prop is required, bare `carry` when it's
+    optional. As a heuristic: the synthetic content channel and the primary interaction
+    prop are required; a real prop's required-ness otherwise follows its installed type
+    unless the design deliberately tightens it.
+  - When the component's official documentation specifies a default value for a carried
+    prop, record it as an annotation in that row's `A2UI type` cell, e.g.
+    `z.enum([...]) (default: "span")`. Only record a default when the doc documents one.
+
+- **Synthetic-content-prop rule.** When a component takes its content through
+  `children` as raw content (text, not references to other components), introduce a
+  synthetic value prop to carry it — the component stays a true leaf, and the synthetic
+  prop is the A2UI-idiomatic content channel. Example: `text` on Text. When a
+  component's content is itself a nested component reference rather than raw content,
+  the synthetic prop is typed as a `ComponentId` instead of a value — example: `child`
+  on Button. A synthetic value prop still gets its A2UI type from the type-selection
+  rule below (typically `DynamicString`).
+
+- **A2UI type selection**, per carried prop:
+  - **Bound runtime state** (drives at render time from data or an async operation) →
+    the matching `CommonSchemas.Dynamic*` wrapper (`DynamicBoolean`, `DynamicString`,
+    etc.).
+  - **Fixed authoring-time configuration** (set once, never data-driven) → a plain
+    `z.boolean()` / `z.string()` / `z.number()`.
+  - **Enums** → a local `z.enum` (there is no `DynamicEnum`), regardless of whether the
+    value is otherwise bound or fixed.
+  - **Interaction** (a click/press/etc. handler) → `Action`.
+  - **A reference to another component as content** → `ComponentId`.
+  - **Accessibility** → `AccessibilityAttributes`.
+
+- **Per-component fidelity.** Carry a protocol common only where the component's real
+  type exposes that capability — never as a uniform base applied to every component.
+  Concretely: Button carries `accessibility` because its real type spreads
+  `ButtonHTMLAttributes` (exposing the `aria-*` surface); Text's real type has no such
+  spread, so Text carries no `accessibility`. Consistency across the catalog is
+  per-component fidelity, not a shared base.
+
+- **De-branded description.** Author each prop's semantic description here — what the
+  prop does, in domain terms. Never name the design system or renderer in the
+  description; it is read by the generating agent, which has no use for that detail.
+
+Only **spec-navigation** — reading the upstream protocol spec itself — points to the
+`a2ui-sdk-design` skill. The conventions above are self-contained here.
+
+### The design call (human gate)
+
+Run the call in three stages — never as one table dump:
+
+1. **Present the real prop list.** Every prop the installed types expose, before any
+   A2UI judgment — own props and inherited spreads shown as such — so the human sees
+   the full ground truth the decisions are made against.
+2. **Present the proposed A2UI prop table.** The checklist applied to every prop. Where
+   a checklist rule decides cleanly, state the decision explicitly. Mark every row whose
+   decision is *not* clear-cut as **`not sure`** — typical cases: bound-state-vs-config
+   borderlines, tightening an optional prop to required, defer-vs-carry edges, a
+   questionable synthetic prop.
+3. **Resolve the `not sure` props one by one with the human.** For each, in turn: state
+   the prop's semantics, the plausible options, and the tradeoff — then the human
+   decides and the row is filled. Do not batch them into a single question.
+
+Only after every row is decided does the human lock the table and the doc get written.
+
+### Decision-doc format
+
+The component decision doc is one markdown file per component with:
+
+- **A component-level header**: the component name, its official documentation URL,
+  a reference to its resolved type (where the real prop surface was resolved from), and
+  a de-branded component-level description (becomes the `catalog.json` entry's
+  `description`).
+- **One section per surface.** This step's output is the **adapter section**,
+  consisting of:
+  - A **prop-surface table** with columns `prop | decision | synthetic? | A2UI type | description`,
+    where `decision` is one of carry/drop/defer. Required-ness and defaults stay in-cell
+    annotations as decided in the checklist (`carry (required)`; `(default: "span")` in
+    the `A2UI type` cell) — no extra columns.
+  - A **functions list** — name, args, returnType, a de-branded function-level
+    description, and a de-branded description per arg — for each local function the
+    component needs (e.g. an effect invoked from an `Action`).
+  - A **dropped/deferred props list** — prop, reason — for every prop dropped or
+    deferred above. A categorical drop (e.g. the non-`aria-*` slice of an inherited
+    HTML-attribute spread) may be recorded as one grouped row rather than one row per
+    attribute.
+
+#### Example (modelled on Button; teaching-sized, not the full component)
+
+Component-level description: An interactive button that triggers an action when clicked.
+
+| prop | decision | synthetic? | A2UI type | description |
+|---|---|---|---|---|
+| `child` | carry (required) | yes | `ComponentId` | The component used as the button's label. |
+| `action` | carry (required) | no | `Action` | The action performed when the button is clicked. |
+| `variant` | carry | no | `z.enum(['default','primary','invisible','danger','link']) (default: "default")` | The visual style; `primary` marks the main call-to-action. |
+| `disabled` | carry | no | `DynamicBoolean` | Whether the button is disabled and cannot be clicked. |
+| `accessibility` | carry | no | `AccessibilityAttributes` | Accessibility label/description for assistive technologies. |
+| `icon` | defer | — | — | — |
+
+Functions:
+
+| name | args | returnType | description |
+|---|---|---|---|
+| `consoleLog` | `message: string` (The message to log.) | `void` | Logs a message to the browser console. A local client-side effect. |
+
+Dropped/deferred props:
+
+| prop | reason |
+|---|---|
+| `icon` | Element-typed; not JSON-serializable. Carry as a `ComponentId` child once an Icon component exists. |
+| `type`, `name`, `tabIndex`, `data-*`, and the rest of the non-`aria-*` `ButtonHTMLAttributes` spread | Dropped: no A2UI representation. |
+
+### Append-convention
+
+There is one shared decision doc per component, at the project's component-decision
+location, and one section per surface within it. Later surfaces (client, agent) append
+their own sections to the same doc as their design steps run — they never restructure
+or rewrite an existing section.
+
+### Doc quality bar
+
+The doc is well-structured markdown, read by a human and by the Build LLM — nothing
+parses it programmatically. The bar is **completeness and unambiguity**: it must contain
+everything an autonomous Build run needs, so that run requires no human in the loop.
