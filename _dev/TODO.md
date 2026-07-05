@@ -44,12 +44,13 @@ Each surface sub-task (4.1–4.3) writes its design steps into the Design `SKILL
 Order: 4.1 → 4.2 → 4.3 → 4.4, strictly sequential — the surface sub-tasks share a write target (the two `SKILL.md` files). 4.1 establishes the decision-doc contract the later surfaces append to.
 
 ## Phase 5 — Autonomous-run layer
-Near-rewrite of the daily-work harness's autonomous mechanism, shipped in `../daily-work-harness` (not this repo), ready for the Phase-6 build-out. Spec: `_dev/docs/spec/phase-5-autonomous-run-layer.md`. Handles below are non-restrictive — 5.1 in particular may ship more than named.
+Build the autonomous half of the daily-work harness properly and make it project-agnostic, shipped in `../daily-work-harness` (not this repo), ready for the Phase-6 build-out. Spec: `_dev/docs/spec/phase-5-autonomous-run-layer.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
-- [ ] **5.1** Autonomous producing routine — the nightly routine that picks a startable `N.M` off `main`, runs it, and opens a gated `phase-<N>/<M>-*` PR; GitHub issue/label machinery folded in; establishes the autonomous-run protocol.
-- [ ] **5.2** `review-nightly` rewrite — the morning triage/merge counterpart consuming that protocol.
+- [ ] **5.1** `/delegate-task` + issue/label contract — the human-facing skill projecting a task (spec'd `N.M`, or ad-hoc hotfix/chore) into a GitHub issue with fixed format + labels; defines the protocol the other pieces consume, including "blocked/needs-input" as a first-class state (label + draft PR).
+- [ ] **5.2** Autonomous producing routine — a project-agnostic `.md` prompt in the harness repo that reads open labeled issues, runs one task, and opens a gated `phase-<N>/<M>-*` PR linked to its issue; `/schedule` registers it as a nightly cloud Routine.
+- [ ] **5.3** `review-nightly` rewrite — the morning triage/merge counterpart: case-1 (ready → merge → close PR+issue → `wrap-up` tick) and case-2 (blocked → spec change + PR comment → re-delegate or fix via worktree off the PR branch); finalizes the single harness doc.
 
-Order: 5.1 → 5.2 (the consuming side follows the contract the producing side defines). Cross-repo: commits land in `../daily-work-harness`; tracked here, no `a2ui-github` worktree.
+Order: 5.1 → 5.2 → 5.3, strictly sequential — contract-first, and the consuming side follows the contract the producing side defines. Cross-repo: commits land in `../daily-work-harness`; tracked here, no `a2ui-github` worktree.
 
 ## Phase 6 — Catalog build-out
 The Primer primitives and GitHub-semantic components the demo needs.
