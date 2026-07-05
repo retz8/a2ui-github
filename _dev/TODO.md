@@ -43,10 +43,10 @@ Each surface sub-task (4.1–4.3) writes its design steps into the Design `SKILL
 
 Order: 4.1 → 4.2 → 4.3 → 4.4, strictly sequential — the surface sub-tasks share a write target (the two `SKILL.md` files). 4.1 establishes the decision-doc contract the later surfaces append to.
 
-## Phase 5 — Autonomous-run layer
+## Phase 5 — Autonomous-run layer [WIP]
 Build the autonomous half of the daily-work harness properly and make it project-agnostic, shipped in `../daily-work-harness` (not this repo), ready for the Phase-6 build-out. Spec: `_dev/docs/spec/phase-5-autonomous-run-layer.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
-- [ ] **5.1** `/delegate-task` + issue/label contract — the human-facing skill projecting a task (spec'd `N.M`, or ad-hoc hotfix/chore) into a GitHub issue with fixed format + labels; defines the protocol the other pieces consume, including "blocked/needs-input" as a first-class state (label + draft PR).
+- [x] **5.1** `/delegate-task` + issue/label contract — the human-facing skill projecting a task (spec'd `N.M`, or standalone hotfix/chore) into a GitHub issue with fixed format + labels; defines the protocol the other pieces consume, including "blocked/needs-input" as a first-class state (label on a real, non-draft PR).
 - [ ] **5.2** Autonomous producing routine — a project-agnostic `.md` prompt in the harness repo that reads open labeled issues, runs one task, and opens a gated `phase-<N>/<M>-*` PR linked to its issue; `/schedule` registers it as a nightly cloud Routine.
 - [ ] **5.3** `review-nightly` rewrite — the morning triage/merge counterpart: case-1 (ready → merge → close PR+issue → `wrap-up` tick) and case-2 (blocked → spec change + PR comment → re-delegate or fix via worktree off the PR branch); finalizes the single harness doc.
 
