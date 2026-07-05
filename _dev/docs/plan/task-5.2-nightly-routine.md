@@ -182,7 +182,7 @@ Per-project operator setup, done once when adopting the routine (ungraded):
 
 - Register `nightly-routine-prompt.md`'s content via `/schedule` as a **Remote** routine (not a local/desktop task — Remote runs fully autonomously with no approval prompts), on a nightly cadence, on a capable model (e.g. Opus).
 - Enable **unrestricted branch pushes** for the repo — Routines default to `claude/`-prefixed branches, but the contract uses `phase-<N>/<M>-*` / `task/<kebab>`.
-- Provide an environment **setup script** that installs the project's dependencies so gates can run, plus any network hosts the gates need beyond the default allowlist.
+- Ensure the environment provides the **base toolchain and network** the gates need (language runtimes, allowed domains) — the routine installs the project's own dependencies from its documented setup.
 - Ensure the project's Plan/Execution skills are committed under `.claude/skills/` — the routine has no access to plugin skills, only repo-committed ones.
 ```
 
@@ -229,6 +229,10 @@ You are the autonomous producing routine of the daily-work harness. You run unat
 **You run fully autonomously — no human is at the keyboard.** Never wait for confirmation or approval: make the decision, record it as an assumption, and proceed. Surface a blocker only through the `needs-input` or `blocked:setup` outcomes defined below — never by pausing.
 
 Work against the repo's own `origin`; commits and PRs go through the connected GitHub identity. Use conventional commits. Ensure any label you apply exists on the repo first (idempotent create).
+
+## Setup (once per run, only if the queue is non-empty)
+
+Once you have queued issues to process, provision this fresh clone so the gates can run later: follow the project's own documented install/setup steps from its `README` and `CLAUDE.md`, installing dependencies for each workspace/subproject. Do it once — the clone is shared across the per-issue subagents.
 
 ## Orchestrator
 
