@@ -1,7 +1,11 @@
 import {buttonEventFixture} from './button-event';
 import {buttonFnFixture} from './button-fn';
 import {buttonVariantsFixture} from './button-variants';
+import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
+import {textSizesFixture} from './text-sizes';
+import {textWeightsFixture} from './text-weights';
+import {textWhitespaceFixture} from './text-whitespace';
 import {textFixture} from './text';
 import type {Fixture} from './types';
 
@@ -9,6 +13,10 @@ export type {Fixture} from './types';
 
 export {textFixture} from './text';
 export {textBoundFixture} from './text-bound';
+export {textSizesFixture} from './text-sizes';
+export {textWeightsFixture} from './text-weights';
+export {textAsFixture} from './text-as';
+export {textWhitespaceFixture} from './text-whitespace';
 export {buttonFnFixture} from './button-fn';
 export {buttonEventFixture} from './button-event';
 export {buttonVariantsFixture} from './button-variants';
@@ -16,6 +24,10 @@ export {buttonVariantsFixture} from './button-variants';
 export const FIXTURES: Fixture[] = [
   textFixture,
   textBoundFixture,
+  textSizesFixture,
+  textWeightsFixture,
+  textAsFixture,
+  textWhitespaceFixture,
   buttonFnFixture,
   buttonEventFixture,
   buttonVariantsFixture,
