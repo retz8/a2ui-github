@@ -3,9 +3,7 @@ import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve, dirname} from 'node:path';
 import {z} from 'zod';
-import {TextApi} from './components/text';
-import {ButtonApi} from './components/button';
-import {consoleLog} from './functions/console-log';
+import {COMPONENTS, FUNCTIONS} from './catalog.registry';
 
 type JsonProp = {const?: string; enum?: string[]};
 type JsonComponent = {properties: Record<string, JsonProp>; required: string[]};
@@ -56,10 +54,6 @@ function shapeOf(api: {schema: z.ZodTypeAny}): Record<string, z.ZodTypeAny> {
   return (api.schema as z.ZodObject<any>).shape as Record<string, z.ZodTypeAny>;
 }
 
-// Component registry: zod ComponentApi keyed by component name.
-const COMPONENTS = {Text: TextApi, Button: ButtonApi} as const;
-// Function registry: FunctionImplementation keyed by function name.
-const FUNCTIONS = {consoleLog} as const;
 
 describe.each(Object.entries(COMPONENTS))('component %s: zod ↔ catalog.json parity', (name, api) => {
   const jsonComponent = catalog.components[name];
