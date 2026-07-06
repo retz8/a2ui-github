@@ -36,10 +36,11 @@ artifacts (no agent-section rows → no agent artifacts). Run-wide invariants, s
   consumes it. If any is missing, that is a scaffold/template concern outside this loop.
 - **Registry/barrel-derived tests auto-cover — no per-component edit.** Several tests derive
   their assertions from a registry or barrel and pick up a new entry the moment it lands: the
-  parity test's `COMPONENTS`/`FUNCTIONS` maps and `anyComponent`/`anyFunction` coverage checks,
-  the client structural (`fixtures.test.ts`) and selector (`selector.test.tsx`) tests, and the
-  agent conformance test (parametrized over `_EVENT_FIXTURES`). Where a step is one of these,
-  it is a genuine no-op called out so the surface is provably complete.
+  `COMPONENTS`/`FUNCTIONS` registry (`src/catalog.registry.ts`) driving both the parity test
+  and the catalog smoke test's exact-set assertions, the `anyComponent`/`anyFunction` coverage
+  checks, the client structural (`fixtures.test.ts`) and selector (`selector.test.tsx`) tests,
+  and the agent conformance test (parametrized over `_EVENT_FIXTURES`). Where a step is one of
+  these, it is a genuine no-op called out so the surface is provably complete.
 - **Descriptions are copied verbatim.** Every `"description"` in `catalog.json` — component-
   level, per-prop, function-level, per-arg — is copied verbatim from the decision doc, never
   re-authored at build time.
@@ -116,14 +117,15 @@ copied verbatim (see Orchestration); a `(default: X)` annotation adds `"default"
 rows plus `"component"`, close with `"unevaluatedProperties": false`, and add
 `{"$ref": "#/components/<Name>"}` to `$defs.anyComponent.oneOf`.
 
-**5. Parity registry** — `src/catalog.parity.test.ts`. Add `<Name>Api` to the `COMPONENTS` map.
-Auto-covers (see Orchestration) — no per-component assertion.
+**5. Registry** — `src/catalog.registry.ts`. Add `<Name>Api` to the `COMPONENTS` map — the
+single registry touch-point. Auto-covers (see Orchestration): the parity test's
+`describe.each` and the catalog smoke test's exact-set assertion both derive from this map.
 
 **6. Catalog registration** — `src/catalog.ts`. Import the component implementation and add it
 to the `new Catalog(...)` components array.
 
-**7. Catalog smoke test** — `src/catalog.test.ts`. Add one `CATALOG.components.has('<Name>')`
-assertion inside the existing `describe('CATALOG', …)` block.
+**7. Catalog smoke test** — `src/catalog.test.ts`. Auto-covers (see Orchestration); no edit —
+its exact-set assertion derives from the registry (step 5).
 
 ### Optional: local-function sub-loop
 
@@ -134,8 +136,8 @@ as the corresponding `Dynamic*`; (2) pair a `<name>.test.ts` asserting the decla
 validation, and the effect on `execute`; (3) register it in the `new Catalog(...)` functions
 array; (4) add a `functions.<name>` entry to `catalog.json` (`call` const, `args` typed with the
 wire `Dynamic*`, `returnType` const, `unevaluatedProperties: false`, `$ref` into
-`$defs.anyFunction.oneOf`; descriptions verbatim); (5) add it to the `FUNCTIONS` parity map
-(auto-covers). Full example in the reference.
+`$defs.anyFunction.oneOf`; descriptions verbatim); (5) add it to the `FUNCTIONS` map in `src/catalog.registry.ts` (auto-covers — parity and
+smoke test) Full example in the reference.
 
 ## Client surface
 
