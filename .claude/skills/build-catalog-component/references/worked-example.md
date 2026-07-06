@@ -249,17 +249,16 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
 );
 ```
 
-### Parity + smoke — `catalog.parity.test.ts` / `catalog.test.ts`
+### Registry — `catalog.registry.ts` (drives parity + smoke)
 
-Parity: add `<Name>Api` to the `COMPONENTS` registry map
-(`const COMPONENTS = {Text: TextApi, Button: ButtonApi} as const;`). The existing
-`describe.each` loop and `anyComponent` coverage check cover the new entry automatically.
-
-Smoke: add one assertion inside the existing `describe('CATALOG', …)` block:
+Add `<Name>Api` to the `COMPONENTS` registry map in `src/catalog.registry.ts`
+(`export const COMPONENTS = {Text: TextApi, Button: ButtonApi} as const;`) — the single
+registry touch-point. The parity test's `describe.each` loop and `anyComponent` coverage
+check, and the smoke test's exact-set assertion, cover the new entry automatically:
 
 ```ts
-it('registers the Button component', () => {
-  expect(CATALOG.components.has('Button')).toBe(true);
+it('registers exactly the registry components', () => {
+  expect([...CATALOG.components.keys()].sort()).toEqual(Object.keys(COMPONENTS).sort());
 });
 ```
 
@@ -331,7 +330,8 @@ The `catalog.json` function entry (`functions.consoleLog`, in the same catalog.j
 `call` discriminator const, `args` typed with the wire `Dynamic*` per arg, `returnType` const,
 `unevaluatedProperties: false`, and its `$ref` added to `$defs.anyFunction.oneOf`. Descriptions
 copied verbatim from the decision doc's functions list. Register the function in the
-`new Catalog(...)` functions array and add it to the `FUNCTIONS` registry map in the parity test.
+`new Catalog(...)` functions array and add it to the `FUNCTIONS` registry map in
+`src/catalog.registry.ts`.
 
 ---
 
