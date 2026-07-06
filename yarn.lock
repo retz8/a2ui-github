@@ -681,7 +681,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@primer/octicons-react@npm:^19.24.1":
+"@primer/octicons-react@npm:19.28.1, @primer/octicons-react@npm:^19.24.1":
   version: 19.28.1
   resolution: "@primer/octicons-react@npm:19.28.1"
   peerDependencies:
@@ -2741,6 +2741,7 @@ __metadata:
   dependencies:
     "@a2ui/react": "npm:^0.10.1"
     "@a2ui/web_core": "npm:^0.10.1"
+    "@primer/octicons-react": "npm:19.28.1"
     "@primer/react": "npm:^38.28.0"
     "@testing-library/dom": "npm:^10.4.1"
     "@testing-library/jest-dom": "npm:^6.9.1"
@@ -2757,6 +2758,7 @@ __metadata:
   peerDependencies:
     "@a2ui/react": ^0.10.1
     "@a2ui/web_core": ^0.10.1
+    "@primer/octicons-react": ^19.28.1
     "@primer/react": ^38.28.0
     react: ^19.2.7
     react-dom: ^19.2.7
