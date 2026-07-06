@@ -11,7 +11,7 @@
     "typecheck:all": "yarn workspaces foreach -A --topological-dev run typecheck",
     "test:all": "yarn workspaces foreach -A --topological-dev run test",
     "lint:all": "eslint .",
-    "verify:all": "yarn build:all && yarn typecheck:all && yarn lint:all && yarn test:all",
+    "verify:all": "yarn build:all && yarn typecheck:all && yarn lint:all && yarn format:check && yarn test:all",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint ."

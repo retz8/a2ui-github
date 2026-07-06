@@ -10,7 +10,16 @@
 // Run manually:  node adapter-template/smoke-test.mjs
 // Never mutates the real adapter-template/. Wired into nothing.
 
-import {cpSync, mkdtempSync, existsSync, rmSync, writeFileSync, readFileSync, readdirSync, statSync} from 'node:fs';
+import {
+  cpSync,
+  mkdtempSync,
+  existsSync,
+  rmSync,
+  writeFileSync,
+  readFileSync,
+  readdirSync,
+  statSync,
+} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join, basename, dirname, relative, sep} from 'node:path';
 import {fileURLToPath} from 'node:url';
@@ -29,7 +38,7 @@ function copyTemplate() {
   const dest = mkdtempSync(join(tmpdir(), 'a2ui-smoke-'));
   cpSync(SRC, dest, {
     recursive: true,
-    filter: (s) => {
+    filter: s => {
       const name = basename(s);
       if (COPY_EXCLUDE_NAMES.has(name)) return false;
       if (name === SELF) return false;
@@ -122,7 +131,7 @@ function extname(name) {
 
 function checkAgnosticism() {
   const offenders = [];
-  const walk = (dir) => {
+  const walk = dir => {
     for (const name of readdirSync(dir)) {
       if (AGNO_EXCLUDE_NAMES.has(name)) continue;
       // Skip verification machinery (same files excluded from the copy).
@@ -142,7 +151,9 @@ function checkAgnosticism() {
   };
   walk(SRC);
   if (offenders.length > 0) {
-    throw new Error(`template is library/domain-shaped (build surface):\n  - ${offenders.join('\n  - ')}`);
+    throw new Error(
+      `template is library/domain-shaped (build surface):\n  - ${offenders.join('\n  - ')}`,
+    );
   }
   console.log('smoke: agnosticism OK — no Primer/GitHub identifiers on the build surface');
 }
@@ -157,7 +168,9 @@ function assertMaterialized(dir) {
     }
   }
   if (offenders.length > 0) {
-    throw new Error(`residual {{...}} tokens in materialized instance:\n  - ${offenders.join('\n  - ')}`);
+    throw new Error(
+      `residual {{...}} tokens in materialized instance:\n  - ${offenders.join('\n  - ')}`,
+    );
   }
   // Init machinery must survive fill (self-delete is a separate adopter-only step).
   for (const f of ['fill.mjs', 'init.values.json', '.claude/skills/init/SKILL.md']) {
@@ -173,7 +186,8 @@ async function main() {
   console.log(`smoke: copied template → ${dir}`);
   try {
     if (!existsSync(join(dir, 'fill.mjs'))) throw new Error('copy missing fill.mjs');
-    if (!existsSync(join(dir, '.claude/skills/init/SKILL.md'))) throw new Error('copy missing init skill');
+    if (!existsSync(join(dir, '.claude/skills/init/SKILL.md')))
+      throw new Error('copy missing init skill');
     if (existsSync(join(dir, SELF))) throw new Error('smoke-test.mjs should not be copied');
 
     runFill(dir);
@@ -191,7 +205,7 @@ async function main() {
   }
 }
 
-main().catch((err) => {
+main().catch(err => {
   console.error(`smoke: FAILED — ${err.message}`);
   process.exit(1);
 });

@@ -21,9 +21,7 @@ describe('TextView', () => {
   });
 
   it('passes size/weight/whiteSpace to Primer as data-* attributes', () => {
-    render(
-      <TextView text="Styled" size="large" weight="semibold" whiteSpace="nowrap" />,
-    );
+    render(<TextView text="Styled" size="large" weight="semibold" whiteSpace="nowrap" />);
     const el = screen.getByText('Styled');
     expect(el).toHaveAttribute('data-size', 'large');
     expect(el).toHaveAttribute('data-weight', 'semibold');
