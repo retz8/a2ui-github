@@ -136,8 +136,9 @@ as the corresponding `Dynamic*`; (2) pair a `<name>.test.ts` asserting the decla
 validation, and the effect on `execute`; (3) register it in the `new Catalog(...)` functions
 array; (4) add a `functions.<name>` entry to `catalog.json` (`call` const, `args` typed with the
 wire `Dynamic*`, `returnType` const, `unevaluatedProperties: false`, `$ref` into
-`$defs.anyFunction.oneOf`; descriptions verbatim); (5) add it to the `FUNCTIONS` map in `src/catalog.registry.ts` (auto-covers — parity and
-smoke test) Full example in the reference.
+`$defs.anyFunction.oneOf`; descriptions verbatim); (5) add it to the `FUNCTIONS` map in
+`src/catalog.registry.ts` (auto-covers — parity and smoke test). Full example in the
+reference.
 
 ## Client surface
 
