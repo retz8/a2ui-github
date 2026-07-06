@@ -95,8 +95,7 @@ would duplicate the contract routing and cost the harness its project-agnosticis
   standard on the simplest component. (From the backlog.)
 - **`6.4` — Button revisit.** Add the deferred `Button.icon` prop as a `ComponentId` child (now that
   `Icon` exists) and backfill Button's fixtures/baselines to the exhaustive standard, in one
-  sub-task. Also fold in the one-line `deferred-catalog-work.md` label fix ("Phase 5 → Phase 6").
-  (From `deferred-catalog-work.md` + the backlog.)
+  sub-task. (From `deferred-catalog-work.md` + the backlog.)
 
 Then the remaining L0 components, then L1, then L2.
 

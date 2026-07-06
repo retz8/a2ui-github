@@ -60,7 +60,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [ ] **6.1** Registry-driven catalog smoke-test refactor — replace per-component `has()` assertions with one exact-set assertion against the parity registry; update Build skill steps 5/7 to that single touch-point. First, before any component.
 - [ ] **6.2** `Icon` — wraps `@primer/octicons-react`; unblocks Button's icon backfill + every leading/trailing visual.
 - [ ] **6.3** `Text` client-fixture backfill — bring `Text` fixtures/baselines to the exhaustive per-prop standard.
-- [ ] **6.4** Button revisit — add deferred `Button.icon` (`ComponentId` child, now that `Icon` exists) + backfill Button fixtures/baselines; fold the `deferred-catalog-work.md` "Phase 5 → Phase 6" label fix.
+- [ ] **6.4** Button revisit — add deferred `Button.icon` (`ComponentId` child, now that `Icon` exists) + backfill Button fixtures/baselines.
 
 ### L0 — content leaves (no child slots)
 - [ ] **6.5** `Heading`
