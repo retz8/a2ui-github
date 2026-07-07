@@ -43,17 +43,84 @@ Each surface sub-task (4.1–4.3) writes its design steps into the Design `SKILL
 
 Order: 4.1 → 4.2 → 4.3 → 4.4, strictly sequential — the surface sub-tasks share a write target (the two `SKILL.md` files). 4.1 establishes the decision-doc contract the later surfaces append to.
 
-## Phase 5 — Autonomous-run layer [WIP]
+## Phase 5 — Autonomous-run layer [done]
 Build the autonomous half of the daily-work harness properly and make it project-agnostic, shipped in `../daily-work-harness` (not this repo), ready for the Phase-6 build-out. Spec: `_dev/docs/spec/phase-5-autonomous-run-layer.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
 - [x] **5.1** `/delegate-task` + issue/label contract — the human-facing skill projecting a task (spec'd `N.M`, or standalone hotfix/chore) into a GitHub issue with fixed format + labels; defines the protocol the other pieces consume, including "blocked/needs-input" as a first-class state (label on a real, non-draft PR).
 - [x] **5.2** Autonomous producing routine — a project-agnostic `.md` prompt in the harness repo that reads open labeled issues, runs one task, and opens a gated `phase-<N>/<M>-*` PR linked to its issue; `/schedule` registers it as a nightly cloud Routine.
-- [ ] **5.3** `review-nightly` rewrite — the morning triage/merge counterpart: case-1 (ready → merge → close PR+issue → `wrap-up` tick) and case-2 (blocked → spec change + PR comment → re-delegate or fix via worktree off the PR branch); finalizes the single harness doc.
+- [x] **5.3** `review-nightly` rewrite — the morning triage/merge counterpart: case-1 (ready → merge → close PR+issue → `wrap-up` tick) and case-2 (blocked → spec change + PR comment → re-delegate or fix via worktree off the PR branch); finalizes the single harness doc.
 
 Order: 5.1 → 5.2 → 5.3, strictly sequential — contract-first, and the consuming side follows the contract the producing side defines. Cross-repo: commits land in `../daily-work-harness`; tracked here, no `a2ui-github` worktree.
 
-## Phase 6 — Catalog build-out
-The Primer primitives and GitHub-semantic components the demo needs.
+## Phase 6 — Catalog build-out [WIP]
+Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf (the Phase-7 agent composes screens from them). Leaf vocabulary only — no screen composition here. Spec: `_dev/docs/spec/phase-6-catalog-build-out.md`. Inventory: `_dev/docs/primer-react-full-list.md`.
+
+**Component sub-tasks use a divergent track** (not 6.1/6.3/6.4): sole planning route is `design-catalog-component` → decision doc at `_dev/docs/new-components/<component>.md` (not a `task-<N.M>` spec); `delegate-task` points References at that doc, names `build-catalog-component` as Execution skill, no Plan skill. Per spec §5.
+
+- [x] **6.1** Registry-driven catalog smoke-test refactor — replace per-component `has()` assertions with one exact-set assertion against the parity registry; update Build skill steps 5/7 to that single touch-point. First, before any component.
+- [x] **6.2** `Icon` — wraps `@primer/octicons-react`; unblocks Button's icon backfill + every leading/trailing visual. (#3)
+- [WIP] **6.3** `Text` client-fixture backfill — bring `Text` fixtures/baselines to the exhaustive per-prop standard. (#4)
+- [ ] **6.4** Button revisit — add deferred `Button.icon` (`ComponentId` child, now that `Icon` exists) + backfill Button fixtures/baselines.
+
+### L0 — content leaves (no child slots)
+- [ ] **6.5** `Heading`
+- [ ] **6.6** `Link`
+- [ ] **6.7** `BranchName`
+- [ ] **6.8** `RelativeTime`
+- [ ] **6.9** `Label`
+- [ ] **6.10** `StateLabel`
+- [ ] **6.11** `CounterLabel`
+- [ ] **6.12** `Token`
+- [ ] **6.13** `Avatar`
+- [ ] **6.14** `Spinner`
+- [ ] **6.15** `ProgressBar`
+- [ ] **6.16** `Checkbox`
+- [ ] **6.17** `Radio`
+- [ ] **6.18** `ToggleSwitch`
+- [ ] **6.19** `Textarea`
+- [ ] **6.20** `SkeletonBox`
+- [ ] **6.21** `Truncate`
+- [ ] **6.22** `KeybindingHint`
+
+### L1 — single-type containers / simple slotters
+- [ ] **6.23** `Stack`
+- [ ] **6.24** `Flash`
+- [ ] **6.25** `Details`
+- [ ] **6.26** `LabelGroup`
+- [ ] **6.27** `AvatarStack`
+- [ ] **6.28** `ButtonGroup`
+- [ ] **6.29** `IconButton`
+- [ ] **6.30** `TextInput`
+- [ ] **6.31** `Select`
+- [ ] **6.32** `SegmentedControl`
+- [ ] **6.33** `Pagination`
+
+### L2 — composite / multi-slot / overlay
+- [ ] **6.34** `PageLayout`
+- [ ] **6.35** `SplitPageLayout`
+- [ ] **6.36** `PageHeader`
+- [ ] **6.37** `Header`
+- [ ] **6.38** `ActionList`
+- [ ] **6.39** `ActionMenu`
+- [ ] **6.40** `ActionBar`
+- [ ] **6.41** `NavList`
+- [ ] **6.42** `SubNav`
+- [ ] **6.43** `UnderlineNav`
+- [ ] **6.44** `Breadcrumbs`
+- [ ] **6.45** `TreeView`
+- [ ] **6.46** `Timeline`
+- [ ] **6.47** `FormControl`
+- [ ] **6.48** `CheckboxGroup`
+- [ ] **6.49** `RadioGroup`
+- [ ] **6.50** `SelectPanel`
+- [ ] **6.51** `Autocomplete`
+- [ ] **6.52** `Dialog`
+- [ ] **6.53** `ConfirmationDialog`
+- [ ] **6.54** `Overlay`
+- [ ] **6.55** `AnchoredOverlay`
+- [ ] **6.56** `Popover`
+
+Order: 6.1 first → 6.2 `Icon` → 6.3 → 6.4 → L0 → L1 → L2. Within a layer, sub-tasks are parallel-eligible (no coupling); cross-layer, a later slotter may defer a slot rather than wait and backfill once the referenced leaf exists (`deferred-catalog-work.md`).
 
 ## Phase 7 — Agent
 The agent that generates A2UI surfaces from the catalog, against the live GitHub repo.

@@ -10,6 +10,9 @@ const FIXTURE_NAMES = [
   'button-fn',
   'button-event',
   'button-variants',
+  'icon-names',
+  'icon-sizes',
+  'icon-fills',
 ];
 
 for (const name of FIXTURE_NAMES) {

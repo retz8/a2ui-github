@@ -1,13 +1,13 @@
 [
   {
     "version": "v0.9",
-    "updateDataModel": { "path": "/submitted", "value": true }
+    "updateDataModel": {"path": "/submitted", "value": true}
   },
   {
     "version": "v0.9",
     "updateComponents": {
       "components": [
-        { "id": "label", "component": "Text", "text": "✅ Sent — server received submit" }
+        {"id": "label", "component": "Text", "text": "✅ Sent — server received submit"}
       ]
     }
   }

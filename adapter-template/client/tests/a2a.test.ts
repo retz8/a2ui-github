@@ -17,9 +17,7 @@ describe('buildActionMessageParams', () => {
     expect(params.message.role).toBe('user');
     expect(typeof params.message.messageId).toBe('string');
     expect(params.message.messageId.length).toBeGreaterThan(0);
-    expect(params.message.parts).toEqual([
-      {kind: 'data', data: {version: 'v0.9', action}},
-    ]);
+    expect(params.message.parts).toEqual([{kind: 'data', data: {version: 'v0.9', action}}]);
   });
 });
 

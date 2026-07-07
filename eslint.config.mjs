@@ -5,7 +5,15 @@ import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
   {
-    ignores: ['**/dist/**', '**/node_modules/**', '**/.venv/**', '.yarn/**', '**/*.d.ts', 'adapter-template/fill.mjs', 'adapter-template/smoke-test.mjs'],
+    ignores: [
+      '**/dist/**',
+      '**/node_modules/**',
+      '**/.venv/**',
+      '.yarn/**',
+      '**/*.d.ts',
+      'adapter-template/fill.mjs',
+      'adapter-template/smoke-test.mjs',
+    ],
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,

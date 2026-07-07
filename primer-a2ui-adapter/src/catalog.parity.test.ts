@@ -3,9 +3,7 @@ import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import {resolve, dirname} from 'node:path';
 import {z} from 'zod';
-import {TextApi} from './components/text';
-import {ButtonApi} from './components/button';
-import {consoleLog} from './functions/console-log';
+import {COMPONENTS, FUNCTIONS} from './catalog.registry';
 
 type JsonProp = {const?: string; enum?: string[]};
 type JsonComponent = {properties: Record<string, JsonProp>; required: string[]};
@@ -56,52 +54,50 @@ function shapeOf(api: {schema: z.ZodTypeAny}): Record<string, z.ZodTypeAny> {
   return (api.schema as z.ZodObject<any>).shape as Record<string, z.ZodTypeAny>;
 }
 
-// Component registry: zod ComponentApi keyed by component name.
-const COMPONENTS = {Text: TextApi, Button: ButtonApi} as const;
-// Function registry: FunctionImplementation keyed by function name.
-const FUNCTIONS = {consoleLog} as const;
+describe.each(Object.entries(COMPONENTS))(
+  'component %s: zod ↔ catalog.json parity',
+  (name, api) => {
+    const jsonComponent = catalog.components[name];
+    const zodShape = shapeOf(api);
 
-describe.each(Object.entries(COMPONENTS))('component %s: zod ↔ catalog.json parity', (name, api) => {
-  const jsonComponent = catalog.components[name];
-  const zodShape = shapeOf(api);
+    it('is declared in catalog.json', () => {
+      expect(jsonComponent, `catalog.json is missing component ${name}`).toBeDefined();
+    });
 
-  it('is declared in catalog.json', () => {
-    expect(jsonComponent, `catalog.json is missing component ${name}`).toBeDefined();
-  });
+    it('property-name sets match (excluding envelope fields)', () => {
+      const jsonNames = Object.keys(jsonComponent.properties)
+        .filter(k => !ENVELOPE_FIELDS.includes(k))
+        .sort();
+      expect(jsonNames).toEqual(Object.keys(zodShape).sort());
+    });
 
-  it('property-name sets match (excluding envelope fields)', () => {
-    const jsonNames = Object.keys(jsonComponent.properties)
-      .filter((k) => !ENVELOPE_FIELDS.includes(k))
-      .sort();
-    expect(jsonNames).toEqual(Object.keys(zodShape).sort());
-  });
+    it('required sets match (excluding envelope fields)', () => {
+      const jsonRequired = jsonComponent.required.filter(k => !ENVELOPE_FIELDS.includes(k)).sort();
+      const zodRequired = Object.entries(zodShape)
+        .filter(([, v]) => !v.isOptional())
+        .map(([k]) => k)
+        .sort();
+      expect(jsonRequired).toEqual(zodRequired);
+    });
 
-  it('required sets match (excluding envelope fields)', () => {
-    const jsonRequired = jsonComponent.required.filter((k) => !ENVELOPE_FIELDS.includes(k)).sort();
-    const zodRequired = Object.entries(zodShape)
-      .filter(([, v]) => !v.isOptional())
-      .map(([k]) => k)
-      .sort();
-    expect(jsonRequired).toEqual(zodRequired);
-  });
+    it('enum value sets match per enum prop', () => {
+      for (const [key, field] of Object.entries(zodShape)) {
+        const zodEnum = enumValues(field);
+        if (!zodEnum) continue; // non-enum props ($ref/Dynamic/plain) — tolerated, not compared
+        const jsonEnum = jsonComponent.properties[key]?.enum ?? [];
+        expect([...jsonEnum].sort(), `enum for ${name}.${key}`).toEqual([...zodEnum].sort());
+      }
+    });
 
-  it('enum value sets match per enum prop', () => {
-    for (const [key, field] of Object.entries(zodShape)) {
-      const zodEnum = enumValues(field);
-      if (!zodEnum) continue; // non-enum props ($ref/Dynamic/plain) — tolerated, not compared
-      const jsonEnum = jsonComponent.properties[key]?.enum ?? [];
-      expect([...jsonEnum].sort(), `enum for ${name}.${key}`).toEqual([...zodEnum].sort());
-    }
-  });
-
-  it('component discriminator const equals the component key', () => {
-    expect(jsonComponent.properties.component?.const).toBe(name);
-  });
-});
+    it('component discriminator const equals the component key', () => {
+      expect(jsonComponent.properties.component?.const).toBe(name);
+    });
+  },
+);
 
 describe('anyComponent oneOf covers exactly the declared components', () => {
   it('matches the components map', () => {
-    const refNames = catalog.$defs.anyComponent.oneOf.map((r) => refName(r.$ref)).sort();
+    const refNames = catalog.$defs.anyComponent.oneOf.map(r => refName(r.$ref)).sort();
     expect(refNames).toEqual(Object.keys(catalog.components).sort());
   });
 });
@@ -111,7 +107,7 @@ describe.each(Object.entries(FUNCTIONS))('function %s: zod ↔ catalog.json pari
 
   it('is declared in functions and anyFunction', () => {
     expect(Object.keys(catalog.functions)).toContain(name);
-    const refNames = catalog.$defs.anyFunction.oneOf.map((r) => refName(r.$ref));
+    const refNames = catalog.$defs.anyFunction.oneOf.map(r => refName(r.$ref));
     expect(refNames).toContain(name);
   });
 
@@ -141,7 +137,7 @@ describe.each(Object.entries(FUNCTIONS))('function %s: zod ↔ catalog.json pari
 
 describe('anyFunction oneOf covers exactly the declared functions', () => {
   it('matches the functions map', () => {
-    const refNames = catalog.$defs.anyFunction.oneOf.map((r) => refName(r.$ref)).sort();
+    const refNames = catalog.$defs.anyFunction.oneOf.map(r => refName(r.$ref)).sort();
     expect(refNames).toEqual(Object.keys(catalog.functions).sort());
   });
 });

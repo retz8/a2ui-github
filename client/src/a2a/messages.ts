@@ -29,10 +29,12 @@ export function buildActionMessageParams(action: A2uiClientAction): MessageSendP
 export function extractA2uiMessages(result: Task | Message): A2uiMessage[] {
   const parts: Part[] =
     result.kind === 'task' ? (result.status.message?.parts ?? []) : result.parts;
-  return parts
-    .filter((p): p is Extract<Part, {kind: 'data'}> => p.kind === 'data')
-    .map(p => p.data as unknown)
-    // Keyed off the inline `version` field each A2UI message carries — NOT the
-    // DataPart's MIME metadata (the A2A SDK tags version there, not in `data`).
-    .filter((d): d is A2uiMessage => (d as {version?: unknown}).version === A2UI_VERSION);
+  return (
+    parts
+      .filter((p): p is Extract<Part, {kind: 'data'}> => p.kind === 'data')
+      .map(p => p.data as unknown)
+      // Keyed off the inline `version` field each A2UI message carries — NOT the
+      // DataPart's MIME metadata (the A2A SDK tags version there, not in `data`).
+      .filter((d): d is A2uiMessage => (d as {version?: unknown}).version === A2UI_VERSION)
+  );
 }

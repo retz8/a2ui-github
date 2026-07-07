@@ -46,7 +46,7 @@ try {
   console.error(`fill: cannot read values file at ${valuesPath}: ${err.message}`);
   process.exit(1);
 }
-const missing = TOKENS.filter((t) => typeof values[t] !== 'string' || values[t].trim() === '');
+const missing = TOKENS.filter(t => typeof values[t] !== 'string' || values[t].trim() === '');
 if (missing.length > 0) {
   console.error(`fill: values file is missing non-empty values for: ${missing.join(', ')}`);
   process.exit(1);
@@ -57,7 +57,7 @@ const EXCLUDED_NAMES = new Set(['.git', 'node_modules', '.venv', 'dist', '.yarn'
 const EXCLUDED_RELPATHS = new Set(['.claude/skills/init']);
 const EXCLUDED_FILES = new Set([SELF, basename(valuesPath)]);
 
-const rel = (abs) => relative(ROOT, abs).split(sep).join('/');
+const rel = abs => relative(ROOT, abs).split(sep).join('/');
 
 function isExcludedDir(abs) {
   return EXCLUDED_NAMES.has(basename(abs)) || EXCLUDED_RELPATHS.has(rel(abs));
