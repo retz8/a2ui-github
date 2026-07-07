@@ -3,6 +3,10 @@ import {test, expect} from '@playwright/test';
 const FIXTURE_NAMES = [
   'text',
   'text-bound',
+  'text-sizes',
+  'text-weights',
+  'text-as',
+  'text-whitespace',
   'button-fn',
   'button-event',
   'button-variants',
