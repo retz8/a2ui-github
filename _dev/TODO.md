@@ -58,7 +58,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 **Component sub-tasks use a divergent track** (not 6.1/6.3/6.4): sole planning route is `design-catalog-component` → decision doc at `_dev/docs/new-components/<component>.md` (not a `task-<N.M>` spec); `delegate-task` points References at that doc, names `build-catalog-component` as Execution skill, no Plan skill. Per spec §5.
 
 - [x] **6.1** Registry-driven catalog smoke-test refactor — replace per-component `has()` assertions with one exact-set assertion against the parity registry; update Build skill steps 5/7 to that single touch-point. First, before any component.
-- [WIP] **6.2** `Icon` — wraps `@primer/octicons-react`; unblocks Button's icon backfill + every leading/trailing visual. (#3)
+- [x] **6.2** `Icon` — wraps `@primer/octicons-react`; unblocks Button's icon backfill + every leading/trailing visual. (#3)
 - [WIP] **6.3** `Text` client-fixture backfill — bring `Text` fixtures/baselines to the exhaustive per-prop standard. (#4)
 - [ ] **6.4** Button revisit — add deferred `Button.icon` (`ComponentId` child, now that `Icon` exists) + backfill Button fixtures/baselines.
 
