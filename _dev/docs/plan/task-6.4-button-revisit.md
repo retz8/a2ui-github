@@ -966,5 +966,3 @@ git commit -m "test(phase-6): backfill Button prop-walk fixtures + element-slot 
 - **Baselines:** do NOT attempt to generate Playwright baseline PNGs in this environment — the committed baselines are `-chromium-darwin` and are blessed on a mac out-of-band (6.2 shipped Icon fixtures the same way). The gates (`yarn verify:all`) do not run Playwright. Registering the fixture names in `visual.spec.ts` is the branch-side deliverable; blessing the PNGs is the follow-up.
 - **Docs on `main`:** the decision-doc reconciliation (`button.md`) and deferral-register closure (`deferred-catalog-work.md`) are `_dev/` docs owned by `main`; they are intentionally NOT touched on this branch.
 - **Final gate:** run `yarn verify:all` from the repo root once all three tasks are committed; it must be green.
-</content>
-</invoke>
