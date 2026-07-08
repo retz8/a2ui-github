@@ -634,6 +634,99 @@
       },
       "required": ["component", "text"],
       "unevaluatedProperties": false
+    },
+    "RelativeTime": {
+      "type": "object",
+      "description": "Displays a timestamp as localized relative time (e.g. \"3 days ago\"), an elapsed duration, or an absolute localized date, depending on format and distance from now. A non-interactive display primitive.",
+      "properties": {
+        "component": {
+          "const": "RelativeTime"
+        },
+        "datetime": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The moment in time to display, as an ISO 8601 datetime string."
+        },
+        "format": {
+          "type": "string",
+          "enum": ["auto", "relative", "duration", "datetime"],
+          "default": "auto",
+          "description": "How to present the time: `auto` switches from relative to an absolute date past the threshold; `relative` is always relative; `duration` shows the elapsed duration; `datetime` shows an absolute localized date."
+        },
+        "formatStyle": {
+          "type": "string",
+          "enum": ["long", "short", "narrow"],
+          "description": "The verbosity of the formatted output (e.g. \"3 days ago\" vs \"3d\")."
+        },
+        "tense": {
+          "type": "string",
+          "enum": ["auto", "past", "future"],
+          "default": "auto",
+          "description": "Which tense to render relative time in."
+        },
+        "precision": {
+          "type": "string",
+          "enum": ["year", "month", "week", "day", "hour", "minute", "second", "millisecond"],
+          "default": "second",
+          "description": "The smallest unit shown when displaying elapsed/duration time."
+        },
+        "threshold": {
+          "type": "string",
+          "default": "P30D",
+          "description": "ISO 8601 duration beyond which display switches from relative to an absolute date."
+        },
+        "prefix": {
+          "type": "string",
+          "default": "on",
+          "description": "Text prepended to an absolute date (e.g. \"on Jan 1, 2026\")."
+        },
+        "second": {
+          "type": "string",
+          "enum": ["numeric", "2-digit"],
+          "description": "How the seconds part of an absolute date is rendered."
+        },
+        "minute": {
+          "type": "string",
+          "enum": ["numeric", "2-digit"],
+          "description": "How the minutes part of an absolute date is rendered."
+        },
+        "hour": {
+          "type": "string",
+          "enum": ["numeric", "2-digit"],
+          "description": "How the hours part of an absolute date is rendered."
+        },
+        "weekday": {
+          "type": "string",
+          "enum": ["short", "long", "narrow"],
+          "description": "How the weekday part of an absolute date is rendered."
+        },
+        "day": {
+          "type": "string",
+          "enum": ["numeric", "2-digit"],
+          "description": "How the day part of an absolute date is rendered."
+        },
+        "month": {
+          "type": "string",
+          "enum": ["numeric", "2-digit", "short", "long", "narrow"],
+          "default": "numeric",
+          "description": "How the month part of an absolute date is rendered."
+        },
+        "year": {
+          "type": "string",
+          "enum": ["numeric", "2-digit"],
+          "description": "How the year part of an absolute date is rendered."
+        },
+        "timeZoneName": {
+          "type": "string",
+          "enum": ["long", "short", "shortOffset", "longOffset", "shortGeneric", "longGeneric"],
+          "description": "Whether and how the time-zone name is appended to an absolute date."
+        },
+        "noTitle": {
+          "type": "boolean",
+          "description": "Suppresses the hover tooltip showing the full formatted date."
+        }
+      },
+      "required": ["component", "datetime"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -683,6 +776,9 @@
         },
         {
           "$ref": "#/components/BranchName"
+        },
+        {
+          "$ref": "#/components/RelativeTime"
         }
       ]
     },

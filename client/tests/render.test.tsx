@@ -17,6 +17,8 @@ import {headingVariantsFixture} from '../src/fixtures/heading-variants';
 import {branchnameFixture} from '../src/fixtures/branchname';
 import {branchnameBoundFixture} from '../src/fixtures/branchname-bound';
 import {branchnameAsFixture} from '../src/fixtures/branchname-as';
+import {relativeTimeFixture} from '../src/fixtures/relative-time';
+import {relativeTimeBoundFixture} from '../src/fixtures/relative-time-bound';
 
 afterEach(cleanup);
 
@@ -118,5 +120,24 @@ describe('fixture rendering', () => {
     // one surface per ['a','span']; each surface's text is its tag name.
     expect(screen.getByText('a').tagName).toBe('A');
     expect(screen.getByText('span').tagName).toBe('SPAN');
+  });
+
+  it('renders a literal RelativeTime through the renderer', () => {
+    const {container} = renderFixture(relativeTimeFixture);
+    const el = container.querySelector('relative-time');
+    expect(el).not.toBeNull();
+    // The custom element formats the datetime into non-empty display text.
+    expect(el?.textContent?.trim().length ?? 0).toBeGreaterThan(0);
+  });
+
+  it('resolves a path-bound RelativeTime datetime from the data model', () => {
+    // The value the fixture wrote into the data model at /timestamp.
+    const dataMsg = relativeTimeBoundFixture.messages.find(m => 'updateDataModel' in m) as
+      | {updateDataModel: {value: {timestamp: string}}}
+      | undefined;
+    const expected = dataMsg?.updateDataModel.value.timestamp;
+    const {container} = renderFixture(relativeTimeBoundFixture);
+    // The binding resolved to the plain ISO string (an unresolved binding would leave no datetime).
+    expect(container.querySelector('relative-time')?.getAttribute('datetime')).toBe(expected);
   });
 });
