@@ -43,4 +43,39 @@ describe('ButtonView', () => {
     expect(el).toHaveAttribute('aria-label', 'Submit form');
     expect(el).toHaveAttribute('aria-description', 'Submits the data');
   });
+
+  it('renders a leadingVisual alongside the label', () => {
+    render(<ButtonView leadingVisual={<span data-testid="lv">LV</span>}>Save</ButtonView>);
+    expect(screen.getByTestId('lv')).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: /Save/})).toBeInTheDocument();
+  });
+
+  it('renders a trailingVisual alongside the label', () => {
+    render(<ButtonView trailingVisual={<span data-testid="tv">TV</span>}>Save</ButtonView>);
+    expect(screen.getByTestId('tv')).toBeInTheDocument();
+  });
+
+  it('renders a trailingAction as an element (Primer accepts it via react-is isElement)', () => {
+    render(
+      <ButtonView
+        trailingVisual={<span data-testid="tv">TV</span>}
+        trailingAction={<span data-testid="ta">TA</span>}
+      >
+        Save
+      </ButtonView>,
+    );
+    expect(screen.getByTestId('ta')).toBeInTheDocument();
+  });
+
+  it('renders icon-only, discarding the label (Primer icon precedence)', () => {
+    render(<ButtonView icon={<span data-testid="icon">I</span>}>Hidden</ButtonView>);
+    expect(screen.getByTestId('icon')).toBeInTheDocument();
+    expect(screen.queryByText('Hidden')).not.toBeInTheDocument();
+  });
+
+  it('renders with no child (icon-only mode has no label)', () => {
+    render(<ButtonView icon={<span data-testid="icon">I</span>} accessibility={{label: 'Star'}} />);
+    expect(screen.getByRole('button', {name: 'Star'})).toBeInTheDocument();
+    expect(screen.getByTestId('icon')).toBeInTheDocument();
+  });
 });

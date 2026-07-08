@@ -37,13 +37,30 @@ describe('ButtonApi.schema', () => {
       block: true,
       labelWrap: true,
       loadingAnnouncement: 'Loading',
+      icon: 'glyph',
+      leadingVisual: 'lv',
+      trailingVisual: 'tv',
+      trailingAction: 'ta',
       accessibility: {label: 'Submit', description: 'Submits the form'},
     });
     expect(result.success).toBe(true);
   });
 
-  it('requires child', () => {
-    expect(ButtonApi.schema.safeParse({action}).success).toBe(false);
+  it('accepts the four element-typed slot props as ComponentIds', () => {
+    expect(
+      ButtonApi.schema.safeParse({
+        child: 'l',
+        action,
+        icon: 'i',
+        leadingVisual: 'lv',
+        trailingVisual: 'tv',
+        trailingAction: 'ta',
+      }).success,
+    ).toBe(true);
+  });
+
+  it('accepts a Button with no child (icon-only mode; child now optional)', () => {
+    expect(ButtonApi.schema.safeParse({action, icon: 'glyph'}).success).toBe(true);
   });
 
   it('requires action', () => {
