@@ -3,6 +3,7 @@ import {ButtonApi} from './components/button';
 import {IconApi} from './components/icon';
 import {LinkApi} from './components/link';
 import {HeadingApi} from './components/heading';
+import {BranchNameApi} from './components/branchname';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -14,6 +15,7 @@ export const COMPONENTS = {
   Icon: IconApi,
   Link: LinkApi,
   Heading: HeadingApi,
+  BranchName: BranchNameApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;

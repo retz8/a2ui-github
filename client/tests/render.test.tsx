@@ -14,6 +14,9 @@ import {linkInlineFixture} from '../src/fixtures/link-inline';
 import {headingFixture} from '../src/fixtures/heading';
 import {headingBoundFixture} from '../src/fixtures/heading-bound';
 import {headingVariantsFixture} from '../src/fixtures/heading-variants';
+import {branchnameFixture} from '../src/fixtures/branchname';
+import {branchnameBoundFixture} from '../src/fixtures/branchname-bound';
+import {branchnameAsFixture} from '../src/fixtures/branchname-as';
 
 afterEach(cleanup);
 
@@ -94,5 +97,26 @@ describe('fixture rendering', () => {
     for (const variant of ['large', 'medium', 'small']) {
       expect(screen.getByRole('heading', {name: variant})).toHaveAttribute('data-variant', variant);
     }
+  });
+
+  it('renders a literal BranchName as an anchor carrying its href', () => {
+    renderFixture(branchnameFixture);
+    const el = screen.getByText('main');
+    expect(el).toBeInTheDocument();
+    // href presence is non-visual; assert the rendered anchor carries it.
+    expect(el.tagName).toBe('A');
+    expect(el).toHaveAttribute('href', 'https://github.com/a2ui-project/a2ui/tree/main');
+  });
+
+  it('renders a path-bound BranchName from the data model', () => {
+    renderFixture(branchnameBoundFixture);
+    expect(screen.getByText('feature/login')).toBeInTheDocument();
+  });
+
+  it('honors the BranchName as enum through the renderer', () => {
+    renderFixture(branchnameAsFixture);
+    // one surface per ['a','span']; each surface's text is its tag name.
+    expect(screen.getByText('a').tagName).toBe('A');
+    expect(screen.getByText('span').tagName).toBe('SPAN');
   });
 });

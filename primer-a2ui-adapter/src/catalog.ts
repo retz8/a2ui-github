@@ -6,11 +6,19 @@ import {ButtonComponent} from './components/button';
 import {IconComponent} from './components/icon';
 import {LinkComponent} from './components/link';
 import {HeadingComponent} from './components/heading';
+import {BranchNameComponent} from './components/branchname';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
 export const CATALOG = new Catalog<ReactComponentImplementation>(
   CATALOG_ID,
-  [TextComponent, ButtonComponent, IconComponent, LinkComponent, HeadingComponent],
+  [
+    TextComponent,
+    ButtonComponent,
+    IconComponent,
+    LinkComponent,
+    HeadingComponent,
+    BranchNameComponent,
+  ],
   [consoleLog],
 );
