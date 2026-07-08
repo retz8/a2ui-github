@@ -7,6 +7,9 @@ import {buttonFnFixture} from '../src/fixtures/button-fn';
 import {iconNamesFixture} from '../src/fixtures/icon-names';
 import {iconSizesFixture} from '../src/fixtures/icon-sizes';
 import {iconFillsFixture} from '../src/fixtures/icon-fills';
+import {headingFixture} from '../src/fixtures/heading';
+import {headingBoundFixture} from '../src/fixtures/heading-bound';
+import {headingVariantsFixture} from '../src/fixtures/heading-variants';
 
 afterEach(cleanup);
 
@@ -48,5 +51,22 @@ describe('fixture rendering', () => {
       'fill',
       'var(--fgColor-danger)',
     );
+  });
+
+  it('renders a literal Heading', () => {
+    renderFixture(headingFixture);
+    expect(screen.getByRole('heading', {name: 'Heading from Primer'})).toBeInTheDocument();
+  });
+
+  it('renders a path-bound Heading from the data model', () => {
+    renderFixture(headingBoundFixture);
+    expect(screen.getByRole('heading', {name: 'Bound heading'})).toBeInTheDocument();
+  });
+
+  it('renders one Heading per visual variant', () => {
+    renderFixture(headingVariantsFixture);
+    for (const variant of ['large', 'medium', 'small']) {
+      expect(screen.getByRole('heading', {name: variant})).toHaveAttribute('data-variant', variant);
+    }
   });
 });
