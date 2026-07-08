@@ -48,7 +48,7 @@
         },
         "child": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
-          "description": "The ID of the component used as the button's label. Use a Text component; do not define it inline."
+          "description": "The ID of the component used as the button's label. Use a Text component; do not define it inline. Optional: omit it when `icon` is set (the button renders icon-only)."
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
@@ -101,9 +101,25 @@
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
           "description": "Accessibility attributes (label, description) for assistive technologies."
+        },
+        "icon": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The ID of an icon component that renders the button in icon-only mode. When set, the label and any visuals are not shown. Reference an Icon component; do not define it inline."
+        },
+        "leadingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The ID of a component shown before the label, typically an Icon. Reference the component; do not define it inline."
+        },
+        "trailingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The ID of a component shown after the label, typically an Icon. Reference the component; do not define it inline."
+        },
+        "trailingAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The ID of a component rendered as the last element in the button, after any trailing visual. Reference the component; do not define it inline."
         }
       },
-      "required": ["component", "child", "action"],
+      "required": ["component", "action"],
       "unevaluatedProperties": false
     },
     "Icon": {

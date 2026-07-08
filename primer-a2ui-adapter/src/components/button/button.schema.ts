@@ -5,9 +5,15 @@ import {CommonSchemas} from '@a2ui/web_core/v0_9';
  * Runtime (zod) representation of Primer Button, props-only.
  *
  * Faithful 1:1 translation of Primer Button's real prop surface:
- * - `child` is the synthetic content reference: Primer Button takes content via React
- *   children, but A2UI composes by ComponentId, so the label is a child (use a Text) — the
- *   render childs it via buildChild. See _dev/docs/a2ui-findings.md finding #1.
+ * - `child` is the synthetic content reference (the label); it is OPTIONAL because Primer
+ *   renders the button icon-only when `icon` is set (label + visuals discarded, `icon` wins).
+ * - `icon`/`leadingVisual`/`trailingVisual`/`trailingAction` are Primer's element-typed slots;
+ *   the faithful A2UI translation of an element slot is a ComponentId child (each may reference
+ *   an Icon today or another leaf later — the agent chooses). `trailingAction` is a positioned
+ *   visual slot (Primer renders it as the always-last element). Carried in 6.4 now that Icon
+ *   (6.2) ships; see _dev/docs/spec/task-6.4-button-revisit.md.
+ * - Render precedence (icon-only wins; explicit `trailingVisual` wins over `count`) mirrors
+ *   Primer and is NOT enforced by the schema — no cross-field validation (decisions 3 & 4).
  * - `action` is Primer's onClick expressed as the A2UI Action; the binder resolves it to a
  *   ready-to-call () => void (event vs functionCall routing is the renderer's job, 2.3).
  * - `variant`/`size`/`alignContent` are Primer enums lifted verbatim.
@@ -17,17 +23,13 @@ import {CommonSchemas} from '@a2ui/web_core/v0_9';
  * - `accessibility` is carried because Button's type spreads React.ButtonHTMLAttributes (the
  *   aria-* slice); it maps to CommonSchemas.AccessibilityAttributes. See finding #3.
  *
- * Deferred to Phase 5 (element-typed -> not JSON-serializable; carry as ComponentId children
- * once an Icon component exists — see _dev/docs/deferred-catalog-work.md):
- *   icon, leadingVisual, trailingVisual, trailingAction.
- *
  * `.strict()` forbids any prop outside this surface.
  */
 export const ButtonApi = {
   name: 'Button',
   schema: z
     .object({
-      child: CommonSchemas.ComponentId,
+      child: CommonSchemas.ComponentId.optional(),
       action: CommonSchemas.Action,
       variant: z.enum(['default', 'primary', 'invisible', 'danger', 'link']).optional(),
       size: z.enum(['small', 'medium', 'large']).optional(),
@@ -39,6 +41,10 @@ export const ButtonApi = {
       block: z.boolean().optional(),
       labelWrap: z.boolean().optional(),
       loadingAnnouncement: z.string().optional(),
+      icon: CommonSchemas.ComponentId.optional(),
+      leadingVisual: CommonSchemas.ComponentId.optional(),
+      trailingVisual: CommonSchemas.ComponentId.optional(),
+      trailingAction: CommonSchemas.ComponentId.optional(),
       accessibility: CommonSchemas.AccessibilityAttributes.optional(),
     })
     .strict(),
