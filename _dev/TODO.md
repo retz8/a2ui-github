@@ -63,10 +63,10 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.4** Button revisit — add deferred `Button.icon` (`ComponentId` child, now that `Icon` exists) + backfill Button fixtures/baselines. (#7)
 
 ### L0 — content leaves (no child slots)
-- [ ] **6.5** `Heading`
-- [ ] **6.6** `Link`
-- [ ] **6.7** `BranchName`
-- [ ] **6.8** `RelativeTime`
+- [WIP] **6.5** `Heading` (#9)
+- [WIP] **6.6** `Link`
+- [WIP] **6.7** `BranchName`
+- [WIP] **6.8** `RelativeTime`
 - [ ] **6.9** `Label`
 - [ ] **6.10** `StateLabel`
 - [ ] **6.11** `CounterLabel`
