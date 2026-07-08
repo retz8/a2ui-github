@@ -1,6 +1,18 @@
 import {buttonEventFixture} from './button-event';
 import {buttonFnFixture} from './button-fn';
 import {buttonVariantsFixture} from './button-variants';
+import {buttonSizesFixture} from './button-sizes';
+import {buttonAligncontentFixture} from './button-aligncontent';
+import {buttonDisabledFixture} from './button-disabled';
+import {buttonInactiveFixture} from './button-inactive';
+import {buttonLoadingFixture} from './button-loading';
+import {buttonBlockFixture} from './button-block';
+import {buttonLabelwrapFixture} from './button-labelwrap';
+import {buttonCountFixture} from './button-count';
+import {buttonIconFixture} from './button-icon';
+import {buttonLeadingVisualFixture} from './button-leading-visual';
+import {buttonTrailingVisualFixture} from './button-trailing-visual';
+import {buttonTrailingActionFixture} from './button-trailing-action';
 import {iconNamesFixture} from './icon-names';
 import {iconSizesFixture} from './icon-sizes';
 import {iconFillsFixture} from './icon-fills';
@@ -23,6 +35,18 @@ export {textWhitespaceFixture} from './text-whitespace';
 export {buttonFnFixture} from './button-fn';
 export {buttonEventFixture} from './button-event';
 export {buttonVariantsFixture} from './button-variants';
+export {buttonSizesFixture} from './button-sizes';
+export {buttonAligncontentFixture} from './button-aligncontent';
+export {buttonDisabledFixture} from './button-disabled';
+export {buttonInactiveFixture} from './button-inactive';
+export {buttonLoadingFixture} from './button-loading';
+export {buttonBlockFixture} from './button-block';
+export {buttonLabelwrapFixture} from './button-labelwrap';
+export {buttonCountFixture} from './button-count';
+export {buttonIconFixture} from './button-icon';
+export {buttonLeadingVisualFixture} from './button-leading-visual';
+export {buttonTrailingVisualFixture} from './button-trailing-visual';
+export {buttonTrailingActionFixture} from './button-trailing-action';
 export {iconNamesFixture} from './icon-names';
 export {iconSizesFixture} from './icon-sizes';
 export {iconFillsFixture} from './icon-fills';
@@ -37,6 +61,18 @@ export const FIXTURES: Fixture[] = [
   buttonFnFixture,
   buttonEventFixture,
   buttonVariantsFixture,
+  buttonSizesFixture,
+  buttonAligncontentFixture,
+  buttonDisabledFixture,
+  buttonInactiveFixture,
+  buttonLoadingFixture,
+  buttonBlockFixture,
+  buttonLabelwrapFixture,
+  buttonCountFixture,
+  buttonIconFixture,
+  buttonLeadingVisualFixture,
+  buttonTrailingVisualFixture,
+  buttonTrailingActionFixture,
   iconNamesFixture,
   iconSizesFixture,
   iconFillsFixture,
