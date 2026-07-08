@@ -68,7 +68,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [WIP] **6.7** `BranchName` (#11)
 - [WIP] **6.8** `RelativeTime` (#12)
 - [WIP] **6.9** `Label` (#13)
-- [WIP] **6.10** `StateLabel`
+- [WIP] **6.10** `StateLabel` (#15)
 - [WIP] **6.11** `CounterLabel` (#14)
 - [ ] **6.12** `Token`
 - [ ] **6.13** `Avatar`
