@@ -7,6 +7,10 @@ import {buttonFnFixture} from '../src/fixtures/button-fn';
 import {iconNamesFixture} from '../src/fixtures/icon-names';
 import {iconSizesFixture} from '../src/fixtures/icon-sizes';
 import {iconFillsFixture} from '../src/fixtures/icon-fills';
+import {linkFixture} from '../src/fixtures/link';
+import {linkBoundFixture} from '../src/fixtures/link-bound';
+import {linkMutedFixture} from '../src/fixtures/link-muted';
+import {linkInlineFixture} from '../src/fixtures/link-inline';
 
 afterEach(cleanup);
 
@@ -48,5 +52,27 @@ describe('fixture rendering', () => {
       'fill',
       'var(--fgColor-danger)',
     );
+  });
+
+  it('renders a literal Link carrying its href through the renderer', () => {
+    renderFixture(linkFixture);
+    const el = screen.getByRole('link', {name: 'View on GitHub'});
+    expect(el).toHaveAttribute('href', 'https://github.com');
+  });
+
+  it('renders a path-bound Link (text + href) from the data model', () => {
+    renderFixture(linkBoundFixture);
+    const el = screen.getByRole('link', {name: 'Bound link'});
+    expect(el).toHaveAttribute('href', 'https://github.com');
+  });
+
+  it('honors the muted state through the renderer', () => {
+    renderFixture(linkMutedFixture);
+    expect(screen.getByRole('link', {name: 'Muted link'})).toHaveAttribute('data-muted', 'true');
+  });
+
+  it('honors the inline state through the renderer', () => {
+    renderFixture(linkInlineFixture);
+    expect(screen.getByRole('link', {name: 'Inline link'})).toHaveAttribute('data-inline', 'true');
   });
 });

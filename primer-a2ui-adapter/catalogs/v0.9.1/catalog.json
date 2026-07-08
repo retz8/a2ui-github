@@ -544,6 +544,45 @@
       },
       "required": ["component", "name"],
       "unevaluatedProperties": false
+    },
+    "Link": {
+      "type": "object",
+      "description": "A hyperlink that navigates to a URL when clicked, rendered as styled link text.",
+      "properties": {
+        "component": {
+          "const": "Link"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The link's textual content."
+        },
+        "href": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The URL the link navigates to when clicked."
+        },
+        "muted": {
+          "type": "boolean",
+          "default": false,
+          "description": "Renders the link in a less prominent shade."
+        },
+        "inline": {
+          "type": "boolean",
+          "default": false,
+          "description": "Underlines the link, for links positioned within a block of text."
+        },
+        "target": {
+          "type": "string",
+          "enum": ["_self", "_blank"],
+          "default": "_self",
+          "description": "Whether the linked URL opens in the same tab (`_self`) or a new tab (`_blank`)."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for assistive technologies, e.g. a fuller link description than the visible text."
+        }
+      },
+      "required": ["component", "text", "href"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -584,6 +623,9 @@
         },
         {
           "$ref": "#/components/Icon"
+        },
+        {
+          "$ref": "#/components/Link"
         }
       ]
     },

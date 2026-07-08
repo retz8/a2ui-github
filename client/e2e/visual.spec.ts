@@ -25,6 +25,10 @@ const FIXTURE_NAMES = [
   'icon-names',
   'icon-sizes',
   'icon-fills',
+  'link',
+  'link-bound',
+  'link-muted',
+  'link-inline',
 ];
 
 for (const name of FIXTURE_NAMES) {
