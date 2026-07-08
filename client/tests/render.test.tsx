@@ -26,6 +26,9 @@ import {relativeTimePrecisionFixture} from '../src/fixtures/relative-time-precis
 import {relativeTimeThresholdFixture} from '../src/fixtures/relative-time-threshold';
 import {relativeTimePrefixFixture} from '../src/fixtures/relative-time-prefix';
 import {relativeTimeDatetimePartsFixture} from '../src/fixtures/relative-time-datetime-parts';
+import {labelFixture} from '../src/fixtures/label';
+import {labelBoundFixture} from '../src/fixtures/label-bound';
+import {labelVariantsFixture} from '../src/fixtures/label-variants';
 
 afterEach(cleanup);
 
@@ -208,5 +211,22 @@ describe('fixture rendering', () => {
     expect(el?.getAttribute('minute')).toBe('2-digit');
     expect(el?.getAttribute('second')).toBe('2-digit');
     expect(el?.getAttribute('time-zone-name')).toBe('short');
+  });
+
+  it('renders a literal Label', () => {
+    renderFixture(labelFixture);
+    expect(screen.getByText('Label from Primer')).toBeInTheDocument();
+  });
+
+  it('renders a path-bound Label from the data model', () => {
+    renderFixture(labelBoundFixture);
+    expect(screen.getByText('Bound label')).toBeInTheDocument();
+  });
+
+  it('honors the color-variant enum through the renderer', () => {
+    renderFixture(labelVariantsFixture);
+    // each surface labels its Label with the variant name; Primer stamps data-variant.
+    expect(screen.getByText('success')).toHaveAttribute('data-variant', 'success');
+    expect(screen.getByText('danger')).toHaveAttribute('data-variant', 'danger');
   });
 });
