@@ -9,6 +9,7 @@ import {HeadingComponent} from './components/heading';
 import {BranchNameComponent} from './components/branchname';
 import {RelativeTimeComponent} from './components/relative-time';
 import {LabelComponent} from './components/label';
+import {StateLabelComponent} from './components/statelabel';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
@@ -23,6 +24,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     BranchNameComponent,
     RelativeTimeComponent,
     LabelComponent,
+    StateLabelComponent,
   ],
   [consoleLog],
 );

@@ -48,6 +48,10 @@ const FIXTURE_NAMES = [
   'label-bound',
   'label-variants',
   'label-sizes',
+  'statelabel',
+  'statelabel-bound',
+  'statelabel-status',
+  'statelabel-size',
 ];
 
 for (const name of FIXTURE_NAMES) {

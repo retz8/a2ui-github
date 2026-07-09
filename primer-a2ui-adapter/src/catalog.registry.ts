@@ -6,6 +6,7 @@ import {HeadingApi} from './components/heading';
 import {BranchNameApi} from './components/branchname';
 import {RelativeTimeApi} from './components/relative-time';
 import {LabelApi} from './components/label';
+import {StateLabelApi} from './components/statelabel';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -20,6 +21,7 @@ export const COMPONENTS = {
   BranchName: BranchNameApi,
   RelativeTime: RelativeTimeApi,
   Label: LabelApi,
+  StateLabel: StateLabelApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;
