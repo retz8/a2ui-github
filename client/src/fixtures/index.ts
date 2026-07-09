@@ -20,6 +20,9 @@ import {linkFixture} from './link';
 import {linkBoundFixture} from './link-bound';
 import {linkMutedFixture} from './link-muted';
 import {linkInlineFixture} from './link-inline';
+import {headingFixture} from './heading';
+import {headingBoundFixture} from './heading-bound';
+import {headingVariantsFixture} from './heading-variants';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -58,6 +61,9 @@ export {linkFixture} from './link';
 export {linkBoundFixture} from './link-bound';
 export {linkMutedFixture} from './link-muted';
 export {linkInlineFixture} from './link-inline';
+export {headingFixture} from './heading';
+export {headingBoundFixture} from './heading-bound';
+export {headingVariantsFixture} from './heading-variants';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -88,6 +94,9 @@ export const FIXTURES: Fixture[] = [
   linkBoundFixture,
   linkMutedFixture,
   linkInlineFixture,
+  headingFixture,
+  headingBoundFixture,
+  headingVariantsFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

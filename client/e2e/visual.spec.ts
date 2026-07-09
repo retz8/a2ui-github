@@ -29,6 +29,9 @@ const FIXTURE_NAMES = [
   'link-bound',
   'link-muted',
   'link-inline',
+  'heading',
+  'heading-bound',
+  'heading-variants',
 ];
 
 for (const name of FIXTURE_NAMES) {
