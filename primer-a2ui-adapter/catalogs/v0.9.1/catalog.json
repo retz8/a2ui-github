@@ -809,6 +809,27 @@
       },
       "required": ["component", "text", "status"],
       "unevaluatedProperties": false
+    },
+    "CounterLabel": {
+      "type": "object",
+      "description": "A badge that displays a numeric count, used to indicate a quantity such as the number of items in a list or notifications.",
+      "properties": {
+        "component": {
+          "const": "CounterLabel"
+        },
+        "count": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The count value to display."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["primary", "secondary"],
+          "default": "secondary",
+          "description": "The visual emphasis of the counter: `primary` renders a filled high-contrast badge, `secondary` a subtle muted one."
+        }
+      },
+      "required": ["component", "count"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -867,6 +888,9 @@
         },
         {
           "$ref": "#/components/StateLabel"
+        },
+        {
+          "$ref": "#/components/CounterLabel"
         }
       ]
     },
