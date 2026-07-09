@@ -17,9 +17,6 @@ import {iconNamesFixture} from './icon-names';
 import {iconSizesFixture} from './icon-sizes';
 import {iconFillsFixture} from './icon-fills';
 import {textAsFixture} from './text-as';
-import {headingFixture} from './heading';
-import {headingBoundFixture} from './heading-bound';
-import {headingVariantsFixture} from './heading-variants';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
 import {textWeightsFixture} from './text-weights';
@@ -53,9 +50,6 @@ export {buttonTrailingActionFixture} from './button-trailing-action';
 export {iconNamesFixture} from './icon-names';
 export {iconSizesFixture} from './icon-sizes';
 export {iconFillsFixture} from './icon-fills';
-export {headingFixture} from './heading';
-export {headingBoundFixture} from './heading-bound';
-export {headingVariantsFixture} from './heading-variants';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -82,9 +76,6 @@ export const FIXTURES: Fixture[] = [
   iconNamesFixture,
   iconSizesFixture,
   iconFillsFixture,
-  headingFixture,
-  headingBoundFixture,
-  headingVariantsFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
