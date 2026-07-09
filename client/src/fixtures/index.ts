@@ -23,6 +23,9 @@ import {linkInlineFixture} from './link-inline';
 import {headingFixture} from './heading';
 import {headingBoundFixture} from './heading-bound';
 import {headingVariantsFixture} from './heading-variants';
+import {branchnameFixture} from './branchname';
+import {branchnameBoundFixture} from './branchname-bound';
+import {branchnameAsFixture} from './branchname-as';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -64,6 +67,9 @@ export {linkInlineFixture} from './link-inline';
 export {headingFixture} from './heading';
 export {headingBoundFixture} from './heading-bound';
 export {headingVariantsFixture} from './heading-variants';
+export {branchnameFixture} from './branchname';
+export {branchnameBoundFixture} from './branchname-bound';
+export {branchnameAsFixture} from './branchname-as';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -97,6 +103,9 @@ export const FIXTURES: Fixture[] = [
   headingFixture,
   headingBoundFixture,
   headingVariantsFixture,
+  branchnameFixture,
+  branchnameBoundFixture,
+  branchnameAsFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

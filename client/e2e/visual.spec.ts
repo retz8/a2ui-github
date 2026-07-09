@@ -32,6 +32,9 @@ const FIXTURE_NAMES = [
   'heading',
   'heading-bound',
   'heading-variants',
+  'branchname',
+  'branchname-bound',
+  'branchname-as',
 ];
 
 for (const name of FIXTURE_NAMES) {

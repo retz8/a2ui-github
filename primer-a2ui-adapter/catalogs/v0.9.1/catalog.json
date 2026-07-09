@@ -609,6 +609,31 @@
       },
       "required": ["component", "text"],
       "unevaluatedProperties": false
+    },
+    "BranchName": {
+      "type": "object",
+      "description": "A styled label that displays the name of a branch, rendered as a link when it navigates to a destination or as plain text when the reference is contextual.",
+      "properties": {
+        "component": {
+          "const": "BranchName"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The branch name text to display."
+        },
+        "href": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The URL the branch name links to; clicking the label navigates there."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["a", "span"],
+          "default": "a",
+          "description": "The HTML element used to render the label: an anchor when the branch name navigates, a plain span when the reference is contextual text."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -655,6 +680,9 @@
         },
         {
           "$ref": "#/components/Heading"
+        },
+        {
+          "$ref": "#/components/BranchName"
         }
       ]
     },
