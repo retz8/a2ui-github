@@ -11,6 +11,9 @@ import {linkFixture} from '../src/fixtures/link';
 import {linkBoundFixture} from '../src/fixtures/link-bound';
 import {linkMutedFixture} from '../src/fixtures/link-muted';
 import {linkInlineFixture} from '../src/fixtures/link-inline';
+import {headingFixture} from '../src/fixtures/heading';
+import {headingBoundFixture} from '../src/fixtures/heading-bound';
+import {headingVariantsFixture} from '../src/fixtures/heading-variants';
 
 afterEach(cleanup);
 
@@ -74,5 +77,22 @@ describe('fixture rendering', () => {
   it('honors the inline state through the renderer', () => {
     renderFixture(linkInlineFixture);
     expect(screen.getByRole('link', {name: 'Inline link'})).toHaveAttribute('data-inline', 'true');
+  });
+
+  it('renders a literal Heading', () => {
+    renderFixture(headingFixture);
+    expect(screen.getByRole('heading', {name: 'Heading from Primer'})).toBeInTheDocument();
+  });
+
+  it('renders a path-bound Heading from the data model', () => {
+    renderFixture(headingBoundFixture);
+    expect(screen.getByRole('heading', {name: 'Bound heading'})).toBeInTheDocument();
+  });
+
+  it('renders one Heading per visual variant', () => {
+    renderFixture(headingVariantsFixture);
+    for (const variant of ['large', 'medium', 'small']) {
+      expect(screen.getByRole('heading', {name: variant})).toHaveAttribute('data-variant', variant);
+    }
   });
 });
