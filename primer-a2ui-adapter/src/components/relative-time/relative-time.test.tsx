@@ -1,5 +1,5 @@
 import {describe, it, expect, afterEach} from 'vitest';
-import {render, cleanup} from '@testing-library/react';
+import {render, cleanup, waitFor} from '@testing-library/react';
 import {RelativeTimeView} from './relative-time';
 
 afterEach(cleanup);
@@ -17,14 +17,22 @@ describe('RelativeTimeView', () => {
     expect(el?.textContent?.trim().length ?? 0).toBeGreaterThan(0);
   });
 
-  it('keeps the title tooltip enabled by default (no no-title attribute)', () => {
+  // The element applies attribute changes in a microtask-batched update(), so title
+  // assertions must wait for that update to settle.
+  it('carries the full-date title tooltip by default', async () => {
     const {container} = render(<RelativeTimeView datetime={threeDaysAgo} />);
-    expect(container.querySelector('relative-time')?.hasAttribute('no-title')).toBe(false);
+    await waitFor(() =>
+      expect(container.querySelector('relative-time')?.hasAttribute('title')).toBe(true),
+    );
   });
 
-  it('suppresses the title tooltip when noTitle is set', () => {
+  it('suppresses the title tooltip when noTitle is set', async () => {
     const {container} = render(<RelativeTimeView datetime={threeDaysAgo} noTitle />);
-    expect(container.querySelector('relative-time')?.hasAttribute('no-title')).toBe(true);
+    const el = container.querySelector('relative-time');
+    // Settle the batched update (it always writes the display text) …
+    await waitFor(() => expect(el?.textContent?.trim().length ?? 0).toBeGreaterThan(0));
+    // … then assert the tooltip stayed suppressed.
+    expect(el?.hasAttribute('title')).toBe(false);
   });
 
   it('forwards a set prop onto the element and omits unset ones', () => {

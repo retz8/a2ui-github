@@ -38,19 +38,29 @@ describe('RelativeTimeApi.schema', () => {
     ).toBe(false);
   });
 
-  it('rejects out-of-enum format', () => {
-    expect(
-      RelativeTimeApi.schema.safeParse({datetime: '2025-01-01T12:00:00Z', format: 'elapsed'})
-        .success,
-    ).toBe(false);
-  });
-
-  it('rejects out-of-enum precision', () => {
-    expect(
-      RelativeTimeApi.schema.safeParse({datetime: '2025-01-01T12:00:00Z', precision: 'decade'})
-        .success,
-    ).toBe(false);
-  });
+  // One out-of-enum rejection per enum row (format's `elapsed` is the curated-out
+  // deprecated alias).
+  const OUT_OF_ENUM: Array<[string, string]> = [
+    ['format', 'elapsed'],
+    ['formatStyle', 'tiny'],
+    ['tense', 'present'],
+    ['precision', 'decade'],
+    ['second', 'long'],
+    ['minute', 'long'],
+    ['hour', 'long'],
+    ['weekday', 'numeric'],
+    ['day', 'long'],
+    ['month', 'tiny'],
+    ['year', 'long'],
+    ['timeZoneName', 'numeric'],
+  ];
+  for (const [prop, value] of OUT_OF_ENUM) {
+    it(`rejects out-of-enum ${prop}`, () => {
+      expect(
+        RelativeTimeApi.schema.safeParse({datetime: '2025-01-01T12:00:00Z', [prop]: value}).success,
+      ).toBe(false);
+    });
+  }
 
   it('accepts a data-binding for datetime (DynamicString)', () => {
     expect(RelativeTimeApi.schema.safeParse({datetime: {path: '/timestamp'}}).success).toBe(true);
