@@ -26,6 +26,15 @@ import {headingVariantsFixture} from './heading-variants';
 import {branchnameFixture} from './branchname';
 import {branchnameBoundFixture} from './branchname-bound';
 import {branchnameAsFixture} from './branchname-as';
+import {relativeTimeFixture} from './relative-time';
+import {relativeTimeBoundFixture} from './relative-time-bound';
+import {relativeTimeFormatsFixture} from './relative-time-formats';
+import {relativeTimeFormatStylesFixture} from './relative-time-format-styles';
+import {relativeTimeTensesFixture} from './relative-time-tenses';
+import {relativeTimePrecisionFixture} from './relative-time-precision';
+import {relativeTimeThresholdFixture} from './relative-time-threshold';
+import {relativeTimePrefixFixture} from './relative-time-prefix';
+import {relativeTimeDatetimePartsFixture} from './relative-time-datetime-parts';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -70,6 +79,15 @@ export {headingVariantsFixture} from './heading-variants';
 export {branchnameFixture} from './branchname';
 export {branchnameBoundFixture} from './branchname-bound';
 export {branchnameAsFixture} from './branchname-as';
+export {relativeTimeFixture} from './relative-time';
+export {relativeTimeBoundFixture} from './relative-time-bound';
+export {relativeTimeFormatsFixture} from './relative-time-formats';
+export {relativeTimeFormatStylesFixture} from './relative-time-format-styles';
+export {relativeTimeTensesFixture} from './relative-time-tenses';
+export {relativeTimePrecisionFixture} from './relative-time-precision';
+export {relativeTimeThresholdFixture} from './relative-time-threshold';
+export {relativeTimePrefixFixture} from './relative-time-prefix';
+export {relativeTimeDatetimePartsFixture} from './relative-time-datetime-parts';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -106,6 +124,15 @@ export const FIXTURES: Fixture[] = [
   branchnameFixture,
   branchnameBoundFixture,
   branchnameAsFixture,
+  relativeTimeFixture,
+  relativeTimeBoundFixture,
+  relativeTimeFormatsFixture,
+  relativeTimeFormatStylesFixture,
+  relativeTimeTensesFixture,
+  relativeTimePrecisionFixture,
+  relativeTimeThresholdFixture,
+  relativeTimePrefixFixture,
+  relativeTimeDatetimePartsFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

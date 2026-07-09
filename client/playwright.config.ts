@@ -4,7 +4,9 @@ export default defineConfig({
   testDir: './e2e',
   fullyParallel: true,
   expect: {toHaveScreenshot: {animations: 'disabled'}},
-  use: {baseURL: 'http://localhost:4173'},
+  // Pin the browser time zone so RelativeTime's absolute-date fixtures (hour / time-zone parts)
+  // render identically regardless of the runner's locale, keeping their baselines deterministic.
+  use: {baseURL: 'http://localhost:4173', timezoneId: 'UTC'},
   projects: [
     {
       name: 'chromium',

@@ -35,6 +35,15 @@ const FIXTURE_NAMES = [
   'branchname',
   'branchname-bound',
   'branchname-as',
+  'relative-time',
+  'relative-time-bound',
+  'relative-time-formats',
+  'relative-time-format-styles',
+  'relative-time-tenses',
+  'relative-time-precision',
+  'relative-time-threshold',
+  'relative-time-prefix',
+  'relative-time-datetime-parts',
 ];
 
 for (const name of FIXTURE_NAMES) {
