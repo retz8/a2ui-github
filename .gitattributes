@@ -1,0 +1,11 @@
+# Append-only aggregation files: parallel component PRs each add their own lines
+# (imports, re-exports, registry/array entries). Union merge keeps both sides'
+# additions automatically, so rebasing a component branch onto an updated main
+# resolves without conflict markers — no manual/LLM merge needed.
+#
+# NOT applied to catalog.json: union is line-level and would break JSON structure.
+client/src/fixtures/index.ts        merge=union
+client/tests/render.test.tsx        merge=union
+client/tests/actions.test.tsx       merge=union
+primer-a2ui-adapter/src/catalog.registry.ts merge=union
+primer-a2ui-adapter/src/catalog.ts          merge=union
