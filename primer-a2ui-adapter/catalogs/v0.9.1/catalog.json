@@ -544,30 +544,6 @@
       },
       "required": ["component", "name"],
       "unevaluatedProperties": false
-    },
-    "Heading": {
-      "type": "object",
-      "description": "Displays a section heading with a selectable semantic level and configurable visual size. A non-interactive display primitive.",
-      "properties": {
-        "component": {"const": "Heading"},
-        "text": {
-          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
-          "description": "The heading's textual content."
-        },
-        "as": {
-          "type": "string",
-          "enum": ["h1", "h2", "h3", "h4", "h5", "h6"],
-          "default": "h2",
-          "description": "The heading element to render; selects the semantic level in the document outline, independent of visual size."
-        },
-        "variant": {
-          "type": "string",
-          "enum": ["large", "medium", "small"],
-          "description": "The visual size of the heading, independent of the semantic level."
-        }
-      },
-      "required": ["component", "text"],
-      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -608,9 +584,6 @@
         },
         {
           "$ref": "#/components/Icon"
-        },
-        {
-          "$ref": "#/components/Heading"
         }
       ]
     },

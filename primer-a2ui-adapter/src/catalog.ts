@@ -4,12 +4,11 @@ import {CATALOG_ID} from './catalog-id';
 import {TextComponent} from './components/text';
 import {ButtonComponent} from './components/button';
 import {IconComponent} from './components/icon';
-import {HeadingComponent} from './components/heading';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
 export const CATALOG = new Catalog<ReactComponentImplementation>(
   CATALOG_ID,
-  [TextComponent, ButtonComponent, IconComponent, HeadingComponent],
+  [TextComponent, ButtonComponent, IconComponent],
   [consoleLog],
 );
