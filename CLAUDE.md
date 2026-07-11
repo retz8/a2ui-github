@@ -42,6 +42,14 @@ This project targets a single protocol version at a time.
 
 Catalog-authoring and renderer-design conventions live in the `a2ui-sdk-design` skill (read per the top instruction before that work).
 
+### Local testing in a tunnel environment
+
+The dev machine is normally reached through a VS Code dev tunnel, so the controlled browser is remote and `localhost:<port>` does not resolve to the dev machine (see the user profile). When driving the app or agent for live verification — including `review-nightly` — target **tunnel URLs, and set the forwarded ports to public**, unless the user explicitly says to use localhost or that they are not in a tunnel.
+
+- **Client:** set `VITE_A2A_SERVER_URL` to the **agent's tunnel URL** (not `localhost`) so the browser reaches the agent.
+- **Agent:** run with `--base-url <agent tunnel URL>` so the agent card advertises the public endpoint. Its default card URL is `http://localhost:<port>`, which the remote browser cannot reach — the message/send POST would target the wrong host and fail even when the card fetch succeeds.
+- The agent card is fetched cross-origin; the tunnel ports must be **public** (a private port yields a 404/502 at the tunnel and a `Failed to fetch` in the browser).
+
 ### Daily-work harness
 
 The dev workflow (phases → sub-tasks, dispatch, branching, wrap-up) lives in the **`daily-work-harness` plugin** — its skills (`daily-work-harness:pick-up-task` / `:wrap-up` / `:rebase-with-main` / `:grill-to-spec`) and the `daily-workflow.md` reference doc they read. Operational rules it relies on:
