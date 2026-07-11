@@ -46,6 +46,10 @@ import {statelabelSizeFixture} from './statelabel-size';
 import {counterlabelFixture} from './counterlabel';
 import {counterlabelBoundFixture} from './counterlabel-bound';
 import {counterlabelVariantsFixture} from './counterlabel-variants';
+import {avatarFixture} from './avatar';
+import {avatarBoundFixture} from './avatar-bound';
+import {avatarSizesFixture} from './avatar-sizes';
+import {avatarSquareFixture} from './avatar-square';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -110,6 +114,10 @@ export {statelabelSizeFixture} from './statelabel-size';
 export {counterlabelFixture} from './counterlabel';
 export {counterlabelBoundFixture} from './counterlabel-bound';
 export {counterlabelVariantsFixture} from './counterlabel-variants';
+export {avatarFixture} from './avatar';
+export {avatarBoundFixture} from './avatar-bound';
+export {avatarSizesFixture} from './avatar-sizes';
+export {avatarSquareFixture} from './avatar-square';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -166,6 +174,10 @@ export const FIXTURES: Fixture[] = [
   counterlabelFixture,
   counterlabelBoundFixture,
   counterlabelVariantsFixture,
+  avatarFixture,
+  avatarBoundFixture,
+  avatarSizesFixture,
+  avatarSquareFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
