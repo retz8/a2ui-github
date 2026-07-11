@@ -86,6 +86,15 @@ const FIXTURE_NAMES = [
   'radio-disabled',
   'radio-fn',
   'radio-event',
+  'toggleswitch',
+  'toggleswitch-checked',
+  'toggleswitch-fn',
+  'toggleswitch-event',
+  'toggleswitch-disabled',
+  'toggleswitch-loading',
+  'toggleswitch-sizes',
+  'toggleswitch-label-position',
+  'toggleswitch-custom-labels',
 ];
 
 for (const name of FIXTURE_NAMES) {
