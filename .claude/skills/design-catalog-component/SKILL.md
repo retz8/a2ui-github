@@ -76,6 +76,13 @@ dropped.
 Walk every real prop (plus any synthetic prop introduced below) and make one decision each:
 
 - **Carry / drop / defer.**
+  - **Conservative-drop rule.** The catalog is a one-to-one translation of the documented
+    component library, not a redesign of it. A prop the official documentation lists is dropped
+    only when it has no protocol representation (the categorical drops below) or the doc is
+    stale against the installed code (e.g. a deprecated alias) — never because it merely seems
+    minor or hard to motivate for a generating agent. When a doc-listed prop's type doesn't map
+    cleanly, prefer carrying a curated projection of it (e.g. a `z.enum` over its meaningful
+    values) over dropping it.
   - **Drop** props with no A2UI representation. In particular, the non-`aria-*` slice of an
     inherited HTML-attribute spread (`type`, `name`, `tabIndex`, `data-*`, and similar) has no
     protocol representation and is dropped. Named styling passthroughs (`className`, `style`) are
@@ -93,9 +100,10 @@ Walk every real prop (plus any synthetic prop introduced below) and make one dec
     `carry (required)` when required, bare `carry` when optional. Heuristic: the synthetic
     content channel and the primary interaction prop are required; a real prop's required-ness
     otherwise follows its installed type unless the design deliberately tightens it.
-  - When the official documentation specifies a default for a carried prop, record it as an
-    annotation in that row's `A2UI type` cell, e.g. `z.enum([...]) (default: "span")`. Only
-    record a default the doc documents.
+  - When a carried prop has a default, record it as an annotation in that row's `A2UI type`
+    cell, e.g. `z.enum([...]) (default: "span")`. The default is the one the **installed
+    implementation** applies — the code is the authority; the official doc corroborates it but
+    may be stale, and on conflict the code wins.
 
 - **Synthetic-content-prop rule.** When a component takes its content through `children` as
   raw content (text, not references to other components), introduce a synthetic value prop to
