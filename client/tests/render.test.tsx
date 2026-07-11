@@ -41,6 +41,9 @@ import {avatarBoundFixture} from '../src/fixtures/avatar-bound';
 import {avatarSizesFixture} from '../src/fixtures/avatar-sizes';
 import {avatarSquareFixture} from '../src/fixtures/avatar-square';
 import {AVATAR_PLACEHOLDER_SRC} from '../src/fixtures/avatar-placeholder';
+import {spinnerFixture} from '../src/fixtures/spinner';
+import {spinnerSizesFixture} from '../src/fixtures/spinner-sizes';
+import {spinnerBoundFixture} from '../src/fixtures/spinner-bound';
 
 afterEach(cleanup);
 
@@ -312,5 +315,24 @@ describe('fixture rendering', () => {
   it('renders a square Avatar through the renderer', () => {
     renderFixture(avatarSquareFixture);
     expect(screen.getByRole('img', {name: 'Square avatar'})).toHaveAttribute('data-square', '');
+  });
+
+  it('renders a Spinner with its built-in "Loading" hidden label', () => {
+    renderFixture(spinnerFixture);
+    expect(screen.getByText('Loading')).toBeInTheDocument();
+  });
+
+  it('honors the Spinner size enum through the renderer', () => {
+    const {container} = renderFixture(spinnerSizesFixture);
+    // one surface per size; Primer sizes the svg accordingly (16/32/64px).
+    const widths = Array.from(container.querySelectorAll('svg'))
+      .map(svg => svg.getAttribute('width'))
+      .sort();
+    expect(widths).toEqual(['16px', '32px', '64px']);
+  });
+
+  it('resolves a path-bound Spinner srText from the data model', () => {
+    renderFixture(spinnerBoundFixture);
+    expect(screen.getByText('Loading pull requests')).toBeInTheDocument();
   });
 });
