@@ -7,6 +7,7 @@ import {tokenRemoveFnFixture} from '../src/fixtures/token-remove-fn';
 import {tokenRemoveEventFixture} from '../src/fixtures/token-remove-event';
 import {issuelabeltokenRemoveFnFixture} from '../src/fixtures/issuelabeltoken-remove-fn';
 import {issuelabeltokenRemoveEventFixture} from '../src/fixtures/issuelabeltoken-remove-event';
+import {checkboxBoundFixture} from '../src/fixtures/checkbox-bound';
 
 afterEach(cleanup);
 
@@ -93,5 +94,22 @@ describe('action paths', () => {
         sourceComponentId: 'root',
       }),
     );
+  });
+
+  it('two-way write-back: toggling a bound Checkbox writes to the data-model path and re-renders checked', async () => {
+    const handler = vi.fn();
+    renderFixture(checkboxBoundFixture, {actionHandler: handler});
+
+    const box = screen.getByRole('checkbox', {name: 'Notify me about updates'});
+    expect(box).not.toBeChecked();
+
+    fireEvent.click(box);
+
+    // The binder's auto-generated setChecked wrote `true` back to /notify; the box re-renders
+    // from the updated data model. No client->server action is dispatched for a data-model write.
+    await vi.waitFor(() =>
+      expect(screen.getByRole('checkbox', {name: 'Notify me about updates'})).toBeChecked(),
+    );
+    expect(handler).not.toHaveBeenCalled();
   });
 });

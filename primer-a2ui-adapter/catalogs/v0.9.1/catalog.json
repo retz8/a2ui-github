@@ -987,6 +987,47 @@
       },
       "required": ["component", "text"],
       "unevaluatedProperties": false
+    },
+    "Checkbox": {
+      "type": "object",
+      "description": "A checkbox input for selecting or deselecting a single option; supports checked, unchecked, and indeterminate states.",
+      "properties": {
+        "component": {
+          "const": "Checkbox"
+        },
+        "checked": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the checkbox is checked. Two-way bound: user toggles write the new value back to the bound data-model path."
+        },
+        "indeterminate": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "default": false,
+          "description": "Shows the partial-selection state (e.g. a select-all over a partly-selected list). While set, it overrides the checked appearance and is conveyed as \"mixed\" to assistive technologies."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the checkbox is inactive and cannot be toggled."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether the checkbox must be checked; conveyed to assistive technologies."
+        },
+        "validationStatus": {
+          "type": "string",
+          "enum": ["error", "success"],
+          "description": "Informs assistive technologies of validity only; an individual checkbox has no validation styles."
+        },
+        "value": {
+          "type": "string",
+          "description": "A unique identifier for this checkbox input, never shown to the user; corresponds to the native form-submission value and has no effect outside one."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Label/description for assistive technologies — the checkbox renders no visible label of its own."
+        }
+      },
+      "required": ["component", "checked"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1060,6 +1101,9 @@
         },
         {
           "$ref": "#/components/IssueLabelToken"
+        },
+        {
+          "$ref": "#/components/Checkbox"
         }
       ]
     },

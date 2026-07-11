@@ -56,6 +56,11 @@ import {issuelabeltokenFillcolorFixture} from '../src/fixtures/issuelabeltoken-f
 import {issuelabeltokenSizesFixture} from '../src/fixtures/issuelabeltoken-sizes';
 import {issuelabeltokenSelectedFixture} from '../src/fixtures/issuelabeltoken-selected';
 import {issuelabeltokenHideremovebuttonFixture} from '../src/fixtures/issuelabeltoken-hideremovebutton';
+import {checkboxFixture} from '../src/fixtures/checkbox';
+import {checkboxCheckedFixture} from '../src/fixtures/checkbox-checked';
+import {checkboxBoundFixture} from '../src/fixtures/checkbox-bound';
+import {checkboxIndeterminateFixture} from '../src/fixtures/checkbox-indeterminate';
+import {checkboxDisabledFixture} from '../src/fixtures/checkbox-disabled';
 
 afterEach(cleanup);
 
@@ -414,5 +419,38 @@ describe('fixture rendering', () => {
     renderFixture(issuelabeltokenHideremovebuttonFixture);
     expect(screen.getByText('No button')).toBeInTheDocument();
     expect(screen.queryByRole('button', {name: 'Remove token'})).not.toBeInTheDocument();
+  });
+
+  it('renders a literal unchecked Checkbox', () => {
+    renderFixture(checkboxFixture);
+    expect(screen.getByRole('checkbox', {name: 'Notify me about updates'})).not.toBeChecked();
+  });
+
+  it('renders a literal checked Checkbox', () => {
+    renderFixture(checkboxCheckedFixture);
+    expect(screen.getByRole('checkbox', {name: 'Notify me about updates'})).toBeChecked();
+  });
+
+  it('resolves a path-bound Checkbox from the data model (initially false -> unchecked)', () => {
+    renderFixture(checkboxBoundFixture);
+    expect(screen.getByRole('checkbox', {name: 'Notify me about updates'})).not.toBeChecked();
+  });
+
+  it('honors the indeterminate Checkbox state through the renderer', () => {
+    renderFixture(checkboxIndeterminateFixture);
+    expect(screen.getByRole('checkbox', {name: 'Select all items'})).toHaveAttribute(
+      'aria-checked',
+      'mixed',
+    );
+  });
+
+  it('honors disabled per check-state (mini-gallery)', () => {
+    renderFixture(checkboxDisabledFixture);
+    const unchecked = screen.getByRole('checkbox', {name: 'Disabled, unchecked'});
+    const checked = screen.getByRole('checkbox', {name: 'Disabled, checked'});
+    expect(unchecked).toBeDisabled();
+    expect(unchecked).not.toBeChecked();
+    expect(checked).toBeDisabled();
+    expect(checked).toBeChecked();
   });
 });

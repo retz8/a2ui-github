@@ -15,6 +15,7 @@ import {AvatarComponent} from './components/avatar';
 import {SpinnerComponent} from './components/spinner';
 import {TokenComponent} from './components/token';
 import {IssueLabelTokenComponent} from './components/issuelabeltoken';
+import {CheckboxComponent} from './components/checkbox';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
@@ -35,6 +36,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     SpinnerComponent,
     TokenComponent,
     IssueLabelTokenComponent,
+    CheckboxComponent,
   ],
   [consoleLog],
 );
