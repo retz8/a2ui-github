@@ -12,6 +12,7 @@ import {LabelComponent} from './components/label';
 import {StateLabelComponent} from './components/statelabel';
 import {CounterLabelComponent} from './components/counterlabel';
 import {AvatarComponent} from './components/avatar';
+import {SpinnerComponent} from './components/spinner';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
@@ -29,6 +30,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     StateLabelComponent,
     CounterLabelComponent,
     AvatarComponent,
+    SpinnerComponent,
   ],
   [consoleLog],
 );

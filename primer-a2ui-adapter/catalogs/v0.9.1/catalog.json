@@ -859,6 +859,34 @@
       },
       "required": ["component", "src"],
       "unevaluatedProperties": false
+    },
+    "Spinner": {
+      "type": "object",
+      "description": "An indeterminate loading indicator for processes with unknown or variable duration.",
+      "properties": {
+        "component": {
+          "const": "Spinner"
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "default": "medium",
+          "description": "The width and height of the spinner."
+        },
+        "srText": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "default": "Loading",
+          "description": "Text conveyed to assistive technologies while the spinner is shown; describes what is loading. `null` suppresses it when a visible text node elsewhere announces the loading state."
+        },
+        "delay": {
+          "type": "string",
+          "enum": ["none", "short", "long"],
+          "default": "none",
+          "description": "Delay before the spinner becomes visible (`short` ≈ 300ms, `long` ≈ 1000ms), so briefly-loading content never flashes a spinner."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -923,6 +951,9 @@
         },
         {
           "$ref": "#/components/Avatar"
+        },
+        {
+          "$ref": "#/components/Spinner"
         }
       ]
     },

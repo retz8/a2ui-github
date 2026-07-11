@@ -9,6 +9,7 @@ import {LabelApi} from './components/label';
 import {StateLabelApi} from './components/statelabel';
 import {CounterLabelApi} from './components/counterlabel';
 import {AvatarApi} from './components/avatar';
+import {SpinnerApi} from './components/spinner';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -26,6 +27,7 @@ export const COMPONENTS = {
   StateLabel: StateLabelApi,
   CounterLabel: CounterLabelApi,
   Avatar: AvatarApi,
+  Spinner: SpinnerApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;

@@ -50,6 +50,9 @@ import {avatarFixture} from './avatar';
 import {avatarBoundFixture} from './avatar-bound';
 import {avatarSizesFixture} from './avatar-sizes';
 import {avatarSquareFixture} from './avatar-square';
+import {spinnerFixture} from './spinner';
+import {spinnerSizesFixture} from './spinner-sizes';
+import {spinnerBoundFixture} from './spinner-bound';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -118,6 +121,9 @@ export {avatarFixture} from './avatar';
 export {avatarBoundFixture} from './avatar-bound';
 export {avatarSizesFixture} from './avatar-sizes';
 export {avatarSquareFixture} from './avatar-square';
+export {spinnerFixture} from './spinner';
+export {spinnerSizesFixture} from './spinner-sizes';
+export {spinnerBoundFixture} from './spinner-bound';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -178,6 +184,9 @@ export const FIXTURES: Fixture[] = [
   avatarBoundFixture,
   avatarSizesFixture,
   avatarSquareFixture,
+  spinnerFixture,
+  spinnerSizesFixture,
+  spinnerBoundFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

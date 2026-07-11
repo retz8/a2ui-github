@@ -55,6 +55,8 @@ const FIXTURE_NAMES = [
   'counterlabel',
   'counterlabel-bound',
   'counterlabel-variants',
+  'spinner',
+  'spinner-sizes',
 ];
 
 for (const name of FIXTURE_NAMES) {
