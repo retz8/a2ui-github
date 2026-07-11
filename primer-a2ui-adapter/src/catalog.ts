@@ -18,6 +18,7 @@ import {IssueLabelTokenComponent} from './components/issuelabeltoken';
 import {CheckboxComponent} from './components/checkbox';
 import {ProgressBarComponent} from './components/progressbar';
 import {RadioComponent} from './components/radio';
+import {ToggleSwitchComponent} from './components/toggleswitch';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
@@ -41,6 +42,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     CheckboxComponent,
     ProgressBarComponent,
     RadioComponent,
+    ToggleSwitchComponent,
   ],
   [consoleLog],
 );

@@ -15,6 +15,7 @@ import {IssueLabelTokenApi} from './components/issuelabeltoken';
 import {CheckboxApi} from './components/checkbox';
 import {ProgressBarApi} from './components/progressbar';
 import {RadioApi} from './components/radio';
+import {ToggleSwitchApi} from './components/toggleswitch';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -38,6 +39,7 @@ export const COMPONENTS = {
   Checkbox: CheckboxApi,
   ProgressBar: ProgressBarApi,
   Radio: RadioApi,
+  ToggleSwitch: ToggleSwitchApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;

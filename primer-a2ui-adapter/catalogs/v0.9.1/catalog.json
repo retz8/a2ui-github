@@ -1159,6 +1159,69 @@
       },
       "required": ["component", "value"],
       "unevaluatedProperties": false
+    },
+    "ToggleSwitch": {
+      "type": "object",
+      "description": "A switch that immediately turns a setting on or off, showing its current state as a short status text.",
+      "properties": {
+        "component": {
+          "const": "ToggleSwitch"
+        },
+        "checked": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the switch is on. Two-way bound: toggling writes the new value back to the bound data-model path."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "Performed when the user toggles the switch — for settings that must reach the agent or run a local effect at flip time."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the switch is disabled and cannot be toggled."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the switch's value is being computed or saved; blocks toggling meanwhile."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium"],
+          "default": "medium",
+          "description": "The size of the switch; `small` for dense layouts."
+        },
+        "statusLabelPosition": {
+          "type": "string",
+          "enum": ["start", "end"],
+          "default": "start",
+          "description": "Whether the on/off status text appears before or after the switch."
+        },
+        "buttonLabelOn": {
+          "type": "string",
+          "default": "On",
+          "description": "Status text shown when the switch is on; customize only for a more specific context (e.g. \"Show\")."
+        },
+        "buttonLabelOff": {
+          "type": "string",
+          "default": "Off",
+          "description": "Status text shown when the switch is off; customize only for a more specific context (e.g. \"Hide\")."
+        },
+        "loadingLabel": {
+          "type": "string",
+          "default": "Loading",
+          "description": "Text announced to assistive technologies while loading. Non-visual."
+        },
+        "loadingLabelDelay": {
+          "type": "number",
+          "default": 2000,
+          "description": "Milliseconds before the loading text is announced to assistive technologies. Non-visual."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Label naming the setting the switch controls — the switch renders no visible label of its own, and an unnamed on/off control is meaningless to assistive technologies."
+        }
+      },
+      "required": ["component", "checked", "accessibility"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1241,6 +1304,9 @@
         },
         {
           "$ref": "#/components/Radio"
+        },
+        {
+          "$ref": "#/components/ToggleSwitch"
         }
       ]
     },
