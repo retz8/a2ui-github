@@ -36,6 +36,11 @@ import {statelabelSizeFixture} from '../src/fixtures/statelabel-size';
 import {counterlabelFixture} from '../src/fixtures/counterlabel';
 import {counterlabelBoundFixture} from '../src/fixtures/counterlabel-bound';
 import {counterlabelVariantsFixture} from '../src/fixtures/counterlabel-variants';
+import {avatarFixture} from '../src/fixtures/avatar';
+import {avatarBoundFixture} from '../src/fixtures/avatar-bound';
+import {avatarSizesFixture} from '../src/fixtures/avatar-sizes';
+import {avatarSquareFixture} from '../src/fixtures/avatar-square';
+import {AVATAR_PLACEHOLDER_SRC} from '../src/fixtures/avatar-placeholder';
 
 afterEach(cleanup);
 
@@ -279,5 +284,33 @@ describe('fixture rendering', () => {
     const counters = screen.getAllByText('12');
     const variants = counters.map(el => el.getAttribute('data-variant')).sort();
     expect(variants).toEqual(['primary', 'secondary']);
+  });
+
+  it('renders a literal Avatar carrying its src and alt', () => {
+    renderFixture(avatarFixture);
+    expect(screen.getByRole('img', {name: 'Octocat'})).toHaveAttribute(
+      'src',
+      AVATAR_PLACEHOLDER_SRC,
+    );
+  });
+
+  it('renders a path-bound Avatar src from the data model', () => {
+    renderFixture(avatarBoundFixture);
+    expect(screen.getByRole('img', {name: 'Bound avatar'})).toHaveAttribute(
+      'src',
+      AVATAR_PLACEHOLDER_SRC,
+    );
+  });
+
+  it('honors the avatar size scale through the renderer', () => {
+    renderFixture(avatarSizesFixture);
+    // one surface per documented size; Primer stamps it as width/height on the img.
+    expect(screen.getByRole('img', {name: '16px avatar'})).toHaveAttribute('width', '16');
+    expect(screen.getByRole('img', {name: '64px avatar'})).toHaveAttribute('width', '64');
+  });
+
+  it('renders a square Avatar through the renderer', () => {
+    renderFixture(avatarSquareFixture);
+    expect(screen.getByRole('img', {name: 'Square avatar'})).toHaveAttribute('data-square', '');
   });
 });

@@ -830,6 +830,35 @@
       },
       "required": ["component", "count"],
       "unevaluatedProperties": false
+    },
+    "Avatar": {
+      "type": "object",
+      "description": "An image that represents a user or a non-human entity such as an organization, team, or bot — typically a profile picture.",
+      "properties": {
+        "component": {
+          "const": "Avatar"
+        },
+        "src": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "URL of the avatar image to display."
+        },
+        "alt": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Alternative text describing the avatar for assistive technologies, needed when no adjacent name identifies it."
+        },
+        "size": {
+          "type": "number",
+          "default": 20,
+          "description": "The avatar's width and height in pixels."
+        },
+        "square": {
+          "type": "boolean",
+          "default": false,
+          "description": "Renders a square avatar instead of a circular one; circles represent people, squares represent non-human entities like organizations, teams, or bots."
+        }
+      },
+      "required": ["component", "src"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -891,6 +920,9 @@
         },
         {
           "$ref": "#/components/CounterLabel"
+        },
+        {
+          "$ref": "#/components/Avatar"
         }
       ]
     },
