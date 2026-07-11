@@ -17,6 +17,7 @@ import {ProgressBarApi} from './components/progressbar';
 import {RadioApi} from './components/radio';
 import {ToggleSwitchApi} from './components/toggleswitch';
 import {TextareaApi} from './components/textarea';
+import {SkeletonBoxApi} from './components/skeletonbox';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -42,6 +43,7 @@ export const COMPONENTS = {
   Radio: RadioApi,
   ToggleSwitch: ToggleSwitchApi,
   Textarea: TextareaApi,
+  SkeletonBox: SkeletonBoxApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;

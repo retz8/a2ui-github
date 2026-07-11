@@ -114,6 +114,8 @@ import {textareaRowsFixture} from './textarea-rows';
 import {textareaColsFixture} from './textarea-cols';
 import {textareaCharacterLimitFixture} from './textarea-character-limit';
 import {textareaMinHeightFixture} from './textarea-min-height';
+import {skeletonboxFixture} from './skeletonbox';
+import {skeletonboxSizedFixture} from './skeletonbox-sized';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -234,6 +236,8 @@ export {textareaRowsFixture} from './textarea-rows';
 export {textareaColsFixture} from './textarea-cols';
 export {textareaCharacterLimitFixture} from './textarea-character-limit';
 export {textareaMinHeightFixture} from './textarea-min-height';
+export {skeletonboxFixture} from './skeletonbox';
+export {skeletonboxSizedFixture} from './skeletonbox-sized';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -352,6 +356,8 @@ export const FIXTURES: Fixture[] = [
   textareaColsFixture,
   textareaCharacterLimitFixture,
   textareaMinHeightFixture,
+  skeletonboxFixture,
+  skeletonboxSizedFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

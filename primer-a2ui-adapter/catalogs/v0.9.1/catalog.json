@@ -1296,6 +1296,32 @@
       },
       "required": ["component", "value"],
       "unevaluatedProperties": false
+    },
+    "SkeletonBox": {
+      "type": "object",
+      "description": "A shimmering placeholder box that reserves space for non-text content, such as an image, while it loads.",
+      "properties": {
+        "component": {
+          "const": "SkeletonBox"
+        },
+        "height": {
+          "type": "string",
+          "default": "1rem",
+          "description": "Height of the placeholder box; any CSS height value."
+        },
+        "width": {
+          "type": "string",
+          "description": "Width of the placeholder box; any CSS width value. Fills its container when unset."
+        },
+        "delay": {
+          "type": "string",
+          "enum": ["none", "short", "long"],
+          "default": "none",
+          "description": "Delay before the placeholder becomes visible (`short` ≈ 300ms, `long` ≈ 1000ms), so briefly-loading content never flashes a skeleton."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1384,6 +1410,9 @@
         },
         {
           "$ref": "#/components/Textarea"
+        },
+        {
+          "$ref": "#/components/SkeletonBox"
         }
       ]
     },
