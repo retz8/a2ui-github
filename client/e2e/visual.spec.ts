@@ -75,6 +75,12 @@ const FIXTURE_NAMES = [
   'issuelabeltoken-remove-fn',
   'issuelabeltoken-remove-event',
   'issuelabeltoken-hideremovebutton',
+  'progressbar',
+  'progressbar-bound',
+  'progressbar-segments',
+  'progressbar-segments-bound',
+  'progressbar-bg',
+  'progressbar-sizes',
 ];
 
 for (const name of FIXTURE_NAMES) {

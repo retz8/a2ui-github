@@ -61,6 +61,12 @@ import {checkboxCheckedFixture} from '../src/fixtures/checkbox-checked';
 import {checkboxBoundFixture} from '../src/fixtures/checkbox-bound';
 import {checkboxIndeterminateFixture} from '../src/fixtures/checkbox-indeterminate';
 import {checkboxDisabledFixture} from '../src/fixtures/checkbox-disabled';
+import {progressbarFixture} from '../src/fixtures/progressbar';
+import {progressbarBoundFixture} from '../src/fixtures/progressbar-bound';
+import {progressbarSegmentsFixture} from '../src/fixtures/progressbar-segments';
+import {progressbarSegmentsBoundFixture} from '../src/fixtures/progressbar-segments-bound';
+import {progressbarBgFixture} from '../src/fixtures/progressbar-bg';
+import {progressbarSizesFixture} from '../src/fixtures/progressbar-sizes';
 
 afterEach(cleanup);
 
@@ -452,5 +458,57 @@ describe('fixture rendering', () => {
     expect(unchecked).not.toBeChecked();
     expect(checked).toBeDisabled();
     expect(checked).toBeChecked();
+  });
+  it('renders a literal ProgressBar whose aria-valuenow reflects progress', () => {
+    renderFixture(progressbarFixture);
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '65');
+  });
+
+  it('renders a path-bound ProgressBar from the data model', () => {
+    renderFixture(progressbarBoundFixture);
+    expect(screen.getByRole('progressbar')).toHaveAttribute('aria-valuenow', '40');
+  });
+
+  it('renders one labeled segment per authored segment through the renderer', () => {
+    renderFixture(progressbarSegmentsFixture);
+    expect(screen.getAllByRole('progressbar')).toHaveLength(3);
+    expect(screen.getByRole('progressbar', {name: 'TypeScript'})).toHaveAttribute(
+      'aria-valuenow',
+      '55',
+    );
+    expect(screen.getByRole('progressbar', {name: 'CSS'})).toBeInTheDocument();
+    expect(screen.getByRole('progressbar', {name: 'Other'})).toBeInTheDocument();
+  });
+
+  it('resolves a data-binding inside a segment array element', () => {
+    renderFixture(progressbarSegmentsBoundFixture);
+    // The first segment's width is bound to /tsShare = 55.
+    expect(screen.getByRole('progressbar', {name: 'TypeScript'})).toHaveAttribute(
+      'aria-valuenow',
+      '55',
+    );
+  });
+
+  it('honors the ProgressBar bg color-role enum through the renderer', () => {
+    renderFixture(progressbarBgFixture);
+    // one surface per role; the resolved role maps to Primer's --bgColor-<role>-emphasis token.
+    expect(screen.getAllByRole('progressbar')).toHaveLength(12);
+    expect(screen.getByRole('progressbar', {name: 'accent'}).getAttribute('style')).toContain(
+      'bgColor-accent-emphasis',
+    );
+    expect(screen.getByRole('progressbar', {name: 'danger'}).getAttribute('style')).toContain(
+      'bgColor-danger-emphasis',
+    );
+  });
+
+  it('honors the ProgressBar barSize enum through the renderer', () => {
+    renderFixture(progressbarSizesFixture);
+    // one surface per size; Primer stamps the resolved size onto the track container.
+    for (const size of ['small', 'default', 'large']) {
+      const track = screen
+        .getByRole('progressbar', {name: size})
+        .closest('[data-component="ProgressBar"]');
+      expect(track).toHaveAttribute('data-progress-bar-size', size);
+    }
   });
 });

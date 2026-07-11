@@ -1028,6 +1028,98 @@
       },
       "required": ["component", "checked"],
       "unevaluatedProperties": false
+    },
+    "ProgressBar": {
+      "type": "object",
+      "description": "A horizontal bar that visualizes the completion percentage of a task or process, either as a single filled segment or as multiple colored segments.",
+      "properties": {
+        "component": {
+          "const": "ProgressBar"
+        },
+        "progress": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+          "description": "The completion percentage, 0–100. Mutually exclusive with `segments`; omitting both renders an empty track."
+        },
+        "segments": {
+          "type": "array",
+          "description": "The segments of a multi-segment bar, each with its own percentage and color. Mutually exclusive with `progress`.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "progress": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+                "description": "The completion percentage of this segment, 0–100."
+              },
+              "bg": {
+                "type": "string",
+                "enum": [
+                  "success",
+                  "attention",
+                  "severe",
+                  "danger",
+                  "accent",
+                  "done",
+                  "open",
+                  "closed",
+                  "draft",
+                  "neutral",
+                  "sponsors",
+                  "upsell"
+                ],
+                "default": "success",
+                "description": "The semantic color role of this segment."
+              },
+              "label": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+                "description": "The accessible name of that segment (maps to the segment's `aria-label`)."
+              }
+            },
+            "required": ["progress"],
+            "additionalProperties": false
+          }
+        },
+        "bg": {
+          "type": "string",
+          "enum": [
+            "success",
+            "attention",
+            "severe",
+            "danger",
+            "accent",
+            "done",
+            "open",
+            "closed",
+            "draft",
+            "neutral",
+            "sponsors",
+            "upsell"
+          ],
+          "default": "success",
+          "description": "The semantic color role of the filled segment."
+        },
+        "barSize": {
+          "type": "string",
+          "enum": ["small", "default", "large"],
+          "default": "default",
+          "description": "The height of the bar."
+        },
+        "inline": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the bar renders inline with surrounding content instead of as a block."
+        },
+        "animated": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the filled segment is animated. Applies to the single-`progress` form."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label naming what is progressing, for assistive technologies."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1104,6 +1196,9 @@
         },
         {
           "$ref": "#/components/Checkbox"
+        },
+        {
+          "$ref": "#/components/ProgressBar"
         }
       ]
     },

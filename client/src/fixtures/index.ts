@@ -82,6 +82,12 @@ import {textSizesFixture} from './text-sizes';
 import {textWeightsFixture} from './text-weights';
 import {textWhitespaceFixture} from './text-whitespace';
 import {textFixture} from './text';
+import {progressbarFixture} from './progressbar';
+import {progressbarBoundFixture} from './progressbar-bound';
+import {progressbarSegmentsFixture} from './progressbar-segments';
+import {progressbarSegmentsBoundFixture} from './progressbar-segments-bound';
+import {progressbarBgFixture} from './progressbar-bg';
+import {progressbarSizesFixture} from './progressbar-sizes';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -170,6 +176,12 @@ export {checkboxCheckedFixture} from './checkbox-checked';
 export {checkboxBoundFixture} from './checkbox-bound';
 export {checkboxIndeterminateFixture} from './checkbox-indeterminate';
 export {checkboxDisabledFixture} from './checkbox-disabled';
+export {progressbarFixture} from './progressbar';
+export {progressbarBoundFixture} from './progressbar-bound';
+export {progressbarSegmentsFixture} from './progressbar-segments';
+export {progressbarSegmentsBoundFixture} from './progressbar-segments-bound';
+export {progressbarBgFixture} from './progressbar-bg';
+export {progressbarSizesFixture} from './progressbar-sizes';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -256,6 +268,12 @@ export const FIXTURES: Fixture[] = [
   checkboxBoundFixture,
   checkboxIndeterminateFixture,
   checkboxDisabledFixture,
+  progressbarFixture,
+  progressbarBoundFixture,
+  progressbarSegmentsFixture,
+  progressbarSegmentsBoundFixture,
+  progressbarBgFixture,
+  progressbarSizesFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

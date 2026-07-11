@@ -13,6 +13,7 @@ import {SpinnerApi} from './components/spinner';
 import {TokenApi} from './components/token';
 import {IssueLabelTokenApi} from './components/issuelabeltoken';
 import {CheckboxApi} from './components/checkbox';
+import {ProgressBarApi} from './components/progressbar';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -34,6 +35,7 @@ export const COMPONENTS = {
   Token: TokenApi,
   IssueLabelToken: IssueLabelTokenApi,
   Checkbox: CheckboxApi,
+  ProgressBar: ProgressBarApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;
