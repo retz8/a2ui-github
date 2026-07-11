@@ -1,6 +1,12 @@
 from deterministic_agent.responses import build_response
 
 SUBMIT = {"name": "submit", "surfaceId": "button-event", "sourceComponentId": "root", "context": {}}
+SELECT = {
+    "name": "select",
+    "surfaceId": "radio-event",
+    "sourceComponentId": "root",
+    "context": {"value": "option-1"},
+}
 
 
 def test_submit_returns_data_model_then_components_with_surface_echoed():
@@ -66,6 +72,22 @@ def test_issue_label_remove_returns_data_model_then_status_swap_with_surface_ech
             "component": "Text",
             "text": "✅ Removed — server received issue-label-remove",
         }
+    ]
+
+
+def test_select_returns_data_model_then_components_with_surface_echoed():
+    msgs = build_response(SELECT)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "radio-event"
+    assert dm["path"] == "/selected"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "radio-event"
+    assert uc["components"] == [
+        {"id": "status", "component": "Text", "text": '✅ Selected — server received "option-1"'}
     ]
 
 

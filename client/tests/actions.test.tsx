@@ -8,6 +8,8 @@ import {tokenRemoveEventFixture} from '../src/fixtures/token-remove-event';
 import {issuelabeltokenRemoveFnFixture} from '../src/fixtures/issuelabeltoken-remove-fn';
 import {issuelabeltokenRemoveEventFixture} from '../src/fixtures/issuelabeltoken-remove-event';
 import {checkboxBoundFixture} from '../src/fixtures/checkbox-bound';
+import {radioFnFixture} from '../src/fixtures/radio-fn';
+import {radioEventFixture} from '../src/fixtures/radio-event';
 
 afterEach(cleanup);
 
@@ -111,5 +113,33 @@ describe('action paths', () => {
       expect(screen.getByRole('checkbox', {name: 'Notify me about updates'})).toBeChecked(),
     );
     expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('path-1 (Radio): functionCall runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(radioFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('radio'));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'radio-fn selected');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('path-2 (Radio): event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(radioEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('radio'));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'select',
+        surfaceId: 'radio-event',
+        sourceComponentId: 'root',
+      }),
+    );
   });
 });

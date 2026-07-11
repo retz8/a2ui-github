@@ -81,6 +81,11 @@ const FIXTURE_NAMES = [
   'progressbar-segments-bound',
   'progressbar-bg',
   'progressbar-sizes',
+  'radio',
+  'radio-checked',
+  'radio-disabled',
+  'radio-fn',
+  'radio-event',
 ];
 
 for (const name of FIXTURE_NAMES) {
