@@ -78,7 +78,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [WIP] **6.17** `Radio` (#32)
 - [WIP] **6.18** `ToggleSwitch` (#33)
 - [WIP] **6.19** `Textarea` (#34)
-- [WIP] **6.20** `SkeletonBox`
+- [WIP] **6.20** `SkeletonBox` (#35)
 - [ ] **6.21** `Truncate`
 - [ ] **6.22** `KeybindingHint`
 
