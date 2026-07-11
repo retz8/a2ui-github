@@ -99,3 +99,38 @@ This is a protocol gap, not merely an authoring choice: any design-system-native
 that faithfully translates HTML-attribute-bearing components will hit it. **Candidate A2UI
 OSS contribution:** a general `HtmlAttributes` common type (or an extensible escape hatch)
 so these props have a home rather than being silently dropped.
+
+## 6. A2UI has no uncontrolled-input mode; input state is always protocol-visible
+
+React/HTML inputs offer two modes: **controlled** (`checked`/`value` + change handler)
+and **uncontrolled** (`defaultChecked`/`defaultValue` — the DOM owns the state, read
+back later via refs/`FormData` at submit). A2UI can represent only the controlled one:
+
+- A `Dynamic*` value prop is exactly `literal | {path} | {call}` (`common_types.json`).
+  There is **no "initial value, then the component owns it" construct** — a literal is a
+  fixed rendering instruction, a path is live data-model state.
+- The agent's entire view of the client is **the data model + events**. DOM-owned state
+  is in neither, so uncontrolled state wouldn't just be unsupported — it would be
+  **unobservable**: React's read-back channels (refs, `FormData`) have no protocol analog.
+- The basic catalog reads it the same way: `CheckBox.value`, `Slider.value`,
+  `DateTimeInput.value`, `ChoicePicker.value` are all **required**. (`TextField.value` is
+  the one optional outlier — and shows exactly what optionality buys: an unbound field
+  whose typed text is agent-invisible.)
+
+**Authoring consequences** (applied to Checkbox/Radio/ToggleSwitch):
+
+- **Drop `default*` uncontrolled initializers** — with a required value prop the wrapped
+  component is always controlled, so React ignores them; carrying one would teach the
+  generating agent a knob that silently no-ops. Initial state's A2UI home is the value
+  prop itself: a literal, or the bound path's initial data-model value.
+- **Tighten the state prop to required** on a lone stateful leaf — optionality has
+  nothing left to mean, and "absent" would force the adapter to invent an undocumented
+  behavior (silent `false`, or a DOM-owned control the agent can't see).
+
+Uncontrolled mode's React benefits (zero state boilerplate, no re-render per
+keystroke/toggle, read-at-submit) don't transfer: they all presuppose an imperative
+read-back channel. **Two-way binding is A2UI's replacement — the data model *is* the form
+state.** The residual cost is real but small: every input must be allocated a path (or
+pinned to a literal). **Candidate A2UI OSS contribution:** initial-value sugar on
+`DataBinding` (e.g. `{path, default}`) — uncontrolled-mode ergonomics without
+protocol-invisible state.
