@@ -58,3 +58,21 @@ Revisit when `Stack` (6.23) lands: make `radio-event`'s `root` a `Stack` with `[
 children so the status-swap half renders. The fixture and the agent response
 (`agent/deterministic_agent/fixtures/select.json`) already carry the status content; add the
 fixture's status surface to the e2e baseline list at that point.
+
+### ToggleSwitch — toggle-event status-swap visibility
+
+Deferred in the 6.18 review (event fixture `toggleswitch-event`):
+
+The toggle-event agent response has two halves — `updateDataModel /setting=false` (visible: the
+switch reverts off via `checked ← /setting`, overriding the optimistic local flip) and
+`updateComponents` swapping a sibling status `Text` (id `status`, "⚠️ Could not save — reverted by
+server"). A surface renders only the `root` tree, and no container component can yet host both the
+switch and the status `Text` under one root, so the status `Text` is authored in the fixture but
+never rendered — only the switch-reverting half is observable. The full round-trip was confirmed
+live in the 6.18 review (card fetch → `message/send` POST → `/setting` write → the switch reverts);
+the returned status `Text` had nowhere to render.
+
+Revisit when `Stack` (6.23) lands: make `toggleswitch-event`'s `root` a `Stack` with
+`[toggleswitch, status]` children so the status-swap half renders. The fixture and the agent
+response (`agent/deterministic_agent/fixtures/toggle.json`) already carry the status content; add
+the fixture's status surface to the e2e baseline list at that point.
