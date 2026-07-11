@@ -33,6 +33,9 @@ import {statelabelFixture} from '../src/fixtures/statelabel';
 import {statelabelBoundFixture} from '../src/fixtures/statelabel-bound';
 import {statelabelStatusFixture} from '../src/fixtures/statelabel-status';
 import {statelabelSizeFixture} from '../src/fixtures/statelabel-size';
+import {counterlabelFixture} from '../src/fixtures/counterlabel';
+import {counterlabelBoundFixture} from '../src/fixtures/counterlabel-bound';
+import {counterlabelVariantsFixture} from '../src/fixtures/counterlabel-variants';
 
 afterEach(cleanup);
 
@@ -258,5 +261,23 @@ describe('fixture rendering', () => {
     // one surface per size; Primer stamps the resolved size onto the visible span.
     expect(screen.getByText('small')).toHaveAttribute('data-size', 'small');
     expect(screen.getByText('medium')).toHaveAttribute('data-size', 'medium');
+  });
+
+  it('renders a literal CounterLabel count', () => {
+    renderFixture(counterlabelFixture);
+    expect(screen.getByText('12')).toBeInTheDocument();
+  });
+
+  it('renders a path-bound CounterLabel count from the data model', () => {
+    renderFixture(counterlabelBoundFixture);
+    expect(screen.getByText('42')).toBeInTheDocument();
+  });
+
+  it('honors the CounterLabel variant enum through the renderer', () => {
+    renderFixture(counterlabelVariantsFixture);
+    // one surface per variant; Primer stamps the resolved emphasis onto the visible span.
+    const counters = screen.getAllByText('12');
+    const variants = counters.map(el => el.getAttribute('data-variant')).sort();
+    expect(variants).toEqual(['primary', 'secondary']);
   });
 });

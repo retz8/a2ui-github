@@ -52,6 +52,9 @@ const FIXTURE_NAMES = [
   'statelabel-bound',
   'statelabel-status',
   'statelabel-size',
+  'counterlabel',
+  'counterlabel-bound',
+  'counterlabel-variants',
 ];
 
 for (const name of FIXTURE_NAMES) {
