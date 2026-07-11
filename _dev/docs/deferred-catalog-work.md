@@ -25,3 +25,19 @@ Deferred in the 6.16 design session (`_dev/docs/new-components/checkbox.md`):
 - **Optional `action`:** Checkbox carries no `Action` — change is the two-way write to
   `checked`'s bound path. Backfill an optional `action` only if a future flow needs
   toggle-initiated agent round-trips.
+
+### Token / IssueLabelToken — remove-event status-swap visibility
+
+Deferred in the 6.12 review (event fixtures `token-remove-event`, `issuelabeltoken-remove-event`):
+
+The remove-event agent response has two halves — `updateDataModel /removed=true` (visible: the
+token goes `disabled` via `disabled ← /removed`) and `updateComponents` swapping a sibling status
+`Text` (id `status`, e.g. "✅ Removed — server received …"). A surface renders only the `root`
+tree, and at 6.12 no container component can host both the token and the status `Text` under one
+root, so the status `Text` is authored in the fixtures but never rendered — only the token-disabling
+half is observable.
+
+Revisit when `Stack` (6.23) lands: make each event fixture's `root` a `Stack` with `[token, status]`
+children so the status-swap half renders. The fixtures and the agent responses
+(`agent/deterministic_agent/fixtures/token-remove.json` / `issue-label-remove.json`) already carry
+the status content; add the two fixtures' status surfaces to the e2e baseline list at that point.
