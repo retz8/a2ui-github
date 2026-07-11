@@ -71,6 +71,11 @@ import {issuelabeltokenDisabledFixture} from './issuelabeltoken-disabled';
 import {issuelabeltokenRemoveFnFixture} from './issuelabeltoken-remove-fn';
 import {issuelabeltokenRemoveEventFixture} from './issuelabeltoken-remove-event';
 import {issuelabeltokenHideremovebuttonFixture} from './issuelabeltoken-hideremovebutton';
+import {checkboxFixture} from './checkbox';
+import {checkboxCheckedFixture} from './checkbox-checked';
+import {checkboxBoundFixture} from './checkbox-bound';
+import {checkboxIndeterminateFixture} from './checkbox-indeterminate';
+import {checkboxDisabledFixture} from './checkbox-disabled';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -160,6 +165,11 @@ export {issuelabeltokenDisabledFixture} from './issuelabeltoken-disabled';
 export {issuelabeltokenRemoveFnFixture} from './issuelabeltoken-remove-fn';
 export {issuelabeltokenRemoveEventFixture} from './issuelabeltoken-remove-event';
 export {issuelabeltokenHideremovebuttonFixture} from './issuelabeltoken-hideremovebutton';
+export {checkboxFixture} from './checkbox';
+export {checkboxCheckedFixture} from './checkbox-checked';
+export {checkboxBoundFixture} from './checkbox-bound';
+export {checkboxIndeterminateFixture} from './checkbox-indeterminate';
+export {checkboxDisabledFixture} from './checkbox-disabled';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -241,6 +251,11 @@ export const FIXTURES: Fixture[] = [
   issuelabeltokenRemoveFnFixture,
   issuelabeltokenRemoveEventFixture,
   issuelabeltokenHideremovebuttonFixture,
+  checkboxFixture,
+  checkboxCheckedFixture,
+  checkboxBoundFixture,
+  checkboxIndeterminateFixture,
+  checkboxDisabledFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
