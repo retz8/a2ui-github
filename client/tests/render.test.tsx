@@ -1,5 +1,5 @@
 import {describe, it, expect, afterEach} from 'vitest';
-import {screen, cleanup, waitFor} from '@testing-library/react';
+import {screen, cleanup, waitFor, fireEvent} from '@testing-library/react';
 import {renderFixture} from './helpers';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
@@ -71,6 +71,14 @@ import {radioFixture} from '../src/fixtures/radio';
 import {radioCheckedFixture} from '../src/fixtures/radio-checked';
 import {radioDisabledFixture} from '../src/fixtures/radio-disabled';
 import {radioEventFixture} from '../src/fixtures/radio-event';
+import {toggleswitchFixture} from '../src/fixtures/toggleswitch';
+import {toggleswitchCheckedFixture} from '../src/fixtures/toggleswitch-checked';
+import {toggleswitchBoundFixture} from '../src/fixtures/toggleswitch-bound';
+import {toggleswitchDisabledFixture} from '../src/fixtures/toggleswitch-disabled';
+import {toggleswitchLoadingFixture} from '../src/fixtures/toggleswitch-loading';
+import {toggleswitchSizesFixture} from '../src/fixtures/toggleswitch-sizes';
+import {toggleswitchLabelPositionFixture} from '../src/fixtures/toggleswitch-label-position';
+import {toggleswitchCustomLabelsFixture} from '../src/fixtures/toggleswitch-custom-labels';
 
 afterEach(cleanup);
 
@@ -542,5 +550,77 @@ describe('fixture rendering', () => {
     renderFixture(radioEventFixture);
     // checked <- /selected, initial /selected = false -> the radio renders unchecked.
     expect(screen.getByRole('radio')).not.toBeChecked();
+  });
+
+  it('renders an unchecked ToggleSwitch showing the Off status', () => {
+    const {container} = renderFixture(toggleswitchFixture);
+    expect(screen.getByText('Off')).toBeInTheDocument();
+    expect(container.querySelector('button[aria-pressed]')).toHaveAttribute(
+      'aria-pressed',
+      'false',
+    );
+  });
+
+  it('renders a checked ToggleSwitch showing the On status', () => {
+    const {container} = renderFixture(toggleswitchCheckedFixture);
+    expect(screen.getByText('On')).toBeInTheDocument();
+    expect(container.querySelector('button[aria-pressed]')).toHaveAttribute('aria-pressed', 'true');
+  });
+
+  it('writes back through the two-way binding when toggled (bound checked)', async () => {
+    // /setting starts false; flipping writes it true via the binder's setter, and the bound
+    // `checked` re-resolves — the switch snaps on with no round trip.
+    const {container} = renderFixture(toggleswitchBoundFixture);
+    const btn = container.querySelector('button[aria-pressed]') as HTMLButtonElement;
+    expect(btn).toHaveAttribute('aria-pressed', 'false');
+    fireEvent.click(btn);
+    await waitFor(() =>
+      expect(container.querySelector('button[aria-pressed]')).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      ),
+    );
+  });
+
+  it('honors the ToggleSwitch disabled × check-state mini-gallery through the renderer', () => {
+    const {container} = renderFixture(toggleswitchDisabledFixture);
+    const buttons = [...container.querySelectorAll('button[aria-pressed]')];
+    expect(buttons).toHaveLength(2);
+    for (const btn of buttons) {
+      expect(btn).toHaveAttribute('aria-disabled', 'true');
+    }
+    expect(buttons.map(b => b.getAttribute('aria-pressed'))).toEqual(['false', 'true']);
+  });
+
+  it('honors the ToggleSwitch loading × check-state mini-gallery through the renderer', () => {
+    const {container} = renderFixture(toggleswitchLoadingFixture);
+    const buttons = [...container.querySelectorAll('button[aria-pressed]')];
+    expect(buttons).toHaveLength(2);
+    // loading blocks interaction just like disabled.
+    for (const btn of buttons) {
+      expect(btn).toHaveAttribute('aria-disabled', 'true');
+    }
+  });
+
+  it('honors the ToggleSwitch size enum through the renderer', () => {
+    const {container} = renderFixture(toggleswitchSizesFixture);
+    const sizes = [...container.querySelectorAll('button[aria-pressed]')].map(el =>
+      el.getAttribute('data-size'),
+    );
+    expect(sizes).toEqual(['small', 'medium']);
+  });
+
+  it('honors the ToggleSwitch statusLabelPosition enum through the renderer', () => {
+    const {container} = renderFixture(toggleswitchLabelPositionFixture);
+    const positions = [...container.querySelectorAll('[data-status-label-position]')].map(el =>
+      el.getAttribute('data-status-label-position'),
+    );
+    expect(positions).toEqual(['start', 'end']);
+  });
+
+  it('renders the ToggleSwitch custom on/off status labels through the renderer', () => {
+    renderFixture(toggleswitchCustomLabelsFixture);
+    expect(screen.getByText('Hide')).toBeInTheDocument();
+    expect(screen.getByText('Show')).toBeInTheDocument();
   });
 });

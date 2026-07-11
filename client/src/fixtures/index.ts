@@ -93,6 +93,16 @@ import {radioCheckedFixture} from './radio-checked';
 import {radioDisabledFixture} from './radio-disabled';
 import {radioFnFixture} from './radio-fn';
 import {radioEventFixture} from './radio-event';
+import {toggleswitchFixture} from './toggleswitch';
+import {toggleswitchCheckedFixture} from './toggleswitch-checked';
+import {toggleswitchBoundFixture} from './toggleswitch-bound';
+import {toggleswitchFnFixture} from './toggleswitch-fn';
+import {toggleswitchEventFixture} from './toggleswitch-event';
+import {toggleswitchDisabledFixture} from './toggleswitch-disabled';
+import {toggleswitchLoadingFixture} from './toggleswitch-loading';
+import {toggleswitchSizesFixture} from './toggleswitch-sizes';
+import {toggleswitchLabelPositionFixture} from './toggleswitch-label-position';
+import {toggleswitchCustomLabelsFixture} from './toggleswitch-custom-labels';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -192,6 +202,16 @@ export {radioCheckedFixture} from './radio-checked';
 export {radioDisabledFixture} from './radio-disabled';
 export {radioFnFixture} from './radio-fn';
 export {radioEventFixture} from './radio-event';
+export {toggleswitchFixture} from './toggleswitch';
+export {toggleswitchCheckedFixture} from './toggleswitch-checked';
+export {toggleswitchBoundFixture} from './toggleswitch-bound';
+export {toggleswitchFnFixture} from './toggleswitch-fn';
+export {toggleswitchEventFixture} from './toggleswitch-event';
+export {toggleswitchDisabledFixture} from './toggleswitch-disabled';
+export {toggleswitchLoadingFixture} from './toggleswitch-loading';
+export {toggleswitchSizesFixture} from './toggleswitch-sizes';
+export {toggleswitchLabelPositionFixture} from './toggleswitch-label-position';
+export {toggleswitchCustomLabelsFixture} from './toggleswitch-custom-labels';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -289,6 +309,16 @@ export const FIXTURES: Fixture[] = [
   radioDisabledFixture,
   radioFnFixture,
   radioEventFixture,
+  toggleswitchFixture,
+  toggleswitchCheckedFixture,
+  toggleswitchBoundFixture,
+  toggleswitchFnFixture,
+  toggleswitchEventFixture,
+  toggleswitchDisabledFixture,
+  toggleswitchLoadingFixture,
+  toggleswitchSizesFixture,
+  toggleswitchLabelPositionFixture,
+  toggleswitchCustomLabelsFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

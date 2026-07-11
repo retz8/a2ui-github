@@ -37,6 +37,12 @@ ISSUE_LABEL_REMOVE = {
     "sourceComponentId": "root",
     "context": {},
 }
+TOGGLE = {
+    "name": "toggle",
+    "surfaceId": "toggleswitch-event",
+    "sourceComponentId": "root",
+    "context": {"checked": True},
+}
 
 
 def test_token_remove_returns_data_model_then_status_swap_with_surface_echoed():
@@ -88,6 +94,28 @@ def test_select_returns_data_model_then_components_with_surface_echoed():
     assert uc["surfaceId"] == "radio-event"
     assert uc["components"] == [
         {"id": "status", "component": "Text", "text": '✅ Selected — server received "option-1"'}
+    ]
+
+
+def test_toggle_reverts_setting_then_swaps_status_with_surface_echoed():
+    msgs = build_response(TOGGLE)
+    assert len(msgs) == 2
+
+    # The server stays authoritative over the two-way-bound path: it writes /setting back to
+    # false, overriding the optimistic local flip.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "toggleswitch-event"
+    assert dm["path"] == "/setting"
+    assert dm["value"] is False
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "toggleswitch-event"
+    assert uc["components"] == [
+        {
+            "id": "status",
+            "component": "Text",
+            "text": "⚠️ Could not save — reverted by server",
+        }
     ]
 
 

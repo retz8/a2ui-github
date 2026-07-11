@@ -10,6 +10,8 @@ import {issuelabeltokenRemoveEventFixture} from '../src/fixtures/issuelabeltoken
 import {checkboxBoundFixture} from '../src/fixtures/checkbox-bound';
 import {radioFnFixture} from '../src/fixtures/radio-fn';
 import {radioEventFixture} from '../src/fixtures/radio-event';
+import {toggleswitchFnFixture} from '../src/fixtures/toggleswitch-fn';
+import {toggleswitchEventFixture} from '../src/fixtures/toggleswitch-event';
 
 afterEach(cleanup);
 
@@ -138,6 +140,34 @@ describe('action paths', () => {
       expect.objectContaining({
         name: 'select',
         surfaceId: 'radio-event',
+        sourceComponentId: 'root',
+      }),
+    );
+  });
+
+  it('path-1: ToggleSwitch functionCall runs consoleLog locally on flip, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(toggleswitchFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button'));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'toggleswitch-fn toggled');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('path-2: ToggleSwitch event is dispatched to the actionHandler on flip', async () => {
+    const handler = vi.fn();
+    renderFixture(toggleswitchEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button'));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'toggle',
+        surfaceId: 'toggleswitch-event',
         sourceComponentId: 'root',
       }),
     );
