@@ -1120,6 +1120,45 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "Radio": {
+      "type": "object",
+      "description": "A radio input for selecting a single option from a mutually exclusive group.",
+      "properties": {
+        "component": {
+          "const": "Radio"
+        },
+        "value": {
+          "type": "string",
+          "description": "A unique value identifying this option within its group; never shown to the user."
+        },
+        "name": {
+          "type": "string",
+          "description": "The group key; radios sharing a `name` are mutually exclusive."
+        },
+        "checked": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether this radio is selected."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the radio is disabled and cannot be selected."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether a selection in this radio's group must be made before the containing form can be submitted."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when this radio becomes selected."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for assistive technologies; a radio renders no visible label of its own."
+        }
+      },
+      "required": ["component", "value"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1199,6 +1238,9 @@
         },
         {
           "$ref": "#/components/ProgressBar"
+        },
+        {
+          "$ref": "#/components/Radio"
         }
       ]
     },

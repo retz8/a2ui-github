@@ -88,6 +88,11 @@ import {progressbarSegmentsFixture} from './progressbar-segments';
 import {progressbarSegmentsBoundFixture} from './progressbar-segments-bound';
 import {progressbarBgFixture} from './progressbar-bg';
 import {progressbarSizesFixture} from './progressbar-sizes';
+import {radioFixture} from './radio';
+import {radioCheckedFixture} from './radio-checked';
+import {radioDisabledFixture} from './radio-disabled';
+import {radioFnFixture} from './radio-fn';
+import {radioEventFixture} from './radio-event';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -182,6 +187,11 @@ export {progressbarSegmentsFixture} from './progressbar-segments';
 export {progressbarSegmentsBoundFixture} from './progressbar-segments-bound';
 export {progressbarBgFixture} from './progressbar-bg';
 export {progressbarSizesFixture} from './progressbar-sizes';
+export {radioFixture} from './radio';
+export {radioCheckedFixture} from './radio-checked';
+export {radioDisabledFixture} from './radio-disabled';
+export {radioFnFixture} from './radio-fn';
+export {radioEventFixture} from './radio-event';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -274,6 +284,11 @@ export const FIXTURES: Fixture[] = [
   progressbarSegmentsBoundFixture,
   progressbarBgFixture,
   progressbarSizesFixture,
+  radioFixture,
+  radioCheckedFixture,
+  radioDisabledFixture,
+  radioFnFixture,
+  radioEventFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

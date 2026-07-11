@@ -67,6 +67,10 @@ import {progressbarSegmentsFixture} from '../src/fixtures/progressbar-segments';
 import {progressbarSegmentsBoundFixture} from '../src/fixtures/progressbar-segments-bound';
 import {progressbarBgFixture} from '../src/fixtures/progressbar-bg';
 import {progressbarSizesFixture} from '../src/fixtures/progressbar-sizes';
+import {radioFixture} from '../src/fixtures/radio';
+import {radioCheckedFixture} from '../src/fixtures/radio-checked';
+import {radioDisabledFixture} from '../src/fixtures/radio-disabled';
+import {radioEventFixture} from '../src/fixtures/radio-event';
 
 afterEach(cleanup);
 
@@ -510,5 +514,33 @@ describe('fixture rendering', () => {
         .closest('[data-component="ProgressBar"]');
       expect(track).toHaveAttribute('data-progress-bar-size', size);
     }
+  });
+
+  it('renders a native Radio carrying its value and name through the renderer', () => {
+    renderFixture(radioFixture);
+    const el = screen.getByRole('radio');
+    expect(el).toHaveAttribute('value', 'option-1');
+    expect(el).toHaveAttribute('name', 'radio-demo');
+    expect(el).not.toBeChecked();
+  });
+
+  it('honors a literal checked Radio through the renderer', () => {
+    renderFixture(radioCheckedFixture);
+    expect(screen.getByRole('radio')).toBeChecked();
+  });
+
+  it('honors the disabled Radio on both selection states through the renderer', () => {
+    renderFixture(radioDisabledFixture);
+    // one surface per selection state; both radios are disabled, one is checked.
+    const radios = screen.getAllByRole('radio');
+    expect(radios).toHaveLength(2);
+    for (const el of radios) expect(el).toBeDisabled();
+    expect(radios.filter(el => (el as HTMLInputElement).checked)).toHaveLength(1);
+  });
+
+  it('resolves the path-bound Radio checked from the data model (initial false)', () => {
+    renderFixture(radioEventFixture);
+    // checked <- /selected, initial /selected = false -> the radio renders unchecked.
+    expect(screen.getByRole('radio')).not.toBeChecked();
   });
 });

@@ -10,6 +10,7 @@ _EVENT_FIXTURES = {
     "submit": "submit.json",
     "token-remove": "token-remove.json",
     "issue-label-remove": "issue-label-remove.json",
+    "select": "select.json",
 }
 # The operation key whose object carries the surfaceId we stamp.
 _OPERATION_KEYS = ("updateComponents", "updateDataModel", "createSurface")
