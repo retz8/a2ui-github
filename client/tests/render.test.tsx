@@ -90,6 +90,8 @@ import {textareaRowsFixture} from '../src/fixtures/textarea-rows';
 import {textareaColsFixture} from '../src/fixtures/textarea-cols';
 import {textareaCharacterLimitFixture} from '../src/fixtures/textarea-character-limit';
 import {textareaMinHeightFixture} from '../src/fixtures/textarea-min-height';
+import {skeletonboxFixture} from '../src/fixtures/skeletonbox';
+import {skeletonboxSizedFixture} from '../src/fixtures/skeletonbox-sized';
 
 afterEach(cleanup);
 
@@ -701,5 +703,18 @@ describe('fixture rendering', () => {
     const boxes = screen.getAllByRole('textbox');
     const invalid = boxes.map(el => el.getAttribute('aria-invalid')).sort();
     expect(invalid).toEqual(['false', 'true']);
+  });
+
+  it('renders a default SkeletonBox placeholder through the renderer', () => {
+    const {container} = renderFixture(skeletonboxFixture);
+    expect(container.querySelector('[class*="SkeletonBox"]')).toBeInTheDocument();
+  });
+
+  it('honors the SkeletonBox height and width through the renderer', () => {
+    const {container} = renderFixture(skeletonboxSizedFixture);
+    const box = container.querySelector<HTMLElement>('[class*="SkeletonBox"]')!;
+    expect(box).toBeInTheDocument();
+    expect(box.style.height).toBe('80px');
+    expect(box.style.width).toBe('200px');
   });
 });
