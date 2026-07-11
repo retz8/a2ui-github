@@ -610,6 +610,44 @@
       "required": ["component", "text"],
       "unevaluatedProperties": false
     },
+    "Label": {
+      "type": "object",
+      "description": "Displays a small badge of contextual metadata — such as a status or category — with a selectable color variant and size. A non-interactive display primitive.",
+      "properties": {
+        "component": {
+          "const": "Label"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The label's textual content."
+        },
+        "variant": {
+          "type": "string",
+          "enum": [
+            "default",
+            "primary",
+            "secondary",
+            "accent",
+            "success",
+            "attention",
+            "severe",
+            "danger",
+            "done",
+            "sponsors"
+          ],
+          "default": "default",
+          "description": "The color scheme of the label, signaling the kind of metadata (e.g. success, danger, attention)."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "large"],
+          "default": "small",
+          "description": "How large the label is rendered."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
     "BranchName": {
       "type": "object",
       "description": "A styled label that displays the name of a branch, rendered as a link when it navigates to a destination or as plain text when the reference is contextual.",
@@ -779,6 +817,9 @@
         },
         {
           "$ref": "#/components/RelativeTime"
+        },
+        {
+          "$ref": "#/components/Label"
         }
       ]
     },

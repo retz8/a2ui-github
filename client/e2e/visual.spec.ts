@@ -44,6 +44,10 @@ const FIXTURE_NAMES = [
   'relative-time-threshold',
   'relative-time-prefix',
   'relative-time-datetime-parts',
+  'label',
+  'label-bound',
+  'label-variants',
+  'label-sizes',
 ];
 
 for (const name of FIXTURE_NAMES) {

@@ -35,6 +35,10 @@ import {relativeTimePrecisionFixture} from './relative-time-precision';
 import {relativeTimeThresholdFixture} from './relative-time-threshold';
 import {relativeTimePrefixFixture} from './relative-time-prefix';
 import {relativeTimeDatetimePartsFixture} from './relative-time-datetime-parts';
+import {labelFixture} from './label';
+import {labelBoundFixture} from './label-bound';
+import {labelVariantsFixture} from './label-variants';
+import {labelSizesFixture} from './label-sizes';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -88,6 +92,10 @@ export {relativeTimePrecisionFixture} from './relative-time-precision';
 export {relativeTimeThresholdFixture} from './relative-time-threshold';
 export {relativeTimePrefixFixture} from './relative-time-prefix';
 export {relativeTimeDatetimePartsFixture} from './relative-time-datetime-parts';
+export {labelFixture} from './label';
+export {labelBoundFixture} from './label-bound';
+export {labelVariantsFixture} from './label-variants';
+export {labelSizesFixture} from './label-sizes';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -133,6 +141,10 @@ export const FIXTURES: Fixture[] = [
   relativeTimeThresholdFixture,
   relativeTimePrefixFixture,
   relativeTimeDatetimePartsFixture,
+  labelFixture,
+  labelBoundFixture,
+  labelVariantsFixture,
+  labelSizesFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
