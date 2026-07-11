@@ -53,6 +53,24 @@ import {avatarSquareFixture} from './avatar-square';
 import {spinnerFixture} from './spinner';
 import {spinnerSizesFixture} from './spinner-sizes';
 import {spinnerBoundFixture} from './spinner-bound';
+import {tokenFixture} from './token';
+import {tokenBoundFixture} from './token-bound';
+import {tokenLeadingvisualFixture} from './token-leadingvisual';
+import {tokenSizesFixture} from './token-sizes';
+import {tokenSelectedFixture} from './token-selected';
+import {tokenDisabledFixture} from './token-disabled';
+import {tokenRemoveFnFixture} from './token-remove-fn';
+import {tokenRemoveEventFixture} from './token-remove-event';
+import {tokenHideremovebuttonFixture} from './token-hideremovebutton';
+import {issuelabeltokenFixture} from './issuelabeltoken';
+import {issuelabeltokenBoundFixture} from './issuelabeltoken-bound';
+import {issuelabeltokenFillcolorFixture} from './issuelabeltoken-fillcolor';
+import {issuelabeltokenSizesFixture} from './issuelabeltoken-sizes';
+import {issuelabeltokenSelectedFixture} from './issuelabeltoken-selected';
+import {issuelabeltokenDisabledFixture} from './issuelabeltoken-disabled';
+import {issuelabeltokenRemoveFnFixture} from './issuelabeltoken-remove-fn';
+import {issuelabeltokenRemoveEventFixture} from './issuelabeltoken-remove-event';
+import {issuelabeltokenHideremovebuttonFixture} from './issuelabeltoken-hideremovebutton';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -124,6 +142,24 @@ export {avatarSquareFixture} from './avatar-square';
 export {spinnerFixture} from './spinner';
 export {spinnerSizesFixture} from './spinner-sizes';
 export {spinnerBoundFixture} from './spinner-bound';
+export {tokenFixture} from './token';
+export {tokenBoundFixture} from './token-bound';
+export {tokenLeadingvisualFixture} from './token-leadingvisual';
+export {tokenSizesFixture} from './token-sizes';
+export {tokenSelectedFixture} from './token-selected';
+export {tokenDisabledFixture} from './token-disabled';
+export {tokenRemoveFnFixture} from './token-remove-fn';
+export {tokenRemoveEventFixture} from './token-remove-event';
+export {tokenHideremovebuttonFixture} from './token-hideremovebutton';
+export {issuelabeltokenFixture} from './issuelabeltoken';
+export {issuelabeltokenBoundFixture} from './issuelabeltoken-bound';
+export {issuelabeltokenFillcolorFixture} from './issuelabeltoken-fillcolor';
+export {issuelabeltokenSizesFixture} from './issuelabeltoken-sizes';
+export {issuelabeltokenSelectedFixture} from './issuelabeltoken-selected';
+export {issuelabeltokenDisabledFixture} from './issuelabeltoken-disabled';
+export {issuelabeltokenRemoveFnFixture} from './issuelabeltoken-remove-fn';
+export {issuelabeltokenRemoveEventFixture} from './issuelabeltoken-remove-event';
+export {issuelabeltokenHideremovebuttonFixture} from './issuelabeltoken-hideremovebutton';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -187,6 +223,24 @@ export const FIXTURES: Fixture[] = [
   spinnerFixture,
   spinnerSizesFixture,
   spinnerBoundFixture,
+  tokenFixture,
+  tokenBoundFixture,
+  tokenLeadingvisualFixture,
+  tokenSizesFixture,
+  tokenSelectedFixture,
+  tokenDisabledFixture,
+  tokenRemoveFnFixture,
+  tokenRemoveEventFixture,
+  tokenHideremovebuttonFixture,
+  issuelabeltokenFixture,
+  issuelabeltokenBoundFixture,
+  issuelabeltokenFillcolorFixture,
+  issuelabeltokenSizesFixture,
+  issuelabeltokenSelectedFixture,
+  issuelabeltokenDisabledFixture,
+  issuelabeltokenRemoveFnFixture,
+  issuelabeltokenRemoveEventFixture,
+  issuelabeltokenHideremovebuttonFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

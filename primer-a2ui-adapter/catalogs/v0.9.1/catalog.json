@@ -887,6 +887,106 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "Token": {
+      "type": "object",
+      "description": "A compact representation of an object, typically used to show a collection of related metadata. Optionally removable via a remove action.",
+      "properties": {
+        "component": {
+          "const": "Token"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The text label inside the token."
+        },
+        "leadingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A component rendered before the token's text (e.g. an icon). Not rendered at the small size."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["span", "button", "a"],
+          "default": "span",
+          "description": "The element the token renders as: a static span, a button, or a link."
+        },
+        "removeAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the user removes the token — via the remove button, or Backspace/Delete while focused. Omitting it renders no remove button."
+        },
+        "hideRemoveButton": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the remove button is hidden; keyboard removal remains available when a remove action is set."
+        },
+        "isSelected": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the token is in a selected state."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large", "xlarge"],
+          "description": "How large the token is rendered."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the token is disabled and non-interactive."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for assistive technologies."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "IssueLabelToken": {
+      "type": "object",
+      "description": "A compact token representing an issue label, filled with the label's corresponding color. Optionally removable via a remove action.",
+      "properties": {
+        "component": {
+          "const": "IssueLabelToken"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The text label inside the token."
+        },
+        "fillColor": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The color corresponding to the label the token represents; the token's fill and text derive from it."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["span", "button", "a"],
+          "default": "span",
+          "description": "The element the token renders as: a static span, a button, or a link."
+        },
+        "removeAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the user removes the token — via the remove button, or Backspace/Delete while focused. Omitting it renders no remove button."
+        },
+        "hideRemoveButton": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the remove button is hidden; keyboard removal remains available when a remove action is set."
+        },
+        "isSelected": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the token is in a selected state."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large", "xlarge"],
+          "description": "How large the token is rendered."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the token is disabled and non-interactive."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for assistive technologies."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -954,6 +1054,12 @@
         },
         {
           "$ref": "#/components/Spinner"
+        },
+        {
+          "$ref": "#/components/Token"
+        },
+        {
+          "$ref": "#/components/IssueLabelToken"
         }
       ]
     },

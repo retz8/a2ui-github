@@ -6,7 +6,11 @@ import json
 from pathlib import Path
 
 _FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
-_EVENT_FIXTURES = {"submit": "submit.json"}
+_EVENT_FIXTURES = {
+    "submit": "submit.json",
+    "token-remove": "token-remove.json",
+    "issue-label-remove": "issue-label-remove.json",
+}
 # The operation key whose object carries the surfaceId we stamp.
 _OPERATION_KEYS = ("updateComponents", "updateDataModel", "createSurface")
 

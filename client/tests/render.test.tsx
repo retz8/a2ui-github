@@ -44,6 +44,18 @@ import {AVATAR_PLACEHOLDER_SRC} from '../src/fixtures/avatar-placeholder';
 import {spinnerFixture} from '../src/fixtures/spinner';
 import {spinnerSizesFixture} from '../src/fixtures/spinner-sizes';
 import {spinnerBoundFixture} from '../src/fixtures/spinner-bound';
+import {tokenFixture} from '../src/fixtures/token';
+import {tokenBoundFixture} from '../src/fixtures/token-bound';
+import {tokenLeadingvisualFixture} from '../src/fixtures/token-leadingvisual';
+import {tokenSizesFixture} from '../src/fixtures/token-sizes';
+import {tokenSelectedFixture} from '../src/fixtures/token-selected';
+import {tokenHideremovebuttonFixture} from '../src/fixtures/token-hideremovebutton';
+import {issuelabeltokenFixture} from '../src/fixtures/issuelabeltoken';
+import {issuelabeltokenBoundFixture} from '../src/fixtures/issuelabeltoken-bound';
+import {issuelabeltokenFillcolorFixture} from '../src/fixtures/issuelabeltoken-fillcolor';
+import {issuelabeltokenSizesFixture} from '../src/fixtures/issuelabeltoken-sizes';
+import {issuelabeltokenSelectedFixture} from '../src/fixtures/issuelabeltoken-selected';
+import {issuelabeltokenHideremovebuttonFixture} from '../src/fixtures/issuelabeltoken-hideremovebutton';
 
 afterEach(cleanup);
 
@@ -334,5 +346,73 @@ describe('fixture rendering', () => {
   it('resolves a path-bound Spinner srText from the data model', () => {
     renderFixture(spinnerBoundFixture);
     expect(screen.getByText('Loading pull requests')).toBeInTheDocument();
+  });
+
+  it('renders a literal Token', () => {
+    renderFixture(tokenFixture);
+    expect(screen.getByText('Token from Primer')).toBeInTheDocument();
+  });
+
+  it('renders a path-bound Token text from the data model', () => {
+    renderFixture(tokenBoundFixture);
+    expect(screen.getByText('Bound token')).toBeInTheDocument();
+  });
+
+  it('renders a Token leadingVisual child through the renderer', () => {
+    const {container} = renderFixture(tokenLeadingvisualFixture);
+    expect(screen.getByText('With icon')).toBeInTheDocument();
+    expect(container.querySelector('svg')).not.toBeNull();
+  });
+
+  it('honors the Token size enum through the renderer', () => {
+    renderFixture(tokenSizesFixture);
+    for (const size of ['small', 'medium', 'large', 'xlarge']) {
+      expect(screen.getByText(size)).toBeInTheDocument();
+    }
+  });
+
+  it('honors the Token selected state through the renderer', () => {
+    renderFixture(tokenSelectedFixture);
+    expect(screen.getByText('Selected').closest('[data-is-selected="true"]')).not.toBeNull();
+  });
+
+  it('hides the Token remove button when hideRemoveButton is set', () => {
+    renderFixture(tokenHideremovebuttonFixture);
+    expect(screen.getByText('No button')).toBeInTheDocument();
+    expect(screen.queryByRole('button', {name: 'Remove token'})).not.toBeInTheDocument();
+  });
+
+  it('renders a literal IssueLabelToken', () => {
+    renderFixture(issuelabeltokenFixture);
+    expect(screen.getByText('Issue label from Primer')).toBeInTheDocument();
+  });
+
+  it('renders a path-bound IssueLabelToken text from the data model', () => {
+    renderFixture(issuelabeltokenBoundFixture);
+    expect(screen.getByText('Bound label')).toBeInTheDocument();
+  });
+
+  it('derives the IssueLabelToken fill from fillColor through the renderer', () => {
+    const {container} = renderFixture(issuelabeltokenFillcolorFixture);
+    expect(screen.getByText('bug')).toBeInTheDocument();
+    expect(container.querySelector('[style*="--label-r"]')).not.toBeNull();
+  });
+
+  it('honors the IssueLabelToken size enum through the renderer', () => {
+    renderFixture(issuelabeltokenSizesFixture);
+    for (const size of ['small', 'medium', 'large', 'xlarge']) {
+      expect(screen.getByText(size)).toBeInTheDocument();
+    }
+  });
+
+  it('honors the IssueLabelToken selected state through the renderer', () => {
+    renderFixture(issuelabeltokenSelectedFixture);
+    expect(screen.getByText('Selected').closest('[data-selected="true"]')).not.toBeNull();
+  });
+
+  it('hides the IssueLabelToken remove button when hideRemoveButton is set', () => {
+    renderFixture(issuelabeltokenHideremovebuttonFixture);
+    expect(screen.getByText('No button')).toBeInTheDocument();
+    expect(screen.queryByRole('button', {name: 'Remove token'})).not.toBeInTheDocument();
   });
 });
