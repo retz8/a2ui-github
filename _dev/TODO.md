@@ -73,7 +73,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.12** `Token` + `IssueLabelToken` (main-entry sibling export, missed by the inventory's `subs:` listing) (#29)
 - [x] **6.13** `Avatar` (#27)
 - [x] **6.14** `Spinner` (#28)
-- [WIP] **6.15** `ProgressBar` (#31)
+- [x] **6.15** `ProgressBar` (#31)
 - [x] **6.16** `Checkbox` (#30)
 - [WIP] **6.17** `Radio` (#32)
 - [WIP] **6.18** `ToggleSwitch` (#33)
