@@ -1222,6 +1222,80 @@
       },
       "required": ["component", "checked", "accessibility"],
       "unevaluatedProperties": false
+    },
+    "Textarea": {
+      "type": "object",
+      "description": "A multiline plain-text input for entering longer free-form text; supports validation states and an optional character counter.",
+      "properties": {
+        "component": {
+          "const": "Textarea"
+        },
+        "value": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The multiline text content. Two-way bound: user edits write back to the bound data-model path."
+        },
+        "placeholder": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Hint text shown while the textarea is empty."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the textarea is inactive and cannot be edited."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether a value is required; conveyed to assistive technologies."
+        },
+        "validationStatus": {
+          "type": "string",
+          "enum": ["error", "success"],
+          "description": "Styles the textarea to reflect the current validation state."
+        },
+        "block": {
+          "type": "boolean",
+          "default": false,
+          "description": "Expands the textarea to fill the parent's width."
+        },
+        "resize": {
+          "type": "string",
+          "enum": ["none", "both", "horizontal", "vertical"],
+          "default": "both",
+          "description": "Which directions the user may resize the textarea in."
+        },
+        "contrast": {
+          "type": "boolean",
+          "default": false,
+          "description": "Uses a higher-contrast background color."
+        },
+        "rows": {
+          "type": "number",
+          "default": 7,
+          "description": "Visible height in text rows."
+        },
+        "cols": {
+          "type": "number",
+          "default": 30,
+          "description": "Visible width in character columns."
+        },
+        "characterLimit": {
+          "type": "number",
+          "description": "Optional character limit; shows a live character counter below the textarea and applies error styling when exceeded."
+        },
+        "minHeight": {
+          "type": "number",
+          "description": "Minimum height of the textarea in pixels; bounds user resizing."
+        },
+        "maxHeight": {
+          "type": "number",
+          "description": "Maximum height of the textarea in pixels; bounds user resizing."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Label/description for assistive technologies — the textarea renders no visible label of its own."
+        }
+      },
+      "required": ["component", "value"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1307,6 +1381,9 @@
         },
         {
           "$ref": "#/components/ToggleSwitch"
+        },
+        {
+          "$ref": "#/components/Textarea"
         }
       ]
     },

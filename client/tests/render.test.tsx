@@ -79,6 +79,17 @@ import {toggleswitchLoadingFixture} from '../src/fixtures/toggleswitch-loading';
 import {toggleswitchSizesFixture} from '../src/fixtures/toggleswitch-sizes';
 import {toggleswitchLabelPositionFixture} from '../src/fixtures/toggleswitch-label-position';
 import {toggleswitchCustomLabelsFixture} from '../src/fixtures/toggleswitch-custom-labels';
+import {textareaFixture} from '../src/fixtures/textarea';
+import {textareaBoundFixture} from '../src/fixtures/textarea-bound';
+import {textareaPlaceholderFixture} from '../src/fixtures/textarea-placeholder';
+import {textareaDisabledFixture} from '../src/fixtures/textarea-disabled';
+import {textareaValidationFixture} from '../src/fixtures/textarea-validation';
+import {textareaBlockFixture} from '../src/fixtures/textarea-block';
+import {textareaContrastFixture} from '../src/fixtures/textarea-contrast';
+import {textareaRowsFixture} from '../src/fixtures/textarea-rows';
+import {textareaColsFixture} from '../src/fixtures/textarea-cols';
+import {textareaCharacterLimitFixture} from '../src/fixtures/textarea-character-limit';
+import {textareaMinHeightFixture} from '../src/fixtures/textarea-min-height';
 
 afterEach(cleanup);
 
@@ -622,5 +633,73 @@ describe('fixture rendering', () => {
     renderFixture(toggleswitchCustomLabelsFixture);
     expect(screen.getByText('Hide')).toBeInTheDocument();
     expect(screen.getByText('Show')).toBeInTheDocument();
+  });
+
+  it('renders a literal Textarea value', () => {
+    renderFixture(textareaFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('A multiline\ncomment draft.');
+  });
+
+  it('renders a path-bound Textarea value from the data model', () => {
+    renderFixture(textareaBoundFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('A multiline\ncomment draft.');
+  });
+
+  it('writes user edits back to the bound path (two-way binding) and re-renders', async () => {
+    renderFixture(textareaBoundFixture);
+    const el = screen.getByRole('textbox');
+    fireEvent.change(el, {target: {value: 'Edited draft'}});
+    await waitFor(() => expect(screen.getByRole('textbox')).toHaveValue('Edited draft'));
+  });
+
+  it('shows the Textarea placeholder while empty', () => {
+    renderFixture(textareaPlaceholderFixture);
+    expect(screen.getByPlaceholderText('Leave a comment')).toBeInTheDocument();
+  });
+
+  it('honors the disabled Textarea through the renderer', () => {
+    renderFixture(textareaDisabledFixture);
+    expect(screen.getByRole('textbox')).toBeDisabled();
+  });
+
+  it('drives aria-invalid from the error validationStatus through the renderer', () => {
+    renderFixture(textareaValidationFixture);
+    // one surface per status; only the error surface reports aria-invalid="true".
+    const boxes = screen.getAllByRole('textbox');
+    const invalid = boxes.map(el => el.getAttribute('aria-invalid')).sort();
+    expect(invalid).toEqual(['false', 'true']);
+  });
+
+  it('renders a block Textarea through the renderer', () => {
+    renderFixture(textareaBlockFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('Full width');
+  });
+
+  it('renders a contrast Textarea through the renderer', () => {
+    renderFixture(textareaContrastFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('High contrast');
+  });
+
+  it('honors the Textarea rows through the renderer', () => {
+    renderFixture(textareaRowsFixture);
+    expect(screen.getByRole('textbox')).toHaveAttribute('rows', '3');
+  });
+
+  it('honors the Textarea cols through the renderer', () => {
+    renderFixture(textareaColsFixture);
+    expect(screen.getByRole('textbox')).toHaveAttribute('cols', '60');
+  });
+
+  it('applies the Textarea minHeight as an inline style through the renderer', () => {
+    renderFixture(textareaMinHeightFixture);
+    expect(screen.getByRole('textbox')).toHaveStyle({minHeight: '200px'});
+  });
+
+  it('forces error styling when the character limit is exceeded', () => {
+    renderFixture(textareaCharacterLimitFixture);
+    // two coupled surfaces; only the over-limit one flips aria-invalid to "true".
+    const boxes = screen.getAllByRole('textbox');
+    const invalid = boxes.map(el => el.getAttribute('aria-invalid')).sort();
+    expect(invalid).toEqual(['false', 'true']);
   });
 });

@@ -95,6 +95,16 @@ const FIXTURE_NAMES = [
   'toggleswitch-sizes',
   'toggleswitch-label-position',
   'toggleswitch-custom-labels',
+  'textarea',
+  'textarea-placeholder',
+  'textarea-disabled',
+  'textarea-validation',
+  'textarea-block',
+  'textarea-contrast',
+  'textarea-rows',
+  'textarea-cols',
+  'textarea-character-limit',
+  'textarea-min-height',
 ];
 
 for (const name of FIXTURE_NAMES) {

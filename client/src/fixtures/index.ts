@@ -103,6 +103,17 @@ import {toggleswitchLoadingFixture} from './toggleswitch-loading';
 import {toggleswitchSizesFixture} from './toggleswitch-sizes';
 import {toggleswitchLabelPositionFixture} from './toggleswitch-label-position';
 import {toggleswitchCustomLabelsFixture} from './toggleswitch-custom-labels';
+import {textareaFixture} from './textarea';
+import {textareaBoundFixture} from './textarea-bound';
+import {textareaPlaceholderFixture} from './textarea-placeholder';
+import {textareaDisabledFixture} from './textarea-disabled';
+import {textareaValidationFixture} from './textarea-validation';
+import {textareaBlockFixture} from './textarea-block';
+import {textareaContrastFixture} from './textarea-contrast';
+import {textareaRowsFixture} from './textarea-rows';
+import {textareaColsFixture} from './textarea-cols';
+import {textareaCharacterLimitFixture} from './textarea-character-limit';
+import {textareaMinHeightFixture} from './textarea-min-height';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -212,6 +223,17 @@ export {toggleswitchLoadingFixture} from './toggleswitch-loading';
 export {toggleswitchSizesFixture} from './toggleswitch-sizes';
 export {toggleswitchLabelPositionFixture} from './toggleswitch-label-position';
 export {toggleswitchCustomLabelsFixture} from './toggleswitch-custom-labels';
+export {textareaFixture} from './textarea';
+export {textareaBoundFixture} from './textarea-bound';
+export {textareaPlaceholderFixture} from './textarea-placeholder';
+export {textareaDisabledFixture} from './textarea-disabled';
+export {textareaValidationFixture} from './textarea-validation';
+export {textareaBlockFixture} from './textarea-block';
+export {textareaContrastFixture} from './textarea-contrast';
+export {textareaRowsFixture} from './textarea-rows';
+export {textareaColsFixture} from './textarea-cols';
+export {textareaCharacterLimitFixture} from './textarea-character-limit';
+export {textareaMinHeightFixture} from './textarea-min-height';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -319,6 +341,17 @@ export const FIXTURES: Fixture[] = [
   toggleswitchSizesFixture,
   toggleswitchLabelPositionFixture,
   toggleswitchCustomLabelsFixture,
+  textareaFixture,
+  textareaBoundFixture,
+  textareaPlaceholderFixture,
+  textareaDisabledFixture,
+  textareaValidationFixture,
+  textareaBlockFixture,
+  textareaContrastFixture,
+  textareaRowsFixture,
+  textareaColsFixture,
+  textareaCharacterLimitFixture,
+  textareaMinHeightFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
