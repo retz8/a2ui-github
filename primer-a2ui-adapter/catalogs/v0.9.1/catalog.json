@@ -765,6 +765,50 @@
       },
       "required": ["component", "datetime"],
       "unevaluatedProperties": false
+    },
+    "StateLabel": {
+      "type": "object",
+      "description": "A badge that displays the status of an item such as an issue or pull request, with an icon and color treatment matched to the state.",
+      "properties": {
+        "component": {
+          "const": "StateLabel"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The status text to display inside the badge."
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "issueOpened",
+            "issueClosed",
+            "issueClosedNotPlanned",
+            "pullOpened",
+            "pullClosed",
+            "pullMerged",
+            "draft",
+            "issueDraft",
+            "pullQueued",
+            "unavailable",
+            "alertOpened",
+            "alertFixed",
+            "alertDismissed",
+            "alertClosed",
+            "open",
+            "closed",
+            "archived"
+          ],
+          "description": "The state to display; selects the badge's icon and color treatment. Covers issue and pull-request states, security-alert states, and generic open/closed/archived."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium"],
+          "default": "medium",
+          "description": "The badge's size."
+        }
+      },
+      "required": ["component", "text", "status"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -820,6 +864,9 @@
         },
         {
           "$ref": "#/components/Label"
+        },
+        {
+          "$ref": "#/components/StateLabel"
         }
       ]
     },

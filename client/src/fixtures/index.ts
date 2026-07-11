@@ -39,6 +39,10 @@ import {labelFixture} from './label';
 import {labelBoundFixture} from './label-bound';
 import {labelVariantsFixture} from './label-variants';
 import {labelSizesFixture} from './label-sizes';
+import {statelabelFixture} from './statelabel';
+import {statelabelBoundFixture} from './statelabel-bound';
+import {statelabelStatusFixture} from './statelabel-status';
+import {statelabelSizeFixture} from './statelabel-size';
 import {textAsFixture} from './text-as';
 import {textBoundFixture} from './text-bound';
 import {textSizesFixture} from './text-sizes';
@@ -96,6 +100,10 @@ export {labelFixture} from './label';
 export {labelBoundFixture} from './label-bound';
 export {labelVariantsFixture} from './label-variants';
 export {labelSizesFixture} from './label-sizes';
+export {statelabelFixture} from './statelabel';
+export {statelabelBoundFixture} from './statelabel-bound';
+export {statelabelStatusFixture} from './statelabel-status';
+export {statelabelSizeFixture} from './statelabel-size';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -145,6 +153,10 @@ export const FIXTURES: Fixture[] = [
   labelBoundFixture,
   labelVariantsFixture,
   labelSizesFixture,
+  statelabelFixture,
+  statelabelBoundFixture,
+  statelabelStatusFixture,
+  statelabelSizeFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

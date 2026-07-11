@@ -29,6 +29,10 @@ import {relativeTimeDatetimePartsFixture} from '../src/fixtures/relative-time-da
 import {labelFixture} from '../src/fixtures/label';
 import {labelBoundFixture} from '../src/fixtures/label-bound';
 import {labelVariantsFixture} from '../src/fixtures/label-variants';
+import {statelabelFixture} from '../src/fixtures/statelabel';
+import {statelabelBoundFixture} from '../src/fixtures/statelabel-bound';
+import {statelabelStatusFixture} from '../src/fixtures/statelabel-status';
+import {statelabelSizeFixture} from '../src/fixtures/statelabel-size';
 
 afterEach(cleanup);
 
@@ -228,5 +232,31 @@ describe('fixture rendering', () => {
     // each surface labels its Label with the variant name; Primer stamps data-variant.
     expect(screen.getByText('success')).toHaveAttribute('data-variant', 'success');
     expect(screen.getByText('danger')).toHaveAttribute('data-variant', 'danger');
+  });
+
+  it('renders a literal StateLabel text', () => {
+    renderFixture(statelabelFixture);
+    expect(screen.getByText('Open')).toBeInTheDocument();
+  });
+
+  it('renders a path-bound StateLabel text from the data model', () => {
+    renderFixture(statelabelBoundFixture);
+    expect(screen.getByText('Merged')).toBeInTheDocument();
+  });
+
+  it('honors the StateLabel status enum through the renderer', () => {
+    renderFixture(statelabelStatusFixture);
+    // one surface per status; Primer stamps the resolved status onto the visible span.
+    const statuses = ['issueOpened', 'pullMerged', 'alertFixed', 'open', 'archived'];
+    for (const status of statuses) {
+      expect(screen.getByText(status)).toHaveAttribute('data-status', status);
+    }
+  });
+
+  it('honors the StateLabel size enum through the renderer', () => {
+    renderFixture(statelabelSizeFixture);
+    // one surface per size; Primer stamps the resolved size onto the visible span.
+    expect(screen.getByText('small')).toHaveAttribute('data-size', 'small');
+    expect(screen.getByText('medium')).toHaveAttribute('data-size', 'medium');
   });
 });
