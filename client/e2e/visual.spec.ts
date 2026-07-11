@@ -60,7 +60,8 @@ const FIXTURE_NAMES = [
 for (const name of FIXTURE_NAMES) {
   test(`baseline: ${name}`, async ({page}) => {
     await page.goto(`/?fixture=${name}`);
-    await expect(page.getByTestId('fixture-view')).toBeVisible();
-    await expect(page).toHaveScreenshot(`${name}.png`, {fullPage: true});
+    const view = page.getByTestId('fixture-view');
+    await expect(view).toBeVisible();
+    await expect(view).toHaveScreenshot(`${name}.png`);
   });
 }
