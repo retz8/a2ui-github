@@ -41,3 +41,20 @@ Revisit when `Stack` (6.23) lands: make each event fixture's `root` a `Stack` wi
 children so the status-swap half renders. The fixtures and the agent responses
 (`agent/deterministic_agent/fixtures/token-remove.json` / `issue-label-remove.json`) already carry
 the status content; add the two fixtures' status surfaces to the e2e baseline list at that point.
+
+### Radio — select-event status-swap visibility
+
+Deferred in the 6.17 review (event fixture `radio-event`):
+
+The select-event agent response has two halves — `updateDataModel /selected=true` (visible: the
+radio checks via `checked ← /selected`) and `updateComponents` swapping a sibling status `Text`
+(id `status`, "✅ Selected — server received …"). A surface renders only the `root` tree, and no
+container component can yet host both the radio and the status `Text` under one root, so the status
+`Text` is authored in the fixture but never rendered — only the radio-checking half is observable.
+The full round-trip was confirmed live in the 6.17 review (card fetch → `message/send` POST →
+`/selected` write → the radio checks); the returned status `Text` had nowhere to render.
+
+Revisit when `Stack` (6.23) lands: make `radio-event`'s `root` a `Stack` with `[radio, status]`
+children so the status-swap half renders. The fixture and the agent response
+(`agent/deterministic_agent/fixtures/select.json`) already carry the status content; add the
+fixture's status surface to the e2e baseline list at that point.
