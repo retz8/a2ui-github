@@ -20,6 +20,7 @@ import {segmentedcontrolEventFixture} from '../src/fixtures/segmentedcontrol-eve
 import {segmentedcontrolBoundFixture} from '../src/fixtures/segmentedcontrol-bound';
 import {detailsBoundFixture} from '../src/fixtures/details-bound';
 import {detailsClickoutsideFnFixture} from '../src/fixtures/details-clickoutside-fn';
+import {selectBoundFixture} from '../src/fixtures/select-bound';
 
 afterEach(cleanup);
 
@@ -304,5 +305,23 @@ describe('action paths', () => {
     expect(handler).not.toHaveBeenCalled();
     await vi.waitFor(() => expect(container.querySelector('details')).not.toHaveAttribute('open'));
     alertSpy.mockRestore();
+  });
+  it('two-way write-back: choosing a Select option writes to the data-model path and re-renders', async () => {
+    const handler = vi.fn();
+    renderFixture(selectBoundFixture, {actionHandler: handler});
+
+    const select = screen.getByRole('combobox', {name: 'Label'}) as HTMLSelectElement;
+    expect(select.value).toBe('bug');
+
+    fireEvent.change(select, {target: {value: 'docs'}});
+
+    // The binder's auto-generated setValue wrote 'docs' back to /selected; the control re-renders
+    // from the updated data model. No client->server action is dispatched for a data-model write.
+    await vi.waitFor(() =>
+      expect((screen.getByRole('combobox', {name: 'Label'}) as HTMLSelectElement).value).toBe(
+        'docs',
+      ),
+    );
+    expect(handler).not.toHaveBeenCalled();
   });
 });

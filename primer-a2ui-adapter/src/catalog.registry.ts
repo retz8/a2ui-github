@@ -31,6 +31,9 @@ import {SegmentedControlApi} from './components/segmentedcontrol';
 import {SegmentedControlButtonApi} from './components/segmentedcontrolbutton';
 import {SegmentedControlIconButtonApi} from './components/segmentedcontroliconbutton';
 import {DetailsApi} from './components/details';
+import {SelectApi} from './components/select';
+import {SelectOptionApi} from './components/selectoption';
+import {SelectOptGroupApi} from './components/selectoptgroup';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 
@@ -71,6 +74,9 @@ export const COMPONENTS = {
   SegmentedControlButton: SegmentedControlButtonApi,
   SegmentedControlIconButton: SegmentedControlIconButtonApi,
   Details: DetailsApi,
+  Select: SelectApi,
+  SelectOption: SelectOptionApi,
+  SelectOptGroup: SelectOptGroupApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert} as const;

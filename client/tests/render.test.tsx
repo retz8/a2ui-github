@@ -152,6 +152,17 @@ import {segmentedcontroliconbuttonDisabledFixture} from '../src/fixtures/segment
 import {detailsOpenFixture} from '../src/fixtures/details-open';
 import {detailsChildrenTemplateFixture} from '../src/fixtures/details-children-template';
 import {detailsBoundFixture} from '../src/fixtures/details-bound';
+import {selectFixture} from '../src/fixtures/select';
+import {selectChildrenTemplateFixture} from '../src/fixtures/select-children-template';
+import {selectPlaceholderFixture} from '../src/fixtures/select-placeholder';
+import {selectDisabledFixture} from '../src/fixtures/select-disabled';
+import {selectValidationFixture} from '../src/fixtures/select-validation';
+import {selectBlockFixture} from '../src/fixtures/select-block';
+import {selectSizeFixture} from '../src/fixtures/select-size';
+import {selectoptionFixture} from '../src/fixtures/selectoption';
+import {selectoptionDisabledFixture} from '../src/fixtures/selectoption-disabled';
+import {selectoptgroupFixture} from '../src/fixtures/selectoptgroup';
+import {selectoptgroupDisabledFixture} from '../src/fixtures/selectoptgroup-disabled';
 
 afterEach(cleanup);
 
@@ -1274,5 +1285,81 @@ describe('Details (disclosure) — integration through the renderer', () => {
   it('resolves a path-bound open from the data model (initially false -> collapsed)', () => {
     const {container} = renderFixture(detailsBoundFixture);
     expect(container.querySelector('details')).not.toHaveAttribute('open');
+  });
+});
+
+describe('Select (form input + container) — integration through the renderer', () => {
+  it('renders a static ChildList of options and reflects the selected value', () => {
+    renderFixture(selectFixture);
+    expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe('feature');
+    expect(screen.getByRole('option', {name: 'Bug'})).toBeInTheDocument();
+    expect(screen.getByRole('option', {name: 'Feature'})).toBeInTheDocument();
+    expect(screen.getByRole('option', {name: 'Docs'})).toBeInTheDocument();
+  });
+
+  it('expands a dynamic-template ChildList of options over the bound array', () => {
+    renderFixture(selectChildrenTemplateFixture);
+    expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe('feature');
+    expect(screen.getByRole('option', {name: 'Bug'})).toBeInTheDocument();
+    expect(screen.getByRole('option', {name: 'Feature'})).toBeInTheDocument();
+    expect(screen.getByRole('option', {name: 'Docs'})).toBeInTheDocument();
+  });
+
+  it('shows the placeholder leading option through the renderer', () => {
+    renderFixture(selectPlaceholderFixture);
+    expect(screen.getByRole('option', {name: 'Choose a label'})).toBeInTheDocument();
+  });
+
+  it('honors the disabled Select through the renderer', () => {
+    renderFixture(selectDisabledFixture);
+    expect(screen.getByRole('combobox')).toBeDisabled();
+  });
+
+  it('drives aria-invalid from the error validationStatus through the renderer', () => {
+    renderFixture(selectValidationFixture);
+    // one surface per status; only the error surface reports aria-invalid="true".
+    const boxes = screen.getAllByRole('combobox');
+    const invalid = boxes.map(el => el.getAttribute('aria-invalid')).sort();
+    expect(invalid).toEqual(['false', 'true']);
+  });
+
+  it('renders a block Select through the renderer', () => {
+    renderFixture(selectBlockFixture);
+    expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe('feature');
+  });
+
+  it('renders one Select per size enum value through the renderer', () => {
+    renderFixture(selectSizeFixture);
+    expect(screen.getAllByRole('combobox')).toHaveLength(3);
+  });
+});
+
+describe('SelectOption (option leaf) — integration through the renderer', () => {
+  it('renders each option label and drives selection by matching value', () => {
+    renderFixture(selectoptionFixture);
+    expect((screen.getByRole('combobox') as HTMLSelectElement).value).toBe('feature');
+    const feature = screen.getByRole('option', {name: 'Feature'}) as HTMLOptionElement;
+    expect(feature.value).toBe('feature');
+    expect(feature.selected).toBe(true);
+  });
+
+  it('honors a disabled option through the renderer', () => {
+    renderFixture(selectoptionDisabledFixture);
+    expect(screen.getByRole('option', {name: 'Feature'})).toBeDisabled();
+  });
+});
+
+describe('SelectOptGroup (option-group leaf) — integration through the renderer', () => {
+  it('renders group label headings wrapping their options', () => {
+    renderFixture(selectoptgroupFixture);
+    expect(screen.getByRole('group', {name: 'Open'})).toBeInTheDocument();
+    expect(screen.getByRole('group', {name: 'Closed'})).toBeInTheDocument();
+    expect(screen.getByRole('option', {name: 'Triage'})).toBeInTheDocument();
+    expect(screen.getByRole('option', {name: 'Cancelled'})).toBeInTheDocument();
+  });
+
+  it('honors a disabled group through the renderer', () => {
+    renderFixture(selectoptgroupDisabledFixture);
+    expect(screen.getByRole('group', {name: 'Closed'})).toBeDisabled();
   });
 });

@@ -190,6 +190,18 @@ import {detailsOpenFixture} from './details-open';
 import {detailsChildrenTemplateFixture} from './details-children-template';
 import {detailsClickoutsideFnFixture} from './details-clickoutside-fn';
 import {detailsBoundFixture} from './details-bound';
+import {selectFixture} from './select';
+import {selectChildrenTemplateFixture} from './select-children-template';
+import {selectBoundFixture} from './select-bound';
+import {selectPlaceholderFixture} from './select-placeholder';
+import {selectDisabledFixture} from './select-disabled';
+import {selectValidationFixture} from './select-validation';
+import {selectBlockFixture} from './select-block';
+import {selectSizeFixture} from './select-size';
+import {selectoptionFixture} from './selectoption';
+import {selectoptionDisabledFixture} from './selectoption-disabled';
+import {selectoptgroupFixture} from './selectoptgroup';
+import {selectoptgroupDisabledFixture} from './selectoptgroup-disabled';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -386,6 +398,18 @@ export {detailsOpenFixture} from './details-open';
 export {detailsChildrenTemplateFixture} from './details-children-template';
 export {detailsClickoutsideFnFixture} from './details-clickoutside-fn';
 export {detailsBoundFixture} from './details-bound';
+export {selectFixture} from './select';
+export {selectChildrenTemplateFixture} from './select-children-template';
+export {selectBoundFixture} from './select-bound';
+export {selectPlaceholderFixture} from './select-placeholder';
+export {selectDisabledFixture} from './select-disabled';
+export {selectValidationFixture} from './select-validation';
+export {selectBlockFixture} from './select-block';
+export {selectSizeFixture} from './select-size';
+export {selectoptionFixture} from './selectoption';
+export {selectoptionDisabledFixture} from './selectoption-disabled';
+export {selectoptgroupFixture} from './selectoptgroup';
+export {selectoptgroupDisabledFixture} from './selectoptgroup-disabled';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -580,6 +604,18 @@ export const FIXTURES: Fixture[] = [
   detailsChildrenTemplateFixture,
   detailsClickoutsideFnFixture,
   detailsBoundFixture,
+  selectFixture,
+  selectChildrenTemplateFixture,
+  selectBoundFixture,
+  selectPlaceholderFixture,
+  selectDisabledFixture,
+  selectValidationFixture,
+  selectBlockFixture,
+  selectSizeFixture,
+  selectoptionFixture,
+  selectoptionDisabledFixture,
+  selectoptgroupFixture,
+  selectoptgroupDisabledFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
