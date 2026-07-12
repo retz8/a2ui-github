@@ -111,6 +111,11 @@ const FIXTURE_NAMES = [
   'truncate-bound',
   'truncate-maxwidth',
   'truncate-as',
+  'keybindinghint',
+  'keybindinghint-bound',
+  'keybindinghint-formats',
+  'keybindinghint-variants',
+  'keybindinghint-sizes',
 ];
 
 for (const name of FIXTURE_NAMES) {

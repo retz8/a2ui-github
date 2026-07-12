@@ -96,6 +96,11 @@ import {truncateFixture} from '../src/fixtures/truncate';
 import {truncateBoundFixture} from '../src/fixtures/truncate-bound';
 import {truncateMaxwidthFixture} from '../src/fixtures/truncate-maxwidth';
 import {truncateAsFixture} from '../src/fixtures/truncate-as';
+import {keybindinghintFixture} from '../src/fixtures/keybindinghint';
+import {keybindinghintBoundFixture} from '../src/fixtures/keybindinghint-bound';
+import {keybindinghintFormatsFixture} from '../src/fixtures/keybindinghint-formats';
+import {keybindinghintVariantsFixture} from '../src/fixtures/keybindinghint-variants';
+import {keybindinghintSizesFixture} from '../src/fixtures/keybindinghint-sizes';
 
 afterEach(cleanup);
 
@@ -751,5 +756,47 @@ describe('fixture rendering', () => {
       .map(el => el.tagName)
       .sort();
     expect(tags).toEqual(['DIV', 'P', 'SPAN']);
+  });
+
+  it('renders a literal KeybindingHint through the renderer', () => {
+    renderFixture(keybindinghintFixture);
+    const hint = screen.getByTestId('keybinding-hint');
+    expect(hint.tagName).toBe('KBD');
+    // "Mod" resolves to the platform primary modifier (control on non-mac).
+    expect(hint.textContent).toContain('control');
+    expect(hint.textContent).toContain('k');
+  });
+
+  it('renders a path-bound KeybindingHint from the data model', () => {
+    renderFixture(keybindinghintBoundFixture);
+    const hint = screen.getByTestId('keybinding-hint');
+    expect(hint.textContent).toContain('control');
+    expect(hint.textContent).toContain('shift');
+    expect(hint.textContent).toContain('p');
+  });
+
+  it('honors the KeybindingHint format enum through the renderer', () => {
+    const {container} = renderFixture(keybindinghintFormatsFixture);
+    // one surface per format value.
+    expect(screen.getAllByTestId('keybinding-hint')).toHaveLength(2);
+    // the full form spells modifiers out with a visible separator.
+    expect(container.textContent).toContain('Control');
+    expect(container.textContent).toContain('+');
+  });
+
+  it('honors the KeybindingHint variant enum through the renderer', () => {
+    const {container} = renderFixture(keybindinghintVariantsFixture);
+    expect(screen.getAllByTestId('keybinding-hint')).toHaveLength(3);
+    // each value stamps its color-treatment class onto the chord.
+    expect(container.querySelector('[class*="ChordNormal"]')).toBeInTheDocument();
+    expect(container.querySelector('[class*="ChordOnEmphasis"]')).toBeInTheDocument();
+    expect(container.querySelector('[class*="ChordOnPrimary"]')).toBeInTheDocument();
+  });
+
+  it('honors the KeybindingHint size enum through the renderer', () => {
+    const {container} = renderFixture(keybindinghintSizesFixture);
+    expect(screen.getAllByTestId('keybinding-hint')).toHaveLength(2);
+    // the small value stamps a size class onto the chord.
+    expect(container.querySelector('[class*="ChordSmall"]')).toBeInTheDocument();
   });
 });

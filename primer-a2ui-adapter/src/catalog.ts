@@ -22,6 +22,7 @@ import {ToggleSwitchComponent} from './components/toggleswitch';
 import {TextareaComponent} from './components/textarea';
 import {SkeletonBoxComponent} from './components/skeletonbox';
 import {TruncateComponent} from './components/truncate';
+import {KeybindingHintComponent} from './components/keybindinghint';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
@@ -49,6 +50,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     TextareaComponent,
     SkeletonBoxComponent,
     TruncateComponent,
+    KeybindingHintComponent,
   ],
   [consoleLog],
 );
