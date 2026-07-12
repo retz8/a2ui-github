@@ -29,6 +29,17 @@ Deferred in the 6.16 design session (`_dev/docs/new-components/checkbox.md`):
   `checked`'s bound path. Backfill an optional `action` only if a future flow needs
   toggle-initiated agent round-trips.
 
+### Select — visible label + optional selection action
+
+Deferred in the 6.31 design session (`_dev/docs/new-components/select.md`):
+
+- **Visible label:** Primer `Select` has no label prop — visible labeling ships with `FormControl`
+  / `FormControl.Label` (6.47). Revisit `Select`'s UI wiring when `FormControl` lands;
+  `accessibility.label` covers the accessible name meanwhile.
+- **Optional `action`:** `Select` carries no `Action` — selection is the two-way write to `value`'s
+  bound path. Backfill an optional `action` only if a future flow needs selection-initiated agent
+  round-trips.
+
 ### Token / IssueLabelToken — remove-event status-swap visibility — DONE (6.23 follow-up)
 
 Deferred in the 6.12 review (event fixtures `token-remove-event`, `issuelabeltoken-remove-event`):
