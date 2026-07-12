@@ -70,7 +70,7 @@ fixture's status surface to the e2e baseline list at that point.
 - **`radio-event`: DONE** — `root` is now a `Stack` hosting `[radio, status]`; the status-swap
   half renders. Baseline frozen (the name was already in the e2e list).
 
-### ToggleSwitch — toggle-event status-swap visibility
+### ToggleSwitch — toggle-event status-swap visibility — DONE (6.23 follow-up)
 
 Deferred in the 6.18 review (event fixture `toggleswitch-event`):
 
@@ -87,6 +87,9 @@ Revisit when `Stack` (6.23) lands: make `toggleswitch-event`'s `root` a `Stack` 
 `[toggleswitch, status]` children so the status-swap half renders. The fixture and the agent
 response (`agent/deterministic_agent/fixtures/toggle.json`) already carry the status content; add
 the fixture's status surface to the e2e baseline list at that point.
+
+- **`toggleswitch-event`: DONE** — `root` is now a `Stack` hosting `[toggleswitch, status]`; the
+  status-swap half renders. Baseline updated (the name was already in the e2e list).
 
 ### Stack / Stack.Item — responsive-arm multi-viewport baselines
 

@@ -168,7 +168,7 @@ describe('action paths', () => {
       expect.objectContaining({
         name: 'toggle',
         surfaceId: 'toggleswitch-event',
-        sourceComponentId: 'root',
+        sourceComponentId: 'toggleswitch',
       }),
     );
   });

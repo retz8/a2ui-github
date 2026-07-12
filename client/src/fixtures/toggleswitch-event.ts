@@ -2,11 +2,13 @@ import {CATALOG_ID} from 'primer-a2ui-adapter';
 import type {Fixture} from './types';
 
 /**
- * Event path coupled to a bound `checked` (the agent-visibility coupling). The user's flip is
- * a local, instant two-way write to `/setting`; the `toggle` event carries the new value in
- * its context. The deterministic server answers by writing `/setting` back to `false` and
- * swapping the `status` Text — proving the server stays authoritative over the two-way-bound
- * path (see agent/deterministic_agent/fixtures/toggle.json).
+ * Event path coupled to a bound `checked` (the agent-visibility coupling). The surface root
+ * (id `root`) is a `Stack` hosting `[toggleswitch, status]`. The user's flip is a local, instant
+ * two-way write to `/setting`; the `toggle` event carries the new value in its context. The
+ * deterministic server answers by writing `/setting` back to `false` and swapping the `status`
+ * Text — proving the server stays authoritative over the two-way-bound path (see
+ * agent/deterministic_agent/fixtures/toggle.json). The Stack root now renders `status`, so the
+ * status-swap half is visible alongside the switch reverting.
  */
 export const toggleswitchEventFixture: Fixture = {
   name: 'toggleswitch-event',
@@ -17,8 +19,9 @@ export const toggleswitchEventFixture: Fixture = {
       updateComponents: {
         surfaceId: 'toggleswitch-event',
         components: [
+          {id: 'root', component: 'Stack', children: ['toggleswitch', 'status']},
           {
-            id: 'root',
+            id: 'toggleswitch',
             component: 'ToggleSwitch',
             checked: {path: '/setting'},
             accessibility: {label: 'Notifications'},
