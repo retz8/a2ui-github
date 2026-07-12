@@ -1677,6 +1677,32 @@
       },
       "required": ["component", "children"],
       "unevaluatedProperties": false
+    },
+    "ButtonGroup": {
+      "type": "object",
+      "description": "Groups a set of related buttons into a single visually-joined row, optionally presented as a keyboard-navigable toolbar.",
+      "properties": {
+        "component": {
+          "const": "ButtonGroup"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The buttons grouped together."
+        },
+        "role": {
+          "type": "string",
+          "enum": ["group", "toolbar"],
+          "description": "The role of the group. `toolbar` presents the buttons as a toolbar with arrow-key navigation between them; `group` marks them as a set of related controls."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["div", "span"],
+          "default": "div",
+          "description": "The HTML element used to render the group container."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1786,6 +1812,9 @@
         },
         {
           "$ref": "#/components/AvatarStack"
+        },
+        {
+          "$ref": "#/components/ButtonGroup"
         }
       ]
     },

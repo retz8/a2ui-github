@@ -27,6 +27,7 @@ import {StackComponent} from './components/stack';
 import {StackItemComponent} from './components/stackitem';
 import {LabelGroupComponent} from './components/label-group';
 import {AvatarStackComponent} from './components/avatarstack';
+import {ButtonGroupComponent} from './components/buttongroup';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
@@ -59,6 +60,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     StackItemComponent,
     LabelGroupComponent,
     AvatarStackComponent,
+    ButtonGroupComponent,
   ],
   [consoleLog],
 );

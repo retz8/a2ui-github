@@ -103,6 +103,8 @@ import {keybindinghintVariantsFixture} from '../src/fixtures/keybindinghint-vari
 import {keybindinghintSizesFixture} from '../src/fixtures/keybindinghint-sizes';
 import {stackFixture} from '../src/fixtures/stack';
 import {stackChildrenTemplateFixture} from '../src/fixtures/stack-children-template';
+import {buttonGroupFixture} from '../src/fixtures/button-group';
+import {buttonGroupChildrenTemplateFixture} from '../src/fixtures/button-group-children-template';
 import {stackResponsiveFixture} from '../src/fixtures/stack-responsive';
 import {stackitemFixture} from '../src/fixtures/stackitem';
 import {stackitemGrowFixture} from '../src/fixtures/stackitem-grow';
@@ -839,6 +841,22 @@ describe('Stack (container) — integration through the renderer', () => {
     expect(stack).not.toBeNull();
     expect(stack).toHaveAttribute('data-direction-narrow', 'vertical');
     expect(stack).toHaveAttribute('data-direction-regular', 'horizontal');
+  });
+});
+
+describe('ButtonGroup (container) — integration through the renderer', () => {
+  it('renders a static ChildList of joined buttons', () => {
+    renderFixture(buttonGroupFixture);
+    expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Cancel'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Delete'})).toBeInTheDocument();
+  });
+
+  it('expands a dynamic-template ChildList over the bound array (one child per item, own scope)', () => {
+    renderFixture(buttonGroupChildrenTemplateFixture);
+    expect(screen.getByRole('button', {name: 'Edit'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Copy'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Archive'})).toBeInTheDocument();
   });
 });
 
