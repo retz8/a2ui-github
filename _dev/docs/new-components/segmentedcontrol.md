@@ -133,13 +133,16 @@ is emitted by the paired client event fixture: `change`.
 
 ### Event-response table
 
-| event | response messages (ordered, with canned values) | visibility coupling (client fixture · bound prop ← path · initial value) |
+| event | response messages (ordered, echoing `context.selectedIndex`) | visibility coupling (client fixture · bound prop ← path · initial value) |
 |---|---|---|
-| `change` | 1. `updateDataModel {path:'/view', value: 2}` (the server confirms the received index) · 2. `updateComponents [{id:'status', component:'Text', text:'✅ Now showing: Blame — server received index 2'}]` (surfaceId echoed — stamped at runtime, not authored) | `segmentedcontrol-event` · `selectedIndex ← /view` · initial `/view = 0` |
+| `change` | 1. `updateDataModel {path:'/view', value: <context.selectedIndex>}` (the server echoes the received index back) · 2. `updateComponents [{id:'status', component:'Text', text:'✅ Now showing: <view name> — server received index <index>'}]` (surfaceId echoed — stamped at runtime, not authored) | `segmentedcontrol-event` · `selectedIndex ← /view` · initial `/view = 0` |
 
-The fixture starts at `/view = 0` (Preview active). Clicking **Blame** (index 2): the adapter writes
-`/view = 2` **before** firing (the optimistic write that lets the event's `context.selectedIndex`
-carry the new index), then fires `change`. The server confirms `/view = 2` and swaps `status`. The
-`status` swap is self-visible; the `/view` write is visible only through the `selectedIndex ← /view`
-coupling — the half that proves two-way data binding on the control itself (the rendered selection
-follows the data model, exactly as Radio's dot follows `/selected`).
+The response is built from the event's `context.selectedIndex`, so it reflects the actually-selected
+segment rather than a canned value. The fixture starts at `/view = 0` (Preview active). Selecting a
+segment: the adapter writes `/view = <index>` **before** firing (the optimistic write that lets the
+event's `context.selectedIndex` carry the new index), then fires `change`. The server echoes
+`/view = <index>` and swaps `status` to name the selected view. The `status` swap is self-visible; the
+`/view` echo is visible through the `selectedIndex ← /view` coupling — the half that proves two-way data
+binding on the control itself (the rendered selection follows the data model, exactly as Radio's dot
+follows `/selected`). The deterministic agent maps the demo indices `0/1/2 → Preview/Raw/Blame` for the
+status label.
