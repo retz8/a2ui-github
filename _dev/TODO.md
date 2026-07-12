@@ -83,7 +83,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.22** `KeybindingHint` (#45)
 
 ### L1 — single-type containers / simple slotters
-- [WIP] **6.23** `Stack`
+- [x] **6.23** `Stack` + `Stack.Item` (sibling per-child sizing wrapper, shipped together)
 - [ ] **6.24** `Flash`
 - [ ] **6.25** `Details`
 - [ ] **6.26** `LabelGroup`

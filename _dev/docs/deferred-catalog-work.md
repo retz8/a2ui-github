@@ -76,3 +76,23 @@ Revisit when `Stack` (6.23) lands: make `toggleswitch-event`'s `root` a `Stack` 
 `[toggleswitch, status]` children so the status-swap half renders. The fixture and the agent
 response (`agent/deterministic_agent/fixtures/toggle.json`) already carry the status content; add
 the fixture's status surface to the e2e baseline list at that point.
+
+### Stack / Stack.Item — responsive-arm multi-viewport baselines
+
+Deferred in the 6.23 design session and build (`_dev/docs/new-components/stack.md`,
+`stack-item.md`):
+
+Every `ResponsiveValue`-bearing prop (Stack's scale props; Stack.Item's `grow`/`shrink`) is
+carried faithfully in the schema as the `responsive()` union — the scalar arm plus a
+`{narrow, regular, wide}` per-viewport map. But the responsive *object* arm only shows its
+effect across viewport widths, which needs multi-viewport Playwright baselines (the same fixture
+captured at narrow + regular + wide). The current e2e harness captures each fixture at a single
+viewport (1024px), so that infra does not exist, and building it is out of Phase 6's scope
+("consumes, never builds infra").
+
+Coverage meanwhile: a render-test assertion proves the responsive `data-*` attributes are emitted
+and forwarded (`stack-responsive` → `data-direction-narrow/regular/wide`), and the single-viewport
+`stack-responsive` baseline captures the regular (horizontal) state; the cross-viewport effect is
+verified manually by resizing. Revisit if/when multi-viewport visual baselining is added to the e2e
+harness — then add narrow/wide captures for `stack-responsive` and a Stack.Item grow/shrink
+responsive fixture.
