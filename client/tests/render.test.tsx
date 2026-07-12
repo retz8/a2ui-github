@@ -107,6 +107,9 @@ import {stackResponsiveFixture} from '../src/fixtures/stack-responsive';
 import {stackitemFixture} from '../src/fixtures/stackitem';
 import {stackitemGrowFixture} from '../src/fixtures/stackitem-grow';
 import {stackitemShrinkFixture} from '../src/fixtures/stackitem-shrink';
+import {labelGroupFixture} from '../src/fixtures/label-group';
+import {labelGroupChildrenTemplateFixture} from '../src/fixtures/label-group-children-template';
+import {labelGroupTruncatedFixture} from '../src/fixtures/label-group-truncated';
 
 afterEach(cleanup);
 
@@ -846,5 +849,29 @@ describe('StackItem (sizing wrapper) — integration through the renderer', () =
   it('honors shrink on an item (data-shrink)', () => {
     const {container} = renderFixture(stackitemShrinkFixture);
     expect(container.querySelector('[data-shrink="false"]')).not.toBeNull();
+  });
+});
+
+describe('LabelGroup (container) — integration through the renderer', () => {
+  it('renders a static ChildList of Label children', () => {
+    renderFixture(labelGroupFixture);
+    expect(screen.getByText('bug')).toBeInTheDocument();
+    expect(screen.getByText('enhancement')).toBeInTheDocument();
+    expect(screen.getByText('help wanted')).toBeInTheDocument();
+    expect(screen.getByText('question')).toBeInTheDocument();
+  });
+
+  it('expands a dynamic-template ChildList over the bound array (one Label per item, own scope)', () => {
+    renderFixture(labelGroupChildrenTemplateFixture);
+    expect(screen.getByText('bug')).toBeInTheDocument();
+    expect(screen.getByText('wontfix')).toBeInTheDocument();
+    expect(screen.getByText('duplicate')).toBeInTheDocument();
+  });
+
+  it('truncates to visibleChildCount and renders the +N overflow affordance', () => {
+    const {container} = renderFixture(labelGroupTruncatedFixture);
+    // All six Labels stay in the DOM; the three beyond the count are marked hidden.
+    expect(screen.getByText('documentation')).toBeInTheDocument();
+    expect(container.querySelector('[data-component="LabelGroup.Toggle"]')).toBeInTheDocument();
   });
 });
