@@ -145,6 +145,45 @@ def test_approve_writes_approved_then_swaps_icon_with_surface_echoed():
     ]
 
 
+def _change(index: int) -> dict:
+    return {
+        "name": "change",
+        "surfaceId": "segmentedcontrol-event",
+        "sourceComponentId": "control",
+        "context": {"selectedIndex": index},
+    }
+
+
+def test_change_echoes_the_selected_index_and_names_the_view_with_surface_echoed():
+    # index 2 -> Blame. The /view echo is visible through the `selectedIndex <- /view` coupling.
+    msgs = build_response(_change(2))
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "segmentedcontrol-event"
+    assert dm["path"] == "/view"
+    assert dm["value"] == 2
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "segmentedcontrol-event"
+    assert uc["components"] == [
+        {
+            "id": "status",
+            "component": "Text",
+            "text": "✅ Now showing: Blame — server received index 2",
+        }
+    ]
+
+
+def test_change_reflects_a_different_index_not_a_canned_value():
+    # index 1 -> Raw. Proves the response echoes `context.selectedIndex` rather than a fixed 2/Blame.
+    msgs = build_response(_change(1))
+    assert msgs[0]["updateDataModel"]["value"] == 1
+    assert msgs[1]["updateComponents"]["components"][0]["text"] == (
+        "✅ Now showing: Raw — server received index 1"
+    )
+
+
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1

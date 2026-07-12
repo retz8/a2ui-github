@@ -27,6 +27,9 @@ import {LabelGroupApi} from './components/label-group';
 import {AvatarStackApi} from './components/avatarstack';
 import {ButtonGroupApi} from './components/buttongroup';
 import {PaginationApi} from './components/pagination';
+import {SegmentedControlApi} from './components/segmentedcontrol';
+import {SegmentedControlButtonApi} from './components/segmentedcontrolbutton';
+import {SegmentedControlIconButtonApi} from './components/segmentedcontroliconbutton';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -62,6 +65,9 @@ export const COMPONENTS = {
   AvatarStack: AvatarStackApi,
   ButtonGroup: ButtonGroupApi,
   Pagination: PaginationApi,
+  SegmentedControl: SegmentedControlApi,
+  SegmentedControlButton: SegmentedControlButtonApi,
+  SegmentedControlIconButton: SegmentedControlIconButtonApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;
