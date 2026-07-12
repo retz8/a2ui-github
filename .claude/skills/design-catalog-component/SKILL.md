@@ -76,13 +76,25 @@ dropped.
 Walk every real prop (plus any synthetic prop introduced below) and make one decision each:
 
 - **Carry / drop / defer.**
-  - **Conservative-drop rule.** The catalog is a one-to-one translation of the documented
-    component library, not a redesign of it. A prop the official documentation lists is dropped
-    only when it has no protocol representation (the categorical drops below) or the doc is
-    stale against the installed code (e.g. a deprecated alias) — never because it merely seems
-    minor or hard to motivate for a generating agent. When a doc-listed prop's type doesn't map
-    cleanly, prefer carrying a curated projection of it (e.g. a `z.enum` over its meaningful
-    values) over dropping it.
+  - **Conservative-drop rule — CARRY IS THE DEFAULT; A DROP MUST BE POSITIVELY JUSTIFIED.**
+    The catalog is a faithful one-to-one **translation** of the documented component library —
+    never a redesign, and never a curated subset of it. **We translate; we do not reinvent.**
+    Every prop the official documentation lists is **carried** unless you can name a concrete
+    reason it genuinely *cannot* be represented: it has no A2UI representation at all (the
+    categorical drops below), or the doc is stale against the installed code (e.g. a deprecated
+    alias). "Seems minor", "hard to motivate for a generating agent", "no current flow needs
+    it", "adds a surface", or "keeps the leaf simpler" are **never** grounds to drop — deciding
+    which of a component's documented capabilities an agent deserves is exactly the redesign
+    this rule forbids. **The burden of proof is on the drop, not the carry.** When in doubt,
+    carry (or mark `not sure` and ask) — never drop by default.
+  - **A handler/callback is NOT unrepresentable — it maps to `Action`.** An interaction
+    callback (`onClick`, `onToggle`, `onClickOutside`, `onDismiss`, …) has a protocol
+    representation: `Action` — or, when the callback is the component's state write-back, the
+    two-way binding on the bound value prop (as Checkbox folds `onChange` into `checked`). So
+    "it's just a callback nothing needs" is never a valid drop reason. Carry it as an `Action`
+    (or as the write-back) unless it is genuinely unrepresentable.
+  - When a doc-listed prop's type doesn't map cleanly, prefer carrying a curated projection of
+    it (e.g. a `z.enum` over its meaningful values) over dropping it.
   - **Drop** props with no A2UI representation. In particular, the non-`aria-*` slice of an
     inherited HTML-attribute spread (`type`, `name`, `tabIndex`, `data-*`, and similar) has no
     protocol representation and is dropped. Named styling passthroughs (`className`, `style`) are
