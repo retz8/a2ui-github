@@ -29,7 +29,7 @@ Deferred in the 6.16 design session (`_dev/docs/new-components/checkbox.md`):
   `checked`'s bound path. Backfill an optional `action` only if a future flow needs
   toggle-initiated agent round-trips.
 
-### Token / IssueLabelToken — remove-event status-swap visibility
+### Token / IssueLabelToken — remove-event status-swap visibility — DONE (6.23 follow-up)
 
 Deferred in the 6.12 review (event fixtures `token-remove-event`, `issuelabeltoken-remove-event`):
 
@@ -47,6 +47,8 @@ the status content; add the two fixtures' status surfaces to the e2e baseline li
 
 - **`token-remove-event`: DONE** — `root` is now a `Stack` hosting `[token, status]`; the
   status-swap half renders. Baseline regenerated (the name was already in the e2e list).
+- **`issuelabeltoken-remove-event`: DONE** — `root` is now a `Stack` hosting
+  `[issuelabeltoken, status]`; the status-swap half renders. Baseline regenerated.
 
 ### Radio — select-event status-swap visibility
 

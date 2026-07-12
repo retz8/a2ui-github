@@ -95,7 +95,7 @@ describe('action paths', () => {
       expect.objectContaining({
         name: 'issue-label-remove',
         surfaceId: 'issuelabeltoken-remove-event',
-        sourceComponentId: 'root',
+        sourceComponentId: 'issuelabeltoken',
       }),
     );
   });
