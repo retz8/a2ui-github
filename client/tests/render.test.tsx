@@ -4,6 +4,13 @@ import {renderFixture} from './helpers';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
+import {iconbuttonVariantsFixture} from '../src/fixtures/iconbutton-variants';
+import {iconbuttonSizesFixture} from '../src/fixtures/iconbutton-sizes';
+import {iconbuttonDisabledFixture} from '../src/fixtures/iconbutton-disabled';
+import {iconbuttonLoadingFixture} from '../src/fixtures/iconbutton-loading';
+import {iconbuttonInactiveFixture} from '../src/fixtures/iconbutton-inactive';
+import {iconbuttonBlockFixture} from '../src/fixtures/iconbutton-block';
+import {iconbuttonTooltipFixture} from '../src/fixtures/iconbutton-tooltip';
 import {iconNamesFixture} from '../src/fixtures/icon-names';
 import {iconSizesFixture} from '../src/fixtures/icon-sizes';
 import {iconFillsFixture} from '../src/fixtures/icon-fills';
@@ -1055,5 +1062,67 @@ describe('Pagination — integration through the renderer', () => {
   it('labels the navigation landmark from accessibility.label', () => {
     renderFixture(paginationAccessibilityFixture);
     expect(screen.getByRole('navigation', {name: 'Issues pagination'})).toBeInTheDocument();
+  });
+});
+
+describe('IconButton — integration through the renderer', () => {
+  it('honors the variant enum across the gallery (data-variant)', () => {
+    const {container} = renderFixture(iconbuttonVariantsFixture);
+    const variants = [...container.querySelectorAll('button[data-variant]')].map(el =>
+      el.getAttribute('data-variant'),
+    );
+    expect(variants).toEqual(['default', 'primary', 'invisible', 'danger', 'link']);
+  });
+
+  it('honors the size enum across the gallery (data-size)', () => {
+    const {container} = renderFixture(iconbuttonSizesFixture);
+    const sizes = [...container.querySelectorAll('button[data-size]')].map(el =>
+      el.getAttribute('data-size'),
+    );
+    expect(sizes).toEqual(['small', 'medium', 'large']);
+  });
+
+  it('renders the required icon child and accessibility label', () => {
+    renderFixture(iconbuttonDisabledFixture);
+    // A disabled IconButton drops its tooltip wrapper, so the label lands on the button directly.
+    expect(screen.getByRole('button', {name: 'Delete'})).toBeInTheDocument();
+  });
+
+  it('honors the disabled state through the renderer', () => {
+    renderFixture(iconbuttonDisabledFixture);
+    expect(screen.getByRole('button', {name: 'Delete'})).toBeDisabled();
+  });
+
+  it('honors the loading state and announces it to assistive technologies', () => {
+    const {container} = renderFixture(iconbuttonLoadingFixture);
+    // loading blocks interaction just like disabled and swaps the icon for a spinner.
+    expect(container.querySelector('button')).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.getByText('Syncing…')).toBeInTheDocument();
+  });
+
+  it('honors the inactive state through the renderer (data-inactive, still interactive)', () => {
+    const {container} = renderFixture(iconbuttonInactiveFixture);
+    // inactive looks disabled but stays interactive, so Primer marks it with data-inactive
+    // rather than aria-disabled.
+    expect(container.querySelector('button')).toHaveAttribute('data-inactive', 'true');
+  });
+
+  it('honors the block state through the renderer (data-block)', () => {
+    const {container} = renderFixture(iconbuttonBlockFixture);
+    expect(container.querySelector('button[data-block="block"]')).not.toBeNull();
+  });
+
+  it('renders the tooltip cluster: description, keybinding hint, and direction', () => {
+    const {container} = renderFixture(iconbuttonTooltipFixture);
+    // accessibility label names the button; description populates the tooltip.
+    expect(screen.getByRole('button', {name: 'Remove'})).toBeInTheDocument();
+    expect(screen.getByText('Remove this item')).toBeInTheDocument();
+    const tooltip = container.querySelector('[data-component="Tooltip"]');
+    expect(tooltip).not.toBeNull();
+    expect(tooltip).toHaveAttribute('data-direction', 'se');
+    // the keybinding hint container is rendered only when keybindingHint is set.
+    expect(
+      container.querySelector('[data-component="Tooltip.KeybindingHintContainer"]'),
+    ).not.toBeNull();
   });
 });

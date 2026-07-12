@@ -16,6 +16,23 @@ if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
     }) as MediaQueryList;
 }
 
+// Primer's IconButton wraps its trigger in TooltipV2, which loads the `@oddbird/popover-polyfill`
+// under jsdom (no native Popover API). The polyfill spreads `root.adoptedStyleSheets`, which jsdom
+// does not implement, so it throws `adoptedStyleSheets is not iterable`. Provide a writable array
+// stub on Document/ShadowRoot so the polyfill's style injection is a harmless no-op.
+for (const proto of [
+  typeof Document !== 'undefined' ? Document.prototype : undefined,
+  typeof ShadowRoot !== 'undefined' ? ShadowRoot.prototype : undefined,
+]) {
+  if (proto && !('adoptedStyleSheets' in proto)) {
+    Object.defineProperty(proto, 'adoptedStyleSheets', {
+      configurable: true,
+      writable: true,
+      value: [],
+    });
+  }
+}
+
 // Primer announces screen-reader text (e.g. ToggleSwitch's loadingLabel, Button's
 // loadingAnnouncement) through a `<live-region>` custom element. Its node build fails to
 // upgrade under jsdom, so `announceFromElement` throws in a MutationObserver microtask.

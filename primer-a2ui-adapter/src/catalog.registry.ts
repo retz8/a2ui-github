@@ -1,5 +1,6 @@
 import {TextApi} from './components/text';
 import {ButtonApi} from './components/button';
+import {IconButtonApi} from './components/iconbutton';
 import {IconApi} from './components/icon';
 import {LinkApi} from './components/link';
 import {HeadingApi} from './components/heading';
@@ -34,6 +35,7 @@ import {consoleLog} from './functions/console-log';
 export const COMPONENTS = {
   Text: TextApi,
   Button: ButtonApi,
+  IconButton: IconButtonApi,
   Icon: IconApi,
   Link: LinkApi,
   Heading: HeadingApi,

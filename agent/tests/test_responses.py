@@ -119,6 +119,32 @@ def test_toggle_reverts_setting_then_swaps_status_with_surface_echoed():
     ]
 
 
+APPROVE = {
+    "name": "approve",
+    "surfaceId": "iconbutton-event",
+    "sourceComponentId": "root",
+    "context": {},
+}
+
+
+def test_approve_writes_approved_then_swaps_icon_with_surface_echoed():
+    msgs = build_response(APPROVE)
+    assert len(msgs) == 2
+
+    # The /approved write is visible only through the button's `disabled <- /approved` binding —
+    # after approve the button locks, proving two-way binding on the button itself.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "iconbutton-event"
+    assert dm["path"] == "/approved"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "iconbutton-event"
+    assert uc["components"] == [
+        {"id": "approve-icon", "component": "Icon", "name": "check-circle-fill"}
+    ]
+
+
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1
