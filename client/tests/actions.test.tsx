@@ -8,6 +8,7 @@ import {tokenRemoveEventFixture} from '../src/fixtures/token-remove-event';
 import {issuelabeltokenRemoveFnFixture} from '../src/fixtures/issuelabeltoken-remove-fn';
 import {issuelabeltokenRemoveEventFixture} from '../src/fixtures/issuelabeltoken-remove-event';
 import {checkboxBoundFixture} from '../src/fixtures/checkbox-bound';
+import {paginationControlledFixture} from '../src/fixtures/pagination-controlled';
 import {radioFnFixture} from '../src/fixtures/radio-fn';
 import {radioEventFixture} from '../src/fixtures/radio-event';
 import {toggleswitchFnFixture} from '../src/fixtures/toggleswitch-fn';
@@ -114,6 +115,24 @@ describe('action paths', () => {
     await vi.waitFor(() =>
       expect(screen.getByRole('checkbox', {name: 'Notify me about updates'})).toBeChecked(),
     );
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('two-way write-back: clicking a page in a controlled Pagination writes the new page and moves aria-current, no navigation', async () => {
+    const handler = vi.fn();
+    renderFixture(paginationControlledFixture, {actionHandler: handler});
+
+    // Bound to /page (initially 2) -> page 2 is current.
+    expect(screen.getByRole('link', {name: 'Page 2'})).toHaveAttribute('aria-current', 'page');
+
+    fireEvent.click(screen.getByRole('link', {name: 'Page 4'}));
+
+    // The binder's auto-generated setCurrentPage wrote `4` back to /page; aria-current moves to
+    // page 4. onPageChange preventDefaulted, so no navigation and no client->server action.
+    await vi.waitFor(() =>
+      expect(screen.getByRole('link', {name: 'Page 4'})).toHaveAttribute('aria-current', 'page'),
+    );
+    expect(screen.getByRole('link', {name: 'Page 2'})).not.toHaveAttribute('aria-current');
     expect(handler).not.toHaveBeenCalled();
   });
 

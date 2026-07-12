@@ -120,6 +120,16 @@ import {avatarstackShapeFixture} from '../src/fixtures/avatarstack-shape';
 import {avatarstackSizeFixture} from '../src/fixtures/avatarstack-size';
 import {avatarstackSizeResponsiveFixture} from '../src/fixtures/avatarstack-size-responsive';
 import {avatarstackDisableexpandFixture} from '../src/fixtures/avatarstack-disableexpand';
+import {paginationFixture} from '../src/fixtures/pagination';
+import {paginationLargeFixture} from '../src/fixtures/pagination-large';
+import {paginationFirstFixture} from '../src/fixtures/pagination-first';
+import {paginationLastFixture} from '../src/fixtures/pagination-last';
+import {paginationNoPagesFixture} from '../src/fixtures/pagination-no-pages';
+import {paginationMarginFixture} from '../src/fixtures/pagination-margin';
+import {paginationSurroundingFixture} from '../src/fixtures/pagination-surrounding';
+import {paginationControlledFixture} from '../src/fixtures/pagination-controlled';
+import {paginationHrefFixture} from '../src/fixtures/pagination-href';
+import {paginationAccessibilityFixture} from '../src/fixtures/pagination-accessibility';
 
 afterEach(cleanup);
 
@@ -980,5 +990,70 @@ describe('AvatarStack (container) — integration through the renderer', () => {
     const {container} = renderFixture(avatarstackSizeResponsiveFixture);
     const stack = container.querySelector('[data-component="AvatarStack"]');
     expect(stack).toHaveAttribute('data-responsive', '');
+  });
+});
+
+describe('Pagination — integration through the renderer', () => {
+  it('renders numbered page links and marks the current page', () => {
+    renderFixture(paginationFixture);
+    expect(screen.getByRole('link', {name: 'Page 1'})).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Page 3'})).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('shows ellipsis breaks at large page counts', () => {
+    renderFixture(paginationLargeFixture);
+    expect(screen.getByRole('link', {name: 'Page 8'})).toHaveAttribute('aria-current', 'page');
+    expect(screen.getAllByText('…').length).toBeGreaterThan(0);
+  });
+
+  it('disables the Previous control on the first page', () => {
+    const {container} = renderFixture(paginationFirstFixture);
+    expect(container.querySelector('[data-component="Pagination.PreviousPage"]')).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+  });
+
+  it('disables the Next control on the last page', () => {
+    const {container} = renderFixture(paginationLastFixture);
+    expect(container.querySelector('[data-component="Pagination.NextPage"]')).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+  });
+
+  it('hides numbered page links when showPages is off (prev/next only)', () => {
+    renderFixture(paginationNoPagesFixture);
+    expect(screen.queryByRole('link', {name: 'Page 3'})).not.toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Previous Page'})).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Next Page'})).toBeInTheDocument();
+  });
+
+  it('pins extra margin pages at the start with marginPageCount', () => {
+    renderFixture(paginationMarginFixture);
+    // marginPageCount: 2 -> page 2 is pinned at the start (default margin 1 would omit it).
+    // Primer appends "..." to the label of a page that precedes an ellipsis break.
+    expect(screen.getByRole('link', {name: /^Page 2\b/})).toBeInTheDocument();
+  });
+
+  it('shows more neighbours with surroundingPageCount', () => {
+    renderFixture(paginationSurroundingFixture);
+    // surroundingPageCount: 4 around page 8 -> page 4 is shown (default 2 would omit it).
+    expect(screen.getByRole('link', {name: 'Page 4'})).toBeInTheDocument();
+  });
+
+  it('resolves a path-bound currentPage from the data model (page 2 current)', () => {
+    renderFixture(paginationControlledFixture);
+    expect(screen.getByRole('link', {name: 'Page 2'})).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('expands the {page} token in hrefBuilder (uncontrolled: real templated hrefs)', () => {
+    renderFixture(paginationHrefFixture);
+    expect(screen.getByRole('link', {name: 'Page 3'})).toHaveAttribute('href', '/issues?page=3');
+  });
+
+  it('labels the navigation landmark from accessibility.label', () => {
+    renderFixture(paginationAccessibilityFixture);
+    expect(screen.getByRole('navigation', {name: 'Issues pagination'})).toBeInTheDocument();
   });
 });

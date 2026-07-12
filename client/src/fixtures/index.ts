@@ -152,6 +152,16 @@ import {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
 import {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
 import {buttonGroupFixture} from './button-group';
 import {buttonGroupChildrenTemplateFixture} from './button-group-children-template';
+import {paginationFixture} from './pagination';
+import {paginationLargeFixture} from './pagination-large';
+import {paginationFirstFixture} from './pagination-first';
+import {paginationLastFixture} from './pagination-last';
+import {paginationNoPagesFixture} from './pagination-no-pages';
+import {paginationMarginFixture} from './pagination-margin';
+import {paginationSurroundingFixture} from './pagination-surrounding';
+import {paginationControlledFixture} from './pagination-controlled';
+import {paginationHrefFixture} from './pagination-href';
+import {paginationAccessibilityFixture} from './pagination-accessibility';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -310,6 +320,16 @@ export {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
 export {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
 export {buttonGroupFixture} from './button-group';
 export {buttonGroupChildrenTemplateFixture} from './button-group-children-template';
+export {paginationFixture} from './pagination';
+export {paginationLargeFixture} from './pagination-large';
+export {paginationFirstFixture} from './pagination-first';
+export {paginationLastFixture} from './pagination-last';
+export {paginationNoPagesFixture} from './pagination-no-pages';
+export {paginationMarginFixture} from './pagination-margin';
+export {paginationSurroundingFixture} from './pagination-surrounding';
+export {paginationControlledFixture} from './pagination-controlled';
+export {paginationHrefFixture} from './pagination-href';
+export {paginationAccessibilityFixture} from './pagination-accessibility';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -466,6 +486,16 @@ export const FIXTURES: Fixture[] = [
   avatarstackDisableexpandFixture,
   buttonGroupFixture,
   buttonGroupChildrenTemplateFixture,
+  paginationFixture,
+  paginationLargeFixture,
+  paginationFirstFixture,
+  paginationLastFixture,
+  paginationNoPagesFixture,
+  paginationMarginFixture,
+  paginationSurroundingFixture,
+  paginationControlledFixture,
+  paginationHrefFixture,
+  paginationAccessibilityFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

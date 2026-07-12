@@ -25,6 +25,7 @@ import {StackItemApi} from './components/stackitem';
 import {LabelGroupApi} from './components/label-group';
 import {AvatarStackApi} from './components/avatarstack';
 import {ButtonGroupApi} from './components/buttongroup';
+import {PaginationApi} from './components/pagination';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -58,6 +59,7 @@ export const COMPONENTS = {
   LabelGroup: LabelGroupApi,
   AvatarStack: AvatarStackApi,
   ButtonGroup: ButtonGroupApi,
+  Pagination: PaginationApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;
