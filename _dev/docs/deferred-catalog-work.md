@@ -40,6 +40,28 @@ Deferred in the 6.31 design session (`_dev/docs/new-components/select.md`):
   bound path. Backfill an optional `action` only if a future flow needs selection-initiated agent
   round-trips.
 
+### TextInput.Action — visual tooltip-direction gallery
+
+Deferred in the 6.30 design session (`_dev/docs/new-components/textinput-action.md`):
+
+`tooltipDirection` is covered now by a render-test assertion (the rendered tooltip carries the
+direction per enum value) plus a non-baselined `textinput-action-tooltip` fixture for manual
+hover review. A **Playwright-baselined** 8-direction gallery is deferred: Primer's `TooltipV2`
+has no public always-open prop (only `_privateDisableTooltip` to force closed), and the client
+baseline harness (`client/e2e/visual.spec.ts`) is static-render-only — it does
+`goto → screenshot` with no hover/focus driving. Capturing the tooltip requires
+hover/focus-before-screenshot, which is new baseline infra (out of a Phase-6 leaf sub-task per
+"consumes, never builds infra"). Revisit once hover-capture baseline infra exists; the
+`textinput-action-tooltip` fixture already renders the eight directions.
+
+### TextInput — visible label
+
+Deferred in the 6.30 design session (`_dev/docs/new-components/textinput.md`):
+
+Primer `TextInput` has no label prop — visible labeling ships with `FormControl` /
+`FormControl.Label` (6.47), same as Checkbox/Textarea/Select. Revisit `TextInput`'s UI wiring
+when `FormControl` lands; `accessibility.label` covers the accessible name meanwhile.
+
 ### Token / IssueLabelToken — remove-event status-swap visibility — DONE (6.23 follow-up)
 
 Deferred in the 6.12 review (event fixtures `token-remove-event`, `issuelabeltoken-remove-event`):
