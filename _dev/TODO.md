@@ -87,7 +87,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.24** `Flash` — dropped, not shipped: avoid-flagged (deprecated in favor of `Banner`, an experimental-entry). Same rationale as the §2 exclusions; a callout leaf grows lazily (as `Banner`) if a later flow needs one.
 - [WIP] **6.25** `Details` (#52)
 - [x] **6.26** `LabelGroup` (#49)
-- [WIP] **6.27** `AvatarStack` (#50)
+- [x] **6.27** `AvatarStack` (#50)
 - [WIP] **6.28** `ButtonGroup` (#51)
 - [WIP] **6.29** `IconButton` (#53)
 - [WIP] **6.30** `TextInput` + `TextInput.Action` (sibling trailing-action button, shipped together) (#56)
