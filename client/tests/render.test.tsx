@@ -149,6 +149,9 @@ import {segmentedcontrolbuttonCountFixture} from '../src/fixtures/segmentedcontr
 import {segmentedcontrolbuttonDisabledFixture} from '../src/fixtures/segmentedcontrolbutton-disabled';
 import {segmentedcontroliconbuttonFixture} from '../src/fixtures/segmentedcontroliconbutton';
 import {segmentedcontroliconbuttonDisabledFixture} from '../src/fixtures/segmentedcontroliconbutton-disabled';
+import {detailsOpenFixture} from '../src/fixtures/details-open';
+import {detailsChildrenTemplateFixture} from '../src/fixtures/details-children-template';
+import {detailsBoundFixture} from '../src/fixtures/details-bound';
 
 afterEach(cleanup);
 
@@ -1236,5 +1239,40 @@ describe('SegmentedControl.IconButton (icon segment) — integration through the
       .getAllByRole('button')
       .filter(b => b.getAttribute('aria-disabled') === 'true');
     expect(disabled).toHaveLength(1);
+  });
+});
+
+describe('Details (disclosure) — integration through the renderer', () => {
+  it('renders the summary label and static body across both open states', () => {
+    renderFixture(detailsOpenFixture);
+    expect(screen.getAllByText('More info')).toHaveLength(2);
+    expect(screen.getAllByText('First')).toHaveLength(2);
+    expect(screen.getAllByText('Second')).toHaveLength(2);
+  });
+
+  it('reflects the collapsed and expanded open states on the <details> elements', () => {
+    const {container} = renderFixture(detailsOpenFixture);
+    const collapsed = container.querySelector('[data-testid="surface-details-collapsed"] details');
+    const expanded = container.querySelector('[data-testid="surface-details-expanded"] details');
+    expect(collapsed).not.toHaveAttribute('open');
+    expect(expanded).toHaveAttribute('open');
+  });
+
+  it('renders the summary inside a Details.Summary slot', () => {
+    const {container} = renderFixture(detailsOpenFixture);
+    const summary = container.querySelector('summary[data-component="Details.Summary"]');
+    expect(summary).not.toBeNull();
+    expect(summary?.textContent).toContain('More info');
+  });
+
+  it('expands a dynamic-template body from the bound /items array', () => {
+    renderFixture(detailsChildrenTemplateFixture);
+    expect(screen.getByText('Alpha')).toBeInTheDocument();
+    expect(screen.getByText('Beta')).toBeInTheDocument();
+  });
+
+  it('resolves a path-bound open from the data model (initially false -> collapsed)', () => {
+    const {container} = renderFixture(detailsBoundFixture);
+    expect(container.querySelector('details')).not.toHaveAttribute('open');
   });
 });

@@ -30,7 +30,9 @@ import {PaginationApi} from './components/pagination';
 import {SegmentedControlApi} from './components/segmentedcontrol';
 import {SegmentedControlButtonApi} from './components/segmentedcontrolbutton';
 import {SegmentedControlIconButtonApi} from './components/segmentedcontroliconbutton';
+import {DetailsApi} from './components/details';
 import {consoleLog} from './functions/console-log';
+import {windowAlert} from './functions/window-alert';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
 // expected set the parity test (catalog.parity.test.ts) and the catalog smoke test
@@ -68,6 +70,7 @@ export const COMPONENTS = {
   SegmentedControl: SegmentedControlApi,
   SegmentedControlButton: SegmentedControlButtonApi,
   SegmentedControlIconButton: SegmentedControlIconButtonApi,
+  Details: DetailsApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
-export const FUNCTIONS = {consoleLog} as const;
+export const FUNCTIONS = {consoleLog, windowAlert} as const;

@@ -18,6 +18,8 @@ import {toggleswitchEventFixture} from '../src/fixtures/toggleswitch-event';
 import {segmentedcontrolFnFixture} from '../src/fixtures/segmentedcontrol-fn';
 import {segmentedcontrolEventFixture} from '../src/fixtures/segmentedcontrol-event';
 import {segmentedcontrolBoundFixture} from '../src/fixtures/segmentedcontrol-bound';
+import {detailsBoundFixture} from '../src/fixtures/details-bound';
+import {detailsClickoutsideFnFixture} from '../src/fixtures/details-clickoutside-fn';
 
 afterEach(cleanup);
 
@@ -272,5 +274,35 @@ describe('action paths', () => {
       'true',
     );
     expect(handler).not.toHaveBeenCalled();
+  });
+  it('two-way write-back: toggling a bound Details summary writes open to the data-model path and re-renders expanded', async () => {
+    const handler = vi.fn();
+    const {container} = renderFixture(detailsBoundFixture, {actionHandler: handler});
+
+    const details = container.querySelector('details') as HTMLDetailsElement;
+    expect(details).not.toHaveAttribute('open');
+
+    fireEvent.click(screen.getByText('More info'));
+
+    // The binder's auto-generated setOpen wrote `true` back to /expanded; the disclosure
+    // re-renders from the updated data model. No client->server action is dispatched.
+    await vi.waitFor(() => expect(container.querySelector('details')).toHaveAttribute('open'));
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('Details onClickOutside functionCall runs windowAlert locally (and collapses), not via the handler', async () => {
+    const alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
+    const handler = vi.fn();
+    const {container} = renderFixture(detailsClickoutsideFnFixture, {actionHandler: handler});
+
+    const details = container.querySelector('details') as HTMLDetailsElement;
+    expect(details).toHaveAttribute('open');
+
+    fireEvent.click(document.body);
+
+    expect(alertSpy).toHaveBeenCalledWith('clicked outside');
+    expect(handler).not.toHaveBeenCalled();
+    await vi.waitFor(() => expect(container.querySelector('details')).not.toHaveAttribute('open'));
+    alertSpy.mockRestore();
   });
 });
