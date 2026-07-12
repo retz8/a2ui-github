@@ -16,19 +16,32 @@ if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {
     }) as MediaQueryList;
 }
 
-// Primer's IconButton wraps its trigger in TooltipV2, which loads the `@oddbird/popover-polyfill`
-// under jsdom (no native Popover API). The polyfill spreads `root.adoptedStyleSheets`, which jsdom
-// does not implement, so it throws `adoptedStyleSheets is not iterable`. Provide a writable array
-// stub on Document/ShadowRoot so the polyfill's style injection is a harmless no-op.
-for (const proto of [
-  typeof Document !== 'undefined' ? Document.prototype : undefined,
-  typeof ShadowRoot !== 'undefined' ? ShadowRoot.prototype : undefined,
-]) {
-  if (proto && !('adoptedStyleSheets' in proto)) {
+// Primer's TooltipV2 (used by IconButton, e.g. inside TextInput.Action) loads the
+// `@oddbird/popover-polyfill` under jsdom, whose `injectStyles` spreads
+// `root.adoptedStyleSheets`. jsdom does not implement `adoptedStyleSheets`, so the spread
+// throws "not iterable" in a passive effect. Provide a writable, per-node array so the
+// polyfill's read-then-assign works and the tooltip renders under vitest.
+if (typeof document !== 'undefined' && !('adoptedStyleSheets' in Document.prototype)) {
+  const store = new WeakMap<object, unknown[]>();
+  const protos: Array<object | undefined> = [
+    Document.prototype,
+    typeof ShadowRoot !== 'undefined' ? ShadowRoot.prototype : undefined,
+  ];
+  for (const proto of protos) {
+    if (!proto) continue;
     Object.defineProperty(proto, 'adoptedStyleSheets', {
       configurable: true,
-      writable: true,
-      value: [],
+      get() {
+        let sheets = store.get(this as object);
+        if (!sheets) {
+          sheets = [];
+          store.set(this as object, sheets);
+        }
+        return sheets;
+      },
+      set(value: unknown[]) {
+        store.set(this as object, value);
+      },
     });
   }
 }

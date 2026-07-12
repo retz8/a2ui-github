@@ -97,6 +97,22 @@ import {textareaRowsFixture} from '../src/fixtures/textarea-rows';
 import {textareaColsFixture} from '../src/fixtures/textarea-cols';
 import {textareaCharacterLimitFixture} from '../src/fixtures/textarea-character-limit';
 import {textareaMinHeightFixture} from '../src/fixtures/textarea-min-height';
+import {textinputFixture} from '../src/fixtures/textinput';
+import {textinputBoundFixture} from '../src/fixtures/textinput-bound';
+import {textinputPlaceholderFixture} from '../src/fixtures/textinput-placeholder';
+import {textinputDisabledFixture} from '../src/fixtures/textinput-disabled';
+import {textinputValidationFixture} from '../src/fixtures/textinput-validation';
+import {textinputTypeFixture} from '../src/fixtures/textinput-type';
+import {textinputLoadingFixture} from '../src/fixtures/textinput-loading';
+import {textinputLeadingVisualFixture} from '../src/fixtures/textinput-leading-visual';
+import {textinputTrailingVisualFixture} from '../src/fixtures/textinput-trailing-visual';
+import {textinputTrailingActionFixture} from '../src/fixtures/textinput-trailing-action';
+import {textinputSizeFixture} from '../src/fixtures/textinput-size';
+import {textinputBlockFixture} from '../src/fixtures/textinput-block';
+import {textinputContrastFixture} from '../src/fixtures/textinput-contrast';
+import {textinputMonospaceFixture} from '../src/fixtures/textinput-monospace';
+import {textinputCharacterLimitFixture} from '../src/fixtures/textinput-character-limit';
+import {textinputActionDisabledFixture} from '../src/fixtures/textinput-action-disabled';
 import {skeletonboxFixture} from '../src/fixtures/skeletonbox';
 import {skeletonboxSizedFixture} from '../src/fixtures/skeletonbox-sized';
 import {truncateFixture} from '../src/fixtures/truncate';
@@ -1361,5 +1377,103 @@ describe('SelectOptGroup (option-group leaf) — integration through the rendere
   it('honors a disabled group through the renderer', () => {
     renderFixture(selectoptgroupDisabledFixture);
     expect(screen.getByRole('group', {name: 'Closed'})).toBeDisabled();
+  });
+});
+
+describe('TextInput — integration through the renderer', () => {
+  it('renders a literal TextInput value', () => {
+    renderFixture(textinputFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+  });
+
+  it('renders a path-bound TextInput value from the data model', () => {
+    renderFixture(textinputBoundFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+  });
+
+  it('writes user edits back to the bound path (two-way binding) and re-renders', async () => {
+    renderFixture(textinputBoundFixture);
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: 'octocat-labs'}});
+    await waitFor(() => expect(screen.getByRole('textbox')).toHaveValue('octocat-labs'));
+  });
+
+  it('shows the TextInput placeholder while empty', () => {
+    renderFixture(textinputPlaceholderFixture);
+    expect(screen.getByPlaceholderText('Search repositories')).toBeInTheDocument();
+  });
+
+  it('honors the disabled TextInput through the renderer', () => {
+    renderFixture(textinputDisabledFixture);
+    expect(screen.getByRole('textbox')).toBeDisabled();
+  });
+
+  it('drives aria-invalid from the error validationStatus through the renderer', () => {
+    renderFixture(textinputValidationFixture);
+    // Primer's TextInput sets aria-invalid only on the error surface (undefined otherwise), so
+    // exactly one of the two gallery surfaces reports aria-invalid="true".
+    const boxes = screen.getAllByRole('textbox');
+    const invalidCount = boxes.filter(el => el.getAttribute('aria-invalid') === 'true').length;
+    expect(invalidCount).toBe(1);
+  });
+
+  it('sets the input type per enum value through the renderer', () => {
+    const {container} = renderFixture(textinputTypeFixture);
+    expect(container.querySelector('input[type="email"]')).not.toBeNull();
+    expect(container.querySelector('input[type="password"]')).not.toBeNull();
+    expect(container.querySelector('input[type="url"]')).not.toBeNull();
+  });
+
+  it('renders a leadingVisual slot inside the input', () => {
+    const {container} = renderFixture(textinputLeadingVisualFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+    expect(container.querySelector('svg')).not.toBeNull();
+  });
+
+  it('renders a trailingVisual slot inside the input', () => {
+    const {container} = renderFixture(textinputTrailingVisualFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+    expect(container.querySelector('svg')).not.toBeNull();
+  });
+
+  it('renders a trailingAction slot (a TextInput.Action button) inside the input', () => {
+    renderFixture(textinputTrailingActionFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+    expect(screen.getByRole('button', {name: 'Clear'})).toBeInTheDocument();
+  });
+
+  it('forces error styling when the character limit is exceeded', () => {
+    renderFixture(textinputCharacterLimitFixture);
+    // Two coupled surfaces; only the over-limit one flips aria-invalid to "true".
+    const boxes = screen.getAllByRole('textbox');
+    const invalidCount = boxes.filter(el => el.getAttribute('aria-invalid') === 'true').length;
+    expect(invalidCount).toBe(1);
+  });
+
+  it('renders one input per size enum value through the renderer', () => {
+    renderFixture(textinputSizeFixture);
+    expect(screen.getAllByRole('textbox')).toHaveLength(3);
+  });
+
+  it('renders block, contrast and monospace TextInputs through the renderer', () => {
+    renderFixture(textinputBlockFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('Full width');
+    cleanup();
+    renderFixture(textinputContrastFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('High contrast');
+    cleanup();
+    renderFixture(textinputMonospaceFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('git rev-parse HEAD');
+  });
+
+  it('renders a loading TextInput mini-gallery through the renderer', () => {
+    renderFixture(textinputLoadingFixture);
+    expect(screen.getAllByRole('textbox').length).toBeGreaterThan(0);
+  });
+});
+
+describe('TextInput.Action — integration through the renderer', () => {
+  it('honors the disabled TextInput.Action through the renderer', () => {
+    renderFixture(textinputActionDisabledFixture);
+    expect(screen.getByRole('button', {name: 'Clear'})).toBeDisabled();
   });
 });

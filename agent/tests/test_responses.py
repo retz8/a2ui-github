@@ -119,6 +119,7 @@ def test_toggle_reverts_setting_then_swaps_status_with_surface_echoed():
     ]
 
 
+<<<<<<< HEAD
 APPROVE = {
     "name": "approve",
     "surfaceId": "iconbutton-event",
@@ -184,6 +185,34 @@ def test_change_reflects_a_different_index_not_a_canned_value():
     )
 
 
+=======
+SEARCH = {
+    "name": "search",
+    "surfaceId": "textinput-action-event",
+    "sourceComponentId": "search-action",
+    "context": {"query": "octocat"},
+}
+
+
+def test_search_writes_validation_then_swaps_result_with_surface_echoed():
+    msgs = build_response(SEARCH)
+    assert len(msgs) == 2
+
+    # The /validation write is visible through the parent TextInput's validationStatus coupling
+    # (the field turns green), proving two-way data binding on the input.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "textinput-action-event"
+    assert dm["path"] == "/validation"
+    assert dm["value"] == "success"
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "textinput-action-event"
+    assert uc["components"] == [
+        {"id": "result", "component": "Text", "text": 'Found 3 repositories for "octocat"'}
+    ]
+
+
+>>>>>>> c2d9270 (feat(phase-6): ship TextInput and TextInput.Action catalog leaves)
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1

@@ -123,6 +123,25 @@ import {textareaRowsFixture} from './textarea-rows';
 import {textareaColsFixture} from './textarea-cols';
 import {textareaCharacterLimitFixture} from './textarea-character-limit';
 import {textareaMinHeightFixture} from './textarea-min-height';
+import {textinputFixture} from './textinput';
+import {textinputBoundFixture} from './textinput-bound';
+import {textinputPlaceholderFixture} from './textinput-placeholder';
+import {textinputDisabledFixture} from './textinput-disabled';
+import {textinputValidationFixture} from './textinput-validation';
+import {textinputTypeFixture} from './textinput-type';
+import {textinputLoadingFixture} from './textinput-loading';
+import {textinputLeadingVisualFixture} from './textinput-leading-visual';
+import {textinputTrailingVisualFixture} from './textinput-trailing-visual';
+import {textinputTrailingActionFixture} from './textinput-trailing-action';
+import {textinputSizeFixture} from './textinput-size';
+import {textinputBlockFixture} from './textinput-block';
+import {textinputContrastFixture} from './textinput-contrast';
+import {textinputMonospaceFixture} from './textinput-monospace';
+import {textinputCharacterLimitFixture} from './textinput-character-limit';
+import {textinputActionFnFixture} from './textinput-action-fn';
+import {textinputActionEventFixture} from './textinput-action-event';
+import {textinputActionDisabledFixture} from './textinput-action-disabled';
+import {textinputActionTooltipFixture} from './textinput-action-tooltip';
 import {skeletonboxFixture} from './skeletonbox';
 import {skeletonboxSizedFixture} from './skeletonbox-sized';
 import {truncateFixture} from './truncate';
@@ -331,6 +350,25 @@ export {textareaRowsFixture} from './textarea-rows';
 export {textareaColsFixture} from './textarea-cols';
 export {textareaCharacterLimitFixture} from './textarea-character-limit';
 export {textareaMinHeightFixture} from './textarea-min-height';
+export {textinputFixture} from './textinput';
+export {textinputBoundFixture} from './textinput-bound';
+export {textinputPlaceholderFixture} from './textinput-placeholder';
+export {textinputDisabledFixture} from './textinput-disabled';
+export {textinputValidationFixture} from './textinput-validation';
+export {textinputTypeFixture} from './textinput-type';
+export {textinputLoadingFixture} from './textinput-loading';
+export {textinputLeadingVisualFixture} from './textinput-leading-visual';
+export {textinputTrailingVisualFixture} from './textinput-trailing-visual';
+export {textinputTrailingActionFixture} from './textinput-trailing-action';
+export {textinputSizeFixture} from './textinput-size';
+export {textinputBlockFixture} from './textinput-block';
+export {textinputContrastFixture} from './textinput-contrast';
+export {textinputMonospaceFixture} from './textinput-monospace';
+export {textinputCharacterLimitFixture} from './textinput-character-limit';
+export {textinputActionFnFixture} from './textinput-action-fn';
+export {textinputActionEventFixture} from './textinput-action-event';
+export {textinputActionDisabledFixture} from './textinput-action-disabled';
+export {textinputActionTooltipFixture} from './textinput-action-tooltip';
 export {skeletonboxFixture} from './skeletonbox';
 export {skeletonboxSizedFixture} from './skeletonbox-sized';
 export {truncateFixture} from './truncate';
@@ -537,6 +575,25 @@ export const FIXTURES: Fixture[] = [
   textareaColsFixture,
   textareaCharacterLimitFixture,
   textareaMinHeightFixture,
+  textinputFixture,
+  textinputBoundFixture,
+  textinputPlaceholderFixture,
+  textinputDisabledFixture,
+  textinputValidationFixture,
+  textinputTypeFixture,
+  textinputLoadingFixture,
+  textinputLeadingVisualFixture,
+  textinputTrailingVisualFixture,
+  textinputTrailingActionFixture,
+  textinputSizeFixture,
+  textinputBlockFixture,
+  textinputContrastFixture,
+  textinputMonospaceFixture,
+  textinputCharacterLimitFixture,
+  textinputActionFnFixture,
+  textinputActionEventFixture,
+  textinputActionDisabledFixture,
+  textinputActionTooltipFixture,
   skeletonboxFixture,
   skeletonboxSizedFixture,
   truncateFixture,

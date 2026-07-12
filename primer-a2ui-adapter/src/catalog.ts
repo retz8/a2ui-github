@@ -21,6 +21,8 @@ import {ProgressBarComponent} from './components/progressbar';
 import {RadioComponent} from './components/radio';
 import {ToggleSwitchComponent} from './components/toggleswitch';
 import {TextareaComponent} from './components/textarea';
+import {TextInputComponent} from './components/textinput';
+import {TextInputActionComponent} from './components/textinput-action';
 import {SkeletonBoxComponent} from './components/skeletonbox';
 import {TruncateComponent} from './components/truncate';
 import {KeybindingHintComponent} from './components/keybindinghint';
@@ -64,6 +66,8 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     RadioComponent,
     ToggleSwitchComponent,
     TextareaComponent,
+    TextInputComponent,
+    TextInputActionComponent,
     SkeletonBoxComponent,
     TruncateComponent,
     KeybindingHintComponent,

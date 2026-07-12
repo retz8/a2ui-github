@@ -18,6 +18,8 @@ import {ProgressBarApi} from './components/progressbar';
 import {RadioApi} from './components/radio';
 import {ToggleSwitchApi} from './components/toggleswitch';
 import {TextareaApi} from './components/textarea';
+import {TextInputApi} from './components/textinput';
+import {TextInputActionApi} from './components/textinput-action';
 import {SkeletonBoxApi} from './components/skeletonbox';
 import {TruncateApi} from './components/truncate';
 import {KeybindingHintApi} from './components/keybindinghint';
@@ -61,6 +63,8 @@ export const COMPONENTS = {
   Radio: RadioApi,
   ToggleSwitch: ToggleSwitchApi,
   Textarea: TextareaApi,
+  TextInput: TextInputApi,
+  'TextInput.Action': TextInputActionApi,
   SkeletonBox: SkeletonBoxApi,
   Truncate: TruncateApi,
   KeybindingHint: KeybindingHintApi,
