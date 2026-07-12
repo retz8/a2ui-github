@@ -26,14 +26,16 @@ Phase 6 ships the leaf catalog only. Screen composition (PR-list, PR-detail, dif
 agent's job in Phase 7, per SPEC §1's "the agent composes views from primitives — never a bespoke
 component." The demo arc informs nothing in this phase's selection or validation.
 
-### 2. Ship set — all main-entry components, three exclusions, plus Icon
+### 2. Ship set — all main-entry components, four exclusions, plus Icon
 
-Ship all 58 `@primer/react` **main-entry** components minus three: `CircleBadge` and
+Ship all 58 `@primer/react` **main-entry** components minus four: `CircleBadge` and
 `TextInputWithTokens` (deprecated even though main-entry — shipping them would teach the agent to
-compose avoid-flagged components) and `Portal` (a rendering utility, not a composable leaf). Add
-**`Icon`**, wrapping `@primer/octicons-react` (Primer's own `Octicon` is deprecated-only). `Text`
-and `Button` are already shipped. Experimental-, deprecated-, and next-entry components are out of
-scope; the catalog "grows lazily" (SPEC §4) if a later flow needs one.
+compose avoid-flagged components), `Portal` (a rendering utility, not a composable leaf), and
+`Flash` (avoid-flagged and slated for deprecation in favor of `Banner`, an experimental-entry —
+same rationale as the deprecated pair). Add **`Icon`**, wrapping `@primer/octicons-react` (Primer's
+own `Octicon` is deprecated-only). `Text` and `Button` are already shipped. Experimental-,
+deprecated-, and next-entry components are out of scope; the catalog "grows lazily" (SPEC §4) if a
+later flow needs one (a callout leaf would return as `Banner`).
 
 ### 3. Ordering — dependency layers, Icon first, deferral as the release valve
 
