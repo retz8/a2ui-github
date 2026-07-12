@@ -139,6 +139,9 @@ import {stackResponsiveFixture} from './stack-responsive';
 import {stackitemFixture} from './stackitem';
 import {stackitemGrowFixture} from './stackitem-grow';
 import {stackitemShrinkFixture} from './stackitem-shrink';
+import {labelGroupFixture} from './label-group';
+import {labelGroupChildrenTemplateFixture} from './label-group-children-template';
+import {labelGroupTruncatedFixture} from './label-group-truncated';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -284,6 +287,9 @@ export {stackResponsiveFixture} from './stack-responsive';
 export {stackitemFixture} from './stackitem';
 export {stackitemGrowFixture} from './stackitem-grow';
 export {stackitemShrinkFixture} from './stackitem-shrink';
+export {labelGroupFixture} from './label-group';
+export {labelGroupChildrenTemplateFixture} from './label-group-children-template';
+export {labelGroupTruncatedFixture} from './label-group-truncated';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -427,6 +433,9 @@ export const FIXTURES: Fixture[] = [
   stackitemFixture,
   stackitemGrowFixture,
   stackitemShrinkFixture,
+  labelGroupFixture,
+  labelGroupChildrenTemplateFixture,
+  labelGroupTruncatedFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

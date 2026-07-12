@@ -1594,6 +1594,37 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "LabelGroup": {
+      "type": "object",
+      "description": "Groups a set of labels or tokens together, optionally truncating the group to a maximum number of visible items with the remainder revealed on demand.",
+      "properties": {
+        "component": {
+          "const": "LabelGroup"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The labels or tokens grouped together."
+        },
+        "overflowStyle": {
+          "type": "string",
+          "enum": ["inline", "overlay"],
+          "default": "overlay",
+          "description": "How items hidden by truncation are revealed — inline after the visible items, or in an overlay."
+        },
+        "visibleChildCount": {
+          "description": "How many items to show before truncating; `'auto'` fits to the container width; omit to never truncate.",
+          "oneOf": [{"const": "auto"}, {"type": "integer", "minimum": 1}]
+        },
+        "as": {
+          "type": "string",
+          "enum": ["ul", "ol", "div", "span"],
+          "default": "ul",
+          "description": "The HTML element used to render the group container."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1697,6 +1728,9 @@
         },
         {
           "$ref": "#/components/StackItem"
+        },
+        {
+          "$ref": "#/components/LabelGroup"
         }
       ]
     },

@@ -25,6 +25,7 @@ import {TruncateComponent} from './components/truncate';
 import {KeybindingHintComponent} from './components/keybindinghint';
 import {StackComponent} from './components/stack';
 import {StackItemComponent} from './components/stackitem';
+import {LabelGroupComponent} from './components/label-group';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
@@ -55,6 +56,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     KeybindingHintComponent,
     StackComponent,
     StackItemComponent,
+    LabelGroupComponent,
   ],
   [consoleLog],
 );
