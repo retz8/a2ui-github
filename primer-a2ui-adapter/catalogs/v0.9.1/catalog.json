@@ -1703,6 +1703,49 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "Pagination": {
+      "type": "object",
+      "description": "Navigates a paginated collection with numbered page links and previous/next controls.",
+      "properties": {
+        "component": {
+          "const": "Pagination"
+        },
+        "pageCount": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+          "description": "The total number of pages."
+        },
+        "currentPage": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+          "description": "The currently-selected page (1-indexed). Two-way bound: selecting a page writes the new number back to the bound data-model path."
+        },
+        "marginPageCount": {
+          "type": "number",
+          "default": 1,
+          "description": "How many pages are always shown at the start and end."
+        },
+        "showPages": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether numbered page buttons are shown; when off, only the previous and next controls appear."
+        },
+        "surroundingPageCount": {
+          "type": "number",
+          "default": 2,
+          "description": "How many pages are shown on each side of the current page."
+        },
+        "hrefBuilder": {
+          "type": "string",
+          "default": "#{page}",
+          "description": "A URL template for each page link; the token `{page}` is replaced with the page number. Provide a real URL to make pages navigable links; the default is an on-surface anchor."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Label for the pagination navigation landmark, distinguishing it when a surface has more than one paginated region."
+        }
+      },
+      "required": ["component", "pageCount", "currentPage"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1815,6 +1858,9 @@
         },
         {
           "$ref": "#/components/ButtonGroup"
+        },
+        {
+          "$ref": "#/components/Pagination"
         }
       ]
     },
