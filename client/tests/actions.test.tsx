@@ -67,7 +67,7 @@ describe('action paths', () => {
       expect.objectContaining({
         name: 'token-remove',
         surfaceId: 'token-remove-event',
-        sourceComponentId: 'root',
+        sourceComponentId: 'token',
       }),
     );
   });

@@ -5,7 +5,7 @@ picks them up. Read the relevant section when starting that phase.
 
 ## Phase 6 — Catalog build-out
 
-### Button — element-typed visual props
+### Button — element-typed visual props — DONE (6.4)
 
 Primer `Button`'s `icon`, `leadingVisual`, `trailingVisual`, and `trailingAction` are
 element-typed (`React.ReactElement | React.ElementType`) — not JSON-serializable, so they
@@ -14,6 +14,9 @@ were omitted from the 2.2 `Button` schema. Carry them as `ComponentId` child ref
 
 See finding #5 in `a2ui-findings.md` for the general rule, and the deferred-props comment
 in `primer-a2ui-adapter/src/components/button/button.schema.ts`.
+
+Resolved in task 6.4 (Button revisit), unblocked by 6.2 `Icon`: all four slots are now
+carried as optional `ComponentId` children in `button.schema.ts`.
 
 ### Checkbox — visible label + optional toggle action
 
@@ -41,6 +44,9 @@ Revisit when `Stack` (6.23) lands: make each event fixture's `root` a `Stack` wi
 children so the status-swap half renders. The fixtures and the agent responses
 (`agent/deterministic_agent/fixtures/token-remove.json` / `issue-label-remove.json`) already carry
 the status content; add the two fixtures' status surfaces to the e2e baseline list at that point.
+
+- **`token-remove-event`: DONE** — `root` is now a `Stack` hosting `[token, status]`; the
+  status-swap half renders. Baseline regenerated (the name was already in the e2e list).
 
 ### Radio — select-event status-swap visibility
 
