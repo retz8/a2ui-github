@@ -91,9 +91,9 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [WIP] **6.28** `ButtonGroup` (#51)
 - [WIP] **6.29** `IconButton` (#53)
 - [WIP] **6.30** `TextInput`
-- [WIP] **6.31** `Select`
-- [ ] **6.32** `SegmentedControl`
-- [ ] **6.33** `Pagination`
+- [WIP] **6.31** `Select` + `Select.Option` + `Select.OptGroup` (compound option children, shipped together)
+- [WIP] **6.32** `SegmentedControl`
+- [WIP] **6.33** `Pagination` (#54)
 
 ### L2 — composite / multi-slot / overlay
 - [ ] **6.34** `PageLayout`
