@@ -13,6 +13,15 @@ import {buttonIconFixture} from './button-icon';
 import {buttonLeadingVisualFixture} from './button-leading-visual';
 import {buttonTrailingVisualFixture} from './button-trailing-visual';
 import {buttonTrailingActionFixture} from './button-trailing-action';
+import {iconbuttonFnFixture} from './iconbutton-fn';
+import {iconbuttonEventFixture} from './iconbutton-event';
+import {iconbuttonVariantsFixture} from './iconbutton-variants';
+import {iconbuttonSizesFixture} from './iconbutton-sizes';
+import {iconbuttonDisabledFixture} from './iconbutton-disabled';
+import {iconbuttonLoadingFixture} from './iconbutton-loading';
+import {iconbuttonInactiveFixture} from './iconbutton-inactive';
+import {iconbuttonBlockFixture} from './iconbutton-block';
+import {iconbuttonTooltipFixture} from './iconbutton-tooltip';
 import {iconNamesFixture} from './icon-names';
 import {iconSizesFixture} from './icon-sizes';
 import {iconFillsFixture} from './icon-fills';
@@ -187,6 +196,15 @@ export {buttonIconFixture} from './button-icon';
 export {buttonLeadingVisualFixture} from './button-leading-visual';
 export {buttonTrailingVisualFixture} from './button-trailing-visual';
 export {buttonTrailingActionFixture} from './button-trailing-action';
+export {iconbuttonFnFixture} from './iconbutton-fn';
+export {iconbuttonEventFixture} from './iconbutton-event';
+export {iconbuttonVariantsFixture} from './iconbutton-variants';
+export {iconbuttonSizesFixture} from './iconbutton-sizes';
+export {iconbuttonDisabledFixture} from './iconbutton-disabled';
+export {iconbuttonLoadingFixture} from './iconbutton-loading';
+export {iconbuttonInactiveFixture} from './iconbutton-inactive';
+export {iconbuttonBlockFixture} from './iconbutton-block';
+export {iconbuttonTooltipFixture} from './iconbutton-tooltip';
 export {iconNamesFixture} from './icon-names';
 export {iconSizesFixture} from './icon-sizes';
 export {iconFillsFixture} from './icon-fills';
@@ -353,6 +371,15 @@ export const FIXTURES: Fixture[] = [
   buttonLeadingVisualFixture,
   buttonTrailingVisualFixture,
   buttonTrailingActionFixture,
+  iconbuttonFnFixture,
+  iconbuttonEventFixture,
+  iconbuttonVariantsFixture,
+  iconbuttonSizesFixture,
+  iconbuttonDisabledFixture,
+  iconbuttonLoadingFixture,
+  iconbuttonInactiveFixture,
+  iconbuttonBlockFixture,
+  iconbuttonTooltipFixture,
   iconNamesFixture,
   iconSizesFixture,
   iconFillsFixture,

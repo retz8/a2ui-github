@@ -3,6 +3,8 @@ import {screen, cleanup, fireEvent} from '@testing-library/react';
 import {renderFixture} from './helpers';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
 import {buttonEventFixture} from '../src/fixtures/button-event';
+import {iconbuttonFnFixture} from '../src/fixtures/iconbutton-fn';
+import {iconbuttonEventFixture} from '../src/fixtures/iconbutton-event';
 import {tokenRemoveFnFixture} from '../src/fixtures/token-remove-fn';
 import {tokenRemoveEventFixture} from '../src/fixtures/token-remove-event';
 import {issuelabeltokenRemoveFnFixture} from '../src/fixtures/issuelabeltoken-remove-fn';
@@ -40,6 +42,34 @@ describe('action paths', () => {
       expect.objectContaining({
         name: 'submit',
         surfaceId: 'button-event',
+        sourceComponentId: 'root',
+      }),
+    );
+  });
+
+  it('IconButton functionCall runs the registered consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(iconbuttonFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Like'}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'iconbutton-fn clicked');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('IconButton event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(iconbuttonEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Approve'}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'approve',
+        surfaceId: 'iconbutton-event',
         sourceComponentId: 'root',
       }),
     );

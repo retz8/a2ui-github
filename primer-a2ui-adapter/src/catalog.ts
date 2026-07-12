@@ -3,6 +3,7 @@ import type {ReactComponentImplementation} from '@a2ui/react/v0_9';
 import {CATALOG_ID} from './catalog-id';
 import {TextComponent} from './components/text';
 import {ButtonComponent} from './components/button';
+import {IconButtonComponent} from './components/iconbutton';
 import {IconComponent} from './components/icon';
 import {LinkComponent} from './components/link';
 import {HeadingComponent} from './components/heading';
@@ -37,6 +38,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
   [
     TextComponent,
     ButtonComponent,
+    IconButtonComponent,
     IconComponent,
     LinkComponent,
     HeadingComponent,

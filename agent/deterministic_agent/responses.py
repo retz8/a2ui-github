@@ -8,6 +8,7 @@ from pathlib import Path
 _FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
 _EVENT_FIXTURES = {
     "submit": "submit.json",
+    "approve": "approve.json",
     "token-remove": "token-remove.json",
     "issue-label-remove": "issue-label-remove.json",
     "select": "select.json",

@@ -122,6 +122,83 @@
       "required": ["component", "action"],
       "unevaluatedProperties": false
     },
+    "IconButton": {
+      "type": "object",
+      "description": "An interactive icon-only button that initiates an action when activated; it carries a required text label for assistive technologies.",
+      "properties": {
+        "component": {
+          "const": "IconButton"
+        },
+        "icon": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon displayed as the button's content."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the button is activated."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Label for assistive technologies, and the button's tooltip text when no `description` is set. Required — an icon-only button must be labeled."
+        },
+        "description": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Descriptive text shown in the button's tooltip; when set, the accessibility label names the button and this describes it."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "primary", "invisible", "danger", "link"],
+          "default": "default",
+          "description": "The visual style; `primary` marks the main call-to-action, `danger` a destructive action, `invisible`/`link` for minimal contexts."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "The button's size."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button is disabled and cannot be activated."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button is in a loading state, showing a progress indicator in place of the icon."
+        },
+        "inactive": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button appears disabled but remains interactive."
+        },
+        "loadingAnnouncement": {
+          "type": "string",
+          "description": "Text announced to assistive technologies while loading."
+        },
+        "block": {
+          "type": "boolean",
+          "description": "Whether the button expands to fill its container's width."
+        },
+        "keybindingHint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          ],
+          "description": "A keyboard-shortcut hint shown in the tooltip; a single chord or a sequence of chords."
+        },
+        "tooltipDirection": {
+          "type": "string",
+          "enum": ["nw", "n", "ne", "e", "se", "s", "sw", "w"],
+          "description": "Which side the tooltip is anchored to."
+        }
+      },
+      "required": ["component", "icon", "action", "accessibility"],
+      "unevaluatedProperties": false
+    },
     "Icon": {
       "type": "object",
       "description": "A vector icon, selected by name from a fixed icon set, used to visually communicate meaning, state, or action.",
@@ -1783,6 +1860,9 @@
         },
         {
           "$ref": "#/components/Button"
+        },
+        {
+          "$ref": "#/components/IconButton"
         },
         {
           "$ref": "#/components/Icon"
