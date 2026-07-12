@@ -21,7 +21,7 @@ export const issuelabeltokenRemoveEventFixture: Fixture = {
       updateComponents: {
         surfaceId: 'issuelabeltoken-remove-event',
         components: [
-          {id: 'root', component: 'Stack', children: ['issuelabeltoken', 'status']},
+          {id: 'root', component: 'Stack', align: 'start', children: ['issuelabeltoken', 'status']},
           {
             id: 'issuelabeltoken',
             component: 'IssueLabelToken',

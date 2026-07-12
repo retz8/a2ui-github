@@ -19,7 +19,7 @@ export const toggleswitchEventFixture: Fixture = {
       updateComponents: {
         surfaceId: 'toggleswitch-event',
         components: [
-          {id: 'root', component: 'Stack', children: ['toggleswitch', 'status']},
+          {id: 'root', component: 'Stack', align: 'start', children: ['toggleswitch', 'status']},
           {
             id: 'toggleswitch',
             component: 'ToggleSwitch',

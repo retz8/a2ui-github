@@ -18,7 +18,7 @@ export const tokenRemoveEventFixture: Fixture = {
       updateComponents: {
         surfaceId: 'token-remove-event',
         components: [
-          {id: 'root', component: 'Stack', children: ['token', 'status']},
+          {id: 'root', component: 'Stack', align: 'start', children: ['token', 'status']},
           {
             id: 'token',
             component: 'Token',

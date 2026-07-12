@@ -21,7 +21,7 @@ export const radioEventFixture: Fixture = {
       updateComponents: {
         surfaceId: 'radio-event',
         components: [
-          {id: 'root', component: 'Stack', children: ['radio', 'status']},
+          {id: 'root', component: 'Stack', align: 'start', children: ['radio', 'status']},
           {
             id: 'radio',
             component: 'Radio',
