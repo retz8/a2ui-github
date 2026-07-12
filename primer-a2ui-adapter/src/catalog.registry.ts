@@ -19,6 +19,7 @@ import {ToggleSwitchApi} from './components/toggleswitch';
 import {TextareaApi} from './components/textarea';
 import {SkeletonBoxApi} from './components/skeletonbox';
 import {TruncateApi} from './components/truncate';
+import {KeybindingHintApi} from './components/keybindinghint';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -46,6 +47,7 @@ export const COMPONENTS = {
   Textarea: TextareaApi,
   SkeletonBox: SkeletonBoxApi,
   Truncate: TruncateApi,
+  KeybindingHint: KeybindingHintApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;

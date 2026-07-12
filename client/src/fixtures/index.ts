@@ -120,6 +120,11 @@ import {truncateFixture} from './truncate';
 import {truncateBoundFixture} from './truncate-bound';
 import {truncateMaxwidthFixture} from './truncate-maxwidth';
 import {truncateAsFixture} from './truncate-as';
+import {keybindinghintFixture} from './keybindinghint';
+import {keybindinghintBoundFixture} from './keybindinghint-bound';
+import {keybindinghintFormatsFixture} from './keybindinghint-formats';
+import {keybindinghintVariantsFixture} from './keybindinghint-variants';
+import {keybindinghintSizesFixture} from './keybindinghint-sizes';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -246,6 +251,11 @@ export {truncateFixture} from './truncate';
 export {truncateBoundFixture} from './truncate-bound';
 export {truncateMaxwidthFixture} from './truncate-maxwidth';
 export {truncateAsFixture} from './truncate-as';
+export {keybindinghintFixture} from './keybindinghint';
+export {keybindinghintBoundFixture} from './keybindinghint-bound';
+export {keybindinghintFormatsFixture} from './keybindinghint-formats';
+export {keybindinghintVariantsFixture} from './keybindinghint-variants';
+export {keybindinghintSizesFixture} from './keybindinghint-sizes';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -370,6 +380,11 @@ export const FIXTURES: Fixture[] = [
   truncateBoundFixture,
   truncateMaxwidthFixture,
   truncateAsFixture,
+  keybindinghintFixture,
+  keybindinghintBoundFixture,
+  keybindinghintFormatsFixture,
+  keybindinghintVariantsFixture,
+  keybindinghintSizesFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

@@ -1362,6 +1362,39 @@
       },
       "required": ["component", "text", "title"],
       "unevaluatedProperties": false
+    },
+    "KeybindingHint": {
+      "type": "object",
+      "description": "A styled hint indicating an available keyboard shortcut, displaying the keys to press.",
+      "properties": {
+        "component": {
+          "const": "KeybindingHint"
+        },
+        "keys": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The keybinding to display: full key names, `+` joins keys into a chord (`\"Mod+k\"`), a space joins chords into a sequence (`\"a b\"`); `\"Mod\"` means the platform's primary modifier."
+        },
+        "format": {
+          "type": "string",
+          "enum": ["condensed", "full"],
+          "default": "condensed",
+          "description": "Display format: `condensed` shows compact symbols for menus and tooltips; `full` spells keys out for prose."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["normal", "onEmphasis", "onPrimary"],
+          "default": "normal",
+          "description": "Color treatment matching the surface behind the hint: `onEmphasis` for emphasis-colored backgrounds, `onPrimary` for primary buttons."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "normal"],
+          "default": "normal",
+          "description": "Size of the hint."
+        }
+      },
+      "required": ["component", "keys"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1456,6 +1489,9 @@
         },
         {
           "$ref": "#/components/Truncate"
+        },
+        {
+          "$ref": "#/components/KeybindingHint"
         }
       ]
     },
