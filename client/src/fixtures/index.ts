@@ -150,6 +150,8 @@ import {avatarstackShapeFixture} from './avatarstack-shape';
 import {avatarstackSizeFixture} from './avatarstack-size';
 import {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
 import {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
+import {buttonGroupFixture} from './button-group';
+import {buttonGroupChildrenTemplateFixture} from './button-group-children-template';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -306,6 +308,8 @@ export {avatarstackShapeFixture} from './avatarstack-shape';
 export {avatarstackSizeFixture} from './avatarstack-size';
 export {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
 export {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
+export {buttonGroupFixture} from './button-group';
+export {buttonGroupChildrenTemplateFixture} from './button-group-children-template';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -460,6 +464,8 @@ export const FIXTURES: Fixture[] = [
   avatarstackSizeFixture,
   avatarstackSizeResponsiveFixture,
   avatarstackDisableexpandFixture,
+  buttonGroupFixture,
+  buttonGroupChildrenTemplateFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
