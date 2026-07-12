@@ -149,6 +149,7 @@ import {avatarstackVariantFixture} from './avatarstack-variant';
 import {avatarstackShapeFixture} from './avatarstack-shape';
 import {avatarstackSizeFixture} from './avatarstack-size';
 import {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
+import {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -304,6 +305,7 @@ export {avatarstackVariantFixture} from './avatarstack-variant';
 export {avatarstackShapeFixture} from './avatarstack-shape';
 export {avatarstackSizeFixture} from './avatarstack-size';
 export {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
+export {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -457,6 +459,7 @@ export const FIXTURES: Fixture[] = [
   avatarstackShapeFixture,
   avatarstackSizeFixture,
   avatarstackSizeResponsiveFixture,
+  avatarstackDisableexpandFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

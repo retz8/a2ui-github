@@ -117,6 +117,7 @@ import {avatarstackVariantFixture} from '../src/fixtures/avatarstack-variant';
 import {avatarstackShapeFixture} from '../src/fixtures/avatarstack-shape';
 import {avatarstackSizeFixture} from '../src/fixtures/avatarstack-size';
 import {avatarstackSizeResponsiveFixture} from '../src/fixtures/avatarstack-size-responsive';
+import {avatarstackDisableexpandFixture} from '../src/fixtures/avatarstack-disableexpand';
 
 afterEach(cleanup);
 
@@ -889,6 +890,35 @@ describe('AvatarStack (container) — integration through the renderer', () => {
     expect(screen.getByRole('img', {name: 'Mona'})).toBeInTheDocument();
     expect(screen.getByRole('img', {name: 'Hubot'})).toBeInTheDocument();
     expect(screen.getByRole('img', {name: 'Octo'})).toBeInTheDocument();
+  });
+
+  it("lands Primer's injected overlap class on each real avatar img (overlap + size)", () => {
+    // Primer AvatarStack injects the AvatarItem class into each direct child via cloneElement; the
+    // AvatarStackItem bridge re-broadcasts it through context so it reaches the real <img> behind
+    // the binder's opaque child. That class carries both the :nth-child(n+2) overlap margin and the
+    // `width/height: var(--avatar-stack-size)` sizing — so overlap and stack `size` both depend on
+    // it being on the avatar itself, not a wrapper.
+    const {container} = renderFixture(avatarstackFixture);
+    const items = container.querySelectorAll('img[data-component="Avatar"][class*="AvatarItem"]');
+    expect(items.length).toBe(3);
+  });
+
+  it('propagates stack shape="square" onto every avatar (data-square)', () => {
+    const {container} = renderFixture(avatarstackShapeFixture);
+    // The square surface marks each of its avatars square via the injected flag; the circle surface
+    // leaves them round.
+    const squareStack = container.querySelector(
+      '[data-component="AvatarStack"][data-shape="square"]',
+    );
+    const squareAvatars = squareStack?.querySelectorAll(
+      'img[data-component="Avatar"][data-square]',
+    );
+    expect(squareAvatars?.length).toBe(3);
+  });
+
+  it('suppresses the hover/focus spread when disableExpand is set (data-disable-expand)', () => {
+    const {container} = renderFixture(avatarstackDisableexpandFixture);
+    expect(container.querySelector('[data-disable-expand]')).not.toBeNull();
   });
 
   it('expands a dynamic-template ChildList over the bound array (one avatar per item)', () => {
