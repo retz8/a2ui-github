@@ -116,6 +116,10 @@ import {textareaCharacterLimitFixture} from './textarea-character-limit';
 import {textareaMinHeightFixture} from './textarea-min-height';
 import {skeletonboxFixture} from './skeletonbox';
 import {skeletonboxSizedFixture} from './skeletonbox-sized';
+import {truncateFixture} from './truncate';
+import {truncateBoundFixture} from './truncate-bound';
+import {truncateMaxwidthFixture} from './truncate-maxwidth';
+import {truncateAsFixture} from './truncate-as';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -238,6 +242,10 @@ export {textareaCharacterLimitFixture} from './textarea-character-limit';
 export {textareaMinHeightFixture} from './textarea-min-height';
 export {skeletonboxFixture} from './skeletonbox';
 export {skeletonboxSizedFixture} from './skeletonbox-sized';
+export {truncateFixture} from './truncate';
+export {truncateBoundFixture} from './truncate-bound';
+export {truncateMaxwidthFixture} from './truncate-maxwidth';
+export {truncateAsFixture} from './truncate-as';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -358,6 +366,10 @@ export const FIXTURES: Fixture[] = [
   textareaMinHeightFixture,
   skeletonboxFixture,
   skeletonboxSizedFixture,
+  truncateFixture,
+  truncateBoundFixture,
+  truncateMaxwidthFixture,
+  truncateAsFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
