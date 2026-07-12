@@ -80,7 +80,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.19** `Textarea` (#34)
 - [x] **6.20** `SkeletonBox` (#35)
 - [x] **6.21** `Truncate` (#46)
-- [WIP] **6.22** `KeybindingHint` (#45)
+- [x] **6.22** `KeybindingHint` (#45)
 
 ### L1 — single-type containers / simple slotters
 - [ ] **6.23** `Stack`
