@@ -110,6 +110,13 @@ import {stackitemShrinkFixture} from '../src/fixtures/stackitem-shrink';
 import {labelGroupFixture} from '../src/fixtures/label-group';
 import {labelGroupChildrenTemplateFixture} from '../src/fixtures/label-group-children-template';
 import {labelGroupTruncatedFixture} from '../src/fixtures/label-group-truncated';
+import {avatarstackFixture} from '../src/fixtures/avatarstack';
+import {avatarstackChildrenTemplateFixture} from '../src/fixtures/avatarstack-children-template';
+import {avatarstackAlignrightFixture} from '../src/fixtures/avatarstack-alignright';
+import {avatarstackVariantFixture} from '../src/fixtures/avatarstack-variant';
+import {avatarstackShapeFixture} from '../src/fixtures/avatarstack-shape';
+import {avatarstackSizeFixture} from '../src/fixtures/avatarstack-size';
+import {avatarstackSizeResponsiveFixture} from '../src/fixtures/avatarstack-size-responsive';
 
 afterEach(cleanup);
 
@@ -873,5 +880,57 @@ describe('LabelGroup (container) — integration through the renderer', () => {
     // All six Labels stay in the DOM; the three beyond the count are marked hidden.
     expect(screen.getByText('documentation')).toBeInTheDocument();
     expect(container.querySelector('[data-component="LabelGroup.Toggle"]')).toBeInTheDocument();
+  });
+});
+
+describe('AvatarStack (container) — integration through the renderer', () => {
+  it('renders a static ChildList of avatars', () => {
+    renderFixture(avatarstackFixture);
+    expect(screen.getByRole('img', {name: 'Mona'})).toBeInTheDocument();
+    expect(screen.getByRole('img', {name: 'Hubot'})).toBeInTheDocument();
+    expect(screen.getByRole('img', {name: 'Octo'})).toBeInTheDocument();
+  });
+
+  it('expands a dynamic-template ChildList over the bound array (one avatar per item)', () => {
+    renderFixture(avatarstackChildrenTemplateFixture);
+    expect(screen.getByRole('img', {name: 'Mona'})).toBeInTheDocument();
+    expect(screen.getByRole('img', {name: 'Hubot'})).toBeInTheDocument();
+    expect(screen.getByRole('img', {name: 'Bender'})).toBeInTheDocument();
+  });
+
+  it('anchors the stack to the right when alignRight is set (data-align-right, "3+" overflow)', () => {
+    const {container} = renderFixture(avatarstackAlignrightFixture);
+    const stack = container.querySelector('[data-component="AvatarStack"]');
+    expect(stack).toHaveAttribute('data-align-right', '');
+    expect(stack).toHaveAttribute('data-avatar-count', '3+');
+  });
+
+  it('renders both variant values through the renderer (data-variant)', () => {
+    const {container} = renderFixture(avatarstackVariantFixture);
+    const variants = Array.from(container.querySelectorAll('[data-component="AvatarStack"]'))
+      .map(el => el.getAttribute('data-variant'))
+      .sort();
+    expect(variants).toEqual(['cascade', 'stack']);
+  });
+
+  it('propagates shape onto the stack for both values (data-shape)', () => {
+    const {container} = renderFixture(avatarstackShapeFixture);
+    const shapes = Array.from(container.querySelectorAll('[data-component="AvatarStack"]'))
+      .map(el => el.getAttribute('data-shape'))
+      .sort();
+    expect(shapes).toEqual(['circle', 'square']);
+  });
+
+  it('treats a scalar size as non-responsive (no data-responsive)', () => {
+    const {container} = renderFixture(avatarstackSizeFixture);
+    const stacks = container.querySelectorAll('[data-component="AvatarStack"]');
+    expect(stacks.length).toBe(3);
+    stacks.forEach(stack => expect(stack).not.toHaveAttribute('data-responsive'));
+  });
+
+  it('forwards a responsive size map as a responsive stack (data-responsive)', () => {
+    const {container} = renderFixture(avatarstackSizeResponsiveFixture);
+    const stack = container.querySelector('[data-component="AvatarStack"]');
+    expect(stack).toHaveAttribute('data-responsive', '');
   });
 });

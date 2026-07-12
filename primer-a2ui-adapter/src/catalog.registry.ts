@@ -23,6 +23,7 @@ import {KeybindingHintApi} from './components/keybindinghint';
 import {StackApi} from './components/stack';
 import {StackItemApi} from './components/stackitem';
 import {LabelGroupApi} from './components/label-group';
+import {AvatarStackApi} from './components/avatarstack';
 import {consoleLog} from './functions/console-log';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
@@ -54,6 +55,7 @@ export const COMPONENTS = {
   Stack: StackApi,
   StackItem: StackItemApi,
   LabelGroup: LabelGroupApi,
+  AvatarStack: AvatarStackApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog} as const;
