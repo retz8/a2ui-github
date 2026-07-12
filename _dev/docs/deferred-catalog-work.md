@@ -50,7 +50,7 @@ the status content; add the two fixtures' status surfaces to the e2e baseline li
 - **`issuelabeltoken-remove-event`: DONE** — `root` is now a `Stack` hosting
   `[issuelabeltoken, status]`; the status-swap half renders. Baseline regenerated.
 
-### Radio — select-event status-swap visibility
+### Radio — select-event status-swap visibility — DONE (6.23 follow-up)
 
 Deferred in the 6.17 review (event fixture `radio-event`):
 
@@ -66,6 +66,9 @@ Revisit when `Stack` (6.23) lands: make `radio-event`'s `root` a `Stack` with `[
 children so the status-swap half renders. The fixture and the agent response
 (`agent/deterministic_agent/fixtures/select.json`) already carry the status content; add the
 fixture's status surface to the e2e baseline list at that point.
+
+- **`radio-event`: DONE** — `root` is now a `Stack` hosting `[radio, status]`; the status-swap
+  half renders. Baseline frozen (the name was already in the e2e list).
 
 ### ToggleSwitch — toggle-event status-swap visibility
 

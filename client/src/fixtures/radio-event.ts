@@ -7,10 +7,10 @@ import type {Fixture} from './types';
  * radio — the deterministic agent's `select` response writes `/selected = true`, and that write
  * is what flips the radio, proving two-way data binding on the radio itself.
  *
- * The `status` Text is the agent's self-visible surface (swapped by the `select` response's
- * updateComponents). This catalog ships no layout/container primitive, so an unreferenced
- * sibling is not rendered under the single-`root` render; `status` becomes visible once such a
- * primitive lands. The CI proof carried here is the bound-`checked` resolution on the radio.
+ * The surface root (id `root`) is a `Stack` hosting `[radio, status]`. The `status` Text is the
+ * agent's self-visible surface (swapped by the `select` response's updateComponents); the Stack
+ * root now renders it, so the status-swap half is visible alongside the bound-`checked`
+ * resolution on the radio (the CI proof of two-way binding).
  */
 export const radioEventFixture: Fixture = {
   name: 'radio-event',
@@ -21,8 +21,9 @@ export const radioEventFixture: Fixture = {
       updateComponents: {
         surfaceId: 'radio-event',
         components: [
+          {id: 'root', component: 'Stack', children: ['radio', 'status']},
           {
-            id: 'root',
+            id: 'radio',
             component: 'Radio',
             value: 'option-1',
             name: 'radio-event',

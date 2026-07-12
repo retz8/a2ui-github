@@ -140,7 +140,7 @@ describe('action paths', () => {
       expect.objectContaining({
         name: 'select',
         surfaceId: 'radio-event',
-        sourceComponentId: 'root',
+        sourceComponentId: 'radio',
       }),
     );
   });
