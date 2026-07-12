@@ -1625,6 +1625,58 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "AvatarStack": {
+      "type": "object",
+      "description": "A set of overlapping avatars displayed inline, used to show a group of users or entities compactly when space is limited.",
+      "properties": {
+        "component": {
+          "const": "AvatarStack"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The avatars to display in the stack."
+        },
+        "alignRight": {
+          "type": "boolean",
+          "default": false,
+          "description": "Aligns the stacked avatars toward the right edge instead of the left."
+        },
+        "disableExpand": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prevents the avatars from spreading apart to reveal themselves when the stack is hovered or focused."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["cascade", "stack"],
+          "default": "cascade",
+          "description": "The overlap style; `cascade` increases the overlap for the third and later avatars, while `stack` keeps a uniform overlap."
+        },
+        "shape": {
+          "type": "string",
+          "enum": ["circle", "square"],
+          "default": "circle",
+          "description": "The shape applied to all avatars in the stack; `square` marks non-human entities such as organizations, teams, or bots."
+        },
+        "size": {
+          "description": "The width and height of each avatar in the stack, in pixels; when unset, follows the individual avatars' own sizes.",
+          "oneOf": [
+            {"type": "number"},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "number"},
+                "regular": {"type": "number"},
+                "wide": {"type": "number"}
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1731,6 +1783,9 @@
         },
         {
           "$ref": "#/components/LabelGroup"
+        },
+        {
+          "$ref": "#/components/AvatarStack"
         }
       ]
     },

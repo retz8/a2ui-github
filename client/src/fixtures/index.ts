@@ -142,6 +142,14 @@ import {stackitemShrinkFixture} from './stackitem-shrink';
 import {labelGroupFixture} from './label-group';
 import {labelGroupChildrenTemplateFixture} from './label-group-children-template';
 import {labelGroupTruncatedFixture} from './label-group-truncated';
+import {avatarstackFixture} from './avatarstack';
+import {avatarstackChildrenTemplateFixture} from './avatarstack-children-template';
+import {avatarstackAlignrightFixture} from './avatarstack-alignright';
+import {avatarstackVariantFixture} from './avatarstack-variant';
+import {avatarstackShapeFixture} from './avatarstack-shape';
+import {avatarstackSizeFixture} from './avatarstack-size';
+import {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
+import {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -290,6 +298,14 @@ export {stackitemShrinkFixture} from './stackitem-shrink';
 export {labelGroupFixture} from './label-group';
 export {labelGroupChildrenTemplateFixture} from './label-group-children-template';
 export {labelGroupTruncatedFixture} from './label-group-truncated';
+export {avatarstackFixture} from './avatarstack';
+export {avatarstackChildrenTemplateFixture} from './avatarstack-children-template';
+export {avatarstackAlignrightFixture} from './avatarstack-alignright';
+export {avatarstackVariantFixture} from './avatarstack-variant';
+export {avatarstackShapeFixture} from './avatarstack-shape';
+export {avatarstackSizeFixture} from './avatarstack-size';
+export {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
+export {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -436,6 +452,14 @@ export const FIXTURES: Fixture[] = [
   labelGroupFixture,
   labelGroupChildrenTemplateFixture,
   labelGroupTruncatedFixture,
+  avatarstackFixture,
+  avatarstackChildrenTemplateFixture,
+  avatarstackAlignrightFixture,
+  avatarstackVariantFixture,
+  avatarstackShapeFixture,
+  avatarstackSizeFixture,
+  avatarstackSizeResponsiveFixture,
+  avatarstackDisableexpandFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
