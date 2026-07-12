@@ -92,6 +92,10 @@ import {textareaCharacterLimitFixture} from '../src/fixtures/textarea-character-
 import {textareaMinHeightFixture} from '../src/fixtures/textarea-min-height';
 import {skeletonboxFixture} from '../src/fixtures/skeletonbox';
 import {skeletonboxSizedFixture} from '../src/fixtures/skeletonbox-sized';
+import {truncateFixture} from '../src/fixtures/truncate';
+import {truncateBoundFixture} from '../src/fixtures/truncate-bound';
+import {truncateMaxwidthFixture} from '../src/fixtures/truncate-maxwidth';
+import {truncateAsFixture} from '../src/fixtures/truncate-as';
 
 afterEach(cleanup);
 
@@ -716,5 +720,36 @@ describe('fixture rendering', () => {
     expect(box).toBeInTheDocument();
     expect(box.style.height).toBe('80px');
     expect(box.style.width).toBe('200px');
+  });
+
+  it('renders a literal Truncate carrying its full text as the title attribute', () => {
+    renderFixture(truncateFixture);
+    const el = screen.getByText('src/components/navigation/PrimaryNavigationMenu.tsx');
+    expect(el).toBeInTheDocument();
+    // title is the accessibility channel (full untruncated text); assert it on the element.
+    expect(el).toHaveAttribute('title', 'src/components/navigation/PrimaryNavigationMenu.tsx');
+  });
+
+  it('renders a path-bound Truncate from the data model, on both text and title', () => {
+    renderFixture(truncateBoundFixture);
+    const el = screen.getByText('feature/add-visual-regression-baselines-for-truncate');
+    expect(el).toBeInTheDocument();
+    expect(el).toHaveAttribute('title', 'feature/add-visual-regression-baselines-for-truncate');
+  });
+
+  it('honors the Truncate maxWidth through the renderer', () => {
+    const {container} = renderFixture(truncateMaxwidthFixture);
+    const el = container.querySelector<HTMLElement>('[class*="Truncate"]')!;
+    expect(el).toBeInTheDocument();
+    expect(el.style.getPropertyValue('--truncate-max-width')).toBe('300px');
+  });
+
+  it('honors the Truncate as enum through the renderer', () => {
+    const {container} = renderFixture(truncateAsFixture);
+    // one surface per ['div','span','p']; assert the set of rendered host elements.
+    const tags = [...container.querySelectorAll('[class*="Truncate"]')]
+      .map(el => el.tagName)
+      .sort();
+    expect(tags).toEqual(['DIV', 'P', 'SPAN']);
   });
 });

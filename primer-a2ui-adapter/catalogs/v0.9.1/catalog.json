@@ -1322,6 +1322,46 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "Truncate": {
+      "type": "object",
+      "description": "Shortens overflowing text with an ellipsis, constrained to a maximum width.",
+      "properties": {
+        "component": {
+          "const": "Truncate"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The text content to truncate."
+        },
+        "title": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The full untruncated text, exposed to assistive technologies and shown when the text is hovered."
+        },
+        "inline": {
+          "type": "boolean",
+          "default": false,
+          "description": "Displays the text inline (as inline-block, top-aligned) so it can sit alongside other content."
+        },
+        "expandable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Reveals the full text when hovered."
+        },
+        "maxWidth": {
+          "type": "string",
+          "default": "125px",
+          "description": "The maximum width of the text before it truncates; any CSS width value."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["div", "span", "p"],
+          "default": "div",
+          "description": "The HTML element used to render the truncated text; the choices are display-equivalent."
+        }
+      },
+      "required": ["component", "text", "title"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1413,6 +1453,9 @@
         },
         {
           "$ref": "#/components/SkeletonBox"
+        },
+        {
+          "$ref": "#/components/Truncate"
         }
       ]
     },

@@ -107,6 +107,10 @@ const FIXTURE_NAMES = [
   'textarea-min-height',
   'skeletonbox',
   'skeletonbox-sized',
+  'truncate',
+  'truncate-bound',
+  'truncate-maxwidth',
+  'truncate-as',
 ];
 
 for (const name of FIXTURE_NAMES) {

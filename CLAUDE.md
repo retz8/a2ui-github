@@ -39,6 +39,7 @@ This project targets a single protocol version at a time.
 ## 3. Conventions
 
 - **No guessed run commands:** Consult the local `README.md` of each subproject for build/run/test steps rather than assuming a sequence.
+- **No disposition popups — always plain chat.** Never use the `AskUserQuestion` tool to present dispositions, decisions, or choices. Lay out the options, tradeoffs, and a recommendation as plain chat text so the user keeps full flexibility to respond however they want.
 
 Catalog-authoring and renderer-design conventions live in the `a2ui-sdk-design` skill (read per the top instruction before that work).
 
