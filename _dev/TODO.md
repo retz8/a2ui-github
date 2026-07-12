@@ -85,9 +85,9 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 ### L1 — single-type containers / simple slotters
 - [x] **6.23** `Stack` + `Stack.Item` (sibling per-child sizing wrapper, shipped together)
 - [x] **6.24** `Flash` — dropped, not shipped: avoid-flagged (deprecated in favor of `Banner`, an experimental-entry). Same rationale as the §2 exclusions; a callout leaf grows lazily (as `Banner`) if a later flow needs one.
-- [ ] **6.25** `Details`
-- [ ] **6.26** `LabelGroup`
-- [ ] **6.27** `AvatarStack`
+- [WIP] **6.25** `Details`
+- [WIP] **6.26** `LabelGroup` (#49)
+- [WIP] **6.27** `AvatarStack`
 - [ ] **6.28** `ButtonGroup`
 - [ ] **6.29** `IconButton`
 - [ ] **6.30** `TextInput`
