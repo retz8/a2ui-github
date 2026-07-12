@@ -1395,6 +1395,205 @@
       },
       "required": ["component", "keys"],
       "unevaluatedProperties": false
+    },
+    "Stack": {
+      "type": "object",
+      "description": "Arranges child components in a row or column with configurable spacing, alignment, wrapping, and padding.",
+      "properties": {
+        "component": {
+          "const": "Stack"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The components arranged inside the stack."
+        },
+        "direction": {
+          "description": "The axis children are laid out along.",
+          "default": "vertical",
+          "oneOf": [
+            {"type": "string", "enum": ["horizontal", "vertical"]},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "string", "enum": ["horizontal", "vertical"]},
+                "regular": {"type": "string", "enum": ["horizontal", "vertical"]},
+                "wide": {"type": "string", "enum": ["horizontal", "vertical"]}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "gap": {
+          "description": "The spacing between children.",
+          "oneOf": [
+            {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+                "regular": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+                "wide": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "align": {
+          "description": "Alignment of children across the layout axis.",
+          "default": "stretch",
+          "oneOf": [
+            {"type": "string", "enum": ["stretch", "start", "center", "end", "baseline"]},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "string", "enum": ["stretch", "start", "center", "end", "baseline"]},
+                "regular": {"type": "string", "enum": ["stretch", "start", "center", "end", "baseline"]},
+                "wide": {"type": "string", "enum": ["stretch", "start", "center", "end", "baseline"]}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "justify": {
+          "description": "Distribution of children along the layout axis.",
+          "default": "start",
+          "oneOf": [
+            {"type": "string", "enum": ["start", "center", "end", "space-between", "space-evenly"]},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "string", "enum": ["start", "center", "end", "space-between", "space-evenly"]},
+                "regular": {"type": "string", "enum": ["start", "center", "end", "space-between", "space-evenly"]},
+                "wide": {"type": "string", "enum": ["start", "center", "end", "space-between", "space-evenly"]}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "wrap": {
+          "description": "Whether children are forced onto one line or may wrap onto multiple lines.",
+          "default": "nowrap",
+          "oneOf": [
+            {"type": "string", "enum": ["wrap", "nowrap"]},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "string", "enum": ["wrap", "nowrap"]},
+                "regular": {"type": "string", "enum": ["wrap", "nowrap"]},
+                "wide": {"type": "string", "enum": ["wrap", "nowrap"]}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "padding": {
+          "description": "Padding inside the container on all sides.",
+          "default": "none",
+          "oneOf": [
+            {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+                "regular": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+                "wide": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "paddingBlock": {
+          "description": "Vertical padding; overrides the vertical axis of `padding` when both are set.",
+          "oneOf": [
+            {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+                "regular": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+                "wide": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "paddingInline": {
+          "description": "Horizontal padding; overrides the horizontal axis of `padding` when both are set.",
+          "oneOf": [
+            {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+                "regular": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+                "wide": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "as": {
+          "type": "string",
+          "enum": ["div", "span", "section", "nav", "article", "aside", "header", "footer", "main", "ul", "ol"],
+          "default": "div",
+          "description": "The HTML element used to render the container; the choices are display-equivalent flex containers that differ only in semantic/landmark identity."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "StackItem": {
+      "type": "object",
+      "description": "Wraps a single child within a stack to control whether it grows to fill or shrinks to fit the available space.",
+      "properties": {
+        "component": {
+          "const": "StackItem"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The components wrapped by this item."
+        },
+        "grow": {
+          "description": "Whether the item expands to fill available space along the stack axis.",
+          "default": false,
+          "oneOf": [
+            {"type": "boolean"},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "boolean"},
+                "regular": {"type": "boolean"},
+                "wide": {"type": "boolean"}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "shrink": {
+          "description": "Whether the item shrinks to fit the available space along the stack axis.",
+          "default": true,
+          "oneOf": [
+            {"type": "boolean"},
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {"type": "boolean"},
+                "regular": {"type": "boolean"},
+                "wide": {"type": "boolean"}
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "as": {
+          "type": "string",
+          "enum": ["div", "span", "section", "nav", "article", "aside", "header", "footer", "main", "ul", "ol", "li"],
+          "default": "div",
+          "description": "The HTML element used to render the item wrapper; `li` is included because a stack item is the natural list element."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1492,6 +1691,12 @@
         },
         {
           "$ref": "#/components/KeybindingHint"
+        },
+        {
+          "$ref": "#/components/Stack"
+        },
+        {
+          "$ref": "#/components/StackItem"
         }
       ]
     },

@@ -125,6 +125,20 @@ import {keybindinghintBoundFixture} from './keybindinghint-bound';
 import {keybindinghintFormatsFixture} from './keybindinghint-formats';
 import {keybindinghintVariantsFixture} from './keybindinghint-variants';
 import {keybindinghintSizesFixture} from './keybindinghint-sizes';
+import {stackFixture} from './stack';
+import {stackChildrenTemplateFixture} from './stack-children-template';
+import {stackDirectionFixture} from './stack-direction';
+import {stackGapFixture} from './stack-gap';
+import {stackAlignFixture} from './stack-align';
+import {stackJustifyFixture} from './stack-justify';
+import {stackWrapFixture} from './stack-wrap';
+import {stackPaddingFixture} from './stack-padding';
+import {stackPaddingblockFixture} from './stack-paddingblock';
+import {stackPaddinginlineFixture} from './stack-paddinginline';
+import {stackResponsiveFixture} from './stack-responsive';
+import {stackitemFixture} from './stackitem';
+import {stackitemGrowFixture} from './stackitem-grow';
+import {stackitemShrinkFixture} from './stackitem-shrink';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -256,6 +270,20 @@ export {keybindinghintBoundFixture} from './keybindinghint-bound';
 export {keybindinghintFormatsFixture} from './keybindinghint-formats';
 export {keybindinghintVariantsFixture} from './keybindinghint-variants';
 export {keybindinghintSizesFixture} from './keybindinghint-sizes';
+export {stackFixture} from './stack';
+export {stackChildrenTemplateFixture} from './stack-children-template';
+export {stackDirectionFixture} from './stack-direction';
+export {stackGapFixture} from './stack-gap';
+export {stackAlignFixture} from './stack-align';
+export {stackJustifyFixture} from './stack-justify';
+export {stackWrapFixture} from './stack-wrap';
+export {stackPaddingFixture} from './stack-padding';
+export {stackPaddingblockFixture} from './stack-paddingblock';
+export {stackPaddinginlineFixture} from './stack-paddinginline';
+export {stackResponsiveFixture} from './stack-responsive';
+export {stackitemFixture} from './stackitem';
+export {stackitemGrowFixture} from './stackitem-grow';
+export {stackitemShrinkFixture} from './stackitem-shrink';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -385,6 +413,20 @@ export const FIXTURES: Fixture[] = [
   keybindinghintFormatsFixture,
   keybindinghintVariantsFixture,
   keybindinghintSizesFixture,
+  stackFixture,
+  stackChildrenTemplateFixture,
+  stackDirectionFixture,
+  stackGapFixture,
+  stackAlignFixture,
+  stackJustifyFixture,
+  stackWrapFixture,
+  stackPaddingFixture,
+  stackPaddingblockFixture,
+  stackPaddinginlineFixture,
+  stackResponsiveFixture,
+  stackitemFixture,
+  stackitemGrowFixture,
+  stackitemShrinkFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

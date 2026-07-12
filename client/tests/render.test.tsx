@@ -101,6 +101,12 @@ import {keybindinghintBoundFixture} from '../src/fixtures/keybindinghint-bound';
 import {keybindinghintFormatsFixture} from '../src/fixtures/keybindinghint-formats';
 import {keybindinghintVariantsFixture} from '../src/fixtures/keybindinghint-variants';
 import {keybindinghintSizesFixture} from '../src/fixtures/keybindinghint-sizes';
+import {stackFixture} from '../src/fixtures/stack';
+import {stackChildrenTemplateFixture} from '../src/fixtures/stack-children-template';
+import {stackResponsiveFixture} from '../src/fixtures/stack-responsive';
+import {stackitemFixture} from '../src/fixtures/stackitem';
+import {stackitemGrowFixture} from '../src/fixtures/stackitem-grow';
+import {stackitemShrinkFixture} from '../src/fixtures/stackitem-shrink';
 
 afterEach(cleanup);
 
@@ -798,5 +804,47 @@ describe('fixture rendering', () => {
     expect(screen.getAllByTestId('keybinding-hint')).toHaveLength(2);
     // the small value stamps a size class onto the chord.
     expect(container.querySelector('[class*="ChordSmall"]')).toBeInTheDocument();
+  });
+});
+
+describe('Stack (container) — integration through the renderer', () => {
+  it('renders a static ChildList of children', () => {
+    renderFixture(stackFixture);
+    expect(screen.getByRole('button', {name: 'One'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Two'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Three'})).toBeInTheDocument();
+  });
+
+  it('expands a dynamic-template ChildList over the bound array (one child per item, own scope)', () => {
+    renderFixture(stackChildrenTemplateFixture);
+    expect(screen.getByRole('button', {name: 'Alpha'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Beta'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Gamma'})).toBeInTheDocument();
+  });
+
+  it('forwards a responsive direction map as Primer responsive data attributes', () => {
+    const {container} = renderFixture(stackResponsiveFixture);
+    const stack = container.querySelector('[data-direction-narrow]');
+    expect(stack).not.toBeNull();
+    expect(stack).toHaveAttribute('data-direction-narrow', 'vertical');
+    expect(stack).toHaveAttribute('data-direction-regular', 'horizontal');
+  });
+});
+
+describe('StackItem (sizing wrapper) — integration through the renderer', () => {
+  it('renders items wrapping their children', () => {
+    renderFixture(stackitemFixture);
+    expect(screen.getByRole('button', {name: 'One'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Three'})).toBeInTheDocument();
+  });
+
+  it('honors grow on an item (data-grow)', () => {
+    const {container} = renderFixture(stackitemGrowFixture);
+    expect(container.querySelector('[data-grow="true"]')).not.toBeNull();
+  });
+
+  it('honors shrink on an item (data-shrink)', () => {
+    const {container} = renderFixture(stackitemShrinkFixture);
+    expect(container.querySelector('[data-shrink="false"]')).not.toBeNull();
   });
 });

@@ -116,6 +116,20 @@ const FIXTURE_NAMES = [
   'keybindinghint-formats',
   'keybindinghint-variants',
   'keybindinghint-sizes',
+  'stack',
+  'stack-children-template',
+  'stack-direction',
+  'stack-gap',
+  'stack-align',
+  'stack-justify',
+  'stack-wrap',
+  'stack-padding',
+  'stack-paddingblock',
+  'stack-paddinginline',
+  'stack-responsive',
+  'stackitem',
+  'stackitem-grow',
+  'stackitem-shrink',
 ];
 
 for (const name of FIXTURE_NAMES) {
