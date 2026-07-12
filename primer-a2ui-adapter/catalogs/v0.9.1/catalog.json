@@ -1823,6 +1823,152 @@
       },
       "required": ["component", "pageCount", "currentPage"],
       "unevaluatedProperties": false
+    },
+    "SegmentedControl": {
+      "type": "object",
+      "description": "A set of buttons where exactly one is selected at a time, used to switch between related views or modes in a compact space.",
+      "properties": {
+        "component": {
+          "const": "SegmentedControl"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The segments contained in the control."
+        },
+        "selectedIndex": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+          "description": "The zero-based index of the currently-selected segment; updated as the user selects."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An optional effect performed when the selection changes — a local function or a server event."
+        },
+        "fullWidth": {
+          "description": "Whether the control stretches to fill its container's width.",
+          "default": false,
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium"],
+          "description": "The size of the segments."
+        },
+        "variant": {
+          "description": "How the control adapts in tight spaces, per viewport: hide the labels, or collapse the whole control into a dropdown.",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["default"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["default", "hideLabels", "dropdown"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["default", "hideLabels", "dropdown"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["default", "hideLabels", "dropdown"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible label for the group of segments."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "SegmentedControlButton": {
+      "type": "object",
+      "description": "A single text-labeled segment within a segmented control.",
+      "properties": {
+        "component": {
+          "const": "SegmentedControlButton"
+        },
+        "label": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The visible text label of the segment."
+        },
+        "leadingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "An icon displayed before the label."
+        },
+        "count": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "An optional count displayed after the label."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the segment is disabled and cannot be selected."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for assistive technologies, beyond the visible label."
+        }
+      },
+      "required": ["component", "label"],
+      "unevaluatedProperties": false
+    },
+    "SegmentedControlIconButton": {
+      "type": "object",
+      "description": "A single icon-only segment within a segmented control.",
+      "properties": {
+        "component": {
+          "const": "SegmentedControlIconButton"
+        },
+        "icon": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon representing the segment."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible label for the icon-only segment; must include a label (it renders no visible text)."
+        },
+        "description": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Supplementary text shown in a tooltip in place of the label."
+        },
+        "tooltipDirection": {
+          "type": "string",
+          "enum": ["nw", "n", "ne", "e", "se", "s", "sw", "w"],
+          "description": "The direction the tooltip opens relative to the segment."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the segment is disabled and cannot be selected."
+        }
+      },
+      "required": ["component", "icon", "accessibility"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1941,6 +2087,15 @@
         },
         {
           "$ref": "#/components/Pagination"
+        },
+        {
+          "$ref": "#/components/SegmentedControl"
+        },
+        {
+          "$ref": "#/components/SegmentedControlButton"
+        },
+        {
+          "$ref": "#/components/SegmentedControlIconButton"
         }
       ]
     },

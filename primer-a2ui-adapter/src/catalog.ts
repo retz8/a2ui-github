@@ -30,6 +30,9 @@ import {LabelGroupComponent} from './components/label-group';
 import {AvatarStackComponent} from './components/avatarstack';
 import {ButtonGroupComponent} from './components/buttongroup';
 import {PaginationComponent} from './components/pagination';
+import {SegmentedControlComponent} from './components/segmentedcontrol';
+import {SegmentedControlButtonComponent} from './components/segmentedcontrolbutton';
+import {SegmentedControlIconButtonComponent} from './components/segmentedcontroliconbutton';
 import {consoleLog} from './functions/console-log';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
@@ -65,6 +68,9 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     AvatarStackComponent,
     ButtonGroupComponent,
     PaginationComponent,
+    SegmentedControlComponent,
+    SegmentedControlButtonComponent,
+    SegmentedControlIconButtonComponent,
   ],
   [consoleLog],
 );

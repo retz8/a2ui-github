@@ -15,6 +15,9 @@ import {radioFnFixture} from '../src/fixtures/radio-fn';
 import {radioEventFixture} from '../src/fixtures/radio-event';
 import {toggleswitchFnFixture} from '../src/fixtures/toggleswitch-fn';
 import {toggleswitchEventFixture} from '../src/fixtures/toggleswitch-event';
+import {segmentedcontrolFnFixture} from '../src/fixtures/segmentedcontrol-fn';
+import {segmentedcontrolEventFixture} from '../src/fixtures/segmentedcontrol-event';
+import {segmentedcontrolBoundFixture} from '../src/fixtures/segmentedcontrol-bound';
 
 afterEach(cleanup);
 
@@ -220,5 +223,54 @@ describe('action paths', () => {
         sourceComponentId: 'toggleswitch',
       }),
     );
+  });
+
+  it('path-1 (SegmentedControl): selecting a segment runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(segmentedcontrolFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Raw'}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'segment changed');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('path-2 (SegmentedControl): selecting a segment dispatches the event from the container', async () => {
+    const handler = vi.fn();
+    renderFixture(segmentedcontrolEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Blame'}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'change',
+        surfaceId: 'segmentedcontrol-event',
+        sourceComponentId: 'control',
+      }),
+    );
+  });
+
+  it('two-way write-back: clicking a segment writes selectedIndex to the bound path and re-renders selected', async () => {
+    const handler = vi.fn();
+    renderFixture(segmentedcontrolBoundFixture, {actionHandler: handler});
+
+    // /view starts 0 -> Preview active.
+    expect(screen.getByRole('button', {name: 'Preview'})).toHaveAttribute('aria-current', 'true');
+
+    fireEvent.click(screen.getByRole('button', {name: 'Blame'}));
+
+    // The binder's auto-generated setSelectedIndex wrote 2 back to /view; the control re-renders
+    // from the updated data model. No client->server action is dispatched for a data-model write.
+    await vi.waitFor(() =>
+      expect(screen.getByRole('button', {name: 'Blame'})).toHaveAttribute('aria-current', 'true'),
+    );
+    expect(screen.getByRole('button', {name: 'Preview'})).not.toHaveAttribute(
+      'aria-current',
+      'true',
+    );
+    expect(handler).not.toHaveBeenCalled();
   });
 });

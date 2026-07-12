@@ -145,6 +145,34 @@ def test_approve_writes_approved_then_swaps_icon_with_surface_echoed():
     ]
 
 
+CHANGE = {
+    "name": "change",
+    "surfaceId": "segmentedcontrol-event",
+    "sourceComponentId": "control",
+    "context": {"selectedIndex": 2},
+}
+
+
+def test_change_confirms_selected_index_then_swaps_status_with_surface_echoed():
+    msgs = build_response(CHANGE)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "segmentedcontrol-event"
+    assert dm["path"] == "/view"
+    assert dm["value"] == 2
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "segmentedcontrol-event"
+    assert uc["components"] == [
+        {
+            "id": "status",
+            "component": "Text",
+            "text": "✅ Now showing: Blame — server received index 2",
+        }
+    ]
+
+
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1

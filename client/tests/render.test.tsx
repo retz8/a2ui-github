@@ -137,6 +137,18 @@ import {paginationSurroundingFixture} from '../src/fixtures/pagination-surroundi
 import {paginationControlledFixture} from '../src/fixtures/pagination-controlled';
 import {paginationHrefFixture} from '../src/fixtures/pagination-href';
 import {paginationAccessibilityFixture} from '../src/fixtures/pagination-accessibility';
+import {segmentedcontrolFixture} from '../src/fixtures/segmentedcontrol';
+import {segmentedcontrolChildrenTemplateFixture} from '../src/fixtures/segmentedcontrol-children-template';
+import {segmentedcontrolSelectedFixture} from '../src/fixtures/segmentedcontrol-selected';
+import {segmentedcontrolFullwidthFixture} from '../src/fixtures/segmentedcontrol-fullwidth';
+import {segmentedcontrolSizeFixture} from '../src/fixtures/segmentedcontrol-size';
+import {segmentedcontrolVariantFixture} from '../src/fixtures/segmentedcontrol-variant';
+import {segmentedcontrolbuttonFixture} from '../src/fixtures/segmentedcontrolbutton';
+import {segmentedcontrolbuttonLeadingvisualFixture} from '../src/fixtures/segmentedcontrolbutton-leadingvisual';
+import {segmentedcontrolbuttonCountFixture} from '../src/fixtures/segmentedcontrolbutton-count';
+import {segmentedcontrolbuttonDisabledFixture} from '../src/fixtures/segmentedcontrolbutton-disabled';
+import {segmentedcontroliconbuttonFixture} from '../src/fixtures/segmentedcontroliconbutton';
+import {segmentedcontroliconbuttonDisabledFixture} from '../src/fixtures/segmentedcontroliconbutton-disabled';
 
 afterEach(cleanup);
 
@@ -1124,5 +1136,105 @@ describe('IconButton — integration through the renderer', () => {
     expect(
       container.querySelector('[data-component="Tooltip.KeybindingHintContainer"]'),
     ).not.toBeNull();
+  });
+});
+
+describe('SegmentedControl (container) — integration through the renderer', () => {
+  it('renders a static ChildList of text segments; the selected one gets aria-current', () => {
+    renderFixture(segmentedcontrolFixture);
+    expect(screen.getByRole('button', {name: 'Preview'})).toHaveAttribute('aria-current', 'true');
+    expect(screen.getByRole('button', {name: 'Raw'})).not.toHaveAttribute('aria-current', 'true');
+    expect(screen.getByRole('button', {name: 'Blame'})).toBeInTheDocument();
+  });
+
+  it('expands a dynamic-template ChildList over the bound array (one segment per item, own scope)', () => {
+    renderFixture(segmentedcontrolChildrenTemplateFixture);
+    expect(screen.getByRole('button', {name: 'Preview'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Raw'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Blame'})).toBeInTheDocument();
+  });
+
+  it('honors a literal non-zero selectedIndex through the renderer', () => {
+    renderFixture(segmentedcontrolSelectedFixture);
+    expect(screen.getByRole('button', {name: 'Raw'})).toHaveAttribute('aria-current', 'true');
+    expect(screen.getByRole('button', {name: 'Preview'})).not.toHaveAttribute(
+      'aria-current',
+      'true',
+    );
+  });
+
+  it('forwards fullWidth as a Primer data attribute', () => {
+    const {container} = renderFixture(segmentedcontrolFullwidthFixture);
+    expect(container.querySelector('[data-full-width="true"]')).not.toBeNull();
+  });
+
+  it('honors the size enum through the renderer (one surface per value)', () => {
+    const {container} = renderFixture(segmentedcontrolSizeFixture);
+    const sizes = [...container.querySelectorAll('[data-size]')]
+      .map(el => el.getAttribute('data-size'))
+      .sort();
+    expect(sizes).toEqual(['medium', 'small']);
+  });
+
+  it('forwards a responsive variant map as per-viewport data attributes', () => {
+    const {container} = renderFixture(segmentedcontrolVariantFixture);
+    const el = container.querySelector('[data-variant-narrow]');
+    expect(el).not.toBeNull();
+    expect(el).toHaveAttribute('data-variant-narrow', 'hideLabels');
+    expect(el).toHaveAttribute('data-variant-regular', 'default');
+  });
+
+  it('applies the accessibility label as aria-label on the group container', () => {
+    renderFixture(segmentedcontrolFixture);
+    expect(screen.getByRole('list', {name: 'File view'})).toBeInTheDocument();
+  });
+});
+
+describe('SegmentedControl.Button (text segment) — integration through the renderer', () => {
+  it('renders literal segment labels inside the control', () => {
+    renderFixture(segmentedcontrolbuttonFixture);
+    expect(screen.getByRole('button', {name: 'Preview'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Raw'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Blame'})).toBeInTheDocument();
+  });
+
+  it('renders a leadingVisual Icon before each label', () => {
+    const {container} = renderFixture(segmentedcontrolbuttonLeadingvisualFixture);
+    expect(screen.getByRole('button', {name: /Preview/})).toBeInTheDocument();
+    // each segment builds its Icon child (an octicon svg).
+    expect(container.querySelectorAll('svg.octicon').length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('renders a trailing count on each segment', () => {
+    renderFixture(segmentedcontrolbuttonCountFixture);
+    expect(screen.getByText('8')).toBeInTheDocument();
+    expect(screen.getByText('24')).toBeInTheDocument();
+    expect(screen.getByText('3')).toBeInTheDocument();
+  });
+
+  it('honors a disabled segment through the renderer', () => {
+    renderFixture(segmentedcontrolbuttonDisabledFixture);
+    expect(screen.getByRole('button', {name: 'Raw'})).toHaveAttribute('aria-disabled', 'true');
+    expect(screen.getByRole('button', {name: 'Preview'})).not.toHaveAttribute('aria-disabled');
+  });
+});
+
+describe('SegmentedControl.IconButton (icon segment) — integration through the renderer', () => {
+  it('renders three icon-only segments carrying their required accessible labels', () => {
+    const {container} = renderFixture(segmentedcontroliconbuttonFixture);
+    const buttons = screen.getAllByRole('button');
+    expect(buttons).toHaveLength(3);
+    // the required aria-label is wired for assistive tech (via the tooltip label channel).
+    expect(container.textContent).toContain('Zoom');
+    expect(container.textContent).toContain('List');
+    expect(container.textContent).toContain('Browser');
+  });
+
+  it('honors a disabled icon segment through the renderer', () => {
+    renderFixture(segmentedcontroliconbuttonDisabledFixture);
+    const disabled = screen
+      .getAllByRole('button')
+      .filter(b => b.getAttribute('aria-disabled') === 'true');
+    expect(disabled).toHaveLength(1);
   });
 });

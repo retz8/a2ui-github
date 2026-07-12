@@ -1,0 +1,18 @@
+[
+  {
+    "version": "v0.9",
+    "updateDataModel": {"path": "/view", "value": 2}
+  },
+  {
+    "version": "v0.9",
+    "updateComponents": {
+      "components": [
+        {
+          "id": "status",
+          "component": "Text",
+          "text": "✅ Now showing: Blame — server received index 2"
+        }
+      ]
+    }
+  }
+]

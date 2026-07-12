@@ -171,6 +171,21 @@ import {paginationSurroundingFixture} from './pagination-surrounding';
 import {paginationControlledFixture} from './pagination-controlled';
 import {paginationHrefFixture} from './pagination-href';
 import {paginationAccessibilityFixture} from './pagination-accessibility';
+import {segmentedcontrolFixture} from './segmentedcontrol';
+import {segmentedcontrolChildrenTemplateFixture} from './segmentedcontrol-children-template';
+import {segmentedcontrolSelectedFixture} from './segmentedcontrol-selected';
+import {segmentedcontrolBoundFixture} from './segmentedcontrol-bound';
+import {segmentedcontrolFnFixture} from './segmentedcontrol-fn';
+import {segmentedcontrolEventFixture} from './segmentedcontrol-event';
+import {segmentedcontrolFullwidthFixture} from './segmentedcontrol-fullwidth';
+import {segmentedcontrolSizeFixture} from './segmentedcontrol-size';
+import {segmentedcontrolVariantFixture} from './segmentedcontrol-variant';
+import {segmentedcontrolbuttonFixture} from './segmentedcontrolbutton';
+import {segmentedcontrolbuttonLeadingvisualFixture} from './segmentedcontrolbutton-leadingvisual';
+import {segmentedcontrolbuttonCountFixture} from './segmentedcontrolbutton-count';
+import {segmentedcontrolbuttonDisabledFixture} from './segmentedcontrolbutton-disabled';
+import {segmentedcontroliconbuttonFixture} from './segmentedcontroliconbutton';
+import {segmentedcontroliconbuttonDisabledFixture} from './segmentedcontroliconbutton-disabled';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -348,6 +363,21 @@ export {paginationSurroundingFixture} from './pagination-surrounding';
 export {paginationControlledFixture} from './pagination-controlled';
 export {paginationHrefFixture} from './pagination-href';
 export {paginationAccessibilityFixture} from './pagination-accessibility';
+export {segmentedcontrolFixture} from './segmentedcontrol';
+export {segmentedcontrolChildrenTemplateFixture} from './segmentedcontrol-children-template';
+export {segmentedcontrolSelectedFixture} from './segmentedcontrol-selected';
+export {segmentedcontrolBoundFixture} from './segmentedcontrol-bound';
+export {segmentedcontrolFnFixture} from './segmentedcontrol-fn';
+export {segmentedcontrolEventFixture} from './segmentedcontrol-event';
+export {segmentedcontrolFullwidthFixture} from './segmentedcontrol-fullwidth';
+export {segmentedcontrolSizeFixture} from './segmentedcontrol-size';
+export {segmentedcontrolVariantFixture} from './segmentedcontrol-variant';
+export {segmentedcontrolbuttonFixture} from './segmentedcontrolbutton';
+export {segmentedcontrolbuttonLeadingvisualFixture} from './segmentedcontrolbutton-leadingvisual';
+export {segmentedcontrolbuttonCountFixture} from './segmentedcontrolbutton-count';
+export {segmentedcontrolbuttonDisabledFixture} from './segmentedcontrolbutton-disabled';
+export {segmentedcontroliconbuttonFixture} from './segmentedcontroliconbutton';
+export {segmentedcontroliconbuttonDisabledFixture} from './segmentedcontroliconbutton-disabled';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -523,6 +553,21 @@ export const FIXTURES: Fixture[] = [
   paginationControlledFixture,
   paginationHrefFixture,
   paginationAccessibilityFixture,
+  segmentedcontrolFixture,
+  segmentedcontrolChildrenTemplateFixture,
+  segmentedcontrolSelectedFixture,
+  segmentedcontrolBoundFixture,
+  segmentedcontrolFnFixture,
+  segmentedcontrolEventFixture,
+  segmentedcontrolFullwidthFixture,
+  segmentedcontrolSizeFixture,
+  segmentedcontrolVariantFixture,
+  segmentedcontrolbuttonFixture,
+  segmentedcontrolbuttonLeadingvisualFixture,
+  segmentedcontrolbuttonCountFixture,
+  segmentedcontrolbuttonDisabledFixture,
+  segmentedcontroliconbuttonFixture,
+  segmentedcontroliconbuttonDisabledFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
