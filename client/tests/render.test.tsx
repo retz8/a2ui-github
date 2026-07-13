@@ -1,6 +1,8 @@
 import {describe, it, expect, afterEach} from 'vitest';
 import {screen, cleanup, waitFor, fireEvent} from '@testing-library/react';
+import {CATALOG_ID} from 'primer-a2ui-adapter';
 import {renderFixture} from './helpers';
+import type {Fixture} from '../src/fixtures';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
@@ -1414,6 +1416,36 @@ describe('TextInput — integration through the renderer', () => {
     const boxes = screen.getAllByRole('textbox');
     const invalidCount = boxes.filter(el => el.getAttribute('aria-invalid') === 'true').length;
     expect(invalidCount).toBe(1);
+  });
+
+  it('resolves a path-bound validationStatus from the data model (the agent-driven coupling)', () => {
+    // validationStatus is a bindable enum: a {path} reference resolves and subscribes through the
+    // binder (the coupling textinput-action.md relies on — an agent writes /validation → the field
+    // reflects it). Here /validation starts 'error' -> the single input reports aria-invalid="true".
+    const boundValidation: Fixture = {
+      name: 'textinput-validation-bound-inline',
+      messages: [
+        {version: 'v0.9', createSurface: {surfaceId: 's', catalogId: CATALOG_ID}},
+        {
+          version: 'v0.9',
+          updateComponents: {
+            surfaceId: 's',
+            components: [
+              {
+                id: 'root',
+                component: 'TextInput',
+                value: 'x',
+                validationStatus: {path: '/validation'},
+                accessibility: {label: 'Field'},
+              },
+            ],
+          },
+        },
+        {version: 'v0.9', updateDataModel: {surfaceId: 's', path: '/', value: {validation: 'error'}}},
+      ],
+    };
+    renderFixture(boundValidation);
+    expect(screen.getByRole('textbox')).toHaveAttribute('aria-invalid', 'true');
   });
 
   it('sets the input type per enum value through the renderer', () => {

@@ -1398,9 +1398,11 @@
           "description": "Whether a value is required; conveyed to assistive technologies."
         },
         "validationStatus": {
-          "type": "string",
-          "enum": ["error", "success"],
-          "description": "Styles the input to reflect the current validation state."
+          "oneOf": [
+            {"type": "string", "enum": ["error", "success"]},
+            {"$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"}
+          ],
+          "description": "Styles the input to reflect the current validation state. Bindable to a data-model path so an agent can drive the validation state."
         },
         "type": {
           "type": "string",

@@ -13,9 +13,11 @@ import {CommonSchemas} from '@a2ui/web_core/v0_9';
  *   channel central to a text input) -> DynamicString.
  * - `disabled`/`loading` are bound runtime state -> DynamicBoolean.
  * - `required`/`block`/`contrast`/`monospace` are fixed configuration -> plain z.boolean().
- * - `validationStatus`/`type`/`loaderPosition`/`size` are Primer enums lifted verbatim -> local
- *   z.enum (there is no DynamicEnum). Defaults (`type: 'text'`, `loaderPosition: 'auto'`) surface
- *   only in catalog.json, not as .default().
+ * - `validationStatus` is a bindable enum: an agent can drive the validation state through the
+ *   data model, so it is a union of the `['error','success']` enum + DataBinding (there is no
+ *   DynamicEnum). `type`/`loaderPosition`/`size` are Primer enums lifted verbatim -> local
+ *   z.enum. Defaults (`type: 'text'`, `loaderPosition: 'auto'`) surface only in catalog.json,
+ *   not as .default().
  * - `loaderText` is fixed screen-reader configuration -> plain z.string(); `characterLimit` is
  *   fixed sizing configuration -> plain z.number().
  * - `leadingVisual`/`trailingVisual`/`trailingAction` are Primer's element-typed slots; the
@@ -39,7 +41,11 @@ export const TextInputApi = {
       placeholder: CommonSchemas.DynamicString.optional(),
       disabled: CommonSchemas.DynamicBoolean.optional(),
       required: z.boolean().optional(),
-      validationStatus: z.enum(['error', 'success']).optional(),
+      // Bindable enum: a literal 'error'/'success' or a DataBinding {path} the binder resolves
+      // and subscribes to (there is no DynamicEnum, so this is a union of the enum + DataBinding).
+      // Lets an agent drive the validation state through the data model (e.g. a search round-trip
+      // writing /validation → 'success' turns the field green).
+      validationStatus: z.union([z.enum(['error', 'success']), CommonSchemas.DataBinding]).optional(),
       type: z.enum(['text', 'password', 'email', 'number', 'search', 'tel', 'url']).optional(),
       loading: CommonSchemas.DynamicBoolean.optional(),
       loaderPosition: z.enum(['auto', 'leading', 'trailing']).optional(),

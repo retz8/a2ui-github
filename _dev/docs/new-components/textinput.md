@@ -36,7 +36,7 @@ event's `context` (e.g. a submit button).
 | `placeholder` | carry | no | `DynamicString` | Hint text shown while the input is empty. |
 | `disabled` | carry | no | `DynamicBoolean` | Whether the input is inactive and cannot be edited. |
 | `required` | carry | no | `z.boolean()` | Whether a value is required; conveyed to assistive technologies. |
-| `validationStatus` | carry | no | `z.enum(['error','success'])` | Styles the input to reflect the current validation state. |
+| `validationStatus` | carry | no | `z.union([z.enum(['error','success']), DataBinding])` | Styles the input to reflect the current validation state. Bindable: an agent can drive it through the data model (there is no `DynamicEnum`, so this is a union of the enum + `DataBinding`) — this realizes the `validationStatus ← /validation` coupling `textinput-action.md` relies on. |
 | `type` | carry | no | `z.enum(['text','password','email','number','search','tel','url']) (default: "text")` | The kind of text input; controls masking, keyboard, and input semantics. |
 | `loading` | carry | no | `DynamicBoolean` | Whether to show a loading indicator inside the input. |
 | `loaderPosition` | carry | no | `z.enum(['auto','leading','trailing']) (default: "auto")` | Where the loading indicator renders; `auto` places it trailing unless a leading visual is present. |
