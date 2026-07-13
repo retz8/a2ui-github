@@ -130,6 +130,9 @@ const FIXTURE_NAMES = [
   'stackitem',
   'stackitem-grow',
   'stackitem-shrink',
+  'details-open',
+  'details-children-template',
+  'details-clickoutside-fn',
 ];
 
 for (const name of FIXTURE_NAMES) {
