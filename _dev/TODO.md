@@ -90,7 +90,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.27** `AvatarStack` (#50)
 - [x] **6.28** `ButtonGroup` (#51)
 - [x] **6.29** `IconButton` (#53)
-- [WIP] **6.30** `TextInput` + `TextInput.Action` (sibling trailing-action button, shipped together) (#56)
+- [x] **6.30** `TextInput` + `TextInput.Action` (sibling trailing-action button, shipped together) (#56)
 - [x] **6.31** `Select` + `Select.Option` + `Select.OptGroup` (compound option children, shipped together) (#55)
 - [x] **6.32** `SegmentedControl` + `SegmentedControl.Button` + `SegmentedControl.IconButton` (compound segment children, shipped together) (#57)
 - [x] **6.33** `Pagination` (#54)
