@@ -2005,6 +2005,101 @@
       },
       "required": ["component", "summary", "open"],
       "unevaluatedProperties": false
+    },
+    "Select": {
+      "type": "object",
+      "description": "A dropdown control for choosing a single option from a predefined list.",
+      "properties": {
+        "component": {
+          "const": "Select"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The selectable options and option groups shown in the dropdown."
+        },
+        "value": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The selected option's value. Two-way bound: a user's selection writes the new value back to the bound data-model path."
+        },
+        "placeholder": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Text shown as a non-selectable leading option before any choice is made."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the control is inactive and cannot be changed."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether a selection must be made; conveyed to assistive technologies."
+        },
+        "validationStatus": {
+          "type": "string",
+          "enum": ["error", "success"],
+          "description": "Validity state conveyed to assistive technologies and shown visually (a coloured border)."
+        },
+        "block": {
+          "type": "boolean",
+          "description": "Whether the control expands to fill the container's full width."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "The control's size."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for assistive technologies — the control renders no visible label of its own."
+        }
+      },
+      "required": ["component", "value"],
+      "unevaluatedProperties": false
+    },
+    "SelectOption": {
+      "type": "object",
+      "description": "A single selectable option within a dropdown, carrying a visible label and an underlying value.",
+      "properties": {
+        "component": {
+          "const": "SelectOption"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The option's visible label."
+        },
+        "value": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The option's underlying value, matched against the select's selected value."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether this option cannot be selected."
+        }
+      },
+      "required": ["component", "text", "value"],
+      "unevaluatedProperties": false
+    },
+    "SelectOptGroup": {
+      "type": "object",
+      "description": "A labelled grouping of related options within a dropdown.",
+      "properties": {
+        "component": {
+          "const": "SelectOptGroup"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The options contained in this group."
+        },
+        "label": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The group's heading text."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether every option in this group is disabled."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -2160,6 +2255,15 @@
         },
         {
           "$ref": "#/components/Details"
+        },
+        {
+          "$ref": "#/components/Select"
+        },
+        {
+          "$ref": "#/components/SelectOption"
+        },
+        {
+          "$ref": "#/components/SelectOptGroup"
         }
       ]
     },

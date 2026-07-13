@@ -34,6 +34,9 @@ import {SegmentedControlComponent} from './components/segmentedcontrol';
 import {SegmentedControlButtonComponent} from './components/segmentedcontrolbutton';
 import {SegmentedControlIconButtonComponent} from './components/segmentedcontroliconbutton';
 import {DetailsComponent} from './components/details';
+import {SelectComponent} from './components/select';
+import {SelectOptionComponent} from './components/selectoption';
+import {SelectOptGroupComponent} from './components/selectoptgroup';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 
@@ -74,6 +77,9 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     SegmentedControlButtonComponent,
     SegmentedControlIconButtonComponent,
     DetailsComponent,
+    SelectComponent,
+    SelectOptionComponent,
+    SelectOptGroupComponent,
   ],
   [consoleLog, windowAlert],
 );
