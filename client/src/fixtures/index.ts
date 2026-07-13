@@ -186,6 +186,10 @@ import {segmentedcontrolbuttonCountFixture} from './segmentedcontrolbutton-count
 import {segmentedcontrolbuttonDisabledFixture} from './segmentedcontrolbutton-disabled';
 import {segmentedcontroliconbuttonFixture} from './segmentedcontroliconbutton';
 import {segmentedcontroliconbuttonDisabledFixture} from './segmentedcontroliconbutton-disabled';
+import {detailsOpenFixture} from './details-open';
+import {detailsChildrenTemplateFixture} from './details-children-template';
+import {detailsClickoutsideFnFixture} from './details-clickoutside-fn';
+import {detailsBoundFixture} from './details-bound';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -378,6 +382,10 @@ export {segmentedcontrolbuttonCountFixture} from './segmentedcontrolbutton-count
 export {segmentedcontrolbuttonDisabledFixture} from './segmentedcontrolbutton-disabled';
 export {segmentedcontroliconbuttonFixture} from './segmentedcontroliconbutton';
 export {segmentedcontroliconbuttonDisabledFixture} from './segmentedcontroliconbutton-disabled';
+export {detailsOpenFixture} from './details-open';
+export {detailsChildrenTemplateFixture} from './details-children-template';
+export {detailsClickoutsideFnFixture} from './details-clickoutside-fn';
+export {detailsBoundFixture} from './details-bound';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -568,6 +576,10 @@ export const FIXTURES: Fixture[] = [
   segmentedcontrolbuttonDisabledFixture,
   segmentedcontroliconbuttonFixture,
   segmentedcontroliconbuttonDisabledFixture,
+  detailsOpenFixture,
+  detailsChildrenTemplateFixture,
+  detailsClickoutsideFnFixture,
+  detailsBoundFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

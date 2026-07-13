@@ -1969,6 +1969,42 @@
       },
       "required": ["component", "icon", "accessibility"],
       "unevaluatedProperties": false
+    },
+    "Details": {
+      "type": "object",
+      "description": "A disclosure that reveals or hides a section of content behind a summary the user clicks to expand or collapse.",
+      "properties": {
+        "component": {
+          "const": "Details"
+        },
+        "summary": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The always-visible label the user clicks to toggle the disclosure."
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The collapsible content revealed when the disclosure is expanded."
+        },
+        "open": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the disclosure is expanded. Two-way bound: a summary toggle or an outside-click writes the new state back to the bound path."
+        },
+        "closeOnOutsideClick": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the disclosure collapses when the user clicks outside it."
+        },
+        "onClickOutside": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the user clicks outside the open disclosure."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for the disclosure."
+        }
+      },
+      "required": ["component", "summary", "open"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -1985,6 +2021,31 @@
             "message": {
               "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
               "description": "The message to log."
+            }
+          },
+          "required": ["message"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "void"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "windowAlert": {
+      "type": "object",
+      "description": "Displays a message in a browser alert dialog. A local client-side effect.",
+      "properties": {
+        "call": {
+          "const": "windowAlert"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The message to display."
             }
           },
           "required": ["message"],
@@ -2096,6 +2157,9 @@
         },
         {
           "$ref": "#/components/SegmentedControlIconButton"
+        },
+        {
+          "$ref": "#/components/Details"
         }
       ]
     },
@@ -2103,6 +2167,9 @@
       "oneOf": [
         {
           "$ref": "#/functions/consoleLog"
+        },
+        {
+          "$ref": "#/functions/windowAlert"
         }
       ]
     }

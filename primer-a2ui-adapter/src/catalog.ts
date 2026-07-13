@@ -33,7 +33,9 @@ import {PaginationComponent} from './components/pagination';
 import {SegmentedControlComponent} from './components/segmentedcontrol';
 import {SegmentedControlButtonComponent} from './components/segmentedcontrolbutton';
 import {SegmentedControlIconButtonComponent} from './components/segmentedcontroliconbutton';
+import {DetailsComponent} from './components/details';
 import {consoleLog} from './functions/console-log';
+import {windowAlert} from './functions/window-alert';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
 export const CATALOG = new Catalog<ReactComponentImplementation>(
@@ -71,6 +73,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     SegmentedControlComponent,
     SegmentedControlButtonComponent,
     SegmentedControlIconButtonComponent,
+    DetailsComponent,
   ],
-  [consoleLog],
+  [consoleLog, windowAlert],
 );
