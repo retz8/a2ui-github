@@ -21,6 +21,9 @@ import {segmentedcontrolBoundFixture} from '../src/fixtures/segmentedcontrol-bou
 import {detailsBoundFixture} from '../src/fixtures/details-bound';
 import {detailsClickoutsideFnFixture} from '../src/fixtures/details-clickoutside-fn';
 import {selectBoundFixture} from '../src/fixtures/select-bound';
+import {textinputActionFnFixture} from '../src/fixtures/textinput-action-fn';
+import {textinputActionEventFixture} from '../src/fixtures/textinput-action-event';
+import {textinputBoundFixture} from '../src/fixtures/textinput-bound';
 
 afterEach(cleanup);
 
@@ -240,6 +243,18 @@ describe('action paths', () => {
     logSpy.mockRestore();
   });
 
+  it('path-1: TextInput.Action functionCall runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(textinputActionFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Search'}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'action clicked');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
   it('path-2 (SegmentedControl): selecting a segment dispatches the event from the container', async () => {
     const handler = vi.fn();
     renderFixture(segmentedcontrolEventFixture, {actionHandler: handler});
@@ -252,6 +267,22 @@ describe('action paths', () => {
         name: 'change',
         surfaceId: 'segmentedcontrol-event',
         sourceComponentId: 'control',
+      }),
+    );
+  });
+
+  it('path-2: TextInput.Action event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(textinputActionEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Search'}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'search',
+        surfaceId: 'textinput-action-event',
+        sourceComponentId: 'search-action',
       }),
     );
   });
@@ -322,6 +353,18 @@ describe('action paths', () => {
         'docs',
       ),
     );
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('two-way write-back: typing in a bound TextInput writes to the data-model path and re-renders', async () => {
+    const handler = vi.fn();
+    renderFixture(textinputBoundFixture, {actionHandler: handler});
+
+    fireEvent.change(screen.getByRole('textbox'), {target: {value: 'octocat-labs'}});
+
+    // The binder's auto-generated setValue wrote back to /query; the input re-renders from the
+    // updated data model. No client->server action is dispatched for a data-model write.
+    await vi.waitFor(() => expect(screen.getByRole('textbox')).toHaveValue('octocat-labs'));
     expect(handler).not.toHaveBeenCalled();
   });
 });

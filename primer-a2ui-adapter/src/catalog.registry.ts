@@ -18,6 +18,8 @@ import {ProgressBarApi} from './components/progressbar';
 import {RadioApi} from './components/radio';
 import {ToggleSwitchApi} from './components/toggleswitch';
 import {TextareaApi} from './components/textarea';
+import {TextInputApi} from './components/textinput';
+import {TextInputActionApi} from './components/textinput-action';
 import {SkeletonBoxApi} from './components/skeletonbox';
 import {TruncateApi} from './components/truncate';
 import {KeybindingHintApi} from './components/keybindinghint';
@@ -36,6 +38,7 @@ import {SelectOptionApi} from './components/selectoption';
 import {SelectOptGroupApi} from './components/selectoptgroup';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
+import {clearValue} from './functions/clear-value';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
 // expected set the parity test (catalog.parity.test.ts) and the catalog smoke test
@@ -61,6 +64,8 @@ export const COMPONENTS = {
   Radio: RadioApi,
   ToggleSwitch: ToggleSwitchApi,
   Textarea: TextareaApi,
+  TextInput: TextInputApi,
+  'TextInput.Action': TextInputActionApi,
   SkeletonBox: SkeletonBoxApi,
   Truncate: TruncateApi,
   KeybindingHint: KeybindingHintApi,
@@ -79,4 +84,4 @@ export const COMPONENTS = {
   SelectOptGroup: SelectOptGroupApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
-export const FUNCTIONS = {consoleLog, windowAlert} as const;
+export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

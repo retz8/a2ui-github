@@ -1374,6 +1374,134 @@
       "required": ["component", "value"],
       "unevaluatedProperties": false
     },
+    "TextInput": {
+      "type": "object",
+      "description": "A single-line plain-text input for entering short free-form text; supports leading/trailing visuals, validation states, a loading indicator, and an optional character counter.",
+      "properties": {
+        "component": {
+          "const": "TextInput"
+        },
+        "value": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The text content. Two-way bound: user edits write back to the bound data-model path."
+        },
+        "placeholder": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Hint text shown while the input is empty."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the input is inactive and cannot be edited."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether a value is required; conveyed to assistive technologies."
+        },
+        "validationStatus": {
+          "oneOf": [
+            {"type": "string", "enum": ["error", "success"]},
+            {"$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"}
+          ],
+          "description": "Styles the input to reflect the current validation state. Bindable to a data-model path so an agent can drive the validation state."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["text", "password", "email", "number", "search", "tel", "url"],
+          "default": "text",
+          "description": "The kind of text input; controls masking, keyboard, and input semantics."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether to show a loading indicator inside the input."
+        },
+        "loaderPosition": {
+          "type": "string",
+          "enum": ["auto", "leading", "trailing"],
+          "default": "auto",
+          "description": "Where the loading indicator renders; `auto` places it trailing unless a leading visual is present."
+        },
+        "loaderText": {
+          "type": "string",
+          "default": "Loading",
+          "description": "Screen-reader text conveying the loading state."
+        },
+        "leadingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual rendered inside the input before the typing area."
+        },
+        "trailingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual rendered inside the input after the typing area."
+        },
+        "trailingAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "An action button rendered inside the input at the trailing edge (e.g. a clear or show/hide toggle). References a `TextInput.Action` (shipped as a sibling leaf; see `textinput-action.md`)."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "The input's overall size."
+        },
+        "block": {
+          "type": "boolean",
+          "default": false,
+          "description": "Expands the input to fill the parent's width."
+        },
+        "contrast": {
+          "type": "boolean",
+          "default": false,
+          "description": "Uses a higher-contrast background color."
+        },
+        "monospace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Renders the text in a monospace font."
+        },
+        "characterLimit": {
+          "type": "number",
+          "description": "Optional character limit; shows a live character counter below the input and applies error styling when exceeded."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Label/description for assistive technologies — the input renders no visible label of its own."
+        }
+      },
+      "required": ["component", "value"],
+      "unevaluatedProperties": false
+    },
+    "TextInput.Action": {
+      "type": "object",
+      "description": "An icon action button rendered inside a text input at its trailing edge — triggers an action such as clearing the field or toggling password visibility.",
+      "properties": {
+        "component": {
+          "const": "TextInput.Action"
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the button is clicked."
+        },
+        "icon": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon rendered inside the button."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button is disabled and cannot be clicked."
+        },
+        "tooltipDirection": {
+          "type": "string",
+          "enum": ["n", "ne", "e", "se", "s", "sw", "w", "nw"],
+          "default": "s",
+          "description": "Position of the tooltip relative to the button."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible label for the button; also shown as the button's tooltip text."
+        }
+      },
+      "required": ["component", "action"],
+      "unevaluatedProperties": false
+    },
     "SkeletonBox": {
       "type": "object",
       "description": "A shimmering placeholder box that reserves space for non-text content, such as an image, while it loads.",
@@ -2152,6 +2280,31 @@
       },
       "required": ["call", "args"],
       "unevaluatedProperties": false
+    },
+    "clearValue": {
+      "type": "object",
+      "description": "Clears a data-model path (sets it to the empty string). A local client-side effect.",
+      "properties": {
+        "call": {
+          "const": "clearValue"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The data-model path to clear."
+            }
+          },
+          "required": ["path"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "void"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
     }
   },
   "$defs": {
@@ -2264,6 +2417,12 @@
         },
         {
           "$ref": "#/components/SelectOptGroup"
+        },
+        {
+          "$ref": "#/components/TextInput"
+        },
+        {
+          "$ref": "#/components/TextInput.Action"
         }
       ]
     },
@@ -2274,6 +2433,9 @@
         },
         {
           "$ref": "#/functions/windowAlert"
+        },
+        {
+          "$ref": "#/functions/clearValue"
         }
       ]
     }

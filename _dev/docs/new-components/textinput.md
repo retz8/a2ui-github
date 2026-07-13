@@ -36,7 +36,7 @@ event's `context` (e.g. a submit button).
 | `placeholder` | carry | no | `DynamicString` | Hint text shown while the input is empty. |
 | `disabled` | carry | no | `DynamicBoolean` | Whether the input is inactive and cannot be edited. |
 | `required` | carry | no | `z.boolean()` | Whether a value is required; conveyed to assistive technologies. |
-| `validationStatus` | carry | no | `z.enum(['error','success'])` | Styles the input to reflect the current validation state. |
+| `validationStatus` | carry | no | `z.union([z.enum(['error','success']), DataBinding])` | Styles the input to reflect the current validation state. Bindable: an agent can drive it through the data model (there is no `DynamicEnum`, so this is a union of the enum + `DataBinding`) — this realizes the `validationStatus ← /validation` coupling `textinput-action.md` relies on. |
 | `type` | carry | no | `z.enum(['text','password','email','number','search','tel','url']) (default: "text")` | The kind of text input; controls masking, keyboard, and input semantics. |
 | `loading` | carry | no | `DynamicBoolean` | Whether to show a loading indicator inside the input. |
 | `loaderPosition` | carry | no | `z.enum(['auto','leading','trailing']) (default: "auto")` | Where the loading indicator renders; `auto` places it trailing unless a leading visual is present. |
@@ -53,8 +53,13 @@ event's `context` (e.g. a submit button).
 
 ### Functions
 
-None. TextInput carries no `Action` — the state change *is* the two-way write to `value`'s
-bound path — and needs no local function.
+`clearValue({path})` — a local client-side function that clears a data-model path (writes `''`).
+TextInput itself carries no `Action` (its state change *is* the two-way write to `value`'s bound
+path), but the trailing "Clear" affordance (`textinput-trailing-action`) must reset the input's
+bound value: a button can't own another component's value, so clearing is a write to the value's
+path. `execute` receives the `DataContext` and calls `.set(path, '')` — the same write the input's
+two-way binding performs on edit — and the subscribed input re-renders empty. Joins
+`consoleLog`/`windowAlert` in the registry.
 
 ### Dropped / deferred props
 
@@ -86,7 +91,7 @@ bound path — and needs no local function.
 | `textinput-loading` | `loading` × `loaderPosition` | mini-gallery, four surfaces: `loading: true` at `loaderPosition` `'auto'` / `'leading'` / `'trailing'` (no leading visual), plus a fourth pairing `leadingVisual`→`Icon` with `loading: true` (spinner moves leading under `auto`) | yes (one PNG) |
 | `textinput-leading-visual` | slot — `leadingVisual` | `leadingVisual`→`Icon` (SearchIcon), `value: "octocat"` | yes |
 | `textinput-trailing-visual` | slot — `trailingVisual` | `trailingVisual`→`Icon` (CheckIcon), `value: "octocat"` | yes |
-| `textinput-trailing-action` | slot — `trailingAction` | `trailingAction`→`TextInput.Action` (icon `XIcon`, `aria-label: "Clear"`), `value: "octocat"` | yes |
+| `textinput-trailing-action` | slot — `trailingAction` (+ interactive clear) | `value: {path: '/query'}` (data model `/query: "octocat"`); `trailingAction`→`TextInput.Action` (icon `XIcon`, `aria-label: "Clear"`, `action: functionCall clearValue {path: '/query'}`); clicking Clear writes `''` to `/query` and the subscribed input re-renders empty | yes (one PNG; the static render is unchanged — `octocat` + `×`) |
 | `textinput-size` | visual enum — `size` | one surface per `['small','medium','large']`, each with a short literal value | yes (one PNG) |
 | `textinput-block` | visually-distinct state — `block` | `block: true`, short literal value | yes |
 | `textinput-contrast` | visually-distinct state — `contrast` | `contrast: true`, short literal value | yes |
