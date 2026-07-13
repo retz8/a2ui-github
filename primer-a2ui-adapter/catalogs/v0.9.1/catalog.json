@@ -2280,6 +2280,31 @@
       },
       "required": ["call", "args"],
       "unevaluatedProperties": false
+    },
+    "clearValue": {
+      "type": "object",
+      "description": "Clears a data-model path (sets it to the empty string). A local client-side effect.",
+      "properties": {
+        "call": {
+          "const": "clearValue"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The data-model path to clear."
+            }
+          },
+          "required": ["path"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "void"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
     }
   },
   "$defs": {
@@ -2408,6 +2433,9 @@
         },
         {
           "$ref": "#/functions/windowAlert"
+        },
+        {
+          "$ref": "#/functions/clearValue"
         }
       ]
     }

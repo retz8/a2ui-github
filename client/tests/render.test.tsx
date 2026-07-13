@@ -1473,6 +1473,14 @@ describe('TextInput — integration through the renderer', () => {
     expect(screen.getByRole('button', {name: 'Clear'})).toBeInTheDocument();
   });
 
+  it('clears the bound value when the trailing Clear action runs (clearValue functionCall)', async () => {
+    renderFixture(textinputTrailingActionFixture);
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+    fireEvent.click(screen.getByRole('button', {name: 'Clear'}));
+    // clearValue writes '' to /query; the input, subscribed to that path, re-renders empty.
+    await waitFor(() => expect(screen.getByRole('textbox')).toHaveValue(''));
+  });
+
   it('forces error styling when the character limit is exceeded', () => {
     renderFixture(textinputCharacterLimitFixture);
     // Two coupled surfaces; only the over-limit one flips aria-invalid to "true".

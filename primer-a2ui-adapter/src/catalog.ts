@@ -41,6 +41,7 @@ import {SelectOptionComponent} from './components/selectoption';
 import {SelectOptGroupComponent} from './components/selectoptgroup';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
+import {clearValue} from './functions/clear-value';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
 export const CATALOG = new Catalog<ReactComponentImplementation>(
@@ -85,5 +86,5 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     SelectOptionComponent,
     SelectOptGroupComponent,
   ],
-  [consoleLog, windowAlert],
+  [consoleLog, windowAlert, clearValue],
 );
