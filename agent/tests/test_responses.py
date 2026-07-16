@@ -228,6 +228,38 @@ COPY = {
     "sourceComponentId": "menu",
     "context": {},
 }
+SELECT_ITEM = {
+    "name": "select-item",
+    "surfaceId": "tree-view-item-event",
+    "sourceComponentId": "item-src",
+    "context": {"id": "src"},
+}
+
+
+def test_select_item_writes_item_selected_then_swaps_label_with_surface_echoed():
+    msgs = build_response(SELECT_ITEM)
+    assert len(msgs) == 2
+
+    # The /itemSelected write is visible through the item's `current <- /itemSelected` binding —
+    # after select the row highlights as current, proving two-way binding on the item.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "tree-view-item-event"
+    assert dm["path"] == "/itemSelected"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "tree-view-item-event"
+    assert uc["components"] == [
+        {"id": "label-src", "component": "Text", "text": "✅ src selected"}
+    ]
+
+
+DELETE = {
+    "name": "delete",
+    "surfaceId": "tree-view-item-secondary-actions",
+    "sourceComponentId": "item-src",
+    "context": {},
+}
 
 
 def test_pin_writes_pin_status_then_swaps_icon_with_surface_echoed():
@@ -344,6 +376,46 @@ def test_copy_writes_status_then_swaps_menu_icon_with_surface_echoed():
     uc = msgs[1]["updateComponents"]
     assert uc["surfaceId"] == "action-bar-menu"
     assert uc["components"] == [{"id": "menu-icon", "component": "Icon", "name": "check"}]
+
+
+def test_delete_writes_row_deleted_then_swaps_label_with_surface_echoed():
+    msgs = build_response(DELETE)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "tree-view-item-secondary-actions"
+    assert dm["path"] == "/rowDeleted"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "tree-view-item-secondary-actions"
+    assert uc["components"] == [{"id": "label-src", "component": "Text", "text": "🗑 Deleted"}]
+
+
+RETRY_SUBTREE = {
+    "name": "retry-subtree",
+    "surfaceId": "tree-view-error-dialog",
+    "sourceComponentId": "error-dialog",
+    "context": {},
+}
+
+
+def test_retry_subtree_writes_message_then_swaps_subtree_to_loading_with_surface_echoed():
+    msgs = build_response(RETRY_SUBTREE)
+    assert len(msgs) == 2
+
+    # The /retryMessage write is visible through the dialog body `Text.text <- /retryMessage`
+    # coupling; the error->loading SubTree swap is the self-visible reaction.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "tree-view-error-dialog"
+    assert dm["path"] == "/retryMessage"
+    assert dm["value"] == "Retrying…"
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "tree-view-error-dialog"
+    assert uc["components"] == [
+        {"id": "subtree-src", "component": "TreeViewSubTree", "state": "loading", "count": 3}
+    ]
 
 
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():

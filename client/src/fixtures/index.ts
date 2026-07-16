@@ -312,6 +312,18 @@ import {actionBarIconButtonEventFixture} from './action-bar-icon-button-event';
 import {actionBarIconButtonDisabledFixture} from './action-bar-icon-button-disabled';
 import {actionBarGroupFixture} from './action-bar-group';
 import {actionBarMenuFixture} from './action-bar-menu';
+import {treeViewNestedFixture} from './tree-view-nested';
+import {treeViewFlatFixture} from './tree-view-flat';
+import {treeViewTruncateFixture} from './tree-view-truncate';
+import {treeViewItemCurrentFixture} from './tree-view-item-current';
+import {treeViewItemExpandedBoundFixture} from './tree-view-item-expanded-bound';
+import {treeViewItemFnFixture} from './tree-view-item-fn';
+import {treeViewItemEventFixture} from './tree-view-item-event';
+import {treeViewItemSecondaryActionsFixture} from './tree-view-item-secondary-actions';
+import {treeViewSubtreeStatesFixture} from './tree-view-subtree-states';
+import {treeViewVisualsFixture} from './tree-view-visuals';
+import {treeViewDirectoryIconFixture} from './tree-view-directory-icon';
+import {treeViewErrorDialogFixture} from './tree-view-error-dialog';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -622,6 +634,18 @@ export {actionBarIconButtonEventFixture} from './action-bar-icon-button-event';
 export {actionBarIconButtonDisabledFixture} from './action-bar-icon-button-disabled';
 export {actionBarGroupFixture} from './action-bar-group';
 export {actionBarMenuFixture} from './action-bar-menu';
+export {treeViewNestedFixture} from './tree-view-nested';
+export {treeViewFlatFixture} from './tree-view-flat';
+export {treeViewTruncateFixture} from './tree-view-truncate';
+export {treeViewItemCurrentFixture} from './tree-view-item-current';
+export {treeViewItemExpandedBoundFixture} from './tree-view-item-expanded-bound';
+export {treeViewItemFnFixture} from './tree-view-item-fn';
+export {treeViewItemEventFixture} from './tree-view-item-event';
+export {treeViewItemSecondaryActionsFixture} from './tree-view-item-secondary-actions';
+export {treeViewSubtreeStatesFixture} from './tree-view-subtree-states';
+export {treeViewVisualsFixture} from './tree-view-visuals';
+export {treeViewDirectoryIconFixture} from './tree-view-directory-icon';
+export {treeViewErrorDialogFixture} from './tree-view-error-dialog';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -939,6 +963,18 @@ export const FIXTURES: Fixture[] = [
   actionBarIconButtonDisabledFixture,
   actionBarGroupFixture,
   actionBarMenuFixture,
+  treeViewNestedFixture,
+  treeViewFlatFixture,
+  treeViewTruncateFixture,
+  treeViewItemCurrentFixture,
+  treeViewItemExpandedBoundFixture,
+  treeViewItemFnFixture,
+  treeViewItemEventFixture,
+  treeViewItemSecondaryActionsFixture,
+  treeViewSubtreeStatesFixture,
+  treeViewVisualsFixture,
+  treeViewDirectoryIconFixture,
+  treeViewErrorDialogFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

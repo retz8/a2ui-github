@@ -38,9 +38,10 @@ if (!window.matchMedia) {
   })) as unknown as typeof window.matchMedia;
 }
 
-// jsdom has no ResizeObserver; Primer's `useOverflow` (used by PageLayout.Pane / .Sidebar to detect
-// scroll overflow) constructs one in a passive effect and throws without it. Provide a no-op stub so
-// those regions render under vitest (the overflow branch simply never fires — no element overflows).
+// jsdom has no ResizeObserver; Primer's `useOverflow` constructs one in a passive effect and throws
+// without it — used by PageLayout.Pane / .Sidebar (scroll overflow) and by ConfirmationDialog
+// (wrapped by TreeView.ErrorDialog, scrollable-body detection). Provide a no-op stub so those regions
+// render under vitest (the overflow branch simply never fires — no element overflows).
 if (typeof globalThis.ResizeObserver === 'undefined') {
   class ResizeObserverStub {
     observe() {}

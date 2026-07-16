@@ -5776,6 +5776,199 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "TreeView": {
+      "type": "object",
+      "description": "A hierarchical list of items that expand and collapse to reveal nested items, for navigating tree-structured content such as a file system.",
+      "properties": {
+        "component": {
+          "const": "TreeView"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The tree items (rows) contained in the tree."
+        },
+        "flat": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether items render without nested indentation guidelines."
+        },
+        "truncate": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether long item labels are truncated to a single line instead of wrapping."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible label for the tree, for assistive technologies."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "TreeViewItem": {
+      "type": "object",
+      "description": "A single row in a tree — a label with optional leading/trailing visuals, an expandable nested subtree, and a row of secondary actions.",
+      "properties": {
+        "component": {
+          "const": "TreeViewItem"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The item's label plus its leading/trailing visuals and any nested subtree."
+        },
+        "expanded": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the item's subtree is open; two-way bound — toggling the item writes the new state back."
+        },
+        "current": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "default": false,
+          "description": "Whether this is the current item (e.g. the selected file); at most one item is current."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An effect performed when the item is activated — a local function or a server event."
+        },
+        "secondaryActions": {
+          "type": "array",
+          "description": "Inline trailing actions for the item, each an icon-button with a label, an optional count, and an action.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "label": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+                "description": "The action's accessible label."
+              },
+              "icon": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+                "description": "The ID of an Icon component rendered as the action's button. Reference the component; do not define it inline."
+              },
+              "count": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+                "description": "An optional count displayed alongside the action."
+              },
+              "action": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+                "description": "The effect performed when the action is activated."
+              }
+            },
+            "required": ["label", "icon", "action"],
+            "unevaluatedProperties": false
+          }
+        },
+        "containIntrinsicSize": {
+          "type": "string",
+          "description": "A layout-size hint used to optimize rendering of very large trees."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "TreeViewSubTree": {
+      "type": "object",
+      "description": "The nested group of items revealed when a tree item is expanded, with loading and error states for asynchronously-loaded contents.",
+      "properties": {
+        "component": {
+          "const": "TreeViewSubTree"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The nested tree items revealed when the parent item is expanded."
+        },
+        "state": {
+          "type": "string",
+          "enum": ["initial", "loading", "done", "error"],
+          "description": "The load state of the subtree's contents; drives the loading-skeleton and error affordances."
+        },
+        "count": {
+          "type": "number",
+          "description": "The number of skeleton placeholder rows shown while loading."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible label for the nested group, for assistive technologies."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "TreeViewLeadingVisual": {
+      "type": "object",
+      "description": "An icon shown before a tree item's label.",
+      "properties": {
+        "component": {
+          "const": "TreeViewLeadingVisual"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon shown before the item's label."
+        },
+        "label": {
+          "type": "string",
+          "description": "Accessible label describing the visual, for assistive technologies."
+        }
+      },
+      "required": ["component", "child"],
+      "unevaluatedProperties": false
+    },
+    "TreeViewTrailingVisual": {
+      "type": "object",
+      "description": "An icon shown after a tree item's label.",
+      "properties": {
+        "component": {
+          "const": "TreeViewTrailingVisual"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon shown after the item's label."
+        },
+        "label": {
+          "type": "string",
+          "description": "Accessible label describing the visual, for assistive technologies."
+        }
+      },
+      "required": ["component", "child"],
+      "unevaluatedProperties": false
+    },
+    "TreeViewDirectoryIcon": {
+      "type": "object",
+      "description": "A preset folder icon for a tree item that reflects the item's expanded state (open when expanded, closed when collapsed).",
+      "properties": {
+        "component": {
+          "const": "TreeViewDirectoryIcon"
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "TreeViewErrorDialog": {
+      "type": "object",
+      "description": "A dialog shown when a tree item's contents fail to load, offering the option to retry or dismiss.",
+      "properties": {
+        "component": {
+          "const": "TreeViewErrorDialog"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The error message content shown in the dialog."
+        },
+        "title": {
+          "type": "string",
+          "default": "Error",
+          "description": "The dialog's heading."
+        },
+        "retryAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An effect performed when the user chooses to retry — a local function or a server event."
+        },
+        "dismissAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An effect performed when the user dismisses the dialog."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -6139,6 +6332,27 @@
         },
         {
           "$ref": "#/components/PageHeader.Navigation"
+        },
+        {
+          "$ref": "#/components/TreeView"
+        },
+        {
+          "$ref": "#/components/TreeViewItem"
+        },
+        {
+          "$ref": "#/components/TreeViewSubTree"
+        },
+        {
+          "$ref": "#/components/TreeViewLeadingVisual"
+        },
+        {
+          "$ref": "#/components/TreeViewTrailingVisual"
+        },
+        {
+          "$ref": "#/components/TreeViewDirectoryIcon"
+        },
+        {
+          "$ref": "#/components/TreeViewErrorDialog"
         }
       ]
     },

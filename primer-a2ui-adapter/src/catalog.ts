@@ -95,6 +95,13 @@ import {ActionBarIconButtonComponent} from './components/actionbar-iconbutton';
 import {ActionBarDividerComponent} from './components/actionbar-divider';
 import {ActionBarGroupComponent} from './components/actionbar-group';
 import {ActionBarMenuComponent} from './components/actionbar-menu';
+import {TreeViewComponent} from './components/treeview';
+import {TreeViewItemComponent} from './components/treeview-item';
+import {TreeViewSubTreeComponent} from './components/treeview-subtree';
+import {TreeViewLeadingVisualComponent} from './components/treeview-leadingvisual';
+import {TreeViewTrailingVisualComponent} from './components/treeview-trailingvisual';
+import {TreeViewDirectoryIconComponent} from './components/treeview-directoryicon';
+import {TreeViewErrorDialogComponent} from './components/treeview-errordialog';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -197,6 +204,13 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     ActionBarDividerComponent,
     ActionBarGroupComponent,
     ActionBarMenuComponent,
+    TreeViewComponent,
+    TreeViewItemComponent,
+    TreeViewSubTreeComponent,
+    TreeViewLeadingVisualComponent,
+    TreeViewTrailingVisualComponent,
+    TreeViewDirectoryIconComponent,
+    TreeViewErrorDialogComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );
