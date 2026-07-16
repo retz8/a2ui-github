@@ -41,6 +41,17 @@ import {SelectOptionComponent} from './components/selectoption';
 import {SelectOptGroupComponent} from './components/selectoptgroup';
 import {BreadcrumbsComponent} from './components/breadcrumbs';
 import {BreadcrumbsItemComponent} from './components/breadcrumbsitem';
+import {NavListComponent} from './components/navlist';
+import {NavListItemComponent} from './components/navlist-item';
+import {NavListSubNavComponent} from './components/navlist-subnav';
+import {NavListLeadingVisualComponent} from './components/navlist-leadingvisual';
+import {NavListTrailingVisualComponent} from './components/navlist-trailingvisual';
+import {NavListTrailingActionComponent} from './components/navlist-trailingaction';
+import {NavListGroupComponent} from './components/navlist-group';
+import {NavListGroupHeadingComponent} from './components/navlist-groupheading';
+import {NavListDividerComponent} from './components/navlist-divider';
+import {NavListDescriptionComponent} from './components/navlist-description';
+import {NavListGroupExpandComponent} from './components/navlist-groupexpand';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -89,6 +100,17 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     SelectOptGroupComponent,
     BreadcrumbsComponent,
     BreadcrumbsItemComponent,
+    NavListComponent,
+    NavListItemComponent,
+    NavListSubNavComponent,
+    NavListLeadingVisualComponent,
+    NavListTrailingVisualComponent,
+    NavListTrailingActionComponent,
+    NavListGroupComponent,
+    NavListGroupHeadingComponent,
+    NavListDividerComponent,
+    NavListDescriptionComponent,
+    NavListGroupExpandComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

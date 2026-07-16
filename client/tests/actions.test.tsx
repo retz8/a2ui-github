@@ -24,6 +24,9 @@ import {selectBoundFixture} from '../src/fixtures/select-bound';
 import {textinputActionFnFixture} from '../src/fixtures/textinput-action-fn';
 import {textinputActionEventFixture} from '../src/fixtures/textinput-action-event';
 import {textinputBoundFixture} from '../src/fixtures/textinput-bound';
+import {navlistTrailingactionFnFixture} from '../src/fixtures/navlist-trailingaction-fn';
+import {navlistTrailingactionEventFixture} from '../src/fixtures/navlist-trailingaction-event';
+import {navlistGroupexpandShowmoreFixture} from '../src/fixtures/navlist-groupexpand';
 
 afterEach(cleanup);
 
@@ -366,5 +369,52 @@ describe('action paths', () => {
     // updated data model. No client->server action is dispatched for a data-model write.
     await vi.waitFor(() => expect(screen.getByRole('textbox')).toHaveValue('octocat-labs'));
     expect(handler).not.toHaveBeenCalled();
+  });
+});
+
+describe('NavList.TrailingAction — action paths', () => {
+  it('functionCall runs the registered consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(navlistTrailingactionFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Pin Settings'}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'navlist-trailingaction-fn clicked');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('event is dispatched to the actionHandler with name/surfaceId/sourceComponentId', async () => {
+    const handler = vi.fn();
+    renderFixture(navlistTrailingactionEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Pin README'}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'pin',
+        surfaceId: 'navlist-trailingaction-event',
+        sourceComponentId: 'ta',
+      }),
+    );
+  });
+});
+
+describe('NavList.GroupExpand — pagination behavior', () => {
+  it('reveals items page by page when "Show more" is clicked', async () => {
+    renderFixture(navlistGroupexpandShowmoreFixture);
+
+    // Collapsed initially (pages=2, currentPage=0 shows 0 items).
+    expect(screen.queryByRole('link', {name: 'api'})).not.toBeInTheDocument();
+
+    // First expand reveals the first page (api, web).
+    fireEvent.click(screen.getByText('Show more repositories'));
+    await vi.waitFor(() => expect(screen.getByRole('link', {name: 'api'})).toBeInTheDocument());
+
+    // Second expand reveals the remaining items (docs, infra) from Primer-internal currentPage.
+    fireEvent.click(screen.getByText('Show more repositories'));
+    await vi.waitFor(() => expect(screen.getByRole('link', {name: 'infra'})).toBeInTheDocument());
   });
 });

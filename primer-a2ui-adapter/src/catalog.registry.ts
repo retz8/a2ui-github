@@ -38,6 +38,17 @@ import {SelectOptionApi} from './components/selectoption';
 import {SelectOptGroupApi} from './components/selectoptgroup';
 import {BreadcrumbsApi} from './components/breadcrumbs';
 import {BreadcrumbsItemApi} from './components/breadcrumbsitem';
+import {NavListApi} from './components/navlist';
+import {NavListItemApi} from './components/navlist-item';
+import {NavListSubNavApi} from './components/navlist-subnav';
+import {NavListLeadingVisualApi} from './components/navlist-leadingvisual';
+import {NavListTrailingVisualApi} from './components/navlist-trailingvisual';
+import {NavListTrailingActionApi} from './components/navlist-trailingaction';
+import {NavListGroupApi} from './components/navlist-group';
+import {NavListGroupHeadingApi} from './components/navlist-groupheading';
+import {NavListDividerApi} from './components/navlist-divider';
+import {NavListDescriptionApi} from './components/navlist-description';
+import {NavListGroupExpandApi} from './components/navlist-groupexpand';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -86,6 +97,17 @@ export const COMPONENTS = {
   SelectOptGroup: SelectOptGroupApi,
   Breadcrumbs: BreadcrumbsApi,
   BreadcrumbsItem: BreadcrumbsItemApi,
+  NavList: NavListApi,
+  'NavList.Item': NavListItemApi,
+  'NavList.SubNav': NavListSubNavApi,
+  'NavList.LeadingVisual': NavListLeadingVisualApi,
+  'NavList.TrailingVisual': NavListTrailingVisualApi,
+  'NavList.TrailingAction': NavListTrailingActionApi,
+  'NavList.Group': NavListGroupApi,
+  'NavList.GroupHeading': NavListGroupHeadingApi,
+  'NavList.Divider': NavListDividerApi,
+  'NavList.Description': NavListDescriptionApi,
+  'NavList.GroupExpand': NavListGroupExpandApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

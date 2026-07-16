@@ -119,7 +119,6 @@ def test_toggle_reverts_setting_then_swaps_status_with_surface_echoed():
     ]
 
 
-<<<<<<< HEAD
 APPROVE = {
     "name": "approve",
     "surfaceId": "iconbutton-event",
@@ -185,7 +184,6 @@ def test_change_reflects_a_different_index_not_a_canned_value():
     )
 
 
-=======
 SEARCH = {
     "name": "search",
     "surfaceId": "textinput-action-event",
@@ -212,7 +210,32 @@ def test_search_writes_validation_then_swaps_result_with_surface_echoed():
     ]
 
 
->>>>>>> c2d9270 (feat(phase-6): ship TextInput and TextInput.Action catalog leaves)
+PIN = {
+    "name": "pin",
+    "surfaceId": "navlist-trailingaction-event",
+    "sourceComponentId": "ta",
+    "context": {},
+}
+
+
+def test_pin_writes_pin_status_then_swaps_icon_with_surface_echoed():
+    msgs = build_response(PIN)
+    assert len(msgs) == 2
+
+    # The /pinStatus write is visible only through the sibling `status` Text's `text <- /pinStatus`
+    # binding — the half that proves two-way data binding.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "navlist-trailingaction-event"
+    assert dm["path"] == "/pinStatus"
+    assert dm["value"] == "📌 Pinned — server confirmed"
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "navlist-trailingaction-event"
+    assert uc["components"] == [
+        {"id": "pin-icon", "component": "Icon", "name": "check-circle-fill"}
+    ]
+
+
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1

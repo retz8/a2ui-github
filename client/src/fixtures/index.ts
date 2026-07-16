@@ -226,6 +226,17 @@ import {breadcrumbsChildrenTemplateFixture} from './breadcrumbs-children-templat
 import {breadcrumbsVariantFixture} from './breadcrumbs-variant';
 import {breadcrumbsitemFixture} from './breadcrumbsitem';
 import {breadcrumbsitemSelectedFixture} from './breadcrumbsitem-selected';
+import {navlistFixture} from './navlist';
+import {navlistItemInactiveFixture} from './navlist-item-inactive';
+import {navlistTrailingactionFnFixture} from './navlist-trailingaction-fn';
+import {navlistTrailingactionEventFixture} from './navlist-trailingaction-event';
+import {navlistTrailingactionLoadingFixture} from './navlist-trailingaction-loading';
+import {navlistGroupBoundFixture} from './navlist-group-bound';
+import {navlistGroupheadingVariantsFixture} from './navlist-groupheading-variants';
+import {navlistGroupheadingBoundFixture} from './navlist-groupheading-bound';
+import {navlistDescriptionVariantsFixture} from './navlist-description-variants';
+import {navlistDescriptionTruncateFixture} from './navlist-description-truncate';
+import {navlistGroupexpandFixture, navlistGroupexpandShowmoreFixture} from './navlist-groupexpand';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -458,6 +469,17 @@ export {breadcrumbsChildrenTemplateFixture} from './breadcrumbs-children-templat
 export {breadcrumbsVariantFixture} from './breadcrumbs-variant';
 export {breadcrumbsitemFixture} from './breadcrumbsitem';
 export {breadcrumbsitemSelectedFixture} from './breadcrumbsitem-selected';
+export {navlistFixture} from './navlist';
+export {navlistItemInactiveFixture} from './navlist-item-inactive';
+export {navlistTrailingactionFnFixture} from './navlist-trailingaction-fn';
+export {navlistTrailingactionEventFixture} from './navlist-trailingaction-event';
+export {navlistTrailingactionLoadingFixture} from './navlist-trailingaction-loading';
+export {navlistGroupBoundFixture} from './navlist-group-bound';
+export {navlistGroupheadingVariantsFixture} from './navlist-groupheading-variants';
+export {navlistGroupheadingBoundFixture} from './navlist-groupheading-bound';
+export {navlistDescriptionVariantsFixture} from './navlist-description-variants';
+export {navlistDescriptionTruncateFixture} from './navlist-description-truncate';
+export {navlistGroupexpandFixture, navlistGroupexpandShowmoreFixture} from './navlist-groupexpand';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -688,6 +710,18 @@ export const FIXTURES: Fixture[] = [
   breadcrumbsVariantFixture,
   breadcrumbsitemFixture,
   breadcrumbsitemSelectedFixture,
+  navlistFixture,
+  navlistItemInactiveFixture,
+  navlistTrailingactionFnFixture,
+  navlistTrailingactionEventFixture,
+  navlistTrailingactionLoadingFixture,
+  navlistGroupBoundFixture,
+  navlistGroupheadingVariantsFixture,
+  navlistGroupheadingBoundFixture,
+  navlistDescriptionVariantsFixture,
+  navlistDescriptionTruncateFixture,
+  navlistGroupexpandFixture,
+  navlistGroupexpandShowmoreFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
