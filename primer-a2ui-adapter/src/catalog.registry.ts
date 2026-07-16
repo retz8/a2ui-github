@@ -61,6 +61,21 @@ import {SplitPageLayoutContentApi} from './components/split-page-layout-content'
 import {SplitPageLayoutPaneApi} from './components/split-page-layout-pane';
 import {SplitPageLayoutSidebarApi} from './components/split-page-layout-sidebar';
 import {SplitPageLayoutFooterApi} from './components/split-page-layout-footer';
+import {PageHeaderApi} from './components/pageheader';
+import {PageHeaderContextAreaApi} from './components/pageheader-contextarea';
+import {PageHeaderParentLinkApi} from './components/pageheader-parentlink';
+import {PageHeaderContextBarApi} from './components/pageheader-contextbar';
+import {PageHeaderContextAreaActionsApi} from './components/pageheader-contextareaactions';
+import {PageHeaderTitleAreaApi} from './components/pageheader-titlearea';
+import {PageHeaderLeadingActionApi} from './components/pageheader-leadingaction';
+import {PageHeaderLeadingVisualApi} from './components/pageheader-leadingvisual';
+import {PageHeaderTitleApi} from './components/pageheader-title';
+import {PageHeaderTrailingVisualApi} from './components/pageheader-trailingvisual';
+import {PageHeaderTrailingActionApi} from './components/pageheader-trailingaction';
+import {PageHeaderActionsApi} from './components/pageheader-actions';
+import {PageHeaderBreadcrumbsApi} from './components/pageheader-breadcrumbs';
+import {PageHeaderDescriptionApi} from './components/pageheader-description';
+import {PageHeaderNavigationApi} from './components/pageheader-navigation';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -132,6 +147,21 @@ export const COMPONENTS = {
   'SplitPageLayout.Pane': SplitPageLayoutPaneApi,
   'SplitPageLayout.Sidebar': SplitPageLayoutSidebarApi,
   'SplitPageLayout.Footer': SplitPageLayoutFooterApi,
+  PageHeader: PageHeaderApi,
+  'PageHeader.ContextArea': PageHeaderContextAreaApi,
+  'PageHeader.ParentLink': PageHeaderParentLinkApi,
+  'PageHeader.ContextBar': PageHeaderContextBarApi,
+  'PageHeader.ContextAreaActions': PageHeaderContextAreaActionsApi,
+  'PageHeader.TitleArea': PageHeaderTitleAreaApi,
+  'PageHeader.LeadingAction': PageHeaderLeadingActionApi,
+  'PageHeader.LeadingVisual': PageHeaderLeadingVisualApi,
+  'PageHeader.Title': PageHeaderTitleApi,
+  'PageHeader.TrailingVisual': PageHeaderTrailingVisualApi,
+  'PageHeader.TrailingAction': PageHeaderTrailingActionApi,
+  'PageHeader.Actions': PageHeaderActionsApi,
+  'PageHeader.Breadcrumbs': PageHeaderBreadcrumbsApi,
+  'PageHeader.Description': PageHeaderDescriptionApi,
+  'PageHeader.Navigation': PageHeaderNavigationApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

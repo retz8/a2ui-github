@@ -64,6 +64,21 @@ import {SplitPageLayoutContentComponent} from './components/split-page-layout-co
 import {SplitPageLayoutPaneComponent} from './components/split-page-layout-pane';
 import {SplitPageLayoutSidebarComponent} from './components/split-page-layout-sidebar';
 import {SplitPageLayoutFooterComponent} from './components/split-page-layout-footer';
+import {PageHeaderComponent} from './components/pageheader';
+import {PageHeaderContextAreaComponent} from './components/pageheader-contextarea';
+import {PageHeaderParentLinkComponent} from './components/pageheader-parentlink';
+import {PageHeaderContextBarComponent} from './components/pageheader-contextbar';
+import {PageHeaderContextAreaActionsComponent} from './components/pageheader-contextareaactions';
+import {PageHeaderTitleAreaComponent} from './components/pageheader-titlearea';
+import {PageHeaderLeadingActionComponent} from './components/pageheader-leadingaction';
+import {PageHeaderLeadingVisualComponent} from './components/pageheader-leadingvisual';
+import {PageHeaderTitleComponent} from './components/pageheader-title';
+import {PageHeaderTrailingVisualComponent} from './components/pageheader-trailingvisual';
+import {PageHeaderTrailingActionComponent} from './components/pageheader-trailingaction';
+import {PageHeaderActionsComponent} from './components/pageheader-actions';
+import {PageHeaderBreadcrumbsComponent} from './components/pageheader-breadcrumbs';
+import {PageHeaderDescriptionComponent} from './components/pageheader-description';
+import {PageHeaderNavigationComponent} from './components/pageheader-navigation';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -135,6 +150,21 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     SplitPageLayoutPaneComponent,
     SplitPageLayoutSidebarComponent,
     SplitPageLayoutFooterComponent,
+    PageHeaderComponent,
+    PageHeaderContextAreaComponent,
+    PageHeaderParentLinkComponent,
+    PageHeaderContextBarComponent,
+    PageHeaderContextAreaActionsComponent,
+    PageHeaderTitleAreaComponent,
+    PageHeaderLeadingActionComponent,
+    PageHeaderLeadingVisualComponent,
+    PageHeaderTitleComponent,
+    PageHeaderTrailingVisualComponent,
+    PageHeaderTrailingActionComponent,
+    PageHeaderActionsComponent,
+    PageHeaderBreadcrumbsComponent,
+    PageHeaderDescriptionComponent,
+    PageHeaderNavigationComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

@@ -184,6 +184,14 @@ const FIXTURE_NAMES = [
   'spl-pane-width',
   'spl-pane-divider',
   'spl-pane-resizable',
+  'pageheader',
+  'pageheader-hasborder',
+  'parentlink',
+  'parentlink-bound',
+  'title',
+  'title-bound',
+  'titlearea-variant',
+  'breadcrumbs-template',
 ];
 
 for (const name of FIXTURE_NAMES) {

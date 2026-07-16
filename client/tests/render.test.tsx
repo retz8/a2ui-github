@@ -213,6 +213,14 @@ import {splPanePositionFixture} from '../src/fixtures/spl-pane-position';
 import {splPaneWidthFixture} from '../src/fixtures/spl-pane-width';
 import {splPaneDividerFixture} from '../src/fixtures/spl-pane-divider';
 import {splPaneResizableFixture} from '../src/fixtures/spl-pane-resizable';
+import {pageheaderFixture} from '../src/fixtures/pageheader';
+import {pageheaderHasborderFixture} from '../src/fixtures/pageheader-hasborder';
+import {parentlinkFixture} from '../src/fixtures/parentlink';
+import {parentlinkBoundFixture} from '../src/fixtures/parentlink-bound';
+import {titleFixture} from '../src/fixtures/title';
+import {titleBoundFixture} from '../src/fixtures/title-bound';
+import {titleareaVariantFixture} from '../src/fixtures/titlearea-variant';
+import {breadcrumbsTemplateFixture} from '../src/fixtures/breadcrumbs-template';
 
 afterEach(cleanup);
 
@@ -1866,5 +1874,57 @@ describe('SplitPageLayout (split page layout compound) — integration through t
   it('exposes the resize handle on the resizable pane', () => {
     const {container} = renderFixture(splPaneResizableFixture);
     expect(container.querySelector('[data-resizable="true"]')).not.toBeNull();
+  });
+});
+
+describe('PageHeader family — integration through the renderer', () => {
+  it('renders the composed PageHeader with every region assembled', () => {
+    renderFixture(pageheaderFixture);
+    // Title + a representative filler from each region.
+    expect(screen.getByText('Pull request #42')).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Conversation'})).toBeInTheDocument();
+    expect(screen.getByText('Updates the heading cleanup across the docs.')).toBeInTheDocument();
+    expect(screen.getByText('Open')).toBeInTheDocument();
+  });
+
+  it('honors hasBorder on the root (visually-distinct state)', () => {
+    const {container} = renderFixture(pageheaderHasborderFixture);
+    expect(container.querySelector('[data-has-border="true"]')).toBeInTheDocument();
+  });
+
+  it('renders a literal ParentLink with its href', () => {
+    renderFixture(parentlinkFixture);
+    const link = screen.getByRole('link', {name: 'Issues'});
+    expect(link).toHaveAttribute('href', '/repos/acme/issues');
+  });
+
+  it('resolves a bound ParentLink from the data model', () => {
+    renderFixture(parentlinkBoundFixture);
+    const link = screen.getByRole('link', {name: 'Issues'});
+    expect(link).toHaveAttribute('href', '/repos/acme/issues');
+  });
+
+  it('renders a literal Title', () => {
+    renderFixture(titleFixture);
+    expect(screen.getByRole('heading', {name: 'Pull request #42'})).toBeInTheDocument();
+  });
+
+  it('resolves a bound Title from the data model', () => {
+    renderFixture(titleBoundFixture);
+    expect(screen.getByRole('heading', {name: 'Bound title'})).toBeInTheDocument();
+  });
+
+  it('renders the TitleArea variant gallery', () => {
+    renderFixture(titleareaVariantFixture);
+    expect(screen.getByText('subtitle')).toBeInTheDocument();
+    expect(screen.getByText('medium')).toBeInTheDocument();
+    expect(screen.getByText('large')).toBeInTheDocument();
+  });
+
+  it('expands a dynamic-template Breadcrumbs ChildList from a bound array', () => {
+    renderFixture(breadcrumbsTemplateFixture);
+    expect(screen.getByRole('link', {name: 'Repos'})).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'octo/acme'})).toHaveAttribute('href', '/repos/acme');
+    expect(screen.getByRole('link', {name: 'Issues'})).toBeInTheDocument();
   });
 });

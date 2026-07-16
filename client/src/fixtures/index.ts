@@ -274,6 +274,14 @@ import {splPanePositionFixture} from './spl-pane-position';
 import {splPaneWidthFixture} from './spl-pane-width';
 import {splPaneDividerFixture} from './spl-pane-divider';
 import {splPaneResizableFixture} from './spl-pane-resizable';
+import {pageheaderFixture} from './pageheader';
+import {pageheaderHasborderFixture} from './pageheader-hasborder';
+import {parentlinkFixture} from './parentlink';
+import {parentlinkBoundFixture} from './parentlink-bound';
+import {titleFixture} from './title';
+import {titleBoundFixture} from './title-bound';
+import {titleareaVariantFixture} from './titlearea-variant';
+import {breadcrumbsTemplateFixture} from './breadcrumbs-template';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -833,6 +841,14 @@ export const FIXTURES: Fixture[] = [
   splPaneWidthFixture,
   splPaneDividerFixture,
   splPaneResizableFixture,
+  pageheaderFixture,
+  pageheaderHasborderFixture,
+  parentlinkFixture,
+  parentlinkBoundFixture,
+  titleFixture,
+  titleBoundFixture,
+  titleareaVariantFixture,
+  breadcrumbsTemplateFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {
