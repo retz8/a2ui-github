@@ -5,7 +5,14 @@ import type {Fixture} from './types';
 export const stackPaddingblockFixture: Fixture = {
   name: 'stack-paddingblock',
   messages: surface('stack-paddingblock', [
-    {id: 'root', component: 'Stack', direction: 'horizontal', gap: 'normal', paddingBlock: 'spacious', children: ['b1', 'b2', 'b3']},
+    {
+      id: 'root',
+      component: 'Stack',
+      direction: 'horizontal',
+      gap: 'normal',
+      paddingBlock: 'spacious',
+      children: ['b1', 'b2', 'b3'],
+    },
     ...labeledButton('b1', 'One'),
     ...labeledButton('b2', 'Two'),
     ...labeledButton('b3', 'Three'),

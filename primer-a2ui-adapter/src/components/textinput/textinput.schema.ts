@@ -45,7 +45,9 @@ export const TextInputApi = {
       // and subscribes to (there is no DynamicEnum, so this is a union of the enum + DataBinding).
       // Lets an agent drive the validation state through the data model (e.g. a search round-trip
       // writing /validation → 'success' turns the field green).
-      validationStatus: z.union([z.enum(['error', 'success']), CommonSchemas.DataBinding]).optional(),
+      validationStatus: z
+        .union([z.enum(['error', 'success']), CommonSchemas.DataBinding])
+        .optional(),
       type: z.enum(['text', 'password', 'email', 'number', 'search', 'tel', 'url']).optional(),
       loading: CommonSchemas.DynamicBoolean.optional(),
       loaderPosition: z.enum(['auto', 'leading', 'trailing']).optional(),

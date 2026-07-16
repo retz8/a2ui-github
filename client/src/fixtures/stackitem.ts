@@ -5,7 +5,13 @@ import type {Fixture} from './types';
 export const stackitemFixture: Fixture = {
   name: 'stackitem',
   messages: surface('stackitem', [
-    {id: 'root', component: 'Stack', direction: 'horizontal', gap: 'normal', children: ['si1', 'si2', 'si3']},
+    {
+      id: 'root',
+      component: 'Stack',
+      direction: 'horizontal',
+      gap: 'normal',
+      children: ['si1', 'si2', 'si3'],
+    },
     {id: 'si1', component: 'StackItem', children: ['b1']},
     {id: 'si2', component: 'StackItem', children: ['b2']},
     {id: 'si3', component: 'StackItem', children: ['b3']},

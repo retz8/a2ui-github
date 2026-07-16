@@ -8,7 +8,13 @@ import type {Fixture} from './types';
 export const stackitemGrowFixture: Fixture = {
   name: 'stackitem-grow',
   messages: surface('stackitem-grow', [
-    {id: 'root', component: 'Stack', direction: 'horizontal', gap: 'normal', children: ['si1', 'si2', 'si3']},
+    {
+      id: 'root',
+      component: 'Stack',
+      direction: 'horizontal',
+      gap: 'normal',
+      children: ['si1', 'si2', 'si3'],
+    },
     {id: 'si1', component: 'StackItem', children: ['b1']},
     {id: 'si2', component: 'StackItem', grow: true, children: ['b2']},
     {id: 'si3', component: 'StackItem', children: ['b3']},

@@ -24,9 +24,9 @@ describe('StackItemApi.schema', () => {
   });
 
   it('accepts a responsive object for grow', () => {
-    expect(
-      StackItemApi.schema.safeParse({grow: {narrow: true, regular: false}}).success,
-    ).toBe(true);
+    expect(StackItemApi.schema.safeParse({grow: {narrow: true, regular: false}}).success).toBe(
+      true,
+    );
   });
 
   it('rejects unknown props (strict)', () => {

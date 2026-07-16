@@ -1399,8 +1399,13 @@
         },
         "validationStatus": {
           "oneOf": [
-            {"type": "string", "enum": ["error", "success"]},
-            {"$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"}
+            {
+              "type": "string",
+              "enum": ["error", "success"]
+            },
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+            }
           ],
           "description": "Styles the input to reflect the current validation state. Bindable to a data-model path so an agent can drive the validation state."
         },
@@ -1616,13 +1621,25 @@
           "description": "The axis children are laid out along.",
           "default": "vertical",
           "oneOf": [
-            {"type": "string", "enum": ["horizontal", "vertical"]},
+            {
+              "type": "string",
+              "enum": ["horizontal", "vertical"]
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "string", "enum": ["horizontal", "vertical"]},
-                "regular": {"type": "string", "enum": ["horizontal", "vertical"]},
-                "wide": {"type": "string", "enum": ["horizontal", "vertical"]}
+                "narrow": {
+                  "type": "string",
+                  "enum": ["horizontal", "vertical"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["horizontal", "vertical"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["horizontal", "vertical"]
+                }
               },
               "additionalProperties": false
             }
@@ -1631,13 +1648,25 @@
         "gap": {
           "description": "The spacing between children.",
           "oneOf": [
-            {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+            {
+              "type": "string",
+              "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
-                "regular": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
-                "wide": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]}
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                }
               },
               "additionalProperties": false
             }
@@ -1647,13 +1676,25 @@
           "description": "Alignment of children across the layout axis.",
           "default": "stretch",
           "oneOf": [
-            {"type": "string", "enum": ["stretch", "start", "center", "end", "baseline"]},
+            {
+              "type": "string",
+              "enum": ["stretch", "start", "center", "end", "baseline"]
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "string", "enum": ["stretch", "start", "center", "end", "baseline"]},
-                "regular": {"type": "string", "enum": ["stretch", "start", "center", "end", "baseline"]},
-                "wide": {"type": "string", "enum": ["stretch", "start", "center", "end", "baseline"]}
+                "narrow": {
+                  "type": "string",
+                  "enum": ["stretch", "start", "center", "end", "baseline"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["stretch", "start", "center", "end", "baseline"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["stretch", "start", "center", "end", "baseline"]
+                }
               },
               "additionalProperties": false
             }
@@ -1663,13 +1704,25 @@
           "description": "Distribution of children along the layout axis.",
           "default": "start",
           "oneOf": [
-            {"type": "string", "enum": ["start", "center", "end", "space-between", "space-evenly"]},
+            {
+              "type": "string",
+              "enum": ["start", "center", "end", "space-between", "space-evenly"]
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "string", "enum": ["start", "center", "end", "space-between", "space-evenly"]},
-                "regular": {"type": "string", "enum": ["start", "center", "end", "space-between", "space-evenly"]},
-                "wide": {"type": "string", "enum": ["start", "center", "end", "space-between", "space-evenly"]}
+                "narrow": {
+                  "type": "string",
+                  "enum": ["start", "center", "end", "space-between", "space-evenly"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["start", "center", "end", "space-between", "space-evenly"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["start", "center", "end", "space-between", "space-evenly"]
+                }
               },
               "additionalProperties": false
             }
@@ -1679,13 +1732,25 @@
           "description": "Whether children are forced onto one line or may wrap onto multiple lines.",
           "default": "nowrap",
           "oneOf": [
-            {"type": "string", "enum": ["wrap", "nowrap"]},
+            {
+              "type": "string",
+              "enum": ["wrap", "nowrap"]
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "string", "enum": ["wrap", "nowrap"]},
-                "regular": {"type": "string", "enum": ["wrap", "nowrap"]},
-                "wide": {"type": "string", "enum": ["wrap", "nowrap"]}
+                "narrow": {
+                  "type": "string",
+                  "enum": ["wrap", "nowrap"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["wrap", "nowrap"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["wrap", "nowrap"]
+                }
               },
               "additionalProperties": false
             }
@@ -1695,13 +1760,25 @@
           "description": "Padding inside the container on all sides.",
           "default": "none",
           "oneOf": [
-            {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+            {
+              "type": "string",
+              "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
-                "regular": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
-                "wide": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]}
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                }
               },
               "additionalProperties": false
             }
@@ -1710,13 +1787,25 @@
         "paddingBlock": {
           "description": "Vertical padding; overrides the vertical axis of `padding` when both are set.",
           "oneOf": [
-            {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+            {
+              "type": "string",
+              "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
-                "regular": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
-                "wide": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]}
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                }
               },
               "additionalProperties": false
             }
@@ -1725,13 +1814,25 @@
         "paddingInline": {
           "description": "Horizontal padding; overrides the horizontal axis of `padding` when both are set.",
           "oneOf": [
-            {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
+            {
+              "type": "string",
+              "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
-                "regular": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]},
-                "wide": {"type": "string", "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]}
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "tight", "condensed", "cozy", "normal", "spacious"]
+                }
               },
               "additionalProperties": false
             }
@@ -1739,7 +1840,19 @@
         },
         "as": {
           "type": "string",
-          "enum": ["div", "span", "section", "nav", "article", "aside", "header", "footer", "main", "ul", "ol"],
+          "enum": [
+            "div",
+            "span",
+            "section",
+            "nav",
+            "article",
+            "aside",
+            "header",
+            "footer",
+            "main",
+            "ul",
+            "ol"
+          ],
           "default": "div",
           "description": "The HTML element used to render the container; the choices are display-equivalent flex containers that differ only in semantic/landmark identity."
         }
@@ -1762,13 +1875,21 @@
           "description": "Whether the item expands to fill available space along the stack axis.",
           "default": false,
           "oneOf": [
-            {"type": "boolean"},
+            {
+              "type": "boolean"
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "boolean"},
-                "regular": {"type": "boolean"},
-                "wide": {"type": "boolean"}
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
               },
               "additionalProperties": false
             }
@@ -1778,13 +1899,21 @@
           "description": "Whether the item shrinks to fit the available space along the stack axis.",
           "default": true,
           "oneOf": [
-            {"type": "boolean"},
+            {
+              "type": "boolean"
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "boolean"},
-                "regular": {"type": "boolean"},
-                "wide": {"type": "boolean"}
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
               },
               "additionalProperties": false
             }
@@ -1792,7 +1921,20 @@
         },
         "as": {
           "type": "string",
-          "enum": ["div", "span", "section", "nav", "article", "aside", "header", "footer", "main", "ul", "ol", "li"],
+          "enum": [
+            "div",
+            "span",
+            "section",
+            "nav",
+            "article",
+            "aside",
+            "header",
+            "footer",
+            "main",
+            "ul",
+            "ol",
+            "li"
+          ],
           "default": "div",
           "description": "The HTML element used to render the item wrapper; `li` is included because a stack item is the natural list element."
         }
@@ -1819,7 +1961,15 @@
         },
         "visibleChildCount": {
           "description": "How many items to show before truncating; `'auto'` fits to the container width; omit to never truncate.",
-          "oneOf": [{"const": "auto"}, {"type": "integer", "minimum": 1}]
+          "oneOf": [
+            {
+              "const": "auto"
+            },
+            {
+              "type": "integer",
+              "minimum": 1
+            }
+          ]
         },
         "as": {
           "type": "string",
@@ -1867,13 +2017,21 @@
         "size": {
           "description": "The width and height of each avatar in the stack, in pixels; when unset, follows the individual avatars' own sizes.",
           "oneOf": [
-            {"type": "number"},
+            {
+              "type": "number"
+            },
             {
               "type": "object",
               "properties": {
-                "narrow": {"type": "number"},
-                "regular": {"type": "number"},
-                "wide": {"type": "number"}
+                "narrow": {
+                  "type": "number"
+                },
+                "regular": {
+                  "type": "number"
+                },
+                "wide": {
+                  "type": "number"
+                }
               },
               "additionalProperties": false
             }
@@ -2228,6 +2386,66 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "Breadcrumbs": {
+      "type": "object",
+      "description": "A navigation trail showing the user's location within a hierarchy, as a row of links from the root to the current page.",
+      "properties": {
+        "component": {
+          "const": "Breadcrumbs"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The crumbs shown in the trail."
+        },
+        "overflow": {
+          "type": "string",
+          "enum": ["wrap", "menu", "menu-with-root"],
+          "default": "wrap",
+          "description": "How the trail handles crumbs that don't fit: `wrap` flows them onto extra lines; `menu` and `menu-with-root` collapse the overflow into a dropdown menu."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["normal", "spacious"],
+          "default": "normal",
+          "description": "The visual density; `spacious` uses increased padding and a more relaxed layout."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "BreadcrumbsItem": {
+      "type": "object",
+      "description": "A single crumb within a breadcrumb trail — a link to one level of the hierarchy, or the current page.",
+      "properties": {
+        "component": {
+          "const": "BreadcrumbsItem"
+        },
+        "label": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The visible text of the crumb."
+        },
+        "href": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The URL this crumb navigates to when clicked. Optional — the current-page crumb may be non-navigating."
+        },
+        "selected": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether this crumb is the current page; shown as the active crumb and conveyed to assistive technologies (`aria-current=\"page\"`)."
+        },
+        "target": {
+          "type": "string",
+          "enum": ["_self", "_blank"],
+          "default": "_self",
+          "description": "Whether the crumb opens in the same tab (`_self`) or a new tab (`_blank`)."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for assistive technologies, beyond the visible crumb text."
+        }
+      },
+      "required": ["component", "label"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -2423,6 +2641,12 @@
         },
         {
           "$ref": "#/components/TextInput.Action"
+        },
+        {
+          "$ref": "#/components/Breadcrumbs"
+        },
+        {
+          "$ref": "#/components/BreadcrumbsItem"
         }
       ]
     },

@@ -133,6 +133,11 @@ const FIXTURE_NAMES = [
   'details-open',
   'details-children-template',
   'details-clickoutside-fn',
+  'breadcrumbs',
+  'breadcrumbs-children-template',
+  'breadcrumbs-variant',
+  'breadcrumbsitem',
+  'breadcrumbsitem-selected',
 ];
 
 for (const name of FIXTURE_NAMES) {

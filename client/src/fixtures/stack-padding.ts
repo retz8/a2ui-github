@@ -11,7 +11,14 @@ export const stackPaddingFixture: Fixture = {
   name: 'stack-padding',
   messages: PADDINGS.flatMap(padding =>
     surface(`stack-padding-${padding}`, [
-      {id: 'root', component: 'Stack', direction: 'horizontal', gap: 'normal', padding, children: ['b1', 'b2', 'b3']},
+      {
+        id: 'root',
+        component: 'Stack',
+        direction: 'horizontal',
+        gap: 'normal',
+        padding,
+        children: ['b1', 'b2', 'b3'],
+      },
       ...labeledButton('b1', 'One'),
       ...labeledButton('b2', 'Two'),
       ...labeledButton('b3', 'Three'),

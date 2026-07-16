@@ -9,7 +9,11 @@ export type Comp = {id: string; component: string; [k: string]: unknown};
  * fixture arranges. Button's `action` is required, so a harmless local `consoleLog` is wired.
  * Extra Button props (e.g. `size`) pass through via `props`.
  */
-export function labeledButton(id: string, label: string, props: Record<string, unknown> = {}): Comp[] {
+export function labeledButton(
+  id: string,
+  label: string,
+  props: Record<string, unknown> = {},
+): Comp[] {
   return [
     {
       id,
