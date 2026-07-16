@@ -234,6 +234,12 @@ import {titleFixture} from '../src/fixtures/title';
 import {titleBoundFixture} from '../src/fixtures/title-bound';
 import {titleareaVariantFixture} from '../src/fixtures/titlearea-variant';
 import {breadcrumbsTemplateFixture} from '../src/fixtures/breadcrumbs-template';
+import {actionBarFixture} from '../src/fixtures/action-bar';
+import {actionBarChildrenTemplateFixture} from '../src/fixtures/action-bar-children-template';
+import {actionBarFlushFixture} from '../src/fixtures/action-bar-flush';
+import {actionBarIconButtonDisabledFixture} from '../src/fixtures/action-bar-icon-button-disabled';
+import {actionBarGroupFixture} from '../src/fixtures/action-bar-group';
+import {actionBarMenuFixture} from '../src/fixtures/action-bar-menu';
 
 afterEach(cleanup);
 
@@ -2055,5 +2061,73 @@ describe('ActionList — integration through the renderer', () => {
   it('renders a loading trailing action through the renderer', () => {
     renderFixture(actionlistTrailingactionLoadingFixture);
     expect(screen.getByText('Deploy to production')).toBeInTheDocument();
+  });
+});
+
+describe('ActionBar family — integration through the renderer', () => {
+  it('renders a labeled toolbar with its icon buttons and a divider', () => {
+    const {container} = renderFixture(actionBarFixture);
+    // accessibility.label is forwarded to the toolbar's aria-label.
+    expect(screen.getByRole('toolbar', {name: 'Formatting'})).toBeInTheDocument();
+    for (const label of ['Bold', 'Italic', 'Strikethrough']) {
+      expect(screen.getByRole('button', {name: label})).toBeInTheDocument();
+    }
+    // ActionBar.Divider renders an aria-hidden separator element, preserved among the children.
+    expect(container.querySelector('[data-component="ActionBar.VerticalDivider"]')).not.toBeNull();
+  });
+
+  it('renders a dynamic-template ChildList, one button per bound array item', () => {
+    renderFixture(actionBarChildrenTemplateFixture);
+    // Each template ActionBar.IconButton's aria-label binds to its data-scope item's label.
+    for (const label of ['Bold', 'Italic', 'Underline']) {
+      expect(screen.getByRole('button', {name: label})).toBeInTheDocument();
+    }
+  });
+
+  it('renders an ActionBar.Group of icon buttons', () => {
+    const {container} = renderFixture(actionBarGroupFixture);
+    expect(container.querySelector('[data-component="ActionBar.Group"]')).not.toBeNull();
+    for (const label of ['Bold', 'Italic', 'Strikethrough']) {
+      expect(screen.getByRole('button', {name: label})).toBeInTheDocument();
+    }
+  });
+
+  it('honors a disabled ActionBar.IconButton (aria-disabled, stays focusable)', () => {
+    renderFixture(actionBarIconButtonDisabledFixture);
+    expect(screen.getByRole('button', {name: 'Delete'})).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('renders a flush ActionBar through the renderer', () => {
+    const {container} = renderFixture(actionBarFlushFixture);
+    expect(container.querySelector('[data-component="ActionBar"]')).toHaveAttribute(
+      'data-flush',
+      'true',
+    );
+  });
+
+  it('renders the ActionBar.Menu button plus its companion bound Text', () => {
+    renderFixture(actionBarMenuFixture);
+    expect(screen.getByRole('button', {name: 'Actions'})).toBeInTheDocument();
+    // The companion Text resolves its bound `text <- /status` (initial 'Ready').
+    expect(screen.getByText('Ready')).toBeInTheDocument();
+  });
+
+  it('opens the ActionBar.Menu and renders the breadth of item shapes, including a submenu', () => {
+    renderFixture(actionBarMenuFixture);
+    fireEvent.click(screen.getByRole('button', {name: 'Actions'}));
+    for (const label of ['Cut', 'Copy', 'Paste', 'Delete', 'Archive', 'More']) {
+      expect(screen.getByRole('menuitem', {name: new RegExp(label)})).toBeInTheDocument();
+    }
+    // The trailing text string is rendered verbatim beside the Copy item.
+    expect(screen.getByText('⌘C')).toBeInTheDocument();
+    // A disabled item is marked disabled; a danger item still renders.
+    expect(screen.getByRole('menuitem', {name: /Archive/})).toHaveAttribute(
+      'aria-disabled',
+      'true',
+    );
+    // The nested submenu opens on selecting its parent item (submenu-open state).
+    fireEvent.click(screen.getByRole('menuitem', {name: /More/}));
+    expect(screen.getByRole('menuitem', {name: 'Sub A'})).toBeInTheDocument();
+    expect(screen.getByRole('menuitem', {name: 'Sub B'})).toBeInTheDocument();
   });
 });

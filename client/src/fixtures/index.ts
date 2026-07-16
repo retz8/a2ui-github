@@ -301,6 +301,17 @@ import {actionlistDescriptionFixture} from './actionlist-description';
 import {actionlistTrailingactionFnFixture} from './actionlist-trailingaction-fn';
 import {actionlistTrailingactionEventFixture} from './actionlist-trailingaction-event';
 import {actionlistTrailingactionLoadingFixture} from './actionlist-trailingaction-loading';
+import {actionBarFixture} from './action-bar';
+import {actionBarChildrenTemplateFixture} from './action-bar-children-template';
+import {actionBarSizesFixture} from './action-bar-sizes';
+import {actionBarGapFixture} from './action-bar-gap';
+import {actionBarFlushFixture} from './action-bar-flush';
+import {actionBarOverflowFixture} from './action-bar-overflow';
+import {actionBarIconButtonFnFixture} from './action-bar-icon-button-fn';
+import {actionBarIconButtonEventFixture} from './action-bar-icon-button-event';
+import {actionBarIconButtonDisabledFixture} from './action-bar-icon-button-disabled';
+import {actionBarGroupFixture} from './action-bar-group';
+import {actionBarMenuFixture} from './action-bar-menu';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -600,6 +611,17 @@ export {actionlistDescriptionFixture} from './actionlist-description';
 export {actionlistTrailingactionFnFixture} from './actionlist-trailingaction-fn';
 export {actionlistTrailingactionEventFixture} from './actionlist-trailingaction-event';
 export {actionlistTrailingactionLoadingFixture} from './actionlist-trailingaction-loading';
+export {actionBarFixture} from './action-bar';
+export {actionBarChildrenTemplateFixture} from './action-bar-children-template';
+export {actionBarSizesFixture} from './action-bar-sizes';
+export {actionBarGapFixture} from './action-bar-gap';
+export {actionBarFlushFixture} from './action-bar-flush';
+export {actionBarOverflowFixture} from './action-bar-overflow';
+export {actionBarIconButtonFnFixture} from './action-bar-icon-button-fn';
+export {actionBarIconButtonEventFixture} from './action-bar-icon-button-event';
+export {actionBarIconButtonDisabledFixture} from './action-bar-icon-button-disabled';
+export {actionBarGroupFixture} from './action-bar-group';
+export {actionBarMenuFixture} from './action-bar-menu';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -906,6 +928,17 @@ export const FIXTURES: Fixture[] = [
   actionlistTrailingactionFnFixture,
   actionlistTrailingactionEventFixture,
   actionlistTrailingactionLoadingFixture,
+  actionBarFixture,
+  actionBarChildrenTemplateFixture,
+  actionBarSizesFixture,
+  actionBarGapFixture,
+  actionBarFlushFixture,
+  actionBarOverflowFixture,
+  actionBarIconButtonFnFixture,
+  actionBarIconButtonEventFixture,
+  actionBarIconButtonDisabledFixture,
+  actionBarGroupFixture,
+  actionBarMenuFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

@@ -3,6 +3,221 @@
   "$id": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
   "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
   "components": {
+    "ActionBar": {
+      "type": "object",
+      "description": "A horizontal toolbar of icon buttons, optionally separated into groups by dividers; buttons that don't fit the available width collapse into an overflow menu.",
+      "properties": {
+        "component": {
+          "const": "ActionBar"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The buttons, dividers, groups, and menus contained in the toolbar."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "default": "medium",
+          "description": "The size of the toolbar's buttons."
+        },
+        "flush": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the toolbar sits flush with its container's edge, with no outer padding."
+        },
+        "gap": {
+          "type": "string",
+          "enum": ["none", "condensed"],
+          "default": "condensed",
+          "description": "The horizontal spacing between items."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible name for the toolbar, required so assistive technologies can identify it. Maps to `aria-label`, or `aria-labelledby` when naming by another element's id."
+        }
+      },
+      "required": ["component", "children", "accessibility"],
+      "unevaluatedProperties": false
+    },
+    "ActionBar.IconButton": {
+      "type": "object",
+      "description": "An icon-only button inside an action-bar toolbar; it triggers an action when activated and carries a required label for assistive technologies.",
+      "properties": {
+        "component": {
+          "const": "ActionBar.IconButton"
+        },
+        "icon": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon displayed as the button's content."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the button is activated."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Label describing the button's function for assistive technologies; also serves as its tooltip text. Required — an icon-only button must be labeled."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button is disabled; it stays focusable with `aria-disabled` applied."
+        }
+      },
+      "required": ["component", "icon", "action", "accessibility"],
+      "unevaluatedProperties": false
+    },
+    "ActionBar.Divider": {
+      "type": "object",
+      "description": "A vertical separator that splits the toolbar's buttons into visually distinct groups; it is preserved when buttons collapse into the overflow menu.",
+      "properties": {
+        "component": {
+          "const": "ActionBar.Divider"
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionBar.Group": {
+      "type": "object",
+      "description": "Groups related toolbar buttons so they stay visually together and collapse into the overflow menu as a unit.",
+      "properties": {
+        "component": {
+          "const": "ActionBar.Group"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The related buttons grouped together."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionBar.Menu": {
+      "type": "object",
+      "description": "A toolbar button that opens a dropdown menu of actions when activated; menu entries may carry icons, trailing text, and nested submenus, and may be separated by dividers.",
+      "properties": {
+        "component": {
+          "const": "ActionBar.Menu"
+        },
+        "icon": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon displayed on the menu button (references an `Icon`)."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible name for the menu button, required. Maps to `aria-label` (or `aria-labelledby`)."
+        },
+        "items": {
+          "type": "array",
+          "description": "The entries shown in the dropdown menu (see the item schema below).",
+          "items": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": ["action", "divider"],
+                "default": "action",
+                "description": "The kind of entry: an action item (default) or a separator."
+              },
+              "label": {
+                "type": "string",
+                "description": "The item's text."
+              },
+              "action": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+                "description": "The action performed when the item is selected."
+              },
+              "disabled": {
+                "type": "boolean",
+                "description": "Whether the item is disabled and cannot be selected."
+              },
+              "leadingVisual": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+                "description": "An icon shown before the item's text."
+              },
+              "trailingVisual": {
+                "description": "An icon or a short text string shown after the item's text.",
+                "oneOf": [
+                  {
+                    "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId"
+                  },
+                  {
+                    "type": "string"
+                  }
+                ]
+              },
+              "variant": {
+                "type": "string",
+                "enum": ["default", "danger"],
+                "description": "The item's visual style; `danger` marks a destructive action."
+              },
+              "items": {
+                "type": "array",
+                "description": "Nested entries rendered as a submenu.",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "enum": ["action", "divider"],
+                      "default": "action",
+                      "description": "The kind of entry: an action item (default) or a separator."
+                    },
+                    "label": {
+                      "type": "string",
+                      "description": "The item's text."
+                    },
+                    "action": {
+                      "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+                      "description": "The action performed when the item is selected."
+                    },
+                    "disabled": {
+                      "type": "boolean",
+                      "description": "Whether the item is disabled and cannot be selected."
+                    },
+                    "leadingVisual": {
+                      "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+                      "description": "An icon shown before the item's text."
+                    },
+                    "trailingVisual": {
+                      "description": "An icon or a short text string shown after the item's text.",
+                      "oneOf": [
+                        {
+                          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId"
+                        },
+                        {
+                          "type": "string"
+                        }
+                      ]
+                    },
+                    "variant": {
+                      "type": "string",
+                      "enum": ["default", "danger"],
+                      "description": "The item's visual style; `danger` marks a destructive action."
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "overflowIcon": {
+          "description": "The icon shown for this menu when the toolbar collapses it into the overflow menu; defaults to the menu button's own `icon`, or `'none'` to show no icon.",
+          "oneOf": [
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId"
+            },
+            {
+              "const": "none"
+            }
+          ]
+        }
+      },
+      "required": ["component", "icon", "accessibility", "items"],
+      "unevaluatedProperties": false
+    },
     "ActionList": {
       "type": "object",
       "description": "A vertically stacked list of actions or selectable options, optionally organized into labeled groups and separated by dividers.",
@@ -5643,6 +5858,21 @@
   "$defs": {
     "anyComponent": {
       "oneOf": [
+        {
+          "$ref": "#/components/ActionBar"
+        },
+        {
+          "$ref": "#/components/ActionBar.IconButton"
+        },
+        {
+          "$ref": "#/components/ActionBar.Divider"
+        },
+        {
+          "$ref": "#/components/ActionBar.Group"
+        },
+        {
+          "$ref": "#/components/ActionBar.Menu"
+        },
         {
           "$ref": "#/components/ActionList"
         },

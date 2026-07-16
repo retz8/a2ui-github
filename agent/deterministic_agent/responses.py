@@ -16,6 +16,8 @@ _EVENT_FIXTURES = {
     "search": "search.json",
     "pin": "pin.json",
     "remove": "remove.json",
+    "save": "save.json",
+    "copy": "copy.json",
 }
 # The operation key whose object carries the surfaceId we stamp.
 _OPERATION_KEYS = ("updateComponents", "updateDataModel", "createSurface")

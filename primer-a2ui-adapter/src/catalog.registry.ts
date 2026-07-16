@@ -87,6 +87,11 @@ import {ActionListDescriptionApi} from './components/actionlist-description';
 import {ActionListDividerApi} from './components/actionlist-divider';
 import {ActionListTrailingActionApi} from './components/actionlist-trailingaction';
 import {ActionListHeadingApi} from './components/actionlist-heading';
+import {ActionBarApi} from './components/actionbar';
+import {ActionBarIconButtonApi} from './components/actionbar-iconbutton';
+import {ActionBarDividerApi} from './components/actionbar-divider';
+import {ActionBarGroupApi} from './components/actionbar-group';
+import {ActionBarMenuApi} from './components/actionbar-menu';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -184,6 +189,11 @@ export const COMPONENTS = {
   'ActionList.Divider': ActionListDividerApi,
   'ActionList.TrailingAction': ActionListTrailingActionApi,
   'ActionList.Heading': ActionListHeadingApi,
+  ActionBar: ActionBarApi,
+  'ActionBar.IconButton': ActionBarIconButtonApi,
+  'ActionBar.Divider': ActionBarDividerApi,
+  'ActionBar.Group': ActionBarGroupApi,
+  'ActionBar.Menu': ActionBarMenuApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

@@ -216,6 +216,18 @@ PIN = {
     "sourceComponentId": "ta",
     "context": {},
 }
+SAVE = {
+    "name": "save",
+    "surfaceId": "action-bar-icon-button-event",
+    "sourceComponentId": "root",
+    "context": {},
+}
+COPY = {
+    "name": "copy",
+    "surfaceId": "action-bar-menu",
+    "sourceComponentId": "menu",
+    "context": {},
+}
 
 
 def test_pin_writes_pin_status_then_swaps_icon_with_surface_echoed():
@@ -300,6 +312,38 @@ def test_actionlist_remove_writes_removed_then_swaps_status_with_surface_echoed(
     assert uc["components"] == [
         {"id": "status", "component": "Text", "text": '🗑️ Removed "bug" — server confirmed'}
     ]
+
+
+def test_save_writes_saved_then_swaps_icon_with_surface_echoed():
+    msgs = build_response(SAVE)
+    assert len(msgs) == 2
+
+    # The /saved write is visible only through the button's `disabled <- /saved` binding — after
+    # saving the button locks (preventing re-submit), proving two-way binding on the button itself.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "action-bar-icon-button-event"
+    assert dm["path"] == "/saved"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "action-bar-icon-button-event"
+    assert uc["components"] == [{"id": "save-icon", "component": "Icon", "name": "check"}]
+
+
+def test_copy_writes_status_then_swaps_menu_icon_with_surface_echoed():
+    msgs = build_response(COPY)
+    assert len(msgs) == 2
+
+    # The /status write is visible through the companion Text `text <- /status`, proving two-way
+    # data binding for the menu (whose `items` are authored config, not bindable state).
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "action-bar-menu"
+    assert dm["path"] == "/status"
+    assert dm["value"] == "Copied to clipboard"
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "action-bar-menu"
+    assert uc["components"] == [{"id": "menu-icon", "component": "Icon", "name": "check"}]
 
 
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():

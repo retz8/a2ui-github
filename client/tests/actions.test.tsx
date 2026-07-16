@@ -32,6 +32,9 @@ import {actionlistItemEventFixture} from '../src/fixtures/actionlist-item-event'
 import {actionlistSelectedBoundFixture} from '../src/fixtures/actionlist-selected-bound';
 import {actionlistTrailingactionFnFixture} from '../src/fixtures/actionlist-trailingaction-fn';
 import {actionlistTrailingactionEventFixture} from '../src/fixtures/actionlist-trailingaction-event';
+import {actionBarIconButtonFnFixture} from '../src/fixtures/action-bar-icon-button-fn';
+import {actionBarIconButtonEventFixture} from '../src/fixtures/action-bar-icon-button-event';
+import {actionBarMenuFixture} from '../src/fixtures/action-bar-menu';
 
 afterEach(cleanup);
 
@@ -493,6 +496,66 @@ describe('ActionList action paths', () => {
         name: 'remove',
         surfaceId: 'actionlist-trailingaction-event',
         sourceComponentId: 'labelrow-ta',
+      }),
+    );
+  });
+});
+
+describe('ActionBar action paths', () => {
+  it('ActionBar.IconButton functionCall runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(actionBarIconButtonFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Bold'}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'action-bar-icon-button-fn clicked');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('ActionBar.IconButton event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(actionBarIconButtonEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Save'}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'save',
+        surfaceId: 'action-bar-icon-button-event',
+        sourceComponentId: 'root',
+      }),
+    );
+  });
+
+  it('ActionBar.Menu item functionCall runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(actionBarMenuFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Actions'}));
+    fireEvent.click(screen.getByRole('menuitem', {name: /Cut/}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'cut');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('ActionBar.Menu item event is dispatched to the actionHandler with the menu as source', async () => {
+    const handler = vi.fn();
+    renderFixture(actionBarMenuFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Actions'}));
+    fireEvent.click(screen.getByRole('menuitem', {name: /Copy/}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'copy',
+        surfaceId: 'action-bar-menu',
+        sourceComponentId: 'menu',
       }),
     );
   });
