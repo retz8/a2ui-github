@@ -143,3 +143,24 @@ and forwarded (`stack-responsive` → `data-direction-narrow/regular/wide`), and
 verified manually by resizing. Revisit if/when multi-viewport visual baselining is added to the e2e
 harness — then add narrow/wide captures for `stack-responsive` and a Stack.Item grow/shrink
 responsive fixture.
+
+### SplitPageLayout — narrow-viewport visual demos (responsive arms + Sidebar.responsiveVariant)
+
+Deferred in the 6.35 design session (`_dev/docs/new-components/split-page-layout*.md`):
+
+Two narrow-viewport-only effects need the same multi-viewport Playwright infra the Stack entry
+above describes (single-viewport 1024px harness; building multi-viewport capture is out of Phase 6):
+
+- **Responsive-arm props** — `hidden` (`responsive(z.boolean())`) on all five regions, `divider`
+  (responsive, narrow arm also allowing `'filled'`) on Header/Content/Footer/Pane, and Pane
+  `position` (`responsive(z.enum(['start','end']))`). Carried faithfully in the schema; the
+  responsive *object* arm and the narrow-only `'filled'` divider only show across viewport widths.
+- **`SplitPageLayout.Sidebar.responsiveVariant`** — `'fullscreen'` expands the sidebar to a
+  full-screen overlay only below the narrow breakpoint; at the harness's regular viewport it is
+  indistinguishable from `'default'`.
+
+Coverage meanwhile: render-test assertions (responsive `data-*`/attributes emitted and forwarded;
+`hidden: true` omits the region; `responsiveVariant` value applied), and the scalar arms are
+baselined via the shipped galleries. Revisit once multi-viewport visual baselining exists — then add
+narrow/wide captures for the responsive-divider/`hidden`/`position` arms and a Sidebar `fullscreen`
+demo.
