@@ -40,10 +40,11 @@
   bundling a label, an `Icon` `ComponentId`, an optional count, and an `Action` per element. The
   `GenericBinder` resolves `Action`/`Dynamic*` at any depth and passes `ComponentId` strings
   through for `buildChild` (`generic-binder.js:58–71, 227–241`), so nested references resolve.
-- **Overlay-infra dependency.** `ErrorDialog` renders a modal overlay; `secondaryActions` renders
-  an action menu. Both consume overlay rendering (arriving with `Dialog`, 6.52). The build consumes
-  that infra; if it is not landed at build time, the affected leaf/prop defers per the build skill's
-  "consumes, never builds infra" rule.
+- **Self-contained Primer overlays — no new infra.** `ErrorDialog` wraps Primer's
+  `ConfirmationDialog` (`TreeView.js:1392`), which portals and manages its own backdrop/focus;
+  `secondaryActions` renders inline trailing icon-buttons (`TreeView.js:1180`). Both render through
+  the normal adapter→renderer path with nothing extra to build. `ErrorDialog` reads Primer's item
+  context, so it must be composed inside an `Item` (as its fixture is).
 
 ## Dropped from the family
 

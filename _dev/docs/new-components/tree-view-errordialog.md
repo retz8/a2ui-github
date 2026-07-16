@@ -10,13 +10,15 @@
 - **Component-level description (→ `catalog.json` `description`):** A dialog shown when a tree
   item's contents fail to load, offering the option to retry or dismiss.
 
-## Overlay-infra dependency
+## Rendering & composition
 
-`ErrorDialog` renders a modal overlay. Overlay rendering is infrastructure arriving with `Dialog`
-(6.52). The build consumes that infra; if it is not landed at build time, this leaf defers per the
-build skill's "consumes, never builds infra" rule (recorded in `deferred-catalog-work.md`).
-`ErrorDialog` is placed as a child of a `SubTree` in the `error` state, mirroring how Primer shows
-it.
+`ErrorDialog` wraps Primer's `ConfirmationDialog` (`TreeView.js:1392`) — a self-contained modal
+that portals to the document body and manages its own backdrop and focus. It renders through the
+normal adapter→renderer path with no extra infrastructure and is screenshottable (the portal
+content is in the DOM). It reads Primer's item context via `useContext(ItemContext)`, so it must be
+composed inside an `Item` — placed as a child of a `SubTree` in the `error` state, mirroring how
+Primer shows it. Its baseline fixture is an isolated surface (the open modal's backdrop covers the
+page), not part of a shared gallery.
 
 ---
 

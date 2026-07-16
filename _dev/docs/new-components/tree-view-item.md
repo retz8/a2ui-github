@@ -40,7 +40,7 @@ Two axes, mirroring the family convention (`tree-view.md`):
 | `expanded` | carry | no | `DynamicBoolean` | Whether the item's subtree is open; two-way bound — toggling the item writes the new state back. |
 | `current` | carry | no | `DynamicBoolean (default: false)` | Whether this is the current item (e.g. the selected file); at most one item is current. |
 | `action` | carry (optional) | yes (← `onSelect`) | `Action` | An effect performed when the item is activated — a local function or a server event. |
-| `secondaryActions` | carry (optional) | no | `z.array(z.object({ label: DynamicString, icon: ComponentId, count: DynamicString.optional(), action: Action }))` | A row of secondary actions for the item (e.g. an overflow menu), each with a label, an icon, an optional count, and an action. |
+| `secondaryActions` | carry (optional) | no | `z.array(z.object({ label: DynamicString, icon: ComponentId, count: DynamicString.optional(), action: Action }))` | Inline trailing actions for the item, each an icon-button with a label, an optional count, and an action. |
 | `containIntrinsicSize` | carry (optional) | no | `z.string()` | A layout-size hint used to optimize rendering of very large trees. |
 
 ### Functions
