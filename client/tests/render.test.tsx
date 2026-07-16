@@ -195,6 +195,14 @@ import {navlistGroupheadingBoundFixture} from '../src/fixtures/navlist-grouphead
 import {navlistDescriptionVariantsFixture} from '../src/fixtures/navlist-description-variants';
 import {navlistDescriptionTruncateFixture} from '../src/fixtures/navlist-description-truncate';
 import {navlistGroupexpandFixture} from '../src/fixtures/navlist-groupexpand';
+import {pagelayoutFixture} from '../src/fixtures/pagelayout';
+import {pagelayoutSidebarFixture} from '../src/fixtures/pagelayout-sidebar';
+import {pagelayoutContainerwidthFixture} from '../src/fixtures/pagelayout-containerwidth';
+import {pagelayoutContentTemplateFixture} from '../src/fixtures/pagelayout-content-template';
+import {pagelayoutHeaderDividerFixture} from '../src/fixtures/pagelayout-header-divider';
+import {pagelayoutPaneResizableFixture} from '../src/fixtures/pagelayout-pane-resizable';
+import {pagelayoutPaneCurrentwidthFixture} from '../src/fixtures/pagelayout-pane-currentwidth';
+import {pagelayoutSidebarResizableFixture} from '../src/fixtures/pagelayout-sidebar-resizable';
 
 afterEach(cleanup);
 
@@ -1702,5 +1710,60 @@ describe('NavList (compound family) — integration through the renderer', () =>
     // show-more control is visible until it is expanded (see the pagination action test).
     expect(screen.getByText('Show more repositories')).toBeInTheDocument();
     expect(screen.queryByRole('link', {name: 'api'})).not.toBeInTheDocument();
+  });
+});
+
+describe('PageLayout (compound family) — integration through the renderer', () => {
+  it('renders the base composition with all four region slots through the renderer', () => {
+    renderFixture(pagelayoutFixture);
+    // header (Heading), content (Stack of Text), pane (Stack of Link), footer (Text)
+    expect(screen.getByText('Repositories')).toBeInTheDocument();
+    expect(screen.getByText('Overview')).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Issues'})).toBeInTheDocument();
+    expect(screen.getByText('© 2026 Example')).toBeInTheDocument();
+  });
+
+  it('renders the sidebar + content composition through the renderer', () => {
+    renderFixture(pagelayoutSidebarFixture);
+    expect(screen.getByRole('link', {name: 'Code'})).toBeInTheDocument();
+    expect(screen.getByText('Overview')).toBeInTheDocument();
+  });
+
+  it('renders one surface per containerWidth enum value through the renderer', () => {
+    renderFixture(pagelayoutContainerwidthFixture);
+    // one surface per ['full','medium','large','xlarge'] — each with a header + content
+    expect(screen.getAllByText('Repositories')).toHaveLength(4);
+    expect(screen.getAllByText('Overview')).toHaveLength(4);
+  });
+
+  it('expands the content bound ChildList template through the renderer', () => {
+    renderFixture(pagelayoutContentTemplateFixture);
+    // the template Text resolves {path:'label'} once per item in the bound /items array
+    expect(screen.getByText('Alpha')).toBeInTheDocument();
+    expect(screen.getByText('Beta')).toBeInTheDocument();
+    expect(screen.getByText('Gamma')).toBeInTheDocument();
+  });
+
+  it('renders one surface per header divider enum value through the renderer', () => {
+    renderFixture(pagelayoutHeaderDividerFixture);
+    expect(screen.getAllByText('Repositories')).toHaveLength(2);
+  });
+
+  it('renders a resizable pane with a drag handle through the renderer', () => {
+    renderFixture(pagelayoutPaneResizableFixture);
+    expect(screen.getByRole('slider')).toBeInTheDocument();
+  });
+
+  it('renders a resizable sidebar with a drag handle through the renderer', () => {
+    renderFixture(pagelayoutSidebarResizableFixture);
+    expect(screen.getByRole('slider')).toBeInTheDocument();
+  });
+
+  it('renders the pane in controlled mode when currentWidth is bound to a path', () => {
+    // currentWidth <- /paneWidth (320); the two-way resize write-back is confirmed by live drag
+    // review. Here the bound, resizable pane renders with its drag handle.
+    renderFixture(pagelayoutPaneCurrentwidthFixture);
+    expect(screen.getByRole('slider')).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Issues'})).toBeInTheDocument();
   });
 });

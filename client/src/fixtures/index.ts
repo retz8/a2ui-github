@@ -237,6 +237,33 @@ import {navlistGroupheadingBoundFixture} from './navlist-groupheading-bound';
 import {navlistDescriptionVariantsFixture} from './navlist-description-variants';
 import {navlistDescriptionTruncateFixture} from './navlist-description-truncate';
 import {navlistGroupexpandFixture, navlistGroupexpandShowmoreFixture} from './navlist-groupexpand';
+import {pagelayoutFixture} from './pagelayout';
+import {pagelayoutSidebarFixture} from './pagelayout-sidebar';
+import {pagelayoutContainerwidthFixture} from './pagelayout-containerwidth';
+import {pagelayoutPaddingFixture} from './pagelayout-padding';
+import {pagelayoutRowgapFixture} from './pagelayout-rowgap';
+import {pagelayoutColumngapFixture} from './pagelayout-columngap';
+import {pagelayoutHeaderPaddingFixture} from './pagelayout-header-padding';
+import {pagelayoutHeaderDividerFixture} from './pagelayout-header-divider';
+import {pagelayoutFooterPaddingFixture} from './pagelayout-footer-padding';
+import {pagelayoutFooterDividerFixture} from './pagelayout-footer-divider';
+import {pagelayoutContentWidthFixture} from './pagelayout-content-width';
+import {pagelayoutContentPaddingFixture} from './pagelayout-content-padding';
+import {pagelayoutContentTemplateFixture} from './pagelayout-content-template';
+import {pagelayoutPanePositionFixture} from './pagelayout-pane-position';
+import {pagelayoutPaneWidthFixture} from './pagelayout-pane-width';
+import {pagelayoutPaneWidthCustomFixture} from './pagelayout-pane-width-custom';
+import {pagelayoutPaneDividerFixture} from './pagelayout-pane-divider';
+import {pagelayoutPaneResizableFixture} from './pagelayout-pane-resizable';
+import {pagelayoutPanePaddingFixture} from './pagelayout-pane-padding';
+import {pagelayoutPaneCurrentwidthFixture} from './pagelayout-pane-currentwidth';
+import {pagelayoutSidebarPositionFixture} from './pagelayout-sidebar-position';
+import {pagelayoutSidebarWidthFixture} from './pagelayout-sidebar-width';
+import {pagelayoutSidebarWidthCustomFixture} from './pagelayout-sidebar-width-custom';
+import {pagelayoutSidebarDividerFixture} from './pagelayout-sidebar-divider';
+import {pagelayoutSidebarResizableFixture} from './pagelayout-sidebar-resizable';
+import {pagelayoutSidebarPaddingFixture} from './pagelayout-sidebar-padding';
+import {pagelayoutSidebarCurrentwidthFixture} from './pagelayout-sidebar-currentwidth';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -480,6 +507,33 @@ export {navlistGroupheadingBoundFixture} from './navlist-groupheading-bound';
 export {navlistDescriptionVariantsFixture} from './navlist-description-variants';
 export {navlistDescriptionTruncateFixture} from './navlist-description-truncate';
 export {navlistGroupexpandFixture, navlistGroupexpandShowmoreFixture} from './navlist-groupexpand';
+export {pagelayoutFixture} from './pagelayout';
+export {pagelayoutSidebarFixture} from './pagelayout-sidebar';
+export {pagelayoutContainerwidthFixture} from './pagelayout-containerwidth';
+export {pagelayoutPaddingFixture} from './pagelayout-padding';
+export {pagelayoutRowgapFixture} from './pagelayout-rowgap';
+export {pagelayoutColumngapFixture} from './pagelayout-columngap';
+export {pagelayoutHeaderPaddingFixture} from './pagelayout-header-padding';
+export {pagelayoutHeaderDividerFixture} from './pagelayout-header-divider';
+export {pagelayoutFooterPaddingFixture} from './pagelayout-footer-padding';
+export {pagelayoutFooterDividerFixture} from './pagelayout-footer-divider';
+export {pagelayoutContentWidthFixture} from './pagelayout-content-width';
+export {pagelayoutContentPaddingFixture} from './pagelayout-content-padding';
+export {pagelayoutContentTemplateFixture} from './pagelayout-content-template';
+export {pagelayoutPanePositionFixture} from './pagelayout-pane-position';
+export {pagelayoutPaneWidthFixture} from './pagelayout-pane-width';
+export {pagelayoutPaneWidthCustomFixture} from './pagelayout-pane-width-custom';
+export {pagelayoutPaneDividerFixture} from './pagelayout-pane-divider';
+export {pagelayoutPaneResizableFixture} from './pagelayout-pane-resizable';
+export {pagelayoutPanePaddingFixture} from './pagelayout-pane-padding';
+export {pagelayoutPaneCurrentwidthFixture} from './pagelayout-pane-currentwidth';
+export {pagelayoutSidebarPositionFixture} from './pagelayout-sidebar-position';
+export {pagelayoutSidebarWidthFixture} from './pagelayout-sidebar-width';
+export {pagelayoutSidebarWidthCustomFixture} from './pagelayout-sidebar-width-custom';
+export {pagelayoutSidebarDividerFixture} from './pagelayout-sidebar-divider';
+export {pagelayoutSidebarResizableFixture} from './pagelayout-sidebar-resizable';
+export {pagelayoutSidebarPaddingFixture} from './pagelayout-sidebar-padding';
+export {pagelayoutSidebarCurrentwidthFixture} from './pagelayout-sidebar-currentwidth';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -722,6 +776,33 @@ export const FIXTURES: Fixture[] = [
   navlistDescriptionTruncateFixture,
   navlistGroupexpandFixture,
   navlistGroupexpandShowmoreFixture,
+  pagelayoutFixture,
+  pagelayoutSidebarFixture,
+  pagelayoutContainerwidthFixture,
+  pagelayoutPaddingFixture,
+  pagelayoutRowgapFixture,
+  pagelayoutColumngapFixture,
+  pagelayoutHeaderPaddingFixture,
+  pagelayoutHeaderDividerFixture,
+  pagelayoutFooterPaddingFixture,
+  pagelayoutFooterDividerFixture,
+  pagelayoutContentWidthFixture,
+  pagelayoutContentPaddingFixture,
+  pagelayoutContentTemplateFixture,
+  pagelayoutPanePositionFixture,
+  pagelayoutPaneWidthFixture,
+  pagelayoutPaneWidthCustomFixture,
+  pagelayoutPaneDividerFixture,
+  pagelayoutPaneResizableFixture,
+  pagelayoutPanePaddingFixture,
+  pagelayoutPaneCurrentwidthFixture,
+  pagelayoutSidebarPositionFixture,
+  pagelayoutSidebarWidthFixture,
+  pagelayoutSidebarWidthCustomFixture,
+  pagelayoutSidebarDividerFixture,
+  pagelayoutSidebarResizableFixture,
+  pagelayoutSidebarPaddingFixture,
+  pagelayoutSidebarCurrentwidthFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

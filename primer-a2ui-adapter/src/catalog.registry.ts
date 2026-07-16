@@ -49,6 +49,12 @@ import {NavListGroupHeadingApi} from './components/navlist-groupheading';
 import {NavListDividerApi} from './components/navlist-divider';
 import {NavListDescriptionApi} from './components/navlist-description';
 import {NavListGroupExpandApi} from './components/navlist-groupexpand';
+import {PageLayoutApi} from './components/pagelayout';
+import {PageLayoutHeaderApi} from './components/pagelayout-header';
+import {PageLayoutContentApi} from './components/pagelayout-content';
+import {PageLayoutPaneApi} from './components/pagelayout-pane';
+import {PageLayoutSidebarApi} from './components/pagelayout-sidebar';
+import {PageLayoutFooterApi} from './components/pagelayout-footer';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -108,6 +114,12 @@ export const COMPONENTS = {
   'NavList.Divider': NavListDividerApi,
   'NavList.Description': NavListDescriptionApi,
   'NavList.GroupExpand': NavListGroupExpandApi,
+  PageLayout: PageLayoutApi,
+  'PageLayout.Header': PageLayoutHeaderApi,
+  'PageLayout.Content': PageLayoutContentApi,
+  'PageLayout.Pane': PageLayoutPaneApi,
+  'PageLayout.Sidebar': PageLayoutSidebarApi,
+  'PageLayout.Footer': PageLayoutFooterApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;
