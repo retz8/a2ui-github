@@ -101,6 +101,13 @@ import {TreeViewDirectoryIconApi} from './components/treeview-directoryicon';
 import {TreeViewErrorDialogApi} from './components/treeview-errordialog';
 import {UnderlineNavApi} from './components/underline-nav';
 import {UnderlineNavItemApi} from './components/underline-nav-item';
+import {TimelineApi} from './components/timeline';
+import {TimelineItemApi} from './components/timeline-item';
+import {TimelineBadgeApi} from './components/timeline-badge';
+import {TimelineBodyApi} from './components/timeline-body';
+import {TimelineBreakApi} from './components/timeline-break';
+import {TimelineActionsApi} from './components/timeline-actions';
+import {TimelineAvatarApi} from './components/timeline-avatar';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -212,6 +219,13 @@ export const COMPONENTS = {
   TreeViewErrorDialog: TreeViewErrorDialogApi,
   UnderlineNav: UnderlineNavApi,
   'UnderlineNav.Item': UnderlineNavItemApi,
+  Timeline: TimelineApi,
+  TimelineItem: TimelineItemApi,
+  TimelineBadge: TimelineBadgeApi,
+  TimelineBody: TimelineBodyApi,
+  TimelineBreak: TimelineBreakApi,
+  TimelineActions: TimelineActionsApi,
+  TimelineAvatar: TimelineAvatarApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

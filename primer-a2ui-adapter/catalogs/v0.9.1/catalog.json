@@ -6035,6 +6035,139 @@
       },
       "required": ["component", "text"],
       "unevaluatedProperties": false
+    },
+    "Timeline": {
+      "type": "object",
+      "description": "A vertical list of events connected by a line, each entry marked by a badge on the line and carrying its message content.",
+      "properties": {
+        "component": {
+          "const": "Timeline"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The timeline's entries — items and breaks, in display order."
+        },
+        "clipSidebar": {
+          "description": "Which ends of the connecting line are clipped — `true` or `'both'` hides the line above the first and below the last entry; `'start'` or `'end'` clips only that end.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "string",
+              "enum": ["start", "end", "both"]
+            }
+          ]
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "TimelineItem": {
+      "type": "object",
+      "description": "A single entry on the timeline — a badge on the connecting line plus its body content, with an optional avatar and action controls.",
+      "properties": {
+        "component": {
+          "const": "TimelineItem"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The entry's badge and body, plus an optional avatar and action controls."
+        },
+        "condensed": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the entry renders with reduced vertical padding and no badge background."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "TimelineBadge": {
+      "type": "object",
+      "description": "The marker on the timeline's connecting line for one entry — a small circle holding an icon, colored by variant.",
+      "properties": {
+        "component": {
+          "const": "TimelineBadge"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon shown inside the badge circle."
+        },
+        "variant": {
+          "type": "string",
+          "enum": [
+            "accent",
+            "success",
+            "attention",
+            "severe",
+            "danger",
+            "done",
+            "open",
+            "closed",
+            "sponsors"
+          ],
+          "description": "The color variant of the badge."
+        }
+      },
+      "required": ["component", "child"],
+      "unevaluatedProperties": false
+    },
+    "TimelineBody": {
+      "type": "object",
+      "description": "The message content of a timeline entry, shown beside its badge.",
+      "properties": {
+        "component": {
+          "const": "TimelineBody"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The entry's message content."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "TimelineBreak": {
+      "type": "object",
+      "description": "A decorative separator marking a break between groups of timeline entries.",
+      "properties": {
+        "component": {
+          "const": "TimelineBreak"
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "TimelineActions": {
+      "type": "object",
+      "description": "Action controls displayed with a timeline entry, such as buttons.",
+      "properties": {
+        "component": {
+          "const": "TimelineActions"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The action controls shown with the entry."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "TimelineAvatar": {
+      "type": "object",
+      "description": "An avatar shown beside a timeline entry's badge, identifying the actor of the event.",
+      "properties": {
+        "component": {
+          "const": "TimelineAvatar"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The avatar shown beside the entry's badge."
+        }
+      },
+      "required": ["component", "child"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -6425,6 +6558,27 @@
         },
         {
           "$ref": "#/components/UnderlineNav.Item"
+        },
+        {
+          "$ref": "#/components/Timeline"
+        },
+        {
+          "$ref": "#/components/TimelineItem"
+        },
+        {
+          "$ref": "#/components/TimelineBadge"
+        },
+        {
+          "$ref": "#/components/TimelineBody"
+        },
+        {
+          "$ref": "#/components/TimelineBreak"
+        },
+        {
+          "$ref": "#/components/TimelineActions"
+        },
+        {
+          "$ref": "#/components/TimelineAvatar"
         }
       ]
     },
