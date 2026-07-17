@@ -76,6 +76,17 @@ import {PageHeaderActionsApi} from './components/pageheader-actions';
 import {PageHeaderBreadcrumbsApi} from './components/pageheader-breadcrumbs';
 import {PageHeaderDescriptionApi} from './components/pageheader-description';
 import {PageHeaderNavigationApi} from './components/pageheader-navigation';
+import {ActionListApi} from './components/actionlist';
+import {ActionListItemApi} from './components/actionlist-item';
+import {ActionListLinkItemApi} from './components/actionlist-linkitem';
+import {ActionListGroupApi} from './components/actionlist-group';
+import {ActionListGroupHeadingApi} from './components/actionlist-groupheading';
+import {ActionListLeadingVisualApi} from './components/actionlist-leadingvisual';
+import {ActionListTrailingVisualApi} from './components/actionlist-trailingvisual';
+import {ActionListDescriptionApi} from './components/actionlist-description';
+import {ActionListDividerApi} from './components/actionlist-divider';
+import {ActionListTrailingActionApi} from './components/actionlist-trailingaction';
+import {ActionListHeadingApi} from './components/actionlist-heading';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -162,6 +173,17 @@ export const COMPONENTS = {
   'PageHeader.Breadcrumbs': PageHeaderBreadcrumbsApi,
   'PageHeader.Description': PageHeaderDescriptionApi,
   'PageHeader.Navigation': PageHeaderNavigationApi,
+  ActionList: ActionListApi,
+  'ActionList.Item': ActionListItemApi,
+  'ActionList.LinkItem': ActionListLinkItemApi,
+  'ActionList.Group': ActionListGroupApi,
+  'ActionList.GroupHeading': ActionListGroupHeadingApi,
+  'ActionList.LeadingVisual': ActionListLeadingVisualApi,
+  'ActionList.TrailingVisual': ActionListTrailingVisualApi,
+  'ActionList.Description': ActionListDescriptionApi,
+  'ActionList.Divider': ActionListDividerApi,
+  'ActionList.TrailingAction': ActionListTrailingActionApi,
+  'ActionList.Heading': ActionListHeadingApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

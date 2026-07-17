@@ -115,6 +115,19 @@ import {textinputContrastFixture} from '../src/fixtures/textinput-contrast';
 import {textinputMonospaceFixture} from '../src/fixtures/textinput-monospace';
 import {textinputCharacterLimitFixture} from '../src/fixtures/textinput-character-limit';
 import {textinputActionDisabledFixture} from '../src/fixtures/textinput-action-disabled';
+import {actionlistFixture} from '../src/fixtures/actionlist';
+import {actionlistChildrenTemplateFixture} from '../src/fixtures/actionlist-children-template';
+import {actionlistSelectionFixture} from '../src/fixtures/actionlist-selection';
+import {actionlistItemActiveFixture} from '../src/fixtures/actionlist-item-active';
+import {actionlistItemDisabledFixture} from '../src/fixtures/actionlist-item-disabled';
+import {actionlistItemInactiveFixture} from '../src/fixtures/actionlist-item-inactive';
+import {actionlistItemVariantFixture} from '../src/fixtures/actionlist-item-variant';
+import {actionlistItemSizeFixture} from '../src/fixtures/actionlist-item-size';
+import {actionlistVariantFixture} from '../src/fixtures/actionlist-variant';
+import {actionlistDividersFixture} from '../src/fixtures/actionlist-dividers';
+import {actionlistGroupVariantFixture} from '../src/fixtures/actionlist-group-variant';
+import {actionlistDescriptionFixture} from '../src/fixtures/actionlist-description';
+import {actionlistTrailingactionLoadingFixture} from '../src/fixtures/actionlist-trailingaction-loading';
 import {skeletonboxFixture} from '../src/fixtures/skeletonbox';
 import {skeletonboxSizedFixture} from '../src/fixtures/skeletonbox-sized';
 import {truncateFixture} from '../src/fixtures/truncate';
@@ -1939,5 +1952,108 @@ describe('PageHeader family — integration through the renderer', () => {
     expect(screen.getByRole('link', {name: 'Repos'})).toBeInTheDocument();
     expect(screen.getByRole('link', {name: 'octo/acme'})).toHaveAttribute('href', '/repos/acme');
     expect(screen.getByRole('link', {name: 'Issues'})).toBeInTheDocument();
+  });
+});
+
+describe('ActionList — integration through the renderer', () => {
+  it('renders the composed baseline: heading, groups, items, link, and danger row', () => {
+    renderFixture(actionlistFixture);
+    expect(screen.getByText('Repository actions')).toBeInTheDocument();
+    expect(screen.getByText('Pull request #42')).toBeInTheDocument();
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+    expect(screen.getByText('opened 2 days ago')).toBeInTheDocument();
+    expect(screen.getByText('Danger zone')).toBeInTheDocument();
+    expect(screen.getByText('Delete branch')).toBeInTheDocument();
+  });
+
+  it('exposes a labeled trailing action and a link in the composed baseline', () => {
+    renderFixture(actionlistFixture);
+    // TrailingAction.label -> the button's accessible name.
+    expect(screen.getByRole('button', {name: 'More options'})).toBeInTheDocument();
+    // LinkItem renders an anchor to its href.
+    expect(screen.getByRole('link', {name: /Open on GitHub/})).toHaveAttribute(
+      'href',
+      'https://github.com/octocat/repo',
+    );
+  });
+
+  it('forwards the root `role` to the list container', () => {
+    // A role-bearing single-axis fixture (no group headings) exercises root `role`.
+    renderFixture(actionlistItemActiveFixture);
+    expect(screen.getByRole('menu')).toBeInTheDocument();
+  });
+
+  it('expands a dynamic children template into one item per data-model entry', () => {
+    renderFixture(actionlistChildrenTemplateFixture);
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+    expect(screen.getByText('Merge')).toBeInTheDocument();
+    expect(screen.getByText('Close')).toBeInTheDocument();
+  });
+
+  it('renders the selectionVariant gallery (single/radio/multiple) through the renderer', () => {
+    const {container} = renderFixture(actionlistSelectionFixture);
+    // one surface per selectionVariant value.
+    expect(
+      container.querySelectorAll('[data-testid^="surface-actionlist-selection-"]'),
+    ).toHaveLength(3);
+    expect(screen.getAllByText('Assign to me').length).toBe(3);
+  });
+
+  it('honors Item boolean states (active/disabled/inactive) through the renderer', () => {
+    renderFixture(actionlistItemActiveFixture);
+    expect(screen.getByText('Pull requests')).toBeInTheDocument();
+    cleanup();
+    renderFixture(actionlistItemDisabledFixture);
+    // a disabled item is not clickable — Primer marks it aria-disabled.
+    expect(document.querySelector('[aria-disabled="true"]')).toBeInTheDocument();
+    cleanup();
+    renderFixture(actionlistItemInactiveFixture);
+    expect(screen.getByText('Unavailable during outage')).toBeInTheDocument();
+  });
+
+  it('renders the Item variant and size galleries through the renderer', () => {
+    const {container} = renderFixture(actionlistItemVariantFixture);
+    expect(
+      container.querySelectorAll('[data-testid^="surface-actionlist-item-variant-"]'),
+    ).toHaveLength(2);
+    cleanup();
+    const size = renderFixture(actionlistItemSizeFixture);
+    expect(
+      size.container.querySelectorAll('[data-testid^="surface-actionlist-item-size-"]'),
+    ).toHaveLength(2);
+  });
+
+  it('renders the root variant gallery (inset/horizontal-inset/full) through the renderer', () => {
+    const {container} = renderFixture(actionlistVariantFixture);
+    expect(container.querySelectorAll('[data-testid^="surface-actionlist-variant-"]')).toHaveLength(
+      3,
+    );
+  });
+
+  it('renders a list with dividers shown above each item', () => {
+    renderFixture(actionlistDividersFixture);
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+    expect(screen.getByText('Delete branch')).toBeInTheDocument();
+  });
+
+  it('renders the Group variant gallery (filled/subtle) through the renderer', () => {
+    const {container} = renderFixture(actionlistGroupVariantFixture);
+    expect(
+      container.querySelectorAll('[data-testid^="surface-actionlist-group-variant-"]'),
+    ).toHaveLength(2);
+  });
+
+  it('renders the Description gallery (inline/block/truncate) through the renderer', () => {
+    const {container} = renderFixture(actionlistDescriptionFixture);
+    expect(
+      container.querySelectorAll('[data-testid^="surface-actionlist-description-"]'),
+    ).toHaveLength(3);
+    expect(screen.getByText('opened 2 days ago')).toBeInTheDocument();
+    expect(screen.getByText('A detailed summary shown below the label')).toBeInTheDocument();
+  });
+
+  it('renders a loading trailing action through the renderer', () => {
+    renderFixture(actionlistTrailingactionLoadingFixture);
+    expect(screen.getByText('Deploy to production')).toBeInTheDocument();
   });
 });

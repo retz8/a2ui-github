@@ -79,6 +79,17 @@ import {PageHeaderActionsComponent} from './components/pageheader-actions';
 import {PageHeaderBreadcrumbsComponent} from './components/pageheader-breadcrumbs';
 import {PageHeaderDescriptionComponent} from './components/pageheader-description';
 import {PageHeaderNavigationComponent} from './components/pageheader-navigation';
+import {ActionListComponent} from './components/actionlist';
+import {ActionListItemComponent} from './components/actionlist-item';
+import {ActionListLinkItemComponent} from './components/actionlist-linkitem';
+import {ActionListGroupComponent} from './components/actionlist-group';
+import {ActionListGroupHeadingComponent} from './components/actionlist-groupheading';
+import {ActionListLeadingVisualComponent} from './components/actionlist-leadingvisual';
+import {ActionListTrailingVisualComponent} from './components/actionlist-trailingvisual';
+import {ActionListDescriptionComponent} from './components/actionlist-description';
+import {ActionListDividerComponent} from './components/actionlist-divider';
+import {ActionListTrailingActionComponent} from './components/actionlist-trailingaction';
+import {ActionListHeadingComponent} from './components/actionlist-heading';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -165,6 +176,17 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     PageHeaderBreadcrumbsComponent,
     PageHeaderDescriptionComponent,
     PageHeaderNavigationComponent,
+    ActionListComponent,
+    ActionListItemComponent,
+    ActionListLinkItemComponent,
+    ActionListGroupComponent,
+    ActionListGroupHeadingComponent,
+    ActionListLeadingVisualComponent,
+    ActionListTrailingVisualComponent,
+    ActionListDescriptionComponent,
+    ActionListDividerComponent,
+    ActionListTrailingActionComponent,
+    ActionListHeadingComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

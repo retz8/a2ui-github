@@ -236,6 +236,72 @@ def test_pin_writes_pin_status_then_swaps_icon_with_surface_echoed():
     ]
 
 
+# --- ActionList family (6.38) ---
+
+ACTIONLIST_SELECT = {
+    "name": "select",
+    "surfaceId": "actionlist-item-event",
+    "sourceComponentId": "a0",
+    "context": {"assigned": True},
+}
+ACTIONLIST_REMOVE = {
+    "name": "remove",
+    "surfaceId": "actionlist-trailingaction-event",
+    "sourceComponentId": "labelrow-ta",
+    "context": {"label": "bug"},
+}
+
+
+def test_actionlist_select_echoes_assigned_then_swaps_status_with_surface_echoed():
+    # The ActionList.Item `select` echoes the item's optimistic `context.assigned` write
+    # dynamically (distinct from the Radio `select` static fixture, keyed on `assigned`). The
+    # /assigned echo is visible through the item's `selected <- /assigned` coupling.
+    msgs = build_response(ACTIONLIST_SELECT)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "actionlist-item-event"
+    assert dm["path"] == "/assigned"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "actionlist-item-event"
+    assert uc["components"] == [
+        {"id": "status", "component": "Text", "text": "✅ Assigned to you — server confirmed"}
+    ]
+
+
+def test_actionlist_select_echoes_a_false_assignment_not_a_canned_value():
+    # Proves the response echoes `context.assigned` rather than a fixed True.
+    msgs = build_response({**ACTIONLIST_SELECT, "context": {"assigned": False}})
+    assert msgs[0]["updateDataModel"]["value"] is False
+
+
+def test_radio_select_still_falls_through_to_the_static_fixture():
+    # The Radio `select` (context `{value}`, no `assigned`) must not be captured by the
+    # ActionList dynamic branch — it still returns the static select.json (writes /selected).
+    msgs = build_response(SELECT)
+    assert msgs[0]["updateDataModel"]["path"] == "/selected"
+
+
+def test_actionlist_remove_writes_removed_then_swaps_status_with_surface_echoed():
+    # TrailingAction carries no two-way state; /removed is written only by the server. The write
+    # is visible through the neighboring `Item.disabled <- /removed` coupling (the row greys out).
+    msgs = build_response(ACTIONLIST_REMOVE)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "actionlist-trailingaction-event"
+    assert dm["path"] == "/removed"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "actionlist-trailingaction-event"
+    assert uc["components"] == [
+        {"id": "status", "component": "Text", "text": '🗑️ Removed "bug" — server confirmed'}
+    ]
+
+
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1

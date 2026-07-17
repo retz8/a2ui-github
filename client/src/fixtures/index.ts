@@ -282,6 +282,25 @@ import {titleFixture} from './title';
 import {titleBoundFixture} from './title-bound';
 import {titleareaVariantFixture} from './titlearea-variant';
 import {breadcrumbsTemplateFixture} from './breadcrumbs-template';
+import {actionlistFixture} from './actionlist';
+import {actionlistChildrenTemplateFixture} from './actionlist-children-template';
+import {actionlistSelectionFixture} from './actionlist-selection';
+import {actionlistSelectedBoundFixture} from './actionlist-selected-bound';
+import {actionlistItemFnFixture} from './actionlist-item-fn';
+import {actionlistItemEventFixture} from './actionlist-item-event';
+import {actionlistItemActiveFixture} from './actionlist-item-active';
+import {actionlistItemDisabledFixture} from './actionlist-item-disabled';
+import {actionlistItemLoadingFixture} from './actionlist-item-loading';
+import {actionlistItemInactiveFixture} from './actionlist-item-inactive';
+import {actionlistItemVariantFixture} from './actionlist-item-variant';
+import {actionlistItemSizeFixture} from './actionlist-item-size';
+import {actionlistVariantFixture} from './actionlist-variant';
+import {actionlistDividersFixture} from './actionlist-dividers';
+import {actionlistGroupVariantFixture} from './actionlist-group-variant';
+import {actionlistDescriptionFixture} from './actionlist-description';
+import {actionlistTrailingactionFnFixture} from './actionlist-trailingaction-fn';
+import {actionlistTrailingactionEventFixture} from './actionlist-trailingaction-event';
+import {actionlistTrailingactionLoadingFixture} from './actionlist-trailingaction-loading';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -562,6 +581,25 @@ export {splPanePositionFixture} from './spl-pane-position';
 export {splPaneWidthFixture} from './spl-pane-width';
 export {splPaneDividerFixture} from './spl-pane-divider';
 export {splPaneResizableFixture} from './spl-pane-resizable';
+export {actionlistFixture} from './actionlist';
+export {actionlistChildrenTemplateFixture} from './actionlist-children-template';
+export {actionlistSelectionFixture} from './actionlist-selection';
+export {actionlistSelectedBoundFixture} from './actionlist-selected-bound';
+export {actionlistItemFnFixture} from './actionlist-item-fn';
+export {actionlistItemEventFixture} from './actionlist-item-event';
+export {actionlistItemActiveFixture} from './actionlist-item-active';
+export {actionlistItemDisabledFixture} from './actionlist-item-disabled';
+export {actionlistItemLoadingFixture} from './actionlist-item-loading';
+export {actionlistItemInactiveFixture} from './actionlist-item-inactive';
+export {actionlistItemVariantFixture} from './actionlist-item-variant';
+export {actionlistItemSizeFixture} from './actionlist-item-size';
+export {actionlistVariantFixture} from './actionlist-variant';
+export {actionlistDividersFixture} from './actionlist-dividers';
+export {actionlistGroupVariantFixture} from './actionlist-group-variant';
+export {actionlistDescriptionFixture} from './actionlist-description';
+export {actionlistTrailingactionFnFixture} from './actionlist-trailingaction-fn';
+export {actionlistTrailingactionEventFixture} from './actionlist-trailingaction-event';
+export {actionlistTrailingactionLoadingFixture} from './actionlist-trailingaction-loading';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -849,6 +887,25 @@ export const FIXTURES: Fixture[] = [
   titleBoundFixture,
   titleareaVariantFixture,
   breadcrumbsTemplateFixture,
+  actionlistFixture,
+  actionlistChildrenTemplateFixture,
+  actionlistSelectionFixture,
+  actionlistSelectedBoundFixture,
+  actionlistItemFnFixture,
+  actionlistItemEventFixture,
+  actionlistItemActiveFixture,
+  actionlistItemDisabledFixture,
+  actionlistItemLoadingFixture,
+  actionlistItemInactiveFixture,
+  actionlistItemVariantFixture,
+  actionlistItemSizeFixture,
+  actionlistVariantFixture,
+  actionlistDividersFixture,
+  actionlistGroupVariantFixture,
+  actionlistDescriptionFixture,
+  actionlistTrailingactionFnFixture,
+  actionlistTrailingactionEventFixture,
+  actionlistTrailingactionLoadingFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

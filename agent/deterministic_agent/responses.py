@@ -15,6 +15,7 @@ _EVENT_FIXTURES = {
     "toggle": "toggle.json",
     "search": "search.json",
     "pin": "pin.json",
+    "remove": "remove.json",
 }
 # The operation key whose object carries the surfaceId we stamp.
 _OPERATION_KEYS = ("updateComponents", "updateDataModel", "createSurface")
@@ -46,6 +47,37 @@ def _change_response(action: dict, surface_id: str) -> list[dict]:
                         "id": "status",
                         "component": "Text",
                         "text": f"✅ Now showing: {name} — server received index {index}",
+                    }
+                ],
+            },
+        },
+    ]
+
+
+def _select_assigned_response(action: dict, surface_id: str) -> list[dict]:
+    """ActionList.Item `select`: echo the item's optimistic `context.assigned` write, then confirm.
+
+    The `select` event name is shared with the Radio/Select `select.json` fixture, but the
+    ActionList.Item variant echoes the received selection dynamically (like `change` echoes
+    `selectedIndex`), so it is built here rather than from a static fixture. Dispatch is keyed on
+    the presence of `context.assigned`, which only the ActionList item event carries; the Radio
+    `select` (context `{value}`) still falls through to `select.json`.
+    """
+    assigned = action.get("context", {}).get("assigned", False)
+    return [
+        {
+            "version": "v0.9",
+            "updateDataModel": {"surfaceId": surface_id, "path": "/assigned", "value": assigned},
+        },
+        {
+            "version": "v0.9",
+            "updateComponents": {
+                "surfaceId": surface_id,
+                "components": [
+                    {
+                        "id": "status",
+                        "component": "Text",
+                        "text": "✅ Assigned to you — server confirmed",
                     }
                 ],
             },
@@ -85,6 +117,8 @@ def build_response(action: dict) -> list[dict]:
     surface_id = action.get("surfaceId", "")
     if name == "change":
         return _change_response(action, surface_id)
+    if name == "select" and "assigned" in action.get("context", {}):
+        return _select_assigned_response(action, surface_id)
     fixture = _EVENT_FIXTURES.get(name)
     if fixture is None:
         return _fallback(name, surface_id)

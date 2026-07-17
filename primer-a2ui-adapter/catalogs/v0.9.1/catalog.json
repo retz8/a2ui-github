@@ -3,6 +3,371 @@
   "$id": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
   "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
   "components": {
+    "ActionList": {
+      "type": "object",
+      "description": "A vertically stacked list of actions or selectable options, optionally organized into labeled groups and separated by dividers.",
+      "properties": {
+        "component": {
+          "const": "ActionList"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The items, groups, dividers, and heading contained in the list."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["inset", "horizontal-inset", "full"],
+          "default": "inset",
+          "description": "How items are offset from the list's edges."
+        },
+        "selectionVariant": {
+          "type": "string",
+          "enum": ["single", "radio", "multiple"],
+          "description": "Whether one or many items may be selected, and how a selected item is indicated (checkmark, radio button, or checkbox)."
+        },
+        "showDividers": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether a divider is shown above each item."
+        },
+        "role": {
+          "type": "string",
+          "description": "The ARIA role describing the list's function, e.g. `listbox` or `menu`."
+        },
+        "disableFocusZone": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the list's built-in keyboard arrow-key navigation is turned off."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["ul", "ol", "div"],
+          "default": "ul",
+          "description": "The HTML element used to render the list container; the choices are display-equivalent and differ only in semantic/landmark identity."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible label/description for the list, for assistive technologies."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.Item": {
+      "type": "object",
+      "description": "A single selectable or actionable row in an action list, holding a label and optional leading/trailing visuals, a secondary description, and a trailing action.",
+      "properties": {
+        "component": {
+          "const": "ActionList.Item"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The item's label plus its leading/trailing visuals, description, and trailing action."
+        },
+        "selected": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the item is selected; two-way bound — a click writes the new state back. Meaningful only when the list or group sets a `selectionVariant`."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An effect performed when the item is selected — a local function or a server event."
+        },
+        "active": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the item is the currently-active one (e.g. the current page); at most one item should be active.",
+          "default": false
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "danger"],
+          "default": "default",
+          "description": "The item's style; `danger` marks a destructive action."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["medium", "large"],
+          "default": "medium",
+          "description": "The item's block size."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the item is disabled and cannot be clicked, selected, or navigated to.",
+          "default": false
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the item is in a loading state.",
+          "default": false
+        },
+        "inactiveText": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Text explaining why the item is temporarily unavailable; its presence marks the item inactive."
+        },
+        "role": {
+          "type": "string",
+          "description": "The ARIA role describing the item's function, e.g. `option` or `menuitemradio`."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.LinkItem": {
+      "type": "object",
+      "description": "An action-list row that navigates to a URL when clicked, rendered as a link.",
+      "properties": {
+        "component": {
+          "const": "ActionList.LinkItem"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The link item's label plus its leading/trailing visuals and description."
+        },
+        "href": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The URL the item navigates to when clicked."
+        },
+        "active": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether this is the currently-active item (e.g. the current page); at most one item should be active.",
+          "default": false
+        },
+        "inactiveText": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Text explaining why the item is temporarily unavailable; its presence marks the item inactive."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "danger"],
+          "default": "default",
+          "description": "The item's style; `danger` marks a destructive item."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["medium", "large"],
+          "default": "medium",
+          "description": "The item's block size."
+        },
+        "target": {
+          "type": "string",
+          "enum": ["_self", "_blank"],
+          "default": "_self",
+          "description": "Whether the URL opens in the same tab (`_self`) or a new tab (`_blank`)."
+        }
+      },
+      "required": ["component", "href"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.Group": {
+      "type": "object",
+      "description": "A labeled section grouping related items within an action list, optionally with its own selection mode.",
+      "properties": {
+        "component": {
+          "const": "ActionList.Group"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The items contained in the group."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["filled", "subtle"],
+          "default": "subtle",
+          "description": "The group's style; `filled` adds a background color and top/bottom borders."
+        },
+        "auxiliaryText": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Secondary text providing additional information about the group."
+        },
+        "selectionVariant": {
+          "description": "Whether one or many items in this group may be selected, overriding the list's setting; `false` disables selection for this group.",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["single", "radio", "multiple"]
+            },
+            {
+              "const": false
+            }
+          ]
+        },
+        "role": {
+          "type": "string",
+          "description": "The ARIA role describing the function of the list inside the group."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.GroupHeading": {
+      "type": "object",
+      "description": "A heading that labels a group of items within an action list, optionally with a trailing action beside the label.",
+      "properties": {
+        "component": {
+          "const": "ActionList.GroupHeading"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The heading label and its optional trailing action."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["filled", "subtle"],
+          "default": "subtle",
+          "description": "The heading's style; `filled` adds a background color and top/bottom borders."
+        },
+        "auxiliaryText": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Secondary text providing additional information about the group."
+        },
+        "visuallyHidden": {
+          "type": "boolean",
+          "description": "Whether the heading is hidden visually but kept available to assistive technologies."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["h1", "h2", "h3", "h4", "h5", "h6"],
+          "default": "h3",
+          "description": "The heading level in the document outline."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.LeadingVisual": {
+      "type": "object",
+      "description": "A visual, typically an icon, shown before an item's label.",
+      "properties": {
+        "component": {
+          "const": "ActionList.LeadingVisual"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The visual content shown before the item's label — typically an icon."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.TrailingVisual": {
+      "type": "object",
+      "description": "A visual, typically an icon, counter, or keyboard hint, shown after an item's label.",
+      "properties": {
+        "component": {
+          "const": "ActionList.TrailingVisual"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The visual content shown after the item's label — typically an icon, counter, or keyboard hint."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.Description": {
+      "type": "object",
+      "description": "Secondary text describing an item, shown beside or below the item's label.",
+      "properties": {
+        "component": {
+          "const": "ActionList.Description"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The item's secondary description text."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["inline", "block"],
+          "default": "inline",
+          "description": "Whether the description sits beside the label (`inline`) or below it (`block`)."
+        },
+        "truncate": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether an inline description truncates its text on overflow."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.Divider": {
+      "type": "object",
+      "description": "A visual separator between items or groups in an action list.",
+      "properties": {
+        "component": {
+          "const": "ActionList.Divider"
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.TrailingAction": {
+      "type": "object",
+      "description": "A secondary action, shown after an item's content, that runs an action when clicked or navigates when given a link target.",
+      "properties": {
+        "component": {
+          "const": "ActionList.TrailingAction"
+        },
+        "icon": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The icon displayed as the action's content."
+        },
+        "label": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The action's accessible name, and its visible text when rendered as a plain button."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the button is activated — a local function or a server event. Applies in button mode."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["button", "a"],
+          "default": "button",
+          "description": "Whether the control renders as a button or a link."
+        },
+        "href": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The URL navigated to when rendered as a link (`as: \"a\"`)."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the action is in a loading state (button mode).",
+          "default": false
+        }
+      },
+      "required": ["component", "icon", "label"],
+      "unevaluatedProperties": false
+    },
+    "ActionList.Heading": {
+      "type": "object",
+      "description": "A heading that labels the entire action list.",
+      "properties": {
+        "component": {
+          "const": "ActionList.Heading"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The list heading's text."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["h1", "h2", "h3", "h4", "h5", "h6"],
+          "default": "h3",
+          "description": "The heading level in the document outline."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "The heading's visual size, independent of its outline level."
+        },
+        "visuallyHidden": {
+          "type": "boolean",
+          "description": "Whether the heading is hidden visually but kept available to assistive technologies."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
     "Text": {
       "type": "object",
       "description": "Displays a run of text with configurable typography.",
@@ -5278,6 +5643,39 @@
   "$defs": {
     "anyComponent": {
       "oneOf": [
+        {
+          "$ref": "#/components/ActionList"
+        },
+        {
+          "$ref": "#/components/ActionList.Item"
+        },
+        {
+          "$ref": "#/components/ActionList.LinkItem"
+        },
+        {
+          "$ref": "#/components/ActionList.Group"
+        },
+        {
+          "$ref": "#/components/ActionList.GroupHeading"
+        },
+        {
+          "$ref": "#/components/ActionList.LeadingVisual"
+        },
+        {
+          "$ref": "#/components/ActionList.TrailingVisual"
+        },
+        {
+          "$ref": "#/components/ActionList.Description"
+        },
+        {
+          "$ref": "#/components/ActionList.Divider"
+        },
+        {
+          "$ref": "#/components/ActionList.TrailingAction"
+        },
+        {
+          "$ref": "#/components/ActionList.Heading"
+        },
         {
           "$ref": "#/components/Text"
         },

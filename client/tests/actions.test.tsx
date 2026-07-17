@@ -27,6 +27,11 @@ import {textinputBoundFixture} from '../src/fixtures/textinput-bound';
 import {navlistTrailingactionFnFixture} from '../src/fixtures/navlist-trailingaction-fn';
 import {navlistTrailingactionEventFixture} from '../src/fixtures/navlist-trailingaction-event';
 import {navlistGroupexpandShowmoreFixture} from '../src/fixtures/navlist-groupexpand';
+import {actionlistItemFnFixture} from '../src/fixtures/actionlist-item-fn';
+import {actionlistItemEventFixture} from '../src/fixtures/actionlist-item-event';
+import {actionlistSelectedBoundFixture} from '../src/fixtures/actionlist-selected-bound';
+import {actionlistTrailingactionFnFixture} from '../src/fixtures/actionlist-trailingaction-fn';
+import {actionlistTrailingactionEventFixture} from '../src/fixtures/actionlist-trailingaction-event';
 
 afterEach(cleanup);
 
@@ -416,5 +421,79 @@ describe('NavList.GroupExpand — pagination behavior', () => {
     // Second expand reveals the remaining items (docs, infra) from Primer-internal currentPage.
     fireEvent.click(screen.getByText('Show more repositories'));
     await vi.waitFor(() => expect(screen.getByRole('link', {name: 'infra'})).toBeInTheDocument());
+  });
+});
+
+describe('ActionList action paths', () => {
+  it('Item functionCall runs the registered consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(actionlistItemFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByText('Copy issue URL'));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'item selected');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('Item event is dispatched to the actionHandler with source metadata', async () => {
+    const handler = vi.fn();
+    renderFixture(actionlistItemEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByText('Assign to me'));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'select',
+        surfaceId: 'actionlist-item-event',
+        sourceComponentId: 'a0',
+      }),
+    );
+  });
+
+  it('two-way write-back: clicking a bound Item writes selected back to the data-model path', async () => {
+    const handler = vi.fn();
+    renderFixture(actionlistSelectedBoundFixture, {actionHandler: handler});
+
+    const bugRow = screen.getByText('bug');
+    fireEvent.click(bugRow);
+
+    // The binder's auto-generated setSelected wrote /labels/bug = true; the row re-renders
+    // selected. In a listbox the item is an `option`, so the selected state is `aria-selected`.
+    // No client->server action is dispatched for the pure data-model write.
+    await vi.waitFor(() =>
+      expect(document.querySelector('[aria-selected="true"]')).toBeInTheDocument(),
+    );
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('TrailingAction functionCall runs the registered consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(actionlistTrailingactionFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'More options'}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'trailing action');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('TrailingAction event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(actionlistTrailingactionEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Remove label'}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'remove',
+        surfaceId: 'actionlist-trailingaction-event',
+        sourceComponentId: 'labelrow-ta',
+      }),
+    );
   });
 });
