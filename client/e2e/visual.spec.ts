@@ -174,6 +174,16 @@ const FIXTURE_NAMES = [
   'pagelayout-sidebar-divider',
   'pagelayout-sidebar-resizable',
   'pagelayout-sidebar-padding',
+  'split-page-layout',
+  'split-page-layout-sidebar',
+  'spl-header-divider',
+  'spl-content-width',
+  'spl-content-padding',
+  'spl-content-children-template',
+  'spl-pane-position',
+  'spl-pane-width',
+  'spl-pane-divider',
+  'spl-pane-resizable',
 ];
 
 for (const name of FIXTURE_NAMES) {

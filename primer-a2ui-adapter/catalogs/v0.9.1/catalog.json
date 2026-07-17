@@ -4061,6 +4061,519 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "SplitPageLayout": {
+      "type": "object",
+      "description": "A page layout with a fixed split arrangement — a full-width header and footer, a main content area, and an adjacent side panel or full-height sidebar.",
+      "properties": {
+        "component": {
+          "const": "SplitPageLayout"
+        },
+        "header": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The banner region across the top of the page."
+        },
+        "content": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The main content region."
+        },
+        "pane": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The side panel region beside the main content."
+        },
+        "sidebar": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The full-height side region running alongside the header, content, and footer."
+        },
+        "footer": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The footer region across the bottom of the page."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "SplitPageLayout.Header": {
+      "type": "object",
+      "description": "The banner region across the top of a split page layout.",
+      "properties": {
+        "component": {
+          "const": "SplitPageLayout.Header"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content rendered inside the header region."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "normal",
+          "description": "Inner padding of the header region."
+        },
+        "divider": {
+          "description": "A divider drawn along the edge separating the header from the content.",
+          "default": "line",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["none", "line"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "line", "filled"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "hidden": {
+          "description": "Whether the header region is hidden.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the header landmark."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "SplitPageLayout.Content": {
+      "type": "object",
+      "description": "The main content region of a split page layout.",
+      "properties": {
+        "component": {
+          "const": "SplitPageLayout.Content"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The main content rendered inside the content region."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["main", "div", "section", "article"],
+          "default": "main",
+          "description": "The HTML element used to render the content region; the choices are display-equivalent and differ only in semantic/landmark identity."
+        },
+        "width": {
+          "type": "string",
+          "enum": ["full", "medium", "large", "xlarge"],
+          "default": "large",
+          "description": "The maximum width of the content region."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "normal",
+          "description": "Inner padding of the content region."
+        },
+        "hidden": {
+          "description": "Whether the content region is hidden.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the main landmark."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "SplitPageLayout.Pane": {
+      "type": "object",
+      "description": "A side panel region beside the main content of a split page layout, optionally resizable by the user.",
+      "properties": {
+        "component": {
+          "const": "SplitPageLayout.Pane"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content rendered inside the pane."
+        },
+        "position": {
+          "description": "Which side of the content the pane sits on.",
+          "default": "start",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["start", "end"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["start", "end"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["start", "end"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["start", "end"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "width": {
+          "description": "The pane width — a named size, or explicit min/default/max px constraints.",
+          "default": "medium",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["small", "medium", "large"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "string"
+                },
+                "default": {
+                  "type": "string"
+                },
+                "max": {
+                  "type": "string"
+                }
+              },
+              "required": ["min", "default", "max"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "minWidth": {
+          "type": "number",
+          "description": "Minimum pane width in pixels (used with named sizes)."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "normal",
+          "description": "Inner padding of the pane."
+        },
+        "divider": {
+          "description": "A divider drawn along the edge between the pane and the content.",
+          "default": "line",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["none", "line"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "line", "filled"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "sticky": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether the pane sticks to the viewport while the content scrolls."
+        },
+        "offsetHeader": {
+          "description": "Top offset for the sticky pane, to clear a fixed header.",
+          "oneOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "hidden": {
+          "description": "Whether the pane is hidden.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "resizable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the user can drag to resize the pane."
+        },
+        "currentWidth": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+          "description": "The controlled live width of the pane in pixels. Two-way bound: a resize writes the new width back to the bound path."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the pane region."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "SplitPageLayout.Sidebar": {
+      "type": "object",
+      "description": "A full-height side region running alongside the header, content, and footer of a split page layout, optionally resizable by the user.",
+      "properties": {
+        "component": {
+          "const": "SplitPageLayout.Sidebar"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content rendered inside the sidebar."
+        },
+        "position": {
+          "type": "string",
+          "enum": ["start", "end"],
+          "default": "start",
+          "description": "Which side of the layout the sidebar sits on."
+        },
+        "width": {
+          "description": "The sidebar width — a named size, or explicit min/default/max px constraints.",
+          "default": "medium",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["small", "medium", "large"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "string"
+                },
+                "default": {
+                  "type": "string"
+                },
+                "max": {
+                  "type": "string"
+                }
+              },
+              "required": ["min", "default", "max"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "minWidth": {
+          "type": "number",
+          "default": 256,
+          "description": "Minimum sidebar width in pixels when resizable."
+        },
+        "resizable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the user can drag to resize the sidebar."
+        },
+        "currentWidth": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+          "description": "The controlled live width of the sidebar in pixels. Two-way bound: a resize writes the new width back to the bound path."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "normal",
+          "description": "Inner padding of the sidebar."
+        },
+        "divider": {
+          "type": "string",
+          "enum": ["none", "line"],
+          "default": "line",
+          "description": "A divider drawn between the sidebar and the content."
+        },
+        "sticky": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the sidebar sticks to the viewport while the content scrolls."
+        },
+        "responsiveVariant": {
+          "type": "string",
+          "enum": ["default", "fullscreen"],
+          "default": "default",
+          "description": "Behavior at narrow viewports — retain the inline layout, or expand to a full-screen overlay."
+        },
+        "hidden": {
+          "description": "Whether the sidebar is hidden.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the sidebar region."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "SplitPageLayout.Footer": {
+      "type": "object",
+      "description": "The footer region across the bottom of a split page layout.",
+      "properties": {
+        "component": {
+          "const": "SplitPageLayout.Footer"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content rendered inside the footer region."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "normal",
+          "description": "Inner padding of the footer region."
+        },
+        "divider": {
+          "description": "A divider drawn along the edge separating the footer from the content.",
+          "default": "line",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["none", "line"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "line", "filled"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "hidden": {
+          "description": "Whether the footer region is hidden.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the footer landmark."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -4313,6 +4826,24 @@
         },
         {
           "$ref": "#/components/PageLayout.Footer"
+        },
+        {
+          "$ref": "#/components/SplitPageLayout"
+        },
+        {
+          "$ref": "#/components/SplitPageLayout.Header"
+        },
+        {
+          "$ref": "#/components/SplitPageLayout.Content"
+        },
+        {
+          "$ref": "#/components/SplitPageLayout.Pane"
+        },
+        {
+          "$ref": "#/components/SplitPageLayout.Sidebar"
+        },
+        {
+          "$ref": "#/components/SplitPageLayout.Footer"
         }
       ]
     },

@@ -203,6 +203,16 @@ import {pagelayoutHeaderDividerFixture} from '../src/fixtures/pagelayout-header-
 import {pagelayoutPaneResizableFixture} from '../src/fixtures/pagelayout-pane-resizable';
 import {pagelayoutPaneCurrentwidthFixture} from '../src/fixtures/pagelayout-pane-currentwidth';
 import {pagelayoutSidebarResizableFixture} from '../src/fixtures/pagelayout-sidebar-resizable';
+import {splitPageLayoutFixture} from '../src/fixtures/split-page-layout';
+import {splitPageLayoutSidebarFixture} from '../src/fixtures/split-page-layout-sidebar';
+import {splHeaderDividerFixture} from '../src/fixtures/spl-header-divider';
+import {splContentWidthFixture} from '../src/fixtures/spl-content-width';
+import {splContentPaddingFixture} from '../src/fixtures/spl-content-padding';
+import {splContentChildrenTemplateFixture} from '../src/fixtures/spl-content-children-template';
+import {splPanePositionFixture} from '../src/fixtures/spl-pane-position';
+import {splPaneWidthFixture} from '../src/fixtures/spl-pane-width';
+import {splPaneDividerFixture} from '../src/fixtures/spl-pane-divider';
+import {splPaneResizableFixture} from '../src/fixtures/spl-pane-resizable';
 
 afterEach(cleanup);
 
@@ -1765,5 +1775,96 @@ describe('PageLayout (compound family) — integration through the renderer', ()
     renderFixture(pagelayoutPaneCurrentwidthFixture);
     expect(screen.getByRole('slider')).toBeInTheDocument();
     expect(screen.getByRole('link', {name: 'Issues'})).toBeInTheDocument();
+  });
+});
+
+describe('SplitPageLayout (split page layout compound) — integration through the renderer', () => {
+  it('renders every region of the header/content/pane/footer composition', () => {
+    const {container} = renderFixture(splitPageLayoutFixture);
+    expect(container.querySelector('[data-component="PageLayout"]')).not.toBeNull();
+    expect(screen.getByText('Repository settings')).toBeInTheDocument();
+    expect(screen.getByText(/Manage general settings/)).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Overview'})).toBeInTheDocument();
+    expect(screen.getByText('© 2026 GitHub')).toBeInTheDocument();
+  });
+
+  it('renders the full-height sidebar composition', () => {
+    const {container} = renderFixture(splitPageLayoutSidebarFixture);
+    expect(container.querySelector('[data-component="PageLayout.Sidebar"]')).not.toBeNull();
+    expect(screen.getByRole('link', {name: 'Settings'})).toBeInTheDocument();
+    expect(screen.getByText('© 2026 GitHub')).toBeInTheDocument();
+  });
+
+  // Regression guard for slot-flattening: Primer's PageLayout routes header/footer/sidebar into
+  // their regions via `useSlots`, which matches each region's slot marker. The a2ui `DeferredChild`
+  // wrapper hides that marker, so without the `asSlot` bridges every region falls into `rest` and
+  // renders flattened (stacked in document order) — presence assertions still pass, only placement
+  // is wrong. These two tests assert placement, so they fail on the flattened render.
+  it('slots the sidebar region out of the content flow (not flattened)', () => {
+    const {container} = renderFixture(splitPageLayoutSidebarFixture);
+    const root = container.querySelector('[data-component="PageLayout"]');
+    // Primer sets `data-has-sidebar` only when `useSlots` matches the sidebar bridge; on a flattened
+    // render the sidebar falls into `rest` and the attribute is absent.
+    expect(root?.getAttribute('data-has-sidebar')).toBe('true');
+  });
+
+  it('places header and footer in their regions, not flattened into content', () => {
+    const {container} = renderFixture(splitPageLayoutFixture);
+    const wrapper = container.querySelector('[data-width]');
+    const header = container.querySelector('[data-component="PageLayout.Header"]');
+    const content = container.querySelector('[data-component="PageLayout.Content"]');
+    const footer = container.querySelector('[data-component="PageLayout.Footer"]');
+    // Slotted: header/footer are direct children of the layout wrapper; content lives in the inner
+    // rest container. Flattened: all three share the rest container (header.parent === content.parent).
+    expect(header?.parentElement).toBe(wrapper);
+    expect(footer?.parentElement).toBe(wrapper);
+    expect(content?.parentElement).not.toBe(wrapper);
+    expect(header?.parentElement).not.toBe(content?.parentElement);
+  });
+
+  it('renders both header divider states across the gallery', () => {
+    const {container} = renderFixture(splHeaderDividerFixture);
+    expect(container.querySelectorAll('[data-component="PageLayout.Header"]')).toHaveLength(2);
+    expect(screen.getAllByText('Repository settings')).toHaveLength(2);
+  });
+
+  it('forwards the content max-width across the width gallery', () => {
+    const {container} = renderFixture(splContentWidthFixture);
+    expect(container.querySelector('[data-width="full"]')).not.toBeNull();
+    expect(container.querySelector('[data-width="xlarge"]')).not.toBeNull();
+  });
+
+  it('renders the content padding gallery', () => {
+    const {container} = renderFixture(splContentPaddingFixture);
+    expect(container.querySelectorAll('[data-component="PageLayout.Content"]')).toHaveLength(3);
+  });
+
+  it('expands a dynamic-template content ChildList from the bound /items array', () => {
+    renderFixture(splContentChildrenTemplateFixture);
+    expect(screen.getByText('Alpha')).toBeInTheDocument();
+    expect(screen.getByText('Beta')).toBeInTheDocument();
+  });
+
+  it('forwards the pane position across the gallery', () => {
+    const {container} = renderFixture(splPanePositionFixture);
+    expect(container.querySelector('[data-position="start"]')).not.toBeNull();
+    expect(container.querySelector('[data-position="end"]')).not.toBeNull();
+  });
+
+  it('renders the pane width gallery (named sizes + custom constraints)', () => {
+    const {container} = renderFixture(splPaneWidthFixture);
+    expect(container.querySelectorAll('[data-component="PageLayout.Pane"]')).toHaveLength(4);
+    expect(container.innerHTML).toContain('--pane-width-large');
+    expect(container.innerHTML).toContain('160px');
+  });
+
+  it('renders the pane divider gallery', () => {
+    const {container} = renderFixture(splPaneDividerFixture);
+    expect(container.querySelectorAll('[data-component="PageLayout.Pane"]')).toHaveLength(2);
+  });
+
+  it('exposes the resize handle on the resizable pane', () => {
+    const {container} = renderFixture(splPaneResizableFixture);
+    expect(container.querySelector('[data-resizable="true"]')).not.toBeNull();
   });
 });

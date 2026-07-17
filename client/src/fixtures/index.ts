@@ -264,6 +264,16 @@ import {pagelayoutSidebarDividerFixture} from './pagelayout-sidebar-divider';
 import {pagelayoutSidebarResizableFixture} from './pagelayout-sidebar-resizable';
 import {pagelayoutSidebarPaddingFixture} from './pagelayout-sidebar-padding';
 import {pagelayoutSidebarCurrentwidthFixture} from './pagelayout-sidebar-currentwidth';
+import {splitPageLayoutFixture} from './split-page-layout';
+import {splitPageLayoutSidebarFixture} from './split-page-layout-sidebar';
+import {splHeaderDividerFixture} from './spl-header-divider';
+import {splContentWidthFixture} from './spl-content-width';
+import {splContentPaddingFixture} from './spl-content-padding';
+import {splContentChildrenTemplateFixture} from './spl-content-children-template';
+import {splPanePositionFixture} from './spl-pane-position';
+import {splPaneWidthFixture} from './spl-pane-width';
+import {splPaneDividerFixture} from './spl-pane-divider';
+import {splPaneResizableFixture} from './spl-pane-resizable';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -534,6 +544,16 @@ export {pagelayoutSidebarDividerFixture} from './pagelayout-sidebar-divider';
 export {pagelayoutSidebarResizableFixture} from './pagelayout-sidebar-resizable';
 export {pagelayoutSidebarPaddingFixture} from './pagelayout-sidebar-padding';
 export {pagelayoutSidebarCurrentwidthFixture} from './pagelayout-sidebar-currentwidth';
+export {splitPageLayoutFixture} from './split-page-layout';
+export {splitPageLayoutSidebarFixture} from './split-page-layout-sidebar';
+export {splHeaderDividerFixture} from './spl-header-divider';
+export {splContentWidthFixture} from './spl-content-width';
+export {splContentPaddingFixture} from './spl-content-padding';
+export {splContentChildrenTemplateFixture} from './spl-content-children-template';
+export {splPanePositionFixture} from './spl-pane-position';
+export {splPaneWidthFixture} from './spl-pane-width';
+export {splPaneDividerFixture} from './spl-pane-divider';
+export {splPaneResizableFixture} from './spl-pane-resizable';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -803,6 +823,16 @@ export const FIXTURES: Fixture[] = [
   pagelayoutSidebarResizableFixture,
   pagelayoutSidebarPaddingFixture,
   pagelayoutSidebarCurrentwidthFixture,
+  splitPageLayoutFixture,
+  splitPageLayoutSidebarFixture,
+  splHeaderDividerFixture,
+  splContentWidthFixture,
+  splContentPaddingFixture,
+  splContentChildrenTemplateFixture,
+  splPanePositionFixture,
+  splPaneWidthFixture,
+  splPaneDividerFixture,
+  splPaneResizableFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

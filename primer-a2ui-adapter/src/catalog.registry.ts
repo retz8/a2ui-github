@@ -55,6 +55,12 @@ import {PageLayoutContentApi} from './components/pagelayout-content';
 import {PageLayoutPaneApi} from './components/pagelayout-pane';
 import {PageLayoutSidebarApi} from './components/pagelayout-sidebar';
 import {PageLayoutFooterApi} from './components/pagelayout-footer';
+import {SplitPageLayoutApi} from './components/split-page-layout';
+import {SplitPageLayoutHeaderApi} from './components/split-page-layout-header';
+import {SplitPageLayoutContentApi} from './components/split-page-layout-content';
+import {SplitPageLayoutPaneApi} from './components/split-page-layout-pane';
+import {SplitPageLayoutSidebarApi} from './components/split-page-layout-sidebar';
+import {SplitPageLayoutFooterApi} from './components/split-page-layout-footer';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -120,6 +126,12 @@ export const COMPONENTS = {
   'PageLayout.Pane': PageLayoutPaneApi,
   'PageLayout.Sidebar': PageLayoutSidebarApi,
   'PageLayout.Footer': PageLayoutFooterApi,
+  SplitPageLayout: SplitPageLayoutApi,
+  'SplitPageLayout.Header': SplitPageLayoutHeaderApi,
+  'SplitPageLayout.Content': SplitPageLayoutContentApi,
+  'SplitPageLayout.Pane': SplitPageLayoutPaneApi,
+  'SplitPageLayout.Sidebar': SplitPageLayoutSidebarApi,
+  'SplitPageLayout.Footer': SplitPageLayoutFooterApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

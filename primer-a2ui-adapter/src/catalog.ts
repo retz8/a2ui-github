@@ -58,6 +58,12 @@ import {PageLayoutContentComponent} from './components/pagelayout-content';
 import {PageLayoutPaneComponent} from './components/pagelayout-pane';
 import {PageLayoutSidebarComponent} from './components/pagelayout-sidebar';
 import {PageLayoutFooterComponent} from './components/pagelayout-footer';
+import {SplitPageLayoutComponent} from './components/split-page-layout';
+import {SplitPageLayoutHeaderComponent} from './components/split-page-layout-header';
+import {SplitPageLayoutContentComponent} from './components/split-page-layout-content';
+import {SplitPageLayoutPaneComponent} from './components/split-page-layout-pane';
+import {SplitPageLayoutSidebarComponent} from './components/split-page-layout-sidebar';
+import {SplitPageLayoutFooterComponent} from './components/split-page-layout-footer';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -123,6 +129,12 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     PageLayoutPaneComponent,
     PageLayoutSidebarComponent,
     PageLayoutFooterComponent,
+    SplitPageLayoutComponent,
+    SplitPageLayoutHeaderComponent,
+    SplitPageLayoutContentComponent,
+    SplitPageLayoutPaneComponent,
+    SplitPageLayoutSidebarComponent,
+    SplitPageLayoutFooterComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );
