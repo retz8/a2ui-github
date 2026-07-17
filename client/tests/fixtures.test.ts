@@ -9,8 +9,10 @@ describe('fixtures', () => {
     expect(new Set(names).size).toBe(FIXTURES.length);
   });
 
-  it('every createSurface uses the Primer catalog id and v0.9', () => {
-    for (const fixture of FIXTURES) {
+  it('every createSurface uses the Primer catalog id and v0.9', async () => {
+    // FIXTURES only carries names + lazy loaders; load every body to inspect its messages.
+    const bodies = await Promise.all(FIXTURES.map(f => f.load()));
+    for (const fixture of bodies) {
       const creates = fixture.messages.filter(m => 'createSurface' in m);
       expect(creates.length).toBeGreaterThan(0);
       for (const m of fixture.messages) {
@@ -22,8 +24,9 @@ describe('fixtures', () => {
     }
   });
 
-  it('every surface defines a root component', () => {
-    for (const fixture of FIXTURES) {
+  it('every surface defines a root component', async () => {
+    const bodies = await Promise.all(FIXTURES.map(f => f.load()));
+    for (const fixture of bodies) {
       const updates = fixture.messages.filter(m => 'updateComponents' in m) as Array<{
         updateComponents: {components: Array<{id: string}>};
       }>;
