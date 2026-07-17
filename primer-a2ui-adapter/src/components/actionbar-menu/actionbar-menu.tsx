@@ -1,8 +1,9 @@
-import {Fragment, type ComponentProps, type ElementType, type FC, type ReactNode} from 'react';
+import {type ComponentProps, type ElementType, type ReactNode} from 'react';
 import {ActionBar as PrimerActionBar} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
 import type {ComponentContext} from '@a2ui/web_core/v0_9';
 import {ActionBarMenuApi} from './actionbar-menu.schema';
+import {iconComponent} from '../../shared/icon-component';
 
 /** `buildChild` from the a2ui react binder: resolves a component id to a node. */
 type BuildChild = (id: string, basePath?: string) => ReactNode;
@@ -31,13 +32,6 @@ type ResolvedMenuItem = {
 type PrimerActionBarMenuProps = ComponentProps<typeof PrimerActionBar.Menu>;
 type PrimerMenuItem = PrimerActionBarMenuProps['items'][number];
 type PrimerOverflowIcon = PrimerActionBarMenuProps['overflowIcon'];
-
-/** Wraps an already-built A2UI child node as a zero-prop component — Primer renders icon slots as
- * `<Icon/>` (a component), not as a node, so each built icon is adapted to that call shape. */
-function iconComponent(node: ReactNode): FC {
-  const Wrapped: FC = () => <Fragment>{node}</Fragment>;
-  return Wrapped;
-}
 
 /** Resolves a `trailingVisual` string: an id that names a real component in the surface is an icon
  * (built + wrapped); anything else is literal trailing text (Primer renders it in a span). */
@@ -69,9 +63,10 @@ function toPrimerItem(
   };
 }
 
-/** Resolved props: the icon is a built node, `items` are already in Primer's shape. */
+/** Resolved props: the icon is a component (built node wrapped via `iconComponent`), `items` are
+ * already in Primer's shape. */
 type ActionBarMenuViewProps = {
-  icon?: ReactNode;
+  icon: ElementType;
   label?: string;
   items: PrimerMenuItem[];
   overflowIcon?: PrimerOverflowIcon;
@@ -80,9 +75,10 @@ type ActionBarMenuViewProps = {
 export function ActionBarMenuView({icon, label, items, overflowIcon}: ActionBarMenuViewProps) {
   return (
     <PrimerActionBar.Menu
-      // Primer renders the menu button through IconButton, which accepts a built element at
-      // runtime (react-is isElement); the type wants a component, so it is cast.
-      icon={icon as unknown as ElementType}
+      // The icon is a component (a built node wrapped via `iconComponent`) so Primer can invoke it
+      // as `<Icon/>` on both the normal and the overflow-menu paths (the latter calls it strictly
+      // as a component type — a built element throws React #130 there).
+      icon={icon}
       aria-label={label ?? ''}
       items={items}
       overflowIcon={overflowIcon}
@@ -116,7 +112,7 @@ export const ActionBarMenuComponent = createComponentImplementation(
 
     return (
       <ActionBarMenuView
-        icon={buildChild(props.icon)}
+        icon={iconComponent(buildChild(props.icon))}
         label={accessibility?.label}
         items={items.map(item => toPrimerItem(item, buildChild, context))}
         overflowIcon={overflowIcon}
