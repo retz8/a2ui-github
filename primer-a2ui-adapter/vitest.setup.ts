@@ -1,5 +1,26 @@
 import '@testing-library/jest-dom/vitest';
 
+// jsdom does not implement IntersectionObserver. Primer's ActionBar items (IconButton, Divider,
+// Group, Menu) subscribe one through `useActionBarItem` to measure overflow, so rendering any of
+// them under vitest throws "IntersectionObserver is not defined". Provide a no-op stub: nothing is
+// ever reported as intersecting/overflowing, so items render inline (overflow measurement is a
+// browser-only concern covered by the Playwright baseline, not the jsdom render tests).
+if (typeof globalThis !== 'undefined' && typeof globalThis.IntersectionObserver === 'undefined') {
+  class IntersectionObserverStub {
+    readonly root = null;
+    readonly rootMargin = '';
+    readonly thresholds: ReadonlyArray<number> = [];
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+    takeRecords(): IntersectionObserverEntry[] {
+      return [];
+    }
+  }
+  globalThis.IntersectionObserver =
+    IntersectionObserverStub as unknown as typeof IntersectionObserver;
+}
+
 // jsdom has no matchMedia; some Primer components (e.g. ToggleSwitch's loading spinner) call it
 // through useMedia. Provide a no-match stub so those components render under vitest.
 if (typeof window !== 'undefined' && typeof window.matchMedia !== 'function') {

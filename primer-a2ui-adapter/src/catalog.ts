@@ -90,6 +90,11 @@ import {ActionListDescriptionComponent} from './components/actionlist-descriptio
 import {ActionListDividerComponent} from './components/actionlist-divider';
 import {ActionListTrailingActionComponent} from './components/actionlist-trailingaction';
 import {ActionListHeadingComponent} from './components/actionlist-heading';
+import {ActionBarComponent} from './components/actionbar';
+import {ActionBarIconButtonComponent} from './components/actionbar-iconbutton';
+import {ActionBarDividerComponent} from './components/actionbar-divider';
+import {ActionBarGroupComponent} from './components/actionbar-group';
+import {ActionBarMenuComponent} from './components/actionbar-menu';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -187,6 +192,11 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     ActionListDividerComponent,
     ActionListTrailingActionComponent,
     ActionListHeadingComponent,
+    ActionBarComponent,
+    ActionBarIconButtonComponent,
+    ActionBarDividerComponent,
+    ActionBarGroupComponent,
+    ActionBarMenuComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );
