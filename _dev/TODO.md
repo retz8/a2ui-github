@@ -103,7 +103,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [WIP] **6.38** `ActionList` (#72)
 - [] **6.39** `ActionMenu`
 - [WIP] **6.40** `ActionBar` (#71)
-- [WIP] **6.41** `NavList` (#74)
+- [x] **6.41** `NavList` (#74)
 - [ ] **6.42** `SubNav`
 - [ ] **6.43** `UnderlineNav`
 - [x] **6.44** `Breadcrumbs` (#70)
