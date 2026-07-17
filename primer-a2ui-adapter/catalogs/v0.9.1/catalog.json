@@ -4574,6 +4574,628 @@
       },
       "required": ["component"],
       "unevaluatedProperties": false
+    },
+    "PageHeader": {
+      "type": "object",
+      "description": "The heading region at the top of a page — carries the page title and the contextual navigation, actions, and supporting metadata around it.",
+      "properties": {
+        "component": {
+          "const": "PageHeader"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The regions and content arranged inside the page header."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["header", "div"],
+          "default": "div",
+          "description": "The HTML element used to render the header; selects its landmark identity."
+        },
+        "role": {
+          "type": "string",
+          "description": "An ARIA role overriding the header's default landmark role."
+        },
+        "hasBorder": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether a divider border is shown below the header."
+        },
+        "aria-label": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "An accessible label for the header region, for assistive technologies."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.ContextArea": {
+      "type": "object",
+      "description": "A container for contextual navigation and actions shown above the title, visible on narrow viewports by default.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.ContextArea"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The contextual navigation and actions shown above the title."
+        },
+        "hidden": {
+          "description": "Whether the region is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: hidden on regular and wide, visible on narrow only.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.ParentLink": {
+      "type": "object",
+      "description": "A link that navigates up to the parent page, shown above the title on narrow viewports.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.ParentLink"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The link's textual label."
+        },
+        "href": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The URL of the parent page the link navigates to when clicked."
+        },
+        "aria-label": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "An accessible label for the link, for assistive technologies."
+        },
+        "hidden": {
+          "description": "Whether the link is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: hidden on regular and wide, visible on narrow only.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component", "text", "href"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.ContextBar": {
+      "type": "object",
+      "description": "A container for additional contextual content shown in the context area, visible on narrow viewports by default.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.ContextBar"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "Additional contextual content shown in the context area."
+        },
+        "hidden": {
+          "description": "Whether the region is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: hidden on regular and wide, visible on narrow only.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.ContextAreaActions": {
+      "type": "object",
+      "description": "A container for action controls shown in the context area, visible on narrow viewports by default.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.ContextAreaActions"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "Action controls shown in the context area."
+        },
+        "hidden": {
+          "description": "Whether the region is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: hidden on regular and wide, visible on narrow only.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.TitleArea": {
+      "type": "object",
+      "description": "The container for the page title and the visuals and actions flanking it, with a selectable title size.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.TitleArea"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The title and the visuals and actions flanking it."
+        },
+        "variant": {
+          "description": "The title's size — `subtitle`, `medium`, or `large` — optionally per viewport width.",
+          "default": "medium",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["subtitle", "medium", "large"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["subtitle", "medium", "large"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["subtitle", "medium", "large"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["subtitle", "medium", "large"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "hidden": {
+          "description": "Whether the region is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: visible on all viewports.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.LeadingAction": {
+      "type": "object",
+      "description": "A slot for an action control placed before the title, visible on regular and wide viewports by default.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.LeadingAction"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "An action control placed before the title."
+        },
+        "hidden": {
+          "description": "Whether the slot is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: hidden on narrow, visible on regular and wide.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.LeadingVisual": {
+      "type": "object",
+      "description": "A slot for a visual element, such as an icon, placed before the title.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.LeadingVisual"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "A visual element, such as an icon, placed before the title."
+        },
+        "hidden": {
+          "description": "Whether the slot is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: visible on all viewports.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.Title": {
+      "type": "object",
+      "description": "The page's main heading text, with a selectable semantic level.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.Title"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The heading's textual content."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["h1", "h2", "h3", "h4", "h5", "h6"],
+          "default": "h2",
+          "description": "The heading element to render; selects the semantic level in the document outline."
+        },
+        "hidden": {
+          "description": "Whether the title is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: visible on all viewports.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.TrailingVisual": {
+      "type": "object",
+      "description": "A slot for a visual element, such as a label or badge, placed after the title.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.TrailingVisual"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "A visual element, such as a label or badge, placed after the title."
+        },
+        "hidden": {
+          "description": "Whether the slot is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: visible on all viewports.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.TrailingAction": {
+      "type": "object",
+      "description": "A slot for an action control placed after the title, visible on regular and wide viewports by default.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.TrailingAction"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "An action control placed after the title."
+        },
+        "hidden": {
+          "description": "Whether the slot is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: hidden on narrow, visible on regular and wide.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.Actions": {
+      "type": "object",
+      "description": "A container for the primary action controls aligned to the end of the title area.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.Actions"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The primary action controls aligned to the end of the title area."
+        },
+        "hidden": {
+          "description": "Whether the region is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: visible on all viewports.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.Breadcrumbs": {
+      "type": "object",
+      "description": "A slot for a breadcrumb trail showing the page's position in the navigation hierarchy.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.Breadcrumbs"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The breadcrumb trail showing the page's position in the navigation hierarchy."
+        },
+        "hidden": {
+          "description": "Whether the slot is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: visible on all viewports.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.Description": {
+      "type": "object",
+      "description": "A container for supporting text or metadata shown below the title.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.Description"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "Supporting text or metadata shown below the title."
+        },
+        "hidden": {
+          "description": "Whether the region is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: visible on all viewports.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageHeader.Navigation": {
+      "type": "object",
+      "description": "A container for tab-like navigation shown below the title.",
+      "properties": {
+        "component": {
+          "const": "PageHeader.Navigation"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The navigation items shown below the title."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["nav", "div"],
+          "default": "div",
+          "description": "The HTML element used to render the region; `nav` marks it as a navigation landmark."
+        },
+        "aria-label": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "An accessible label for the navigation landmark, for assistive technologies."
+        },
+        "aria-labelledby": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The id of an element that labels the navigation landmark for assistive technologies."
+        },
+        "hidden": {
+          "description": "Whether the region is hidden, optionally per viewport width (`narrow`/`regular`/`wide`). Unset applies the library default: visible on all viewports.",
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -4844,6 +5466,51 @@
         },
         {
           "$ref": "#/components/SplitPageLayout.Footer"
+        },
+        {
+          "$ref": "#/components/PageHeader"
+        },
+        {
+          "$ref": "#/components/PageHeader.ContextArea"
+        },
+        {
+          "$ref": "#/components/PageHeader.ParentLink"
+        },
+        {
+          "$ref": "#/components/PageHeader.ContextBar"
+        },
+        {
+          "$ref": "#/components/PageHeader.ContextAreaActions"
+        },
+        {
+          "$ref": "#/components/PageHeader.TitleArea"
+        },
+        {
+          "$ref": "#/components/PageHeader.LeadingAction"
+        },
+        {
+          "$ref": "#/components/PageHeader.LeadingVisual"
+        },
+        {
+          "$ref": "#/components/PageHeader.Title"
+        },
+        {
+          "$ref": "#/components/PageHeader.TrailingVisual"
+        },
+        {
+          "$ref": "#/components/PageHeader.TrailingAction"
+        },
+        {
+          "$ref": "#/components/PageHeader.Actions"
+        },
+        {
+          "$ref": "#/components/PageHeader.Breadcrumbs"
+        },
+        {
+          "$ref": "#/components/PageHeader.Description"
+        },
+        {
+          "$ref": "#/components/PageHeader.Navigation"
         }
       ]
     },
