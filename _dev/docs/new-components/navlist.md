@@ -83,11 +83,15 @@ family's shared baseline: a fully assembled navigation built from already-shippe
 leaf whose only surface is a `children` slot (`SubNav`, `LeadingVisual`, `TrailingVisual`, `Divider`)
 is exercised inside this baseline and carries no fixture of its own.
 
+The trailing visual and trailing action sit on the non-sub-nav item `it1`, not on the sub-nav item
+`it2`: Primer omits a `TrailingVisual` and a `TrailingAction` on an item that has a `SubNav` — the
+sub-nav owns the item's trailing slot for its expand chevron.
+
 ### Fixture table
 
 | fixture | exercises (coverage axis) | component state / canned children | baselined? |
 |---|---|---|---|
-| `navlist` | root `children` (static assembly) + `aria-label` + every slot leaf's `children` slot | root `aria-label: "Repository"`, `children: [it1, it2, div1, grp]` — `it1`=`Item` "Dashboard" (`aria-current: "page"`, `href: "#/dashboard"`, `LeadingVisual`→`Icon` `home`); `it2`=`Item` "Pull requests" (`href: "#/pulls"`, `defaultOpen: true`, `LeadingVisual`→`Icon` `git-pull-request`, `TrailingVisual`→`CounterLabel` "8", `Description` (inline) "Open and merged", `SubNav`[`Item` "Open"+href, `Item` "Closed"+href], `TrailingAction` `pin-icon`→`Icon` `pin` + label "Pin" + `action: functionCall consoleLog {message: "pin"}`); `div1`=`Divider`; `grp`=`Group` (`GroupHeading` "Support")[`Item` "Docs"+href, `Item` "Community"+href] — all 10 subcomponent leaves present | yes |
+| `navlist` | root `children` (static assembly) + `aria-label` + every slot leaf's `children` slot | root `aria-label: "Repository"`, `children: [it1, it2, div1, grp]` — `it1`=`Item` "Dashboard" (`aria-current: "page"`, `href: "#/dashboard"`, `LeadingVisual`→`Icon` `home`, `TrailingVisual`→`CounterLabel` "8", `TrailingAction` `pin-icon`→`Icon` `pin` + label "Pin" + `action: functionCall consoleLog {message: "pin"}`); `it2`=`Item` "Pull requests" (`href: "#/pulls"`, `defaultOpen: true`, `LeadingVisual`→`Icon` `git-pull-request`, `Description` (inline) "Open and merged", `SubNav`[`Item` "Open"+href, `Item` "Closed"+href]); `div1`=`Divider`; `grp`=`Group` (`GroupHeading` "Support")[`Item` "Docs"+href, `Item` "Community"+href] — all 10 subcomponent leaves present | yes |
 
 ### Prop-coverage map
 

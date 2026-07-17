@@ -42,7 +42,7 @@ carries a trailing `CounterLabel`.
 
 | fixture | exercises (coverage axis) | component state / canned children | baselined? |
 |---|---|---|---|
-| *(none of its own)* | — | exercised inside the composed `navlist` fixture (trailing `CounterLabel` on "Pull requests") | — |
+| *(none of its own)* | — | exercised inside the composed `navlist` fixture (trailing `CounterLabel` on "Dashboard") | — |
 
 ### Prop-coverage map
 
