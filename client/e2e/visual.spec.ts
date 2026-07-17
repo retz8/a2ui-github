@@ -192,6 +192,12 @@ const FIXTURE_NAMES = [
   'title-bound',
   'titlearea-variant',
   'breadcrumbs-template',
+  'underline-nav',
+  'underline-nav-children-template',
+  'underline-nav-variant',
+  'underline-nav-loading',
+  'underline-nav-item-fn',
+  'underline-nav-item-event',
 ];
 
 for (const name of FIXTURE_NAMES) {
