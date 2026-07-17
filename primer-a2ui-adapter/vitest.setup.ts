@@ -79,6 +79,18 @@ if (typeof document !== 'undefined' && !('adoptedStyleSheets' in Document.protot
   }
 }
 
+// jsdom has no ResizeObserver; Primer's ConfirmationDialog (wrapped by TreeView.ErrorDialog)
+// calls it through useOverflow to detect a scrollable body. Provide a no-op stub so the dialog
+// mounts under vitest.
+if (typeof globalThis !== 'undefined' && typeof globalThis.ResizeObserver !== 'function') {
+  class ResizeObserverStub {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
+}
+
 // Primer announces screen-reader text (e.g. ToggleSwitch's loadingLabel, Button's
 // loadingAnnouncement) through a `<live-region>` custom element. Its node build fails to
 // upgrade under jsdom, so `announceFromElement` throws in a MutationObserver microtask.

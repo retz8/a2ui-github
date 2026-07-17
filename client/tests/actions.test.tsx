@@ -35,6 +35,10 @@ import {actionlistTrailingactionEventFixture} from '../src/fixtures/actionlist-t
 import {actionBarIconButtonFnFixture} from '../src/fixtures/action-bar-icon-button-fn';
 import {actionBarIconButtonEventFixture} from '../src/fixtures/action-bar-icon-button-event';
 import {actionBarMenuFixture} from '../src/fixtures/action-bar-menu';
+import {treeViewItemFnFixture} from '../src/fixtures/tree-view-item-fn';
+import {treeViewItemEventFixture} from '../src/fixtures/tree-view-item-event';
+import {treeViewItemSecondaryActionsFixture} from '../src/fixtures/tree-view-item-secondary-actions';
+import {treeViewErrorDialogFixture} from '../src/fixtures/tree-view-error-dialog';
 
 afterEach(cleanup);
 
@@ -558,5 +562,84 @@ describe('ActionBar action paths', () => {
         sourceComponentId: 'menu',
       }),
     );
+  });
+});
+
+describe('TreeView action paths', () => {
+  it('Item action functionCall runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(treeViewItemFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('treeitem', {name: /src/}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'item selected');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('Item action event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(treeViewItemEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('treeitem', {name: /src/}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'select-item',
+        surfaceId: 'tree-view-item-event',
+        sourceComponentId: 'item-src',
+      }),
+    );
+  });
+
+  it('Item secondaryActions: the Rename functionCall runs consoleLog locally', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    const {container} = renderFixture(treeViewItemSecondaryActionsFixture, {
+      actionHandler: handler,
+    });
+
+    // Secondary-action buttons are aria-hidden (reached on hover/focus) and the count-less Rename
+    // renders as an IconButton whose accessible name is supplied via tooltip (aria-labelledby, not
+    // aria-label), so query the DOM directly for the non-Delete button.
+    const rename = Array.from(container.querySelectorAll('button')).find(
+      b => b.getAttribute('aria-label') !== 'Delete',
+    );
+    fireEvent.click(rename!);
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'rename');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('Item secondaryActions: the Delete event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    const {container} = renderFixture(treeViewItemSecondaryActionsFixture, {
+      actionHandler: handler,
+    });
+
+    const del = container.querySelector('button[aria-label="Delete"]');
+    fireEvent.click(del!);
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(expect.objectContaining({name: 'delete'}));
+  });
+
+  it('ErrorDialog retryAction event is dispatched; dismissAction runs consoleLog locally', async () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(treeViewErrorDialogFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Retry'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({name: 'retry-subtree', surfaceId: 'tree-view-error-dialog'}),
+    );
+
+    fireEvent.click(screen.getByRole('button', {name: 'Dismiss'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'dismissed');
+    logSpy.mockRestore();
   });
 });

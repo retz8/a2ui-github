@@ -92,6 +92,13 @@ import {ActionBarIconButtonApi} from './components/actionbar-iconbutton';
 import {ActionBarDividerApi} from './components/actionbar-divider';
 import {ActionBarGroupApi} from './components/actionbar-group';
 import {ActionBarMenuApi} from './components/actionbar-menu';
+import {TreeViewApi} from './components/treeview';
+import {TreeViewItemApi} from './components/treeview-item';
+import {TreeViewSubTreeApi} from './components/treeview-subtree';
+import {TreeViewLeadingVisualApi} from './components/treeview-leadingvisual';
+import {TreeViewTrailingVisualApi} from './components/treeview-trailingvisual';
+import {TreeViewDirectoryIconApi} from './components/treeview-directoryicon';
+import {TreeViewErrorDialogApi} from './components/treeview-errordialog';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -194,6 +201,13 @@ export const COMPONENTS = {
   'ActionBar.Divider': ActionBarDividerApi,
   'ActionBar.Group': ActionBarGroupApi,
   'ActionBar.Menu': ActionBarMenuApi,
+  TreeView: TreeViewApi,
+  TreeViewItem: TreeViewItemApi,
+  TreeViewSubTree: TreeViewSubTreeApi,
+  TreeViewLeadingVisual: TreeViewLeadingVisualApi,
+  TreeViewTrailingVisual: TreeViewTrailingVisualApi,
+  TreeViewDirectoryIcon: TreeViewDirectoryIconApi,
+  TreeViewErrorDialog: TreeViewErrorDialogApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

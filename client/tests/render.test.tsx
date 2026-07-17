@@ -240,6 +240,15 @@ import {actionBarFlushFixture} from '../src/fixtures/action-bar-flush';
 import {actionBarIconButtonDisabledFixture} from '../src/fixtures/action-bar-icon-button-disabled';
 import {actionBarGroupFixture} from '../src/fixtures/action-bar-group';
 import {actionBarMenuFixture} from '../src/fixtures/action-bar-menu';
+import {treeViewNestedFixture} from '../src/fixtures/tree-view-nested';
+import {treeViewFlatFixture} from '../src/fixtures/tree-view-flat';
+import {treeViewTruncateFixture} from '../src/fixtures/tree-view-truncate';
+import {treeViewItemCurrentFixture} from '../src/fixtures/tree-view-item-current';
+import {treeViewItemExpandedBoundFixture} from '../src/fixtures/tree-view-item-expanded-bound';
+import {treeViewSubtreeStatesFixture} from '../src/fixtures/tree-view-subtree-states';
+import {treeViewVisualsFixture} from '../src/fixtures/tree-view-visuals';
+import {treeViewDirectoryIconFixture} from '../src/fixtures/tree-view-directory-icon';
+import {treeViewErrorDialogFixture} from '../src/fixtures/tree-view-error-dialog';
 
 afterEach(cleanup);
 
@@ -1580,7 +1589,6 @@ describe('TextInput.Action — integration through the renderer', () => {
   });
 });
 
-/** An inline single-surface Breadcrumbs fixture with a given overflow mode (for the data-overflow axis). */
 function breadcrumbsOverflowFixture(overflow: 'wrap' | 'menu' | 'menu-with-root'): Fixture {
   const surfaceId = `breadcrumbs-overflow-${overflow}`;
   return {
@@ -2129,5 +2137,104 @@ describe('ActionBar family — integration through the renderer', () => {
     fireEvent.click(screen.getByRole('menuitem', {name: /More/}));
     expect(screen.getByRole('menuitem', {name: 'Sub A'})).toBeInTheDocument();
     expect(screen.getByRole('menuitem', {name: 'Sub B'})).toBeInTheDocument();
+  });
+});
+
+describe('TreeView (compound family) — integration through the renderer', () => {
+  it('renders the nested tree — items, nested labels, and the root/subtree accessible labels', () => {
+    const {container} = renderFixture(treeViewNestedFixture);
+    // Every item (top-level + nested) renders as a treeitem; nested labels are visible.
+    expect(screen.getAllByRole('treeitem')).toHaveLength(4);
+    expect(screen.getByText('src')).toBeInTheDocument();
+    expect(screen.getByText('index.ts')).toBeInTheDocument();
+    expect(screen.getByText('app.ts')).toBeInTheDocument();
+    expect(screen.getByText('README.md')).toBeInTheDocument();
+    // Root accessibility -> aria-label on the tree; SubTree accessibility -> aria-label on the group.
+    expect(screen.getByRole('tree')).toHaveAttribute('aria-label', 'Project files');
+    expect(screen.getByRole('group')).toHaveAttribute('aria-label', 'src contents');
+    // Item id is the component-envelope id, reflected onto the rendered element.
+    expect(container.querySelector('#item-src')).not.toBeNull();
+    // containIntrinsicSize is accepted and the item still renders its label.
+    expect(container.querySelector('#item-readme')).not.toBeNull();
+  });
+
+  it('routes the SubTree into its Primer slot — twisty on the parent, label holds only its own text', () => {
+    const {container} = renderFixture(treeViewNestedFixture);
+    // Slot detection found the SubTree (via `renderSlottedChildList`), so the parent item gets a
+    // twisty gated by expand state — Primer sets `aria-expanded` only when `hasSubTree`. On the
+    // flattened render (the subtree buried in a `DeferredChild`) `hasSubTree` is false and this
+    // attribute is absent, so this assertion fails without the slot fix.
+    expect(container.querySelector('#item-src')).toHaveAttribute('aria-expanded', 'true');
+    // A leaf item (no SubTree child) carries no twisty.
+    expect(container.querySelector('#item-readme')).not.toHaveAttribute('aria-expanded');
+    // The parent's own row content is just its label Text — Primer extracts the SubTree out of the
+    // content region (`childrenWithoutSubTree`) only once it is detected as a slot. On the flat
+    // render the subtree stays inline here, so this row's text would include the nested labels.
+    const srcContent = container.querySelector('#item-src .PRIVATE_TreeView-item-content-text');
+    expect(srcContent?.textContent).toBe('src');
+  });
+
+  it('routes leading/trailing visuals into their Primer slots (reference-matched, label forwarded)', () => {
+    const {container} = renderFixture(treeViewVisualsFixture);
+    // The visuals are reference-matched slots (no `__SLOT__`); `wrapChild` renders the real Primer
+    // LeadingVisual/TrailingVisual so `useSlots` places them, and forwards each `label`.
+    expect(container.querySelector('.PRIVATE_TreeView-item-visual')).not.toBeNull();
+    expect(screen.getByText('File')).toBeInTheDocument();
+    expect(screen.getByText('Modified')).toBeInTheDocument();
+  });
+
+  it('renders a flat tree of items', () => {
+    renderFixture(treeViewFlatFixture);
+    expect(screen.getAllByRole('treeitem')).toHaveLength(3);
+    expect(screen.getByText('utils.ts')).toBeInTheDocument();
+  });
+
+  it('renders a truncated long label', () => {
+    renderFixture(treeViewTruncateFixture);
+    expect(screen.getByText(/a-very-long-file-name-that-should-be-truncated/)).toBeInTheDocument();
+  });
+
+  it('marks the current item via aria-current', () => {
+    renderFixture(treeViewItemCurrentFixture);
+    expect(screen.getByRole('treeitem', {name: /index\.ts/})).toHaveAttribute(
+      'aria-current',
+      'true',
+    );
+  });
+
+  it('resolves the bound expanded state and reveals the subtree contents', () => {
+    // /openState = true, so the bound item is open and its subtree child is visible.
+    renderFixture(treeViewItemExpandedBoundFixture);
+    expect(screen.getByText('index.ts')).toBeInTheDocument();
+  });
+
+  it('renders the leading and trailing visuals with their accessible labels', () => {
+    const {container} = renderFixture(treeViewVisualsFixture);
+    // Two octicon SVGs (leading file + trailing dot) render as the item's visuals.
+    expect(container.querySelectorAll('svg').length).toBeGreaterThanOrEqual(2);
+    expect(screen.getByText('File')).toBeInTheDocument();
+    expect(screen.getByText('Modified')).toBeInTheDocument();
+  });
+
+  it('renders the preset directory icon in both expanded and collapsed surfaces', () => {
+    const {container} = renderFixture(treeViewDirectoryIconFixture);
+    // One directory glyph per surface (open + closed).
+    expect(container.querySelectorAll('svg').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('renders the subtree state gallery (done reveals its child)', () => {
+    renderFixture(treeViewSubtreeStatesFixture);
+    // The done surface reveals its child label (loading/error surfaces reference it too).
+    expect(screen.getAllByText('index.ts').length).toBeGreaterThanOrEqual(1);
+    // Three tree surfaces (done, loading, error) render.
+    expect(screen.getAllByRole('tree')).toHaveLength(3);
+  });
+
+  it('renders the error dialog with its title and the bound body message', () => {
+    renderFixture(treeViewErrorDialogFixture);
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(screen.getByText('Failed to load')).toBeInTheDocument();
+    // The dialog body Text is bound to /retryMessage and resolves through the renderer.
+    expect(screen.getByText('Could not load the folder')).toBeInTheDocument();
   });
 });
