@@ -2158,6 +2158,31 @@ describe('TreeView (compound family) — integration through the renderer', () =
     expect(container.querySelector('#item-readme')).not.toBeNull();
   });
 
+  it('routes the SubTree into its Primer slot — twisty on the parent, label holds only its own text', () => {
+    const {container} = renderFixture(treeViewNestedFixture);
+    // Slot detection found the SubTree (via `renderSlottedChildList`), so the parent item gets a
+    // twisty gated by expand state — Primer sets `aria-expanded` only when `hasSubTree`. On the
+    // flattened render (the subtree buried in a `DeferredChild`) `hasSubTree` is false and this
+    // attribute is absent, so this assertion fails without the slot fix.
+    expect(container.querySelector('#item-src')).toHaveAttribute('aria-expanded', 'true');
+    // A leaf item (no SubTree child) carries no twisty.
+    expect(container.querySelector('#item-readme')).not.toHaveAttribute('aria-expanded');
+    // The parent's own row content is just its label Text — Primer extracts the SubTree out of the
+    // content region (`childrenWithoutSubTree`) only once it is detected as a slot. On the flat
+    // render the subtree stays inline here, so this row's text would include the nested labels.
+    const srcContent = container.querySelector('#item-src .PRIVATE_TreeView-item-content-text');
+    expect(srcContent?.textContent).toBe('src');
+  });
+
+  it('routes leading/trailing visuals into their Primer slots (reference-matched, label forwarded)', () => {
+    const {container} = renderFixture(treeViewVisualsFixture);
+    // The visuals are reference-matched slots (no `__SLOT__`); `wrapChild` renders the real Primer
+    // LeadingVisual/TrailingVisual so `useSlots` places them, and forwards each `label`.
+    expect(container.querySelector('.PRIVATE_TreeView-item-visual')).not.toBeNull();
+    expect(screen.getByText('File')).toBeInTheDocument();
+    expect(screen.getByText('Modified')).toBeInTheDocument();
+  });
+
   it('renders a flat tree of items', () => {
     renderFixture(treeViewFlatFixture);
     expect(screen.getAllByRole('treeitem')).toHaveLength(3);

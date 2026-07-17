@@ -1,8 +1,34 @@
-import type {ComponentProps, ReactNode} from 'react';
+import type {ComponentProps, ComponentType, ReactNode} from 'react';
 import {TreeView as PrimerTreeView} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
 import {TreeViewItemApi} from './treeview-item.schema';
-import {renderChildList} from '../../shared/child-list';
+import {renderSlottedChildList, type SlotMap} from '../../shared/slotted-child-list';
+
+/** A reference-matched slot component that also carries element-level props (e.g. `label`). */
+type SlotWithProps = ComponentType<{children?: ReactNode; [prop: string]: unknown}>;
+
+/**
+ * The slot leaves a `TreeView.Item` can hold, routed to their Primer slot. `SubTree` carries a
+ * `__SLOT__` marker, so a marker `bridge` routes it (the leaf renders as today via `buildChild`,
+ * preserving `state`/`count`/`aria-label`) — this is what gates the item behind expand state and
+ * reveals the twisty. Primer's TreeView visuals carry **no** marker (matched by reference only) and
+ * hold their icon under a `child` ComponentId plus a `label`, so `wrapChild` renders the real Primer
+ * component with the icon built inside and `label` forwarded. The label `Text` (and any other child)
+ * falls through to the item's content.
+ */
+const ITEM_SLOTS: SlotMap = {
+  TreeViewSubTree: {mode: 'bridge', slot: PrimerTreeView.SubTree},
+  TreeViewLeadingVisual: {
+    mode: 'wrapChild',
+    component: PrimerTreeView.LeadingVisual as SlotWithProps,
+    forward: ['label'],
+  },
+  TreeViewTrailingVisual: {
+    mode: 'wrapChild',
+    component: PrimerTreeView.TrailingVisual as SlotWithProps,
+    forward: ['label'],
+  },
+};
 
 /** A `secondaryActions` element after the binder resolves it: Dynamic* -> primitives, the
  * `icon` ComponentId stays a string id, and `action` resolves to a () => void closure. */
@@ -69,8 +95,9 @@ export function TreeViewItemView({
  * Catalog entry: the generic binder resolves props, then renders TreeViewItemView.
  * - the Primer `id` is the component-envelope id (`context.componentModel.id`), required on every
  *   component — not a schema prop.
- * - `props.children` (required ChildList) is built via `renderChildList` — the label, visuals, and
- *   nested subtree.
+ * - `props.children` (required ChildList) is routed via `renderSlottedChildList` (see `ITEM_SLOTS`)
+ *   so Primer's slot detection places the subtree/visuals instead of flattening them into the label;
+ *   the `context` gives each child's type via the surface model.
  * - `props.expanded` is the resolved boolean; `props.setExpanded` is the auto-generated two-way
  *   setter (from the DynamicBoolean prop) wired to `onExpandedChange` so a user toggle writes back.
  * - `props.action` resolves to a () => void closure -> `onSelect` (Primer passes an event the
@@ -102,7 +129,7 @@ export const TreeViewItemComponent = createComponentImplementation(
         onExpandedChange={props.setExpanded}
         secondaryActions={secondaryActions}
       >
-        {renderChildList(props.children, buildChild)}
+        {renderSlottedChildList(props.children, buildChild, context, ITEM_SLOTS)}
       </TreeViewItemView>
     );
   },
