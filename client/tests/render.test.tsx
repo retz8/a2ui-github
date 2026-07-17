@@ -1914,11 +1914,24 @@ describe('PageHeader family — integration through the renderer', () => {
     expect(screen.getByRole('heading', {name: 'Bound title'})).toBeInTheDocument();
   });
 
-  it('renders the TitleArea variant gallery', () => {
-    renderFixture(titleareaVariantFixture);
+  it('renders the TitleArea variant gallery, each variant nested under a PageHeader root', () => {
+    const {container} = renderFixture(titleareaVariantFixture);
     expect(screen.getByText('subtitle')).toBeInTheDocument();
     expect(screen.getByText('medium')).toBeInTheDocument();
     expect(screen.getByText('large')).toBeInTheDocument();
+
+    // The three TitleAreas carry the distinct size variants...
+    const areas = [...container.querySelectorAll('[data-component="TitleArea"]')];
+    expect(areas.map(a => a.getAttribute('data-size-variant'))).toEqual([
+      'subtitle',
+      'medium',
+      'large',
+    ]);
+    // ...and each is nested under a PageHeader root — without that ancestor Primer's `:has()`
+    // size rule never matches, so the variant is visually inert (regression guard).
+    for (const area of areas) {
+      expect(area.closest('[class*="PageHeader-PageHeader"]')).not.toBeNull();
+    }
   });
 
   it('expands a dynamic-template Breadcrumbs ChildList from a bound array', () => {
