@@ -138,6 +138,17 @@ const FIXTURE_NAMES = [
   'breadcrumbs-variant',
   'breadcrumbsitem',
   'breadcrumbsitem-selected',
+  'navlist',
+  'navlist-item-inactive',
+  'navlist-trailingaction-fn',
+  'navlist-trailingaction-event',
+  'navlist-trailingaction-loading',
+  'navlist-group-bound',
+  'navlist-groupheading-variants',
+  'navlist-groupheading-bound',
+  'navlist-description-variants',
+  'navlist-description-truncate',
+  'navlist-groupexpand',
 ];
 
 for (const name of FIXTURE_NAMES) {

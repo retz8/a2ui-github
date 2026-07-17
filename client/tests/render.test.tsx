@@ -186,6 +186,15 @@ import {breadcrumbsChildrenTemplateFixture} from '../src/fixtures/breadcrumbs-ch
 import {breadcrumbsVariantFixture} from '../src/fixtures/breadcrumbs-variant';
 import {breadcrumbsitemFixture} from '../src/fixtures/breadcrumbsitem';
 import {breadcrumbsitemSelectedFixture} from '../src/fixtures/breadcrumbsitem-selected';
+import {navlistFixture} from '../src/fixtures/navlist';
+import {navlistItemInactiveFixture} from '../src/fixtures/navlist-item-inactive';
+import {navlistTrailingactionLoadingFixture} from '../src/fixtures/navlist-trailingaction-loading';
+import {navlistGroupBoundFixture} from '../src/fixtures/navlist-group-bound';
+import {navlistGroupheadingVariantsFixture} from '../src/fixtures/navlist-groupheading-variants';
+import {navlistGroupheadingBoundFixture} from '../src/fixtures/navlist-groupheading-bound';
+import {navlistDescriptionVariantsFixture} from '../src/fixtures/navlist-description-variants';
+import {navlistDescriptionTruncateFixture} from '../src/fixtures/navlist-description-truncate';
+import {navlistGroupexpandFixture} from '../src/fixtures/navlist-groupexpand';
 
 afterEach(cleanup);
 
@@ -1605,5 +1614,93 @@ describe('Breadcrumbs.Item (crumb leaf) — integration through the renderer', (
     expect(current).not.toHaveAttribute('href');
     // The other crumbs stay navigating links.
     expect(screen.getByRole('link', {name: 'Home'})).toHaveAttribute('href', '/');
+  });
+});
+
+describe('NavList (compound family) — integration through the renderer', () => {
+  it('renders the composed baseline: the nav landmark and its item labels', () => {
+    renderFixture(navlistFixture);
+    expect(screen.getByRole('navigation', {name: 'Repository'})).toBeInTheDocument();
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('Pull requests')).toBeInTheDocument();
+    // Trailing visual (CounterLabel) and description content render inside the item.
+    expect(screen.getByText('8')).toBeInTheDocument();
+    expect(screen.getByText('Open and merged')).toBeInTheDocument();
+    // The expanded SubNav (defaultOpen) renders its nested items.
+    expect(screen.getByText('Open')).toBeInTheDocument();
+    expect(screen.getByText('Closed')).toBeInTheDocument();
+    // The Group heading and its items.
+    expect(screen.getByText('Support')).toBeInTheDocument();
+    expect(screen.getByText('Docs')).toBeInTheDocument();
+  });
+
+  it('places each slot in its Primer slot, not flattened into the item label', () => {
+    const {container} = renderFixture(navlistFixture);
+    const labels = [
+      ...container.querySelectorAll<HTMLElement>('[data-component="ActionList.Item.Label"]'),
+    ];
+    // The "Pull requests" item exercises every slot. When slots are routed correctly, its label
+    // holds ONLY the label text — the leading/trailing visuals, description, sub-nav, and trailing
+    // action each live in their own Primer slot, not crammed into the label span.
+    const prLabel = labels.find(l => l.textContent?.includes('Pull requests'));
+    expect(prLabel).toBeDefined();
+    expect(prLabel!.textContent).toBe('Pull requests');
+    expect(prLabel!.querySelector('[data-component="ActionList.LeadingVisual"]')).toBeNull();
+    expect(prLabel!.querySelector('[data-component="ActionList.TrailingVisual"]')).toBeNull();
+    expect(prLabel!.querySelector('button')).toBeNull();
+    expect(prLabel!.querySelector('ul')).toBeNull();
+    // Dashboard's leading visual is likewise outside its label.
+    const dashLabel = labels.find(l => l.textContent?.includes('Dashboard'));
+    expect(dashLabel!.textContent).toBe('Dashboard');
+  });
+
+  it('renders the inactive item (inactiveText) through the renderer', () => {
+    renderFixture(navlistItemInactiveFixture);
+    expect(screen.getByText('Draft settings')).toBeInTheDocument();
+  });
+
+  it('honors the loading TrailingAction through the renderer', () => {
+    renderFixture(navlistTrailingactionLoadingFixture);
+    // A loading IconButton keeps its accessible name.
+    expect(screen.getByRole('button', {name: 'Sync'})).toBeInTheDocument();
+  });
+
+  it('resolves the bound Group title through the renderer', () => {
+    renderFixture(navlistGroupBoundFixture);
+    expect(screen.getByText('Personal settings')).toBeInTheDocument();
+  });
+
+  it('renders one GroupHeading per variant enum value through the renderer', () => {
+    renderFixture(navlistGroupheadingVariantsFixture);
+    expect(screen.getByText('subtle')).toBeInTheDocument();
+    expect(screen.getByText('filled')).toBeInTheDocument();
+  });
+
+  it('resolves the bound GroupHeading text through the renderer', () => {
+    renderFixture(navlistGroupheadingBoundFixture);
+    expect(screen.getByText('Resources')).toBeInTheDocument();
+  });
+
+  it('renders one Description per variant enum value through the renderer', () => {
+    renderFixture(navlistDescriptionVariantsFixture);
+    expect(screen.getByText('inline')).toBeInTheDocument();
+    expect(screen.getByText('block')).toBeInTheDocument();
+  });
+
+  it('resolves the bound, truncated Description text through the renderer', () => {
+    renderFixture(navlistDescriptionTruncateFixture);
+    expect(
+      screen.getByText(
+        'A very long description that overflows the available inline space and is truncated',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('renders the collapsed GroupExpand with its show-more control', () => {
+    renderFixture(navlistGroupexpandFixture);
+    // Primer's GroupExpand starts collapsed (pages=2, currentPage=0 shows 0 items); only the
+    // show-more control is visible until it is expanded (see the pagination action test).
+    expect(screen.getByText('Show more repositories')).toBeInTheDocument();
+    expect(screen.queryByRole('link', {name: 'api'})).not.toBeInTheDocument();
   });
 });
