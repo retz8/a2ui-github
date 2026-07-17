@@ -52,6 +52,12 @@ import {NavListGroupHeadingComponent} from './components/navlist-groupheading';
 import {NavListDividerComponent} from './components/navlist-divider';
 import {NavListDescriptionComponent} from './components/navlist-description';
 import {NavListGroupExpandComponent} from './components/navlist-groupexpand';
+import {PageLayoutComponent} from './components/pagelayout';
+import {PageLayoutHeaderComponent} from './components/pagelayout-header';
+import {PageLayoutContentComponent} from './components/pagelayout-content';
+import {PageLayoutPaneComponent} from './components/pagelayout-pane';
+import {PageLayoutSidebarComponent} from './components/pagelayout-sidebar';
+import {PageLayoutFooterComponent} from './components/pagelayout-footer';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -111,6 +117,12 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     NavListDividerComponent,
     NavListDescriptionComponent,
     NavListGroupExpandComponent,
+    PageLayoutComponent,
+    PageLayoutHeaderComponent,
+    PageLayoutContentComponent,
+    PageLayoutPaneComponent,
+    PageLayoutSidebarComponent,
+    PageLayoutFooterComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

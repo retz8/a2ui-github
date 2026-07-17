@@ -3508,6 +3508,559 @@
       },
       "required": ["component", "items", "label"],
       "unevaluatedProperties": false
+    },
+    "PageLayout": {
+      "type": "object",
+      "description": "The top-level page structure that arranges a header, main content, a supplementary pane, a full-height sidebar, and a footer.",
+      "properties": {
+        "component": {
+          "const": "PageLayout"
+        },
+        "header": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The banner region across the top of the page."
+        },
+        "content": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The main content region."
+        },
+        "pane": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A supplementary region beside the content."
+        },
+        "sidebar": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A full-height region alongside the header, content, and footer."
+        },
+        "footer": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The contentinfo region across the bottom of the page."
+        },
+        "containerWidth": {
+          "type": "string",
+          "enum": ["full", "medium", "large", "xlarge"],
+          "default": "xlarge",
+          "description": "Maximum width of the page container."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "normal",
+          "description": "Spacing between the container's outer edges and the viewport."
+        },
+        "rowGap": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "normal",
+          "description": "Vertical spacing between regions."
+        },
+        "columnGap": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "normal",
+          "description": "Horizontal spacing between regions."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageLayout.Header": {
+      "type": "object",
+      "description": "The banner region at the top of a page layout.",
+      "properties": {
+        "component": {
+          "const": "PageLayout.Header"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content placed in the header."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "none",
+          "description": "Padding inside the header."
+        },
+        "divider": {
+          "description": "Divider shown between the header and adjacent regions; supports a per-viewport value with a filled style on narrow viewports.",
+          "default": "none",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["none", "line"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "line", "filled"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "hidden": {
+          "description": "Whether the header is hidden; supports a per-viewport value.",
+          "default": false,
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the banner landmark."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageLayout.Content": {
+      "type": "object",
+      "description": "The main content region of a page layout.",
+      "properties": {
+        "component": {
+          "const": "PageLayout.Content"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The main content."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["main", "div", "section", "article"],
+          "default": "main",
+          "description": "The HTML element used to render the content region; the choices are display-equivalent and differ only in semantic/landmark identity."
+        },
+        "width": {
+          "type": "string",
+          "enum": ["full", "medium", "large", "xlarge"],
+          "default": "full",
+          "description": "Maximum width of the content region."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "none",
+          "description": "Padding inside the content region."
+        },
+        "hidden": {
+          "description": "Whether the content region is hidden; supports a per-viewport value.",
+          "default": false,
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the main landmark."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageLayout.Pane": {
+      "type": "object",
+      "description": "A supplementary region displayed beside the content.",
+      "properties": {
+        "component": {
+          "const": "PageLayout.Pane"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content placed in the pane."
+        },
+        "position": {
+          "description": "Which side of the content the pane appears on; supports a per-viewport value.",
+          "default": "end",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["start", "end"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["start", "end"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["start", "end"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["start", "end"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "width": {
+          "description": "Pane width; a named size or a custom min/default/max object.",
+          "default": "medium",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["small", "medium", "large"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "string"
+                },
+                "default": {
+                  "type": "string"
+                },
+                "max": {
+                  "type": "string"
+                }
+              },
+              "required": ["min", "default", "max"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "minWidth": {
+          "type": "number",
+          "default": 256,
+          "description": "Minimum pane width in pixels."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "none",
+          "description": "Padding inside the pane."
+        },
+        "divider": {
+          "description": "Divider between the pane and content; supports a per-viewport value with a filled style on narrow viewports.",
+          "default": "none",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["none", "line"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "line", "filled"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "sticky": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the pane sticks to the top of the viewport while scrolling."
+        },
+        "offsetHeader": {
+          "description": "Top offset for a sticky pane, to clear a sticky header (a pixel number or a CSS length).",
+          "default": 0,
+          "oneOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "hidden": {
+          "description": "Whether the pane is hidden; supports a per-viewport value.",
+          "default": false,
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "resizable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the user can resize the pane."
+        },
+        "currentWidth": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+          "description": "The pane's controlled width in pixels. Two-way bound: a resize drag writes the new width back to the bound path."
+        },
+        "widthStorageKey": {
+          "type": "string",
+          "default": "paneWidth",
+          "description": "Key used to persist the pane width in the browser when the width is not bound."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the pane region."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageLayout.Sidebar": {
+      "type": "object",
+      "description": "A full-height region alongside the header, content, and footer.",
+      "properties": {
+        "component": {
+          "const": "PageLayout.Sidebar"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content placed in the sidebar."
+        },
+        "position": {
+          "type": "string",
+          "enum": ["start", "end"],
+          "default": "start",
+          "description": "Which side of the page the sidebar appears on."
+        },
+        "width": {
+          "description": "Sidebar width; a named size or a custom min/default/max object.",
+          "default": "medium",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["small", "medium", "large"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "string"
+                },
+                "default": {
+                  "type": "string"
+                },
+                "max": {
+                  "type": "string"
+                }
+              },
+              "required": ["min", "default", "max"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "minWidth": {
+          "type": "number",
+          "default": 256,
+          "description": "Minimum sidebar width when resizable, in pixels."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "none",
+          "description": "Padding inside the sidebar."
+        },
+        "divider": {
+          "type": "string",
+          "enum": ["none", "line"],
+          "default": "none",
+          "description": "Divider between the sidebar and the layout."
+        },
+        "sticky": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the sidebar sticks to the viewport while scrolling."
+        },
+        "responsiveVariant": {
+          "type": "string",
+          "enum": ["default", "fullscreen"],
+          "default": "default",
+          "description": "Behavior on narrow viewports; `fullscreen` expands to cover the viewport like an overlay."
+        },
+        "hidden": {
+          "description": "Whether the sidebar is hidden; supports a per-viewport value.",
+          "default": false,
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "resizable": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the user can resize the sidebar."
+        },
+        "currentWidth": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+          "description": "The sidebar's controlled width in pixels. Two-way bound: a resize drag writes the new width back to the bound path."
+        },
+        "widthStorageKey": {
+          "type": "string",
+          "description": "Key used to persist the sidebar width in the browser when the width is not bound; when omitted, persistence is disabled."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the sidebar region."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "PageLayout.Footer": {
+      "type": "object",
+      "description": "The contentinfo region at the bottom of a page layout.",
+      "properties": {
+        "component": {
+          "const": "PageLayout.Footer"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content placed in the footer."
+        },
+        "padding": {
+          "type": "string",
+          "enum": ["none", "condensed", "normal"],
+          "default": "none",
+          "description": "Padding inside the footer."
+        },
+        "divider": {
+          "description": "Divider shown between the footer and adjacent regions; supports a per-viewport value with a filled style on narrow viewports.",
+          "default": "none",
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["none", "line"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["none", "line", "filled"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["none", "line"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "hidden": {
+          "description": "Whether the footer is hidden; supports a per-viewport value.",
+          "default": false,
+          "oneOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "boolean"
+                },
+                "regular": {
+                  "type": "boolean"
+                },
+                "wide": {
+                  "type": "boolean"
+                }
+              },
+              "additionalProperties": false
+            }
+          ]
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label for the contentinfo landmark."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -3742,6 +4295,24 @@
         },
         {
           "$ref": "#/components/NavList.GroupExpand"
+        },
+        {
+          "$ref": "#/components/PageLayout"
+        },
+        {
+          "$ref": "#/components/PageLayout.Header"
+        },
+        {
+          "$ref": "#/components/PageLayout.Content"
+        },
+        {
+          "$ref": "#/components/PageLayout.Pane"
+        },
+        {
+          "$ref": "#/components/PageLayout.Sidebar"
+        },
+        {
+          "$ref": "#/components/PageLayout.Footer"
         }
       ]
     },

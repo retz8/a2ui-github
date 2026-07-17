@@ -17,6 +17,18 @@ if (!window.matchMedia) {
   })) as unknown as typeof window.matchMedia;
 }
 
+// jsdom has no ResizeObserver; Primer's `useOverflow` (used by PageLayout.Pane / .Sidebar to detect
+// scroll overflow) constructs one in a passive effect and throws without it. Provide a no-op stub so
+// those regions render under vitest (the overflow branch simply never fires — no element overflows).
+if (typeof globalThis.ResizeObserver === 'undefined') {
+  class ResizeObserverStub {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+  globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
+}
+
 // Primer's TooltipV2 (used by IconButton, e.g. inside TextInput.Action) loads the
 // `@oddbird/popover-polyfill` under jsdom, whose `injectStyles` spreads
 // `root.adoptedStyleSheets`. jsdom does not implement `adoptedStyleSheets`, so the spread
