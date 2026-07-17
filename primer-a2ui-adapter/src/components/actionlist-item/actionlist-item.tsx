@@ -2,7 +2,29 @@ import type {ComponentType, ReactNode} from 'react';
 import {ActionList as PrimerActionList} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
 import {ActionListItemApi} from './actionlist-item.schema';
-import {renderChildList} from '../../shared/child-list';
+import {renderSlottedChildList, type SlotMap} from '../../shared/slotted-child-list';
+
+/**
+ * The slot leaves an `ActionList.Item` can hold, routed to their Primer slot. All four are
+ * marker-matched (`bridge`): Primer's `useSlots` detects them by the `__SLOT__` marker rather than
+ * reference, so the leaf renders as today via `buildChild` inside a pass-through carrying the same
+ * marker. Primer reads `Description.variant` / `TrailingAction.loading` off the matched element, so
+ * those are forwarded. The label `Text` (and any other child) falls through to the item's content.
+ */
+const ITEM_SLOTS: SlotMap = {
+  'ActionList.LeadingVisual': {mode: 'bridge', slot: PrimerActionList.LeadingVisual},
+  'ActionList.TrailingVisual': {mode: 'bridge', slot: PrimerActionList.TrailingVisual},
+  'ActionList.Description': {
+    mode: 'bridge',
+    slot: PrimerActionList.Description,
+    forward: ['variant'],
+  },
+  'ActionList.TrailingAction': {
+    mode: 'bridge',
+    slot: PrimerActionList.TrailingAction,
+    forward: ['loading'],
+  },
+};
 
 /** Resolved props: Dynamic* resolve to primitives; the ChildList arrives as built `children`. */
 type ActionListItemViewProps = {
@@ -67,8 +89,10 @@ export function ActionListItemView({
 
 /**
  * Catalog entry: the generic binder resolves props, then renders ActionListItemView.
- * - `props.children` (label + slot leaves) is a resolved `ChildList`; `renderChildList` builds
- *   each via `buildChild`, and Primer's Item slots the leading/trailing visuals + description.
+ * - `props.children` (label + slot leaves) is a resolved `ChildList`; `renderSlottedChildList`
+ *   routes each slot leaf into its Primer slot (see `ITEM_SLOTS`) so Primer's `useSlots` matches
+ *   them instead of flattening the visuals/description into the label. The `context` gives each
+ *   child's type via the surface model.
  * - `onSelect` performs the intrinsic optimistic two-way write (`setSelected`, the binder's
  *   auto-generated setter from the `DynamicBoolean` `selected` — a no-op for a literal/unset
  *   `selected`) BEFORE firing the optional `action`, so an event's `context` carries the new
@@ -78,7 +102,7 @@ export function ActionListItemView({
  */
 export const ActionListItemComponent = createComponentImplementation(
   ActionListItemApi,
-  ({props, buildChild}) => {
+  ({props, buildChild, context}) => {
     const selected = props.selected as boolean | undefined;
     const setSelected = (props as {setSelected?: (value: boolean) => void}).setSelected;
     const onSelect = () => {
@@ -97,7 +121,7 @@ export const ActionListItemComponent = createComponentImplementation(
         role={props.role}
         onSelect={onSelect}
       >
-        {renderChildList(props.children, buildChild)}
+        {renderSlottedChildList(props.children, buildChild, context, ITEM_SLOTS)}
       </ActionListItemView>
     );
   },
