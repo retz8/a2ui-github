@@ -221,6 +221,11 @@ import {selectoptionFixture} from './selectoption';
 import {selectoptionDisabledFixture} from './selectoption-disabled';
 import {selectoptgroupFixture} from './selectoptgroup';
 import {selectoptgroupDisabledFixture} from './selectoptgroup-disabled';
+import {breadcrumbsFixture} from './breadcrumbs';
+import {breadcrumbsChildrenTemplateFixture} from './breadcrumbs-children-template';
+import {breadcrumbsVariantFixture} from './breadcrumbs-variant';
+import {breadcrumbsitemFixture} from './breadcrumbsitem';
+import {breadcrumbsitemSelectedFixture} from './breadcrumbsitem-selected';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
@@ -448,6 +453,11 @@ export {selectoptionFixture} from './selectoption';
 export {selectoptionDisabledFixture} from './selectoption-disabled';
 export {selectoptgroupFixture} from './selectoptgroup';
 export {selectoptgroupDisabledFixture} from './selectoptgroup-disabled';
+export {breadcrumbsFixture} from './breadcrumbs';
+export {breadcrumbsChildrenTemplateFixture} from './breadcrumbs-children-template';
+export {breadcrumbsVariantFixture} from './breadcrumbs-variant';
+export {breadcrumbsitemFixture} from './breadcrumbsitem';
+export {breadcrumbsitemSelectedFixture} from './breadcrumbsitem-selected';
 
 export const FIXTURES: Fixture[] = [
   textFixture,
@@ -673,6 +683,11 @@ export const FIXTURES: Fixture[] = [
   selectoptionDisabledFixture,
   selectoptgroupFixture,
   selectoptgroupDisabledFixture,
+  breadcrumbsFixture,
+  breadcrumbsChildrenTemplateFixture,
+  breadcrumbsVariantFixture,
+  breadcrumbsitemFixture,
+  breadcrumbsitemSelectedFixture,
 ];
 
 export function getFixture(name: string | null): Fixture {

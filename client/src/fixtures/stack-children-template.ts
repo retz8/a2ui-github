@@ -28,7 +28,9 @@ export const stackChildrenTemplateFixture: Fixture = {
             id: 'tpl',
             component: 'Button',
             child: 'tpl-label',
-            action: {functionCall: {call: 'consoleLog', args: {message: 'tpl'}, returnType: 'void'}},
+            action: {
+              functionCall: {call: 'consoleLog', args: {message: 'tpl'}, returnType: 'void'},
+            },
           },
           {id: 'tpl-label', component: 'Text', text: {path: 'label'}},
         ],

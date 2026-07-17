@@ -181,6 +181,11 @@ import {selectoptionFixture} from '../src/fixtures/selectoption';
 import {selectoptionDisabledFixture} from '../src/fixtures/selectoption-disabled';
 import {selectoptgroupFixture} from '../src/fixtures/selectoptgroup';
 import {selectoptgroupDisabledFixture} from '../src/fixtures/selectoptgroup-disabled';
+import {breadcrumbsFixture} from '../src/fixtures/breadcrumbs';
+import {breadcrumbsChildrenTemplateFixture} from '../src/fixtures/breadcrumbs-children-template';
+import {breadcrumbsVariantFixture} from '../src/fixtures/breadcrumbs-variant';
+import {breadcrumbsitemFixture} from '../src/fixtures/breadcrumbsitem';
+import {breadcrumbsitemSelectedFixture} from '../src/fixtures/breadcrumbsitem-selected';
 
 afterEach(cleanup);
 
@@ -1441,7 +1446,10 @@ describe('TextInput — integration through the renderer', () => {
             ],
           },
         },
-        {version: 'v0.9', updateDataModel: {surfaceId: 's', path: '/', value: {validation: 'error'}}},
+        {
+          version: 'v0.9',
+          updateDataModel: {surfaceId: 's', path: '/', value: {validation: 'error'}},
+        },
       ],
     };
     renderFixture(boundValidation);
@@ -1515,5 +1523,87 @@ describe('TextInput.Action — integration through the renderer', () => {
   it('honors the disabled TextInput.Action through the renderer', () => {
     renderFixture(textinputActionDisabledFixture);
     expect(screen.getByRole('button', {name: 'Clear'})).toBeDisabled();
+  });
+});
+
+/** An inline single-surface Breadcrumbs fixture with a given overflow mode (for the data-overflow axis). */
+function breadcrumbsOverflowFixture(overflow: 'wrap' | 'menu' | 'menu-with-root'): Fixture {
+  const surfaceId = `breadcrumbs-overflow-${overflow}`;
+  return {
+    name: surfaceId,
+    messages: [
+      {version: 'v0.9', createSurface: {surfaceId, catalogId: CATALOG_ID}},
+      {
+        version: 'v0.9',
+        updateComponents: {
+          surfaceId,
+          components: [
+            {id: 'root', component: 'Breadcrumbs', overflow, children: ['c0', 'c1']},
+            {id: 'c0', component: 'BreadcrumbsItem', label: 'Home', href: '/'},
+            {id: 'c1', component: 'BreadcrumbsItem', label: 'Settings', href: '/settings'},
+          ],
+        },
+      },
+    ],
+  };
+}
+
+describe('Breadcrumbs (container) — integration through the renderer', () => {
+  it('renders a static ChildList of crumbs; the selected one gets aria-current', () => {
+    renderFixture(breadcrumbsFixture);
+    expect(screen.getByRole('link', {name: 'Home'})).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: 'Repositories'})).toBeInTheDocument();
+    const current = screen.getByText('Settings');
+    expect(current).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('expands a dynamic-template ChildList over the bound array (one crumb per item, own scope)', () => {
+    renderFixture(breadcrumbsChildrenTemplateFixture);
+    expect(screen.getByRole('link', {name: 'Home'})).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', {name: 'Repositories'})).toHaveAttribute('href', '/repos');
+    // The bound `current: true` crumb resolves to the current page (aria-current), non-link.
+    expect(screen.getByText('Settings')).toHaveAttribute('aria-current', 'page');
+  });
+
+  it('renders inside a nav landmark labelled Breadcrumbs', () => {
+    renderFixture(breadcrumbsFixture);
+    expect(screen.getByRole('navigation', {name: 'Breadcrumbs'})).toBeInTheDocument();
+  });
+
+  it('emits each overflow mode on the nav (data-overflow)', () => {
+    for (const overflow of ['wrap', 'menu', 'menu-with-root'] as const) {
+      cleanup();
+      const {container} = renderFixture(breadcrumbsOverflowFixture(overflow));
+      expect(container.querySelector('nav[data-component="Breadcrumbs"]')).toHaveAttribute(
+        'data-overflow',
+        overflow,
+      );
+    }
+  });
+
+  it('honors the variant enum through the renderer (one surface per value)', () => {
+    const {container} = renderFixture(breadcrumbsVariantFixture);
+    const variants = [...container.querySelectorAll('nav[data-variant]')]
+      .map(el => el.getAttribute('data-variant'))
+      .sort();
+    expect(variants).toEqual(['normal', 'spacious']);
+  });
+});
+
+describe('Breadcrumbs.Item (crumb leaf) — integration through the renderer', () => {
+  it('renders literal crumbs carrying their href inside the trail', () => {
+    renderFixture(breadcrumbsitemFixture);
+    expect(screen.getByRole('link', {name: 'Home'})).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', {name: 'Repositories'})).toHaveAttribute('href', '/repos');
+    expect(screen.getByRole('link', {name: 'Settings'})).toHaveAttribute('href', '/settings');
+  });
+
+  it('renders the current-page crumb as selected and non-navigating', () => {
+    renderFixture(breadcrumbsitemSelectedFixture);
+    const current = screen.getByText('Settings');
+    expect(current).toHaveAttribute('aria-current', 'page');
+    expect(current).not.toHaveAttribute('href');
+    // The other crumbs stay navigating links.
+    expect(screen.getByRole('link', {name: 'Home'})).toHaveAttribute('href', '/');
   });
 });

@@ -39,6 +39,8 @@ import {DetailsComponent} from './components/details';
 import {SelectComponent} from './components/select';
 import {SelectOptionComponent} from './components/selectoption';
 import {SelectOptGroupComponent} from './components/selectoptgroup';
+import {BreadcrumbsComponent} from './components/breadcrumbs';
+import {BreadcrumbsItemComponent} from './components/breadcrumbsitem';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -85,6 +87,8 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     SelectComponent,
     SelectOptionComponent,
     SelectOptGroupComponent,
+    BreadcrumbsComponent,
+    BreadcrumbsItemComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

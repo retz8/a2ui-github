@@ -11,7 +11,14 @@ export const stackAlignFixture: Fixture = {
   name: 'stack-align',
   messages: ALIGNS.flatMap(align =>
     surface(`stack-align-${align}`, [
-      {id: 'root', component: 'Stack', direction: 'horizontal', gap: 'normal', align, children: ['b1', 'b2', 'b3']},
+      {
+        id: 'root',
+        component: 'Stack',
+        direction: 'horizontal',
+        gap: 'normal',
+        align,
+        children: ['b1', 'b2', 'b3'],
+      },
       ...labeledButton('b1', 'Small', {size: 'small'}),
       ...labeledButton('b2', 'Medium', {size: 'medium'}),
       ...labeledButton('b3', 'Large', {size: 'large'}),

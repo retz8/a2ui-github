@@ -36,6 +36,8 @@ import {DetailsApi} from './components/details';
 import {SelectApi} from './components/select';
 import {SelectOptionApi} from './components/selectoption';
 import {SelectOptGroupApi} from './components/selectoptgroup';
+import {BreadcrumbsApi} from './components/breadcrumbs';
+import {BreadcrumbsItemApi} from './components/breadcrumbsitem';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -82,6 +84,8 @@ export const COMPONENTS = {
   Select: SelectApi,
   SelectOption: SelectOptionApi,
   SelectOptGroup: SelectOptGroupApi,
+  Breadcrumbs: BreadcrumbsApi,
+  BreadcrumbsItem: BreadcrumbsItemApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

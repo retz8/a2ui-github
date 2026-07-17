@@ -11,7 +11,14 @@ export const stackJustifyFixture: Fixture = {
   name: 'stack-justify',
   messages: JUSTIFIES.flatMap(justify =>
     surface(`stack-justify-${justify}`, [
-      {id: 'root', component: 'Stack', direction: 'horizontal', gap: 'normal', justify, children: ['b1', 'b2', 'b3']},
+      {
+        id: 'root',
+        component: 'Stack',
+        direction: 'horizontal',
+        gap: 'normal',
+        justify,
+        children: ['b1', 'b2', 'b3'],
+      },
       ...labeledButton('b1', 'Go'),
       ...labeledButton('b2', 'Submit'),
       ...labeledButton('b3', 'Cancel changes'),
