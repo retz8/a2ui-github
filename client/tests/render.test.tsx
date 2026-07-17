@@ -1795,6 +1795,33 @@ describe('SplitPageLayout (split page layout compound) — integration through t
     expect(screen.getByText('© 2026 GitHub')).toBeInTheDocument();
   });
 
+  // Regression guard for slot-flattening: Primer's PageLayout routes header/footer/sidebar into
+  // their regions via `useSlots`, which matches each region's slot marker. The a2ui `DeferredChild`
+  // wrapper hides that marker, so without the `asSlot` bridges every region falls into `rest` and
+  // renders flattened (stacked in document order) — presence assertions still pass, only placement
+  // is wrong. These two tests assert placement, so they fail on the flattened render.
+  it('slots the sidebar region out of the content flow (not flattened)', () => {
+    const {container} = renderFixture(splitPageLayoutSidebarFixture);
+    const root = container.querySelector('[data-component="PageLayout"]');
+    // Primer sets `data-has-sidebar` only when `useSlots` matches the sidebar bridge; on a flattened
+    // render the sidebar falls into `rest` and the attribute is absent.
+    expect(root?.getAttribute('data-has-sidebar')).toBe('true');
+  });
+
+  it('places header and footer in their regions, not flattened into content', () => {
+    const {container} = renderFixture(splitPageLayoutFixture);
+    const wrapper = container.querySelector('[data-width]');
+    const header = container.querySelector('[data-component="PageLayout.Header"]');
+    const content = container.querySelector('[data-component="PageLayout.Content"]');
+    const footer = container.querySelector('[data-component="PageLayout.Footer"]');
+    // Slotted: header/footer are direct children of the layout wrapper; content lives in the inner
+    // rest container. Flattened: all three share the rest container (header.parent === content.parent).
+    expect(header?.parentElement).toBe(wrapper);
+    expect(footer?.parentElement).toBe(wrapper);
+    expect(content?.parentElement).not.toBe(wrapper);
+    expect(header?.parentElement).not.toBe(content?.parentElement);
+  });
+
   it('renders both header divider states across the gallery', () => {
     const {container} = renderFixture(splHeaderDividerFixture);
     expect(container.querySelectorAll('[data-component="PageLayout.Header"]')).toHaveLength(2);
