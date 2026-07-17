@@ -98,7 +98,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 ### L2 — composite / multi-slot / overlay
 - [x] **6.34** `PageLayout` (#68)
 - [x] **6.35** `SplitPageLayout` (#69)
-- [WIP] **6.36** `PageHeader` (#67)
+- [x] **6.36** `PageHeader` (#67)
 - [x] **6.37** `Header` — dropped, not shipped: undocumented legacy app-bar, silently deprecated in favor of `PageHeader` (6.36, documented). No official doc page exists to ground the design contract (the design skill's descriptions translate documented semantics — there are none). Same rationale as `Flash` (6.24) and the §2 exclusions; an app-bar grows lazily if a later flow needs one `PageHeader` can't cover.
 - [WIP] **6.38** `ActionList` (#72)
 - [] **6.39** `ActionMenu`
