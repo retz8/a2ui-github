@@ -104,17 +104,17 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [] **6.39** `ActionMenu`
 - [x] **6.40** `ActionBar` (#71)
 - [x] **6.41** `NavList` (#74)
-- [ ] **6.42** `SubNav`
-- [ ] **6.43** `UnderlineNav`
+- [x] **6.42** `SubNav` — dropped, not shipped: absent from the official docs component index, with the legacy doc URLs redirecting to the Primer homepage — no official doc page exists to ground the design contract. Silently superseded by `UnderlineNav` (6.43, documented, beta) for horizontal nav. Same rationale as `Flash` (6.24) and `Header` (6.37); a pill-style sub-navigation bar grows lazily if a later flow needs one `UnderlineNav` can't cover.
+- [WIP] **6.43** `UnderlineNav`
 - [x] **6.44** `Breadcrumbs` (#70)
 - [x] **6.45** `TreeView` (#73)
-- [ ] **6.46** `Timeline`
+- [WIP] **6.46** `Timeline`
 - [ ] **6.47** `FormControl`
 - [ ] **6.48** `CheckboxGroup`
 - [ ] **6.49** `RadioGroup`
 - [ ] **6.50** `SelectPanel`
 - [] **6.51** `Autocomplete`
-- [ ] **6.52** `Dialog`
+- [WIP] **6.52** `Dialog`
 - [ ] **6.53** `ConfirmationDialog`
 - [ ] **6.54** `Overlay`
 - [ ] **6.55** `AnchoredOverlay`
