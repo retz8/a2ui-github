@@ -164,3 +164,22 @@ Coverage meanwhile: render-test assertions (responsive `data-*`/attributes emitt
 baselined via the shipped galleries. Revisit once multi-viewport visual baselining exists — then add
 narrow/wide captures for the responsive-divider/`hidden`/`position` arms and a Sidebar `fullscreen`
 demo.
+
+### Dialog — narrow-only position visuals + custom-frame render props
+
+Deferred in the 6.52 design session (`_dev/docs/new-components/dialog*.md`):
+
+- **`position` responsive-arm visuals** — `bottom` (bottom sheet) and `fullscreen` exist only in
+  the responsive-object arm and take effect only below the narrow breakpoint; the same
+  multi-viewport Playwright infra the Stack/SplitPageLayout entries above describe
+  (single-viewport 1024px harness; building multi-viewport capture is out of Phase 6). Coverage
+  meanwhile: a render-test assertion proves the per-viewport `data-position-*` attributes are
+  emitted and forwarded; the scalar arm (`center`/`left`/`right`) is baselined
+  (`dialog-position-left`/`-right`); the narrow-only `bottom`/`fullscreen` effect is verified
+  manually by resizing below the narrow breakpoint (the prop is carried and rendered in full —
+  only the automated capture is deferred). Revisit once multi-viewport visual baselining exists —
+  then add narrow captures for `bottom` and `fullscreen`.
+- **`renderHeader` / `renderBody` / `renderFooter`** — function-typed render props, not
+  JSON-serializable. Their capability (a custom header/body/footer) is carried by the
+  `DialogHeader`/`DialogBody`/`DialogFooter` slot leaves shipped in the same family; backfill a
+  representation only if a custom-frame need ever appears that the slot leaves cannot cover.
