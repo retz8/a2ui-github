@@ -1,6 +1,10 @@
 import {describe, it, expect, vi, afterEach} from 'vitest';
 import {screen, cleanup, fireEvent} from '@testing-library/react';
 import {renderFixture} from './helpers';
+import {dialogCloseFnFixture} from '../src/fixtures/dialog-close-fn';
+import {dialogCloseEventFixture} from '../src/fixtures/dialog-close-event';
+import {dialogButtonsFixture} from '../src/fixtures/dialog-buttons';
+import {dialogSlotsFixture} from '../src/fixtures/dialog-slots';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
 import {buttonEventFixture} from '../src/fixtures/button-event';
 import {iconbuttonFnFixture} from '../src/fixtures/iconbutton-fn';
@@ -684,5 +688,64 @@ describe('TreeView action paths', () => {
         sourceComponentId: 'tab-pulls',
       }),
     );
+  });
+});
+
+describe('Dialog action paths', () => {
+  it('closeAction functionCall runs consoleLog locally; the handler is not called', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(dialogCloseFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'dialog-close-fn closed');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('closeAction event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(dialogCloseEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({name: 'dialog-close', surfaceId: 'dialog-close-event'}),
+    );
+  });
+
+  it('footerButtons: the danger event is dispatched; a functionCall entry stays local', async () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(dialogButtonsFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Delete'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({name: 'confirm-delete', surfaceId: 'dialog-buttons'}),
+    );
+
+    fireEvent.click(screen.getByRole('button', {name: 'Later'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'later');
+    logSpy.mockRestore();
+  });
+
+  it('composed DialogButtons: save-changes event dispatches; Cancel and the CloseButton stay local', async () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(dialogSlotsFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Save'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({name: 'save-changes', surfaceId: 'dialog-slots'}),
+    );
+
+    fireEvent.click(screen.getByRole('button', {name: 'Cancel'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'cancelled');
+
+    fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'closebutton');
+    logSpy.mockRestore();
   });
 });
