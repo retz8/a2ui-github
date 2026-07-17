@@ -25,31 +25,45 @@ export const navlistFixture: Fixture = {
             children: ['it1', 'it2', 'div1', 'grp'],
           },
 
-          // it1 — Dashboard (current page, leading icon).
+          // it1 — Dashboard (current page): leading icon, trailing visual (counter), trailing action.
+          // The trailing visual and trailing action live on this item, not the sub-nav item: a
+          // NavList.SubNav item owns the trailing-visual slot for its expand chevron and drops a
+          // NavList.TrailingAction, so neither can share an item with a SubNav.
           {
             id: 'it1',
             component: 'NavList.Item',
             href: '#/dashboard',
             'aria-current': 'page',
-            children: ['it1-lv', 'it1-label'],
+            children: ['it1-lv', 'it1-label', 'it1-tv', 'it1-ta'],
           },
           {id: 'it1-lv', component: 'NavList.LeadingVisual', children: ['it1-icon']},
           {id: 'it1-icon', component: 'Icon', name: 'home'},
           {id: 'it1-label', component: 'Text', text: 'Dashboard'},
+          {id: 'it1-tv', component: 'NavList.TrailingVisual', children: ['it1-counter']},
+          {id: 'it1-counter', component: 'CounterLabel', count: '8'},
+          {
+            id: 'it1-ta',
+            component: 'NavList.TrailingAction',
+            icon: 'pin-icon',
+            accessibility: {label: 'Pin'},
+            action: {
+              functionCall: {call: 'consoleLog', args: {message: 'pin'}, returnType: 'void'},
+            },
+          },
+          {id: 'pin-icon', component: 'Icon', name: 'pin'},
 
-          // it2 — Pull requests (expanded sub-nav, counter, description, trailing action).
+          // it2 — Pull requests (expanded sub-nav with a description). No trailing visual/action here:
+          // the SubNav owns the trailing slot (its expand chevron).
           {
             id: 'it2',
             component: 'NavList.Item',
             href: '#/pulls',
             defaultOpen: true,
-            children: ['it2-lv', 'it2-label', 'it2-tv', 'it2-desc', 'it2-subnav', 'it2-ta'],
+            children: ['it2-lv', 'it2-label', 'it2-desc', 'it2-subnav'],
           },
           {id: 'it2-lv', component: 'NavList.LeadingVisual', children: ['it2-icon']},
           {id: 'it2-icon', component: 'Icon', name: 'git-pull-request'},
           {id: 'it2-label', component: 'Text', text: 'Pull requests'},
-          {id: 'it2-tv', component: 'NavList.TrailingVisual', children: ['it2-counter']},
-          {id: 'it2-counter', component: 'CounterLabel', count: '8'},
           {
             id: 'it2-desc',
             component: 'NavList.Description',
@@ -61,16 +75,6 @@ export const navlistFixture: Fixture = {
           {id: 'sn1-label', component: 'Text', text: 'Open'},
           {id: 'sn2', component: 'NavList.Item', href: '#/pulls/closed', children: ['sn2-label']},
           {id: 'sn2-label', component: 'Text', text: 'Closed'},
-          {
-            id: 'it2-ta',
-            component: 'NavList.TrailingAction',
-            icon: 'pin-icon',
-            accessibility: {label: 'Pin'},
-            action: {
-              functionCall: {call: 'consoleLog', args: {message: 'pin'}, returnType: 'void'},
-            },
-          },
-          {id: 'pin-icon', component: 'Icon', name: 'pin'},
 
           // div1 — Divider between the items and the Support group.
           {id: 'div1', component: 'NavList.Divider'},

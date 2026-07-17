@@ -1634,6 +1634,26 @@ describe('NavList (compound family) — integration through the renderer', () =>
     expect(screen.getByText('Docs')).toBeInTheDocument();
   });
 
+  it('places each slot in its Primer slot, not flattened into the item label', () => {
+    const {container} = renderFixture(navlistFixture);
+    const labels = [
+      ...container.querySelectorAll<HTMLElement>('[data-component="ActionList.Item.Label"]'),
+    ];
+    // The "Pull requests" item exercises every slot. When slots are routed correctly, its label
+    // holds ONLY the label text — the leading/trailing visuals, description, sub-nav, and trailing
+    // action each live in their own Primer slot, not crammed into the label span.
+    const prLabel = labels.find(l => l.textContent?.includes('Pull requests'));
+    expect(prLabel).toBeDefined();
+    expect(prLabel!.textContent).toBe('Pull requests');
+    expect(prLabel!.querySelector('[data-component="ActionList.LeadingVisual"]')).toBeNull();
+    expect(prLabel!.querySelector('[data-component="ActionList.TrailingVisual"]')).toBeNull();
+    expect(prLabel!.querySelector('button')).toBeNull();
+    expect(prLabel!.querySelector('ul')).toBeNull();
+    // Dashboard's leading visual is likewise outside its label.
+    const dashLabel = labels.find(l => l.textContent?.includes('Dashboard'));
+    expect(dashLabel!.textContent).toBe('Dashboard');
+  });
+
   it('renders the inactive item (inactiveText) through the renderer', () => {
     renderFixture(navlistItemInactiveFixture);
     expect(screen.getByText('Draft settings')).toBeInTheDocument();
