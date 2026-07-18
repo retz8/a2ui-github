@@ -253,6 +253,13 @@ import {underlineNavFixture} from '../src/fixtures/underline-nav';
 import {underlineNavChildrenTemplateFixture} from '../src/fixtures/underline-nav-children-template';
 import {underlineNavVariantFixture} from '../src/fixtures/underline-nav-variant';
 import {underlineNavLoadingFixture} from '../src/fixtures/underline-nav-loading';
+import {timelineDefaultFixture} from '../src/fixtures/timeline-default';
+import {timelineClipSidebarFixture} from '../src/fixtures/timeline-clip-sidebar';
+import {timelineItemCondensedFixture} from '../src/fixtures/timeline-item-condensed';
+import {timelineBadgeVariantsFixture} from '../src/fixtures/timeline-badge-variants';
+import {timelineBreakFixture} from '../src/fixtures/timeline-break';
+import {timelineActionsFixture} from '../src/fixtures/timeline-actions';
+import {timelineAvatarFixture} from '../src/fixtures/timeline-avatar';
 
 afterEach(cleanup);
 
@@ -2282,5 +2289,63 @@ describe('UnderlineNav (container) — integration through the renderer', () => 
     expect(container.querySelectorAll('[data-component="counter"]').length).toBeGreaterThanOrEqual(
       3,
     );
+  });
+});
+
+describe('Timeline (compound family) — integration through the renderer', () => {
+  it('renders the baseline composition — three items, each a badge icon and a body message', () => {
+    const {container} = renderFixture(timelineDefaultFixture);
+    // Every item's body message renders (three items, same canned text).
+    expect(screen.getAllByText('This is a message')).toHaveLength(3);
+    // Each item carries a git-commit badge icon (one octicon SVG per badge).
+    expect(container.querySelectorAll('svg').length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('renders each clipSidebar spelling as its own surface', () => {
+    renderFixture(timelineClipSidebarFixture);
+    // Four surfaces (true / start / end / both), each with two body messages -> eight in total.
+    expect(screen.getAllByText('This is a message')).toHaveLength(8);
+  });
+
+  it('renders condensed items with their content intact', () => {
+    renderFixture(timelineItemCondensedFixture);
+    expect(screen.getAllByText('This is a message')).toHaveLength(3);
+  });
+
+  it('renders one item per badge variant, each labelled by the variant name', () => {
+    renderFixture(timelineBadgeVariantsFixture);
+    for (const variant of [
+      'accent',
+      'success',
+      'attention',
+      'severe',
+      'danger',
+      'done',
+      'open',
+      'closed',
+      'sponsors',
+    ]) {
+      expect(screen.getByText(variant)).toBeInTheDocument();
+    }
+  });
+
+  it('renders a decorative break between the two entry groups', () => {
+    const {container} = renderFixture(timelineBreakFixture);
+    // Four items around the break; the break renders as its own decorative separator element.
+    expect(screen.getAllByText('This is a message')).toHaveLength(4);
+    expect(container.querySelector('[class*="TimelineBreak"]')).not.toBeNull();
+  });
+
+  it('renders the actions slot with its composed button', () => {
+    renderFixture(timelineActionsFixture);
+    expect(screen.getByRole('button', {name: 'Revert'})).toBeInTheDocument();
+    expect(screen.getByText('This is a message')).toBeInTheDocument();
+  });
+
+  it('renders the avatar beside the badge and the body message', () => {
+    renderFixture(timelineAvatarFixture);
+    // The Avatar leaf renders its image with the canned alt text.
+    expect(screen.getByAltText('Octocat')).toBeInTheDocument();
+    expect(screen.getByText('This is a message')).toBeInTheDocument();
   });
 });

@@ -104,6 +104,13 @@ import {TreeViewDirectoryIconComponent} from './components/treeview-directoryico
 import {TreeViewErrorDialogComponent} from './components/treeview-errordialog';
 import {UnderlineNavComponent} from './components/underline-nav';
 import {UnderlineNavItemComponent} from './components/underline-nav-item';
+import {TimelineComponent} from './components/timeline';
+import {TimelineItemComponent} from './components/timeline-item';
+import {TimelineBadgeComponent} from './components/timeline-badge';
+import {TimelineBodyComponent} from './components/timeline-body';
+import {TimelineBreakComponent} from './components/timeline-break';
+import {TimelineActionsComponent} from './components/timeline-actions';
+import {TimelineAvatarComponent} from './components/timeline-avatar';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -215,6 +222,13 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     TreeViewErrorDialogComponent,
     UnderlineNavComponent,
     UnderlineNavItemComponent,
+    TimelineComponent,
+    TimelineItemComponent,
+    TimelineBadgeComponent,
+    TimelineBodyComponent,
+    TimelineBreakComponent,
+    TimelineActionsComponent,
+    TimelineAvatarComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

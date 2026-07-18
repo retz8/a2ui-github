@@ -198,6 +198,13 @@ const FIXTURE_NAMES = [
   'underline-nav-loading',
   'underline-nav-item-fn',
   'underline-nav-item-event',
+  'timeline-default',
+  'timeline-clip-sidebar',
+  'timeline-item-condensed',
+  'timeline-badge-variants',
+  'timeline-break',
+  'timeline-actions',
+  'timeline-avatar',
 ];
 
 for (const name of FIXTURE_NAMES) {

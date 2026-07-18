@@ -1147,6 +1147,34 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'underline-nav-item-event',
     load: () => import('./underline-nav-item-event').then(m => m.underlineNavItemEventFixture),
   },
+  {
+    name: 'timeline-default',
+    load: () => import('./timeline-default').then(m => m.timelineDefaultFixture),
+  },
+  {
+    name: 'timeline-clip-sidebar',
+    load: () => import('./timeline-clip-sidebar').then(m => m.timelineClipSidebarFixture),
+  },
+  {
+    name: 'timeline-item-condensed',
+    load: () => import('./timeline-item-condensed').then(m => m.timelineItemCondensedFixture),
+  },
+  {
+    name: 'timeline-badge-variants',
+    load: () => import('./timeline-badge-variants').then(m => m.timelineBadgeVariantsFixture),
+  },
+  {
+    name: 'timeline-break',
+    load: () => import('./timeline-break').then(m => m.timelineBreakFixture),
+  },
+  {
+    name: 'timeline-actions',
+    load: () => import('./timeline-actions').then(m => m.timelineActionsFixture),
+  },
+  {
+    name: 'timeline-avatar',
+    load: () => import('./timeline-avatar').then(m => m.timelineAvatarFixture),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {

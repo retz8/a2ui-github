@@ -41,6 +41,7 @@ import {treeViewItemSecondaryActionsFixture} from '../src/fixtures/tree-view-ite
 import {treeViewErrorDialogFixture} from '../src/fixtures/tree-view-error-dialog';
 import {underlineNavItemFnFixture} from '../src/fixtures/underline-nav-item-fn';
 import {underlineNavItemEventFixture} from '../src/fixtures/underline-nav-item-event';
+import {timelineActionsFixture} from '../src/fixtures/timeline-actions';
 
 afterEach(cleanup);
 
@@ -53,6 +54,18 @@ describe('action paths', () => {
     fireEvent.click(screen.getByRole('button', {name: 'Run local function'}));
 
     expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'button-fn clicked');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('path-1: Timeline.Actions button functionCall runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(timelineActionsFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Revert'}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'revert clicked');
     expect(handler).not.toHaveBeenCalled();
     logSpy.mockRestore();
   });
