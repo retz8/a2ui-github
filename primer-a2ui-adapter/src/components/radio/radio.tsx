@@ -1,5 +1,6 @@
 import {Radio as PrimerRadio} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
+import {useFormControlInputProps} from '../../shared/form-control-forwarding';
 import {RadioApi} from './radio.schema';
 
 /** Resolved accessibility: nested DynamicStrings are plain strings after the binder resolves them. */
@@ -25,13 +26,15 @@ export function RadioView({
   accessibility,
   onChange,
 }: RadioViewProps) {
+  // Pick up id / disabled / required / aria-describedby from an enclosing FormControl (no-op when
+  // standalone); disabled/required come from here, so they are not passed explicitly below.
+  const formControlProps = useFormControlInputProps({disabled, required});
   return (
     <PrimerRadio
+      {...formControlProps}
       value={value}
       name={name}
       checked={checked}
-      disabled={disabled}
-      required={required}
       aria-label={accessibility?.label}
       aria-description={accessibility?.description}
       onChange={onChange}

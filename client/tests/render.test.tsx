@@ -2570,9 +2570,13 @@ describe('FormControl (compound family) — integration through the renderer', (
     expect(screen.getByText('Repository name')).toBeInTheDocument();
     expect(screen.getByRole('textbox')).toHaveValue('octocat');
     expect(container.querySelector('[data-component="FormControl"]')).toBeInTheDocument();
-    // The label is associated with the input via FormControl's generated id.
+    // The label's htmlFor matches the input's own id: the FormControl-forwarded id reaches the
+    // binder-wrapped input via useFormControlInputProps (Primer's cloneElement can't see through
+    // the opaque DeferredChild wrapper, so context forwarding is what wires the association).
     const label = screen.getByText('Repository name').closest('label');
-    expect(label).toHaveAttribute('for');
+    const input = screen.getByRole('textbox');
+    expect(input.id).toBeTruthy();
+    expect(label).toHaveAttribute('for', input.id);
   });
 
   it('resolves the bound label text through the renderer', () => {
@@ -2585,6 +2589,11 @@ describe('FormControl (compound family) — integration through the renderer', (
     expect(screen.getByText('Repository name')).toBeInTheDocument();
     expect(screen.getByText('Choose a unique repository name')).toBeInTheDocument();
     expect(screen.getByRole('textbox')).toHaveValue('octocat');
+    // The input's aria-describedby points at the caption element — FormControl-forwarded a11y wiring.
+    const describedby = screen.getByRole('textbox').getAttribute('aria-describedby');
+    expect(describedby).toBeTruthy();
+    const described = describedby ? document.getElementById(describedby.split(' ')[0]) : null;
+    expect(described).toHaveTextContent('Choose a unique repository name');
   });
 
   it('renders both validation variants across the gallery', () => {
@@ -2603,9 +2612,11 @@ describe('FormControl (compound family) — integration through the renderer', (
     expect(asterisks.some(el => el.getAttribute('aria-hidden') === 'true')).toBe(true);
   });
 
-  it('dims the disabled control', () => {
+  it('cascades root disabled onto the wrapped input', () => {
     renderFixture(formcontrolDisabledFixture);
     expect(screen.getByText('Repository name')).toBeInTheDocument();
+    // The fixture sets disabled on the FormControl root only; it reaches the input via the
+    // forwarded props (the input carries no disabled of its own).
     expect(screen.getByRole('textbox')).toBeDisabled();
   });
 

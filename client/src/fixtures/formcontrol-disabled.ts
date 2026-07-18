@@ -1,7 +1,8 @@
 import {CATALOG_ID} from 'primer-a2ui-adapter';
 import type {Fixture} from './types';
 
-// Root `disabled` dims the control (the label reads disabled from FormControl's context).
+// Root `disabled` dims the control: it cascades to the wrapped input via the FormControl-forwarded
+// props (useFormControlInputProps), so the input is not marked disabled on its own.
 export const formcontrolDisabledFixture: Fixture = {
   name: 'formcontrol-disabled',
   messages: [
@@ -18,7 +19,7 @@ export const formcontrolDisabledFixture: Fixture = {
             children: ['fc-label', 'fc-input'],
           },
           {id: 'fc-label', component: 'FormControlLabel', text: 'Repository name'},
-          {id: 'fc-input', component: 'TextInput', value: 'octocat', disabled: true},
+          {id: 'fc-input', component: 'TextInput', value: 'octocat'},
         ],
       },
     },

@@ -1,6 +1,7 @@
 import type {ChangeEvent} from 'react';
 import {Checkbox as PrimerCheckbox} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
+import {useFormControlInputProps} from '../../shared/form-control-forwarding';
 import {CheckboxApi} from './checkbox.schema';
 
 /** Resolved accessibility: nested DynamicStrings are plain strings after the binder resolves them. */
@@ -29,12 +30,14 @@ export function CheckboxView({
   accessibility,
   onCheckedChange,
 }: CheckboxViewProps) {
+  // Pick up id / disabled / required / aria-describedby from an enclosing FormControl (no-op when
+  // standalone); disabled/required come from here, so they are not passed explicitly below.
+  const formControlProps = useFormControlInputProps({disabled, required});
   return (
     <PrimerCheckbox
+      {...formControlProps}
       checked={!!checked}
       indeterminate={indeterminate}
-      disabled={disabled}
-      required={required}
       validationStatus={validationStatus}
       value={value}
       aria-label={accessibility?.label}
