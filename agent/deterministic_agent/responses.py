@@ -24,6 +24,8 @@ _EVENT_FIXTURES = {
     "dialog-close": "dialog-close.json",
     "confirm-delete": "confirm-delete.json",
     "save-changes": "save-changes.json",
+    "cd-confirm-delete": "cd-confirm-delete.json",
+    "cd-cancel-delete": "cd-cancel-delete.json",
 }
 # The operation key whose object carries the surfaceId we stamp.
 _OPERATION_KEYS = ("updateComponents", "updateDataModel", "createSurface")

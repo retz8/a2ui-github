@@ -559,6 +559,66 @@ def test_save_changes_writes_title_through_the_slot_subtree_then_swaps_body_with
     ]
 
 
+CD_CONFIRM_DELETE = {
+    "name": "cd-confirm-delete",
+    "surfaceId": "confirmation-dialog-event",
+    "sourceComponentId": "root",
+    "context": {},
+}
+
+
+def test_cd_confirm_delete_enters_loading_then_swaps_body_with_surface_echoed():
+    msgs = build_response(CD_CONFIRM_DELETE)
+    assert len(msgs) == 2
+
+    # The /cd/deleting write drives the confirm button's loading state
+    # (`confirmButtonLoading <- /cd/deleting`); the cd-body Text swap is the self-visible reaction.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "confirmation-dialog-event"
+    assert dm["path"] == "/cd/deleting"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "confirmation-dialog-event"
+    assert uc["components"] == [
+        {
+            "id": "cd-body",
+            "component": "Text",
+            "text": "🗑️ Deleting branch — server received confirm",
+        }
+    ]
+
+
+CD_CANCEL_DELETE = {
+    "name": "cd-cancel-delete",
+    "surfaceId": "confirmation-dialog-event",
+    "sourceComponentId": "root",
+    "context": {},
+}
+
+
+def test_cd_cancel_delete_updates_the_title_then_swaps_body_with_surface_echoed():
+    msgs = build_response(CD_CANCEL_DELETE)
+    assert len(msgs) == 2
+
+    # The /cd/title write updates the heading (`title <- /cd/title`); the cd-body Text swap is the
+    # self-visible reaction. Distinct from confirm so the round-trip separates confirm from cancel.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "confirmation-dialog-event"
+    assert dm["path"] == "/cd/title"
+    assert dm["value"] == "✅ Branch kept"
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "confirmation-dialog-event"
+    assert uc["components"] == [
+        {
+            "id": "cd-body",
+            "component": "Text",
+            "text": "No changes made — server received cancel",
+        }
+    ]
+
+
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1

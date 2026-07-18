@@ -1234,6 +1234,75 @@ export const FIXTURES: FixtureEntry[] = [
     load: () => import('./dialog-align-bottom').then(m => m.dialogAlignBottomFixture),
   },
   {name: 'dialog-slots', load: () => import('./dialog-slots').then(m => m.dialogSlotsFixture)},
+  {
+    name: 'confirmation-dialog',
+    load: () => import('./confirmation-dialog').then(m => m.confirmationDialogFixture),
+  },
+  {
+    name: 'confirmation-dialog-bound',
+    load: () => import('./confirmation-dialog-bound').then(m => m.confirmationDialogBoundFixture),
+  },
+  {
+    name: 'confirmation-dialog-event',
+    load: () => import('./confirmation-dialog-event').then(m => m.confirmationDialogEventFixture),
+  },
+  {
+    name: 'confirmation-dialog-confirm-primary',
+    load: () =>
+      import('./confirmation-dialog-confirm-primary').then(
+        m => m.confirmationDialogConfirmPrimaryFixture,
+      ),
+  },
+  {
+    name: 'confirmation-dialog-confirm-danger',
+    load: () =>
+      import('./confirmation-dialog-confirm-danger').then(
+        m => m.confirmationDialogConfirmDangerFixture,
+      ),
+  },
+  {
+    name: 'confirmation-dialog-loading',
+    load: () =>
+      import('./confirmation-dialog-loading').then(m => m.confirmationDialogLoadingFixture),
+  },
+  {
+    name: 'confirmation-dialog-width-small',
+    load: () =>
+      import('./confirmation-dialog-width-small').then(m => m.confirmationDialogWidthSmallFixture),
+  },
+  {
+    name: 'confirmation-dialog-width-large',
+    load: () =>
+      import('./confirmation-dialog-width-large').then(m => m.confirmationDialogWidthLargeFixture),
+  },
+  {
+    name: 'confirmation-dialog-width-xlarge',
+    load: () =>
+      import('./confirmation-dialog-width-xlarge').then(
+        m => m.confirmationDialogWidthXlargeFixture,
+      ),
+  },
+  {
+    name: 'confirmation-dialog-width-custom',
+    load: () =>
+      import('./confirmation-dialog-width-custom').then(
+        m => m.confirmationDialogWidthCustomFixture,
+      ),
+  },
+  {
+    name: 'confirmation-dialog-height-small',
+    load: () =>
+      import('./confirmation-dialog-height-small').then(
+        m => m.confirmationDialogHeightSmallFixture,
+      ),
+  },
+  {
+    name: 'confirmation-dialog-height-large',
+    load: () =>
+      import('./confirmation-dialog-height-large').then(
+        m => m.confirmationDialogHeightLargeFixture,
+      ),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {

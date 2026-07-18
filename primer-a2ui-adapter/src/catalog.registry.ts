@@ -116,6 +116,7 @@ import {DialogBodyApi} from './components/dialog-body';
 import {DialogFooterApi} from './components/dialog-footer';
 import {DialogButtonsApi} from './components/dialog-buttons';
 import {DialogCloseButtonApi} from './components/dialog-closebutton';
+import {ConfirmationDialogApi} from './components/confirmationdialog';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -242,6 +243,7 @@ export const COMPONENTS = {
   DialogFooter: DialogFooterApi,
   DialogButtons: DialogButtonsApi,
   DialogCloseButton: DialogCloseButtonApi,
+  ConfirmationDialog: ConfirmationDialogApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

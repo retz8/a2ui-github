@@ -6444,6 +6444,84 @@
       },
       "required": ["component", "closeAction"],
       "unevaluatedProperties": false
+    },
+    "ConfirmationDialog": {
+      "type": "object",
+      "description": "A modal confirmation prompt with exactly two buttons — one to cancel and one to confirm an action — used to confirm a user's action before it proceeds; the confirm button can be styled to mark a destructive choice.",
+      "properties": {
+        "component": {
+          "const": "ConfirmationDialog"
+        },
+        "confirmAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the user confirms — clicks the confirm button."
+        },
+        "cancelAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the user cancels or dismisses the dialog — the cancel button, the close button, the Escape key, or the backdrop."
+        },
+        "title": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The dialog's heading; usually a brief question, and also its accessible name."
+        },
+        "cancelButtonContent": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "default": "Cancel",
+          "description": "The label of the button that dismisses the action."
+        },
+        "confirmButtonContent": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "default": "OK",
+          "description": "The label of the button that confirms the action."
+        },
+        "confirmButtonType": {
+          "type": "string",
+          "enum": ["normal", "primary", "danger"],
+          "default": "normal",
+          "description": "The confirm button's visual emphasis; `danger` marks a destructive action."
+        },
+        "cancelButtonLoading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the cancel button shows a loading state while an operation is pending."
+        },
+        "confirmButtonLoading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the confirm button shows a loading state while an operation is pending."
+        },
+        "overrideButtonFocus": {
+          "type": "string",
+          "enum": ["cancel", "confirm"],
+          "description": "Which button receives focus when the dialog opens; defaults to the confirm button, or the cancel button for a destructive action."
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": ["small", "medium", "large", "xlarge"]
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "default": "medium",
+          "description": "The dialog's width: preset sizes (small 296px, medium 320px, large 480px, xlarge 640px) or any CSS width value."
+        },
+        "height": {
+          "type": "string",
+          "enum": ["small", "large", "auto"],
+          "default": "auto",
+          "description": "The dialog's height: small 480px, large 640px, auto sizes to the contents."
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The dialog's body content — the message or explanation shown above the buttons."
+        }
+      },
+      "required": ["component", "confirmAction", "cancelAction", "title"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -6879,6 +6957,9 @@
         },
         {
           "$ref": "#/components/DialogCloseButton"
+        },
+        {
+          "$ref": "#/components/ConfirmationDialog"
         }
       ]
     },
