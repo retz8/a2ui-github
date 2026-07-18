@@ -1366,6 +1366,145 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'formcontrol-full',
     load: () => import('./formcontrol-full').then(m => m.formcontrolFullFixture),
   },
+  {
+    name: 'anchored-overlay',
+    load: () => import('./anchored-overlay').then(m => m.anchoredOverlayFixture),
+  },
+  {
+    name: 'anchored-overlay-bound',
+    load: () => import('./anchored-overlay-bound').then(m => m.anchoredOverlayBoundFixture),
+  },
+  {
+    name: 'anchored-overlay-closed',
+    load: () => import('./anchored-overlay-closed').then(m => m.anchoredOverlayClosedFixture),
+  },
+  {
+    name: 'anchored-overlay-actions-fn',
+    load: () =>
+      import('./anchored-overlay-actions-fn').then(m => m.anchoredOverlayActionsFnFixture),
+  },
+  {
+    name: 'anchored-overlay-actions-event',
+    load: () =>
+      import('./anchored-overlay-actions-event').then(m => m.anchoredOverlayActionsEventFixture),
+  },
+  {
+    name: 'anchored-overlay-side-outside-top',
+    load: () =>
+      import('./anchored-overlay-side-outside-top').then(
+        m => m.anchoredOverlaySideOutsideTopFixture,
+      ),
+  },
+  {
+    name: 'anchored-overlay-side-outside-left',
+    load: () =>
+      import('./anchored-overlay-side-outside-left').then(
+        m => m.anchoredOverlaySideOutsideLeftFixture,
+      ),
+  },
+  {
+    name: 'anchored-overlay-side-outside-right',
+    load: () =>
+      import('./anchored-overlay-side-outside-right').then(
+        m => m.anchoredOverlaySideOutsideRightFixture,
+      ),
+  },
+  {
+    name: 'anchored-overlay-side-inside-top',
+    load: () =>
+      import('./anchored-overlay-side-inside-top').then(m => m.anchoredOverlaySideInsideTopFixture),
+  },
+  {
+    name: 'anchored-overlay-side-inside-bottom',
+    load: () =>
+      import('./anchored-overlay-side-inside-bottom').then(
+        m => m.anchoredOverlaySideInsideBottomFixture,
+      ),
+  },
+  {
+    name: 'anchored-overlay-side-inside-left',
+    load: () =>
+      import('./anchored-overlay-side-inside-left').then(
+        m => m.anchoredOverlaySideInsideLeftFixture,
+      ),
+  },
+  {
+    name: 'anchored-overlay-side-inside-right',
+    load: () =>
+      import('./anchored-overlay-side-inside-right').then(
+        m => m.anchoredOverlaySideInsideRightFixture,
+      ),
+  },
+  {
+    name: 'anchored-overlay-side-inside-center',
+    load: () =>
+      import('./anchored-overlay-side-inside-center').then(
+        m => m.anchoredOverlaySideInsideCenterFixture,
+      ),
+  },
+  {
+    name: 'anchored-overlay-align-center',
+    load: () =>
+      import('./anchored-overlay-align-center').then(m => m.anchoredOverlayAlignCenterFixture),
+  },
+  {
+    name: 'anchored-overlay-align-end',
+    load: () => import('./anchored-overlay-align-end').then(m => m.anchoredOverlayAlignEndFixture),
+  },
+  {
+    name: 'anchored-overlay-height-xsmall',
+    load: () =>
+      import('./anchored-overlay-height-xsmall').then(m => m.anchoredOverlayHeightXsmallFixture),
+  },
+  {
+    name: 'anchored-overlay-height-small',
+    load: () =>
+      import('./anchored-overlay-height-small').then(m => m.anchoredOverlayHeightSmallFixture),
+  },
+  {
+    name: 'anchored-overlay-height-medium',
+    load: () =>
+      import('./anchored-overlay-height-medium').then(m => m.anchoredOverlayHeightMediumFixture),
+  },
+  {
+    name: 'anchored-overlay-height-large',
+    load: () =>
+      import('./anchored-overlay-height-large').then(m => m.anchoredOverlayHeightLargeFixture),
+  },
+  {
+    name: 'anchored-overlay-height-xlarge',
+    load: () =>
+      import('./anchored-overlay-height-xlarge').then(m => m.anchoredOverlayHeightXlargeFixture),
+  },
+  {
+    name: 'anchored-overlay-width-small',
+    load: () =>
+      import('./anchored-overlay-width-small').then(m => m.anchoredOverlayWidthSmallFixture),
+  },
+  {
+    name: 'anchored-overlay-width-medium',
+    load: () =>
+      import('./anchored-overlay-width-medium').then(m => m.anchoredOverlayWidthMediumFixture),
+  },
+  {
+    name: 'anchored-overlay-width-large',
+    load: () =>
+      import('./anchored-overlay-width-large').then(m => m.anchoredOverlayWidthLargeFixture),
+  },
+  {
+    name: 'anchored-overlay-width-xlarge',
+    load: () =>
+      import('./anchored-overlay-width-xlarge').then(m => m.anchoredOverlayWidthXlargeFixture),
+  },
+  {
+    name: 'anchored-overlay-width-xxlarge',
+    load: () =>
+      import('./anchored-overlay-width-xxlarge').then(m => m.anchoredOverlayWidthXxlargeFixture),
+  },
+  {
+    name: 'anchored-overlay-offset',
+    load: () => import('./anchored-overlay-offset').then(m => m.anchoredOverlayOffsetFixture),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {
