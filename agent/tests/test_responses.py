@@ -567,6 +567,14 @@ CD_CONFIRM_DELETE = {
 }
 
 
+POPOVER_DISMISS = {
+    "name": "popover-dismiss",
+    "surfaceId": "content-clickoutside-event",
+    "sourceComponentId": "popover-content",
+    "context": {},
+}
+
+
 def test_cd_confirm_delete_enters_loading_then_swaps_body_with_surface_echoed():
     msgs = build_response(CD_CONFIRM_DELETE)
     assert len(msgs) == 2
@@ -616,6 +624,25 @@ def test_cd_cancel_delete_updates_the_title_then_swaps_body_with_surface_echoed(
             "component": "Text",
             "text": "No changes made — server received cancel",
         }
+    ]
+
+
+def test_popover_dismiss_acknowledges_and_stays_open_with_surface_echoed():
+    msgs = build_response(POPOVER_DISMISS)
+    assert len(msgs) == 2
+
+    # The /dismissNote write is visible through `Text#popover-message` `text <- /dismissNote`
+    # (the two-way data-binding half); the heading swap is the self-visible half. The response is a
+    # partial update only — no re-createSurface — so the popover stays open (acknowledge-and-stay).
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "content-clickoutside-event"
+    assert dm["path"] == "/dismissNote"
+    assert dm["value"] == "Server acknowledged the dismissal."
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "content-clickoutside-event"
+    assert uc["components"] == [
+        {"id": "popover-heading", "component": "Heading", "text": "✅ Dismissed"}
     ]
 
 

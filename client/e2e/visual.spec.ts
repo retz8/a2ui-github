@@ -205,6 +205,14 @@ const FIXTURE_NAMES = [
   'timeline-break',
   'timeline-actions',
   'timeline-avatar',
+  'popover-base',
+  'popover-caret',
+  'popover-open-bound',
+  'content-width',
+  'content-height',
+  'content-overflow',
+  'content-clickoutside-fn',
+  'content-clickoutside-event',
 ];
 
 for (const name of FIXTURE_NAMES) {

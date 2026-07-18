@@ -22,6 +22,7 @@ _EVENT_FIXTURES = {
     "delete": "delete.json",
     "retry-subtree": "retry-subtree.json",
     "dialog-close": "dialog-close.json",
+    "popover-dismiss": "popover-dismiss.json",
     "confirm-delete": "confirm-delete.json",
     "save-changes": "save-changes.json",
     "cd-confirm-delete": "cd-confirm-delete.json",

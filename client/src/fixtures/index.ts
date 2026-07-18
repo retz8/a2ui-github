@@ -1303,6 +1303,29 @@ export const FIXTURES: FixtureEntry[] = [
         m => m.confirmationDialogHeightLargeFixture,
       ),
   },
+  {name: 'popover-base', load: () => import('./popover-base').then(m => m.popoverBaseFixture)},
+  {name: 'popover-caret', load: () => import('./popover-caret').then(m => m.popoverCaretFixture)},
+  {
+    name: 'popover-open-bound',
+    load: () => import('./popover-open-bound').then(m => m.popoverOpenBoundFixture),
+  },
+  {name: 'content-width', load: () => import('./content-width').then(m => m.contentWidthFixture)},
+  {
+    name: 'content-height',
+    load: () => import('./content-height').then(m => m.contentHeightFixture),
+  },
+  {
+    name: 'content-overflow',
+    load: () => import('./content-overflow').then(m => m.contentOverflowFixture),
+  },
+  {
+    name: 'content-clickoutside-fn',
+    load: () => import('./content-clickoutside-fn').then(m => m.contentClickoutsideFnFixture),
+  },
+  {
+    name: 'content-clickoutside-event',
+    load: () => import('./content-clickoutside-event').then(m => m.contentClickoutsideEventFixture),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {
