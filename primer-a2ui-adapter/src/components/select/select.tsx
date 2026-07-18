@@ -1,6 +1,7 @@
 import type {ChangeEvent, ReactNode} from 'react';
 import {Select as PrimerSelect} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
+import {useFormControlInputProps} from '../../shared/form-control-forwarding';
 import {SelectApi} from './select.schema';
 import {renderChildList} from '../../shared/child-list';
 
@@ -38,13 +39,15 @@ export function SelectView({
   accessibility,
   children,
 }: SelectViewProps) {
+  // Pick up id / disabled / required / aria-describedby from an enclosing FormControl (no-op when
+  // standalone); disabled/required come from here, so they are not passed explicitly below.
+  const formControlProps = useFormControlInputProps({disabled, required});
   return (
     <PrimerSelect
+      {...formControlProps}
       value={value}
       onChange={(e: ChangeEvent<HTMLSelectElement>) => setValue?.(e.target.value)}
       placeholder={placeholder}
-      disabled={disabled}
-      required={required}
       validationStatus={validationStatus}
       block={block}
       size={size}

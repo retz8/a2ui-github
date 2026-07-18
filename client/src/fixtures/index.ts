@@ -1326,6 +1326,46 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'content-clickoutside-event',
     load: () => import('./content-clickoutside-event').then(m => m.contentClickoutsideEventFixture),
   },
+  {name: 'formcontrol', load: () => import('./formcontrol').then(m => m.formcontrolFixture)},
+  {
+    name: 'formcontrol-label-bound',
+    load: () => import('./formcontrol-label-bound').then(m => m.formcontrolLabelBoundFixture),
+  },
+  {
+    name: 'formcontrol-caption',
+    load: () => import('./formcontrol-caption').then(m => m.formcontrolCaptionFixture),
+  },
+  {
+    name: 'formcontrol-validation',
+    load: () => import('./formcontrol-validation').then(m => m.formcontrolValidationFixture),
+  },
+  {
+    name: 'formcontrol-required',
+    load: () => import('./formcontrol-required').then(m => m.formcontrolRequiredFixture),
+  },
+  {
+    name: 'formcontrol-disabled',
+    load: () => import('./formcontrol-disabled').then(m => m.formcontrolDisabledFixture),
+  },
+  {
+    name: 'formcontrol-label-visually-hidden',
+    load: () =>
+      import('./formcontrol-label-visually-hidden').then(
+        m => m.formcontrolLabelVisuallyHiddenFixture,
+      ),
+  },
+  {
+    name: 'formcontrol-layout',
+    load: () => import('./formcontrol-layout').then(m => m.formcontrolLayoutFixture),
+  },
+  {
+    name: 'formcontrol-leading-visual',
+    load: () => import('./formcontrol-leading-visual').then(m => m.formcontrolLeadingVisualFixture),
+  },
+  {
+    name: 'formcontrol-full',
+    load: () => import('./formcontrol-full').then(m => m.formcontrolFullFixture),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {

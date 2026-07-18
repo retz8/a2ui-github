@@ -6612,6 +6612,121 @@
       },
       "required": ["component", "children"],
       "unevaluatedProperties": false
+    },
+    "FormControl": {
+      "type": "object",
+      "description": "Wraps a single form input with its visible label, optional helper caption, and optional validation message, laying them out and associating them for assistive technologies.",
+      "properties": {
+        "component": {
+          "const": "FormControl"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "Slot-scanned: the label, an optional caption / validation / leading visual, and the wrapped input control."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the control is inactive and cannot be edited."
+        },
+        "layout": {
+          "type": "string",
+          "enum": ["horizontal", "vertical"],
+          "description": "Direction the content flows; horizontal is used for checkbox and radio inputs.",
+          "default": "vertical"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether a value is required before the form can be submitted; drives the label's required indicator and the input's required semantics."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "FormControlLabel": {
+      "type": "object",
+      "description": "The visible label naming the form control it belongs to.",
+      "properties": {
+        "component": {
+          "const": "FormControlLabel"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The visible label text for the control."
+        },
+        "visuallyHidden": {
+          "type": "boolean",
+          "description": "Hides the label visually while keeping it available to assistive technologies.",
+          "default": false
+        },
+        "requiredIndicator": {
+          "type": "boolean",
+          "description": "Whether to show the required-field indicator (asterisk) when the control is required.",
+          "default": true
+        },
+        "requiredText": {
+          "type": "string",
+          "description": "Custom text conveying the required state to assistive technologies."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "FormControlCaption": {
+      "type": "object",
+      "description": "Helper text describing the form control, shown below its label.",
+      "properties": {
+        "component": {
+          "const": "FormControlCaption"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Helper text describing the control, shown below the label."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "FormControlValidation": {
+      "type": "object",
+      "description": "A validation message shown for the form control, indicating an error or success state.",
+      "properties": {
+        "component": {
+          "const": "FormControlValidation"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The validation message shown for the control."
+        },
+        "variant": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["error", "success"]
+            },
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+            }
+          ],
+          "description": "The validation status the message represents. `error` renders it as a failure (red, alert icon); `success` as a pass (green, check). Bindable: an agent can drive it through the data model (there is no `DynamicEnum`, so this is a union of the enum + `DataBinding`), mirroring `TextInput.validationStatus`."
+        }
+      },
+      "required": ["component", "text", "variant"],
+      "unevaluatedProperties": false
+    },
+    "FormControlLeadingVisual": {
+      "type": "object",
+      "description": "A visual, such as an icon, shown before a checkbox or radio control and its label.",
+      "properties": {
+        "component": {
+          "const": "FormControlLeadingVisual"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual (e.g. an icon) shown before the input, for checkbox and radio layouts."
+        }
+      },
+      "required": ["component", "child"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -7056,6 +7171,21 @@
         },
         {
           "$ref": "#/components/PopoverContent"
+        },
+        {
+          "$ref": "#/components/FormControl"
+        },
+        {
+          "$ref": "#/components/FormControlLabel"
+        },
+        {
+          "$ref": "#/components/FormControlCaption"
+        },
+        {
+          "$ref": "#/components/FormControlValidation"
+        },
+        {
+          "$ref": "#/components/FormControlLeadingVisual"
         }
       ]
     },

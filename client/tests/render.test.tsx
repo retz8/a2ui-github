@@ -18,6 +18,16 @@ import {confirmationDialogConfirmDangerFixture} from '../src/fixtures/confirmati
 import {confirmationDialogLoadingFixture} from '../src/fixtures/confirmation-dialog-loading';
 import {confirmationDialogWidthLargeFixture} from '../src/fixtures/confirmation-dialog-width-large';
 import {confirmationDialogHeightSmallFixture} from '../src/fixtures/confirmation-dialog-height-small';
+import {formcontrolFixture} from '../src/fixtures/formcontrol';
+import {formcontrolLabelBoundFixture} from '../src/fixtures/formcontrol-label-bound';
+import {formcontrolCaptionFixture} from '../src/fixtures/formcontrol-caption';
+import {formcontrolValidationFixture} from '../src/fixtures/formcontrol-validation';
+import {formcontrolRequiredFixture} from '../src/fixtures/formcontrol-required';
+import {formcontrolDisabledFixture} from '../src/fixtures/formcontrol-disabled';
+import {formcontrolLabelVisuallyHiddenFixture} from '../src/fixtures/formcontrol-label-visually-hidden';
+import {formcontrolLayoutFixture} from '../src/fixtures/formcontrol-layout';
+import {formcontrolLeadingVisualFixture} from '../src/fixtures/formcontrol-leading-visual';
+import {formcontrolFullFixture} from '../src/fixtures/formcontrol-full';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
@@ -2551,5 +2561,94 @@ describe('Popover (compound family) — integration through the renderer', () =>
   it('resolves the bound message text for the click-outside event fixture', () => {
     renderFixture(contentClickoutsideEventFixture);
     expect(screen.getByText('Click outside to dismiss')).toBeInTheDocument();
+  });
+});
+
+describe('FormControl (compound family) — integration through the renderer', () => {
+  it('wraps a label and an input, exposing the FormControl container', () => {
+    const {container} = renderFixture(formcontrolFixture);
+    expect(screen.getByText('Repository name')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+    expect(container.querySelector('[data-component="FormControl"]')).toBeInTheDocument();
+    // The label's htmlFor matches the input's own id: the FormControl-forwarded id reaches the
+    // binder-wrapped input via useFormControlInputProps (Primer's cloneElement can't see through
+    // the opaque DeferredChild wrapper, so context forwarding is what wires the association).
+    const label = screen.getByText('Repository name').closest('label');
+    const input = screen.getByRole('textbox');
+    expect(input.id).toBeTruthy();
+    expect(label).toHaveAttribute('for', input.id);
+  });
+
+  it('resolves the bound label text through the renderer', () => {
+    renderFixture(formcontrolLabelBoundFixture);
+    expect(screen.getByText('Repository name')).toBeInTheDocument();
+  });
+
+  it('renders the helper caption alongside the label and input', () => {
+    renderFixture(formcontrolCaptionFixture);
+    expect(screen.getByText('Repository name')).toBeInTheDocument();
+    expect(screen.getByText('Choose a unique repository name')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+    // The input's aria-describedby points at the caption element — FormControl-forwarded a11y wiring.
+    const describedby = screen.getByRole('textbox').getAttribute('aria-describedby');
+    expect(describedby).toBeTruthy();
+    const described = describedby ? document.getElementById(describedby.split(' ')[0]) : null;
+    expect(described).toHaveTextContent('Choose a unique repository name');
+  });
+
+  it('renders both validation variants across the gallery', () => {
+    renderFixture(formcontrolValidationFixture);
+    expect(screen.getByText('That name is already taken')).toBeInTheDocument();
+    expect(screen.getByText('Name is available')).toBeInTheDocument();
+  });
+
+  it('shows the required indicator and honours requiredIndicator suppression', () => {
+    renderFixture(formcontrolRequiredFixture);
+    // Both mini-gallery surfaces render the label.
+    expect(screen.getAllByText('Repository name')).toHaveLength(2);
+    // The required asterisk is present; one surface exposes it to AT, the other hides it.
+    const asterisks = screen.getAllByText('*');
+    expect(asterisks.length).toBeGreaterThanOrEqual(1);
+    expect(asterisks.some(el => el.getAttribute('aria-hidden') === 'true')).toBe(true);
+  });
+
+  it('cascades root disabled onto the wrapped input', () => {
+    renderFixture(formcontrolDisabledFixture);
+    expect(screen.getByText('Repository name')).toBeInTheDocument();
+    // The fixture sets disabled on the FormControl root only; it reaches the input via the
+    // forwarded props (the input carries no disabled of its own).
+    expect(screen.getByRole('textbox')).toBeDisabled();
+  });
+
+  it('keeps a visually-hidden label in the accessibility tree', () => {
+    renderFixture(formcontrolLabelVisuallyHiddenFixture);
+    expect(screen.getByText('Repository name')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
+  });
+
+  it('renders both vertical and horizontal layouts across the gallery', () => {
+    renderFixture(formcontrolLayoutFixture);
+    expect(screen.getByText('Repository name')).toBeInTheDocument();
+    expect(screen.getByText('Enable notifications')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox')).toBeInTheDocument();
+  });
+
+  it('renders the leading visual before a horizontal checkbox', () => {
+    const {container} = renderFixture(formcontrolLeadingVisualFixture);
+    expect(screen.getByText('Enable notifications')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox')).toBeInTheDocument();
+    expect(
+      container.querySelector('[data-component="FormControl.LeadingVisual"]'),
+    ).toBeInTheDocument();
+    expect(container.querySelector('svg')).toBeInTheDocument();
+  });
+
+  it('composes the full stack: label, caption, validation, and input', () => {
+    renderFixture(formcontrolFullFixture);
+    expect(screen.getByText('Repository name')).toBeInTheDocument();
+    expect(screen.getByText('Choose a unique repository name')).toBeInTheDocument();
+    expect(screen.getByText('That name is already taken')).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveValue('octocat');
   });
 });

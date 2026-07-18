@@ -2,6 +2,7 @@ import type {ChangeEvent, HTMLProps, ReactElement, ReactNode} from 'react';
 import {TextInput as PrimerTextInput} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
 import {TextInputApi} from './textinput.schema';
+import {useFormControlInputProps} from '../../shared/form-control-forwarding';
 
 /** Resolved accessibility: nested DynamicStrings are plain strings after the binder resolves them. */
 type ResolvedAccessibility = {label?: string; description?: string};
@@ -58,13 +59,15 @@ export function TextInputView({
   trailingVisual,
   trailingAction,
 }: TextInputViewProps) {
+  // Pick up id / disabled / required / aria-describedby from an enclosing FormControl (no-op when
+  // standalone); disabled/required come from here, so they are not passed explicitly below.
+  const formControlProps = useFormControlInputProps({disabled, required});
   return (
     <PrimerTextInput
+      {...formControlProps}
       value={value}
       onChange={(e: ChangeEvent<HTMLInputElement>) => setValue?.(e.target.value)}
       placeholder={placeholder}
-      disabled={disabled}
-      required={required}
       validationStatus={validationStatus}
       type={type}
       loading={loading}

@@ -1,6 +1,7 @@
 import type {ChangeEvent} from 'react';
 import {Textarea as PrimerTextarea} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
+import {useFormControlInputProps} from '../../shared/form-control-forwarding';
 import {TextareaApi} from './textarea.schema';
 
 /** Resolved accessibility: nested DynamicStrings are plain strings after the binder resolves them. */
@@ -46,13 +47,15 @@ export function TextareaView({
   maxHeight,
   accessibility,
 }: TextareaViewProps) {
+  // Pick up id / disabled / required / aria-describedby from an enclosing FormControl (no-op when
+  // standalone); disabled/required come from here, so they are not passed explicitly below.
+  const formControlProps = useFormControlInputProps({disabled, required});
   return (
     <PrimerTextarea
+      {...formControlProps}
       value={value}
       onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setValue?.(e.target.value)}
       placeholder={placeholder}
-      disabled={disabled}
-      required={required}
       validationStatus={validationStatus}
       block={block}
       resize={resize}
