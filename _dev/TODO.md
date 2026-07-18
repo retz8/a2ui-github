@@ -118,7 +118,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.53** `ConfirmationDialog` (#91)
 - [x] **6.54** `Overlay` — dropped, not shipped: the official doc explicitly marks it "an internal component and is intended to be used as a private API, composing other components. It is not intended to be used on its own," pointing to `AnchoredOverlay` / `Dialog` instead. Same rationale as the §2 `Portal` exclusion (a private-API composition primitive, not a composable leaf) and `Header` (6.37) / `SubNav` (6.42); its standalone-overlay capability is delivered by the public `Dialog` (6.52) and the pending `AnchoredOverlay` (6.55) / `Popover` (6.56) / `SelectPanel` (6.50). A bare floating-surface leaf grows lazily if a later flow needs one those can't cover.
 - [WIP] **6.55** `AnchoredOverlay` (#94)
-- [WIP] **6.56** `Popover` (#93)
+- [x] **6.56** `Popover` (#93)
 
 Order: 6.1 first → 6.2 `Icon` → 6.3 → 6.4 → L0 → L1 → L2. Within a layer, sub-tasks are parallel-eligible (no coupling); cross-layer, a later slotter may defer a slot rather than wait and backfill once the referenced leaf exists (`deferred-catalog-work.md`).
 
