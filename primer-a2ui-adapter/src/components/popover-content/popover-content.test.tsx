@@ -87,14 +87,4 @@ describe('PopoverContentView', () => {
     fireEvent.mouseDown(screen.getByText('inside'));
     expect(onClickOutside).not.toHaveBeenCalled();
   });
-
-  it('renders the box for a non-default as value', () => {
-    const {container} = renderInTheme(
-      <PopoverContentView as="section">
-        <span>body</span>
-      </PopoverContentView>,
-    );
-    // Primer's Popover.Content renders a hardcoded <div> box; `as` is carried but not the tag.
-    expect(box(container)).toBeInTheDocument();
-  });
 });

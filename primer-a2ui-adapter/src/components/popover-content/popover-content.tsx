@@ -19,7 +19,6 @@ type ContentHeight = 'small' | 'medium' | 'large' | 'xlarge' | 'auto' | 'fit-con
  * ancestor `Popover`'s `data-caret`, so no caret prop lives here.
  */
 const PopoverContent = PrimerPopover.Content as unknown as ComponentType<{
-  as?: 'div' | 'section' | 'aside';
   width?: ContentWidth;
   height?: ContentHeight;
   onClickOutside?: (event: MouseEvent | TouchEvent) => void;
@@ -30,7 +29,7 @@ const PopoverContent = PrimerPopover.Content as unknown as ComponentType<{
 }>;
 
 /**
- * Resolved props: `width`/`height`/`overflow`/`as` pass through as scalars, `onClickOutside`
+ * Resolved props: `width`/`height`/`overflow` pass through as scalars, `onClickOutside`
  * resolves to a `() => void` closure, `accessibility` to plain strings, and the ChildList arrives
  * as built `children`. `overflow` is applied as an inline style (Primer types but does not render
  * it), and `accessibility` maps onto `aria-*`.
@@ -40,7 +39,6 @@ type PopoverContentViewProps = {
   height?: ContentHeight;
   overflow?: 'auto' | 'hidden' | 'scroll' | 'visible';
   onClickOutside?: () => void;
-  as?: 'div' | 'section' | 'aside';
   accessibility?: ResolvedAccessibility;
   children?: ReactNode;
 };
@@ -50,13 +48,11 @@ export function PopoverContentView({
   height,
   overflow,
   onClickOutside,
-  as,
   accessibility,
   children,
 }: PopoverContentViewProps) {
   return (
     <PopoverContent
-      as={as}
       width={width}
       height={height}
       // Primer's onClickOutside passes the DOM event our authored Action does not consume.
@@ -86,7 +82,6 @@ export const PopoverContentComponent = createComponentImplementation(
       height={props.height}
       overflow={props.overflow}
       onClickOutside={props.onClickOutside}
-      as={props.as}
       accessibility={props.accessibility as ResolvedAccessibility | undefined}
     >
       {renderChildList(props.children, buildChild)}

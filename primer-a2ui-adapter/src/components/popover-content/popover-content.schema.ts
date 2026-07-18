@@ -16,12 +16,13 @@ import {CommonSchemas} from '@a2ui/web_core/v0_9';
  *   (there is no built-in Escape / backdrop), the hook that lets an outside-click drive a local
  *   `functionCall` or an agent `event`. It does not forward the callback's DOM event argument
  *   (`Action` context is authored, not per-invocation).
- * - `as` narrows Primer's box host element to the display-equivalent semantic/landmark tags.
  * - `accessibility` carries the accessible name/description for the content region — the region
  *   assistive tech lands in (the root is a bare positioning wrapper and carries none).
  *
- * `.strict()` forbids any prop outside this surface. `ignoreClickRefs` (live DOM refs, not
- * serializable) and `className`/`style` and the rest of the non-`aria-*` `HTMLDivElement` spread
+ * `.strict()` forbids any prop outside this surface. `as` is not exposed: Primer's `Popover.Content`
+ * is not polymorphic (it renders a hardcoded `<div>`), so a semantic-tag prop would be inert — the
+ * landmark identity lives on the root `Popover`'s `as` instead. `ignoreClickRefs` (live DOM refs,
+ * not serializable) and `className`/`style` and the rest of the non-`aria-*` `HTMLDivElement` spread
  * are dropped.
  */
 export const PopoverContentApi = {
@@ -33,7 +34,6 @@ export const PopoverContentApi = {
       height: z.enum(['small', 'medium', 'large', 'xlarge', 'auto', 'fit-content']).optional(),
       overflow: z.enum(['auto', 'hidden', 'scroll', 'visible']).optional(),
       onClickOutside: CommonSchemas.Action.optional(),
-      as: z.enum(['div', 'section', 'aside']).optional(),
       accessibility: CommonSchemas.AccessibilityAttributes.optional(),
     })
     .strict(),

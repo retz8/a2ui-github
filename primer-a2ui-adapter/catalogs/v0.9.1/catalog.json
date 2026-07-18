@@ -6605,12 +6605,6 @@
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
           "description": "The action performed when a click occurs outside the box, typically to dismiss it."
         },
-        "as": {
-          "type": "string",
-          "enum": ["div", "section", "aside"],
-          "default": "div",
-          "description": "The HTML element used for the box; the choices are display-equivalent and differ only in semantic/landmark identity."
-        },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
           "description": "Accessible name, description, and role for the content region, for assistive technologies."

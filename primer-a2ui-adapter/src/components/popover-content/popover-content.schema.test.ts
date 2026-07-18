@@ -17,7 +17,6 @@ describe('PopoverContentApi.schema', () => {
         height: 'large',
         overflow: 'scroll',
         onClickOutside: eventAction,
-        as: 'section',
         accessibility: {label: 'Notice', description: 'Click outside to dismiss'},
       }).success,
     ).toBe(true);
@@ -49,12 +48,6 @@ describe('PopoverContentApi.schema', () => {
   it('rejects an out-of-enum overflow', () => {
     expect(
       PopoverContentApi.schema.safeParse({children: ['popover-heading'], overflow: 'clip'}).success,
-    ).toBe(false);
-  });
-
-  it('rejects an out-of-enum as', () => {
-    expect(
-      PopoverContentApi.schema.safeParse({children: ['popover-heading'], as: 'span'}).success,
     ).toBe(false);
   });
 
