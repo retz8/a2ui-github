@@ -183,3 +183,17 @@ Deferred in the 6.52 design session (`_dev/docs/new-components/dialog*.md`):
   JSON-serializable. Their capability (a custom header/body/footer) is carried by the
   `DialogHeader`/`DialogBody`/`DialogFooter` slot leaves shipped in the same family; backfill a
   representation only if a custom-frame need ever appears that the slot leaves cannot cover.
+
+### AnchoredOverlay — narrow-fullscreen visual baseline
+
+Deferred in the 6.55 design session (`_dev/docs/new-components/anchoredoverlay.md`):
+
+- **`variant: 'fullscreen'` + `displayCloseButton` visuals** — `variant`'s `'fullscreen'` value
+  (mapping to `{narrow: 'fullscreen'}`) expands the panel to a full-screen sheet, and
+  `displayCloseButton`'s close affordance renders, only below the narrow breakpoint — the same
+  multi-viewport Playwright infra the Stack/SplitPageLayout/Dialog entries above describe
+  (single-viewport 1024px harness; building multi-viewport capture is out of Phase 6). Both props
+  are carried and rendered in full. Coverage meanwhile: render-test assertions prove `variant`
+  maps to `{narrow: 'fullscreen'}` and `displayCloseButton` is forwarded; the anchored (regular)
+  presentation is fully baselined. Revisit once multi-viewport visual baselining exists — then add
+  a narrow capture for the `fullscreen` variant with its close button.
