@@ -8,8 +8,7 @@
   slot-scanned by the implementation (`useSlots`): a `FormControl.Label`, an optional
   `FormControl.Caption` / `FormControl.Validation` / `FormControl.LeadingVisual`, and the
   wrapped input control. Label/caption/validation association (`htmlFor`, the input's
-  `aria-describedby`) is wired internally and works whether or not `id` is set (FormControl
-  falls back to `useId`).
+  `aria-describedby`) is wired internally via FormControl's generated `useId`.
 - **Component-level description (→ `catalog.json` `description`):** Wraps a single form input
   with its visible label, optional helper caption, and optional validation message, laying them
   out and associating them for assistive technologies.
@@ -53,7 +52,6 @@
 | `disabled` | carry | no | `DynamicBoolean` | Whether the control is inactive and cannot be edited. |
 | `layout` | carry | no | `z.enum(['horizontal','vertical']) (default: "vertical")` | Direction the content flows; horizontal is used for checkbox and radio inputs. |
 | `required` | carry | no | `z.boolean()` | Whether a value is required before the form can be submitted; drives the label's required indicator and the input's required semantics. |
-| `id` | carry | no | `z.string()` | The unique identifier for this control, used to associate its label, caption, and validation text with the input. |
 
 `required` is carried as fixed authoring-time config (`z.boolean()`), matching the sibling
 `TextInput.required`. Additive change to `DynamicBoolean` if a conditional-required flow (a field
@@ -67,6 +65,7 @@ None. The family carries no `Action` and needs no local function.
 
 | prop | reason |
 |---|---|
+| `id` | Dropped: `id` is the framework identity/envelope field — the message processor consumes it as the component's id (`{id, component, ...properties}`), so it can never reach the props object, and `catalog.parity.test.ts` enforces this. Association still works via FormControl's `useId` fallback. |
 | `className`, `style` | Dropped: styling passthroughs; no A2UI representation. |
 
 ---
@@ -106,7 +105,6 @@ is the deliberate all-slots-together completeness surface.
 | `FormControl.disabled` | `formcontrol-disabled` |
 | `FormControl.layout` | `formcontrol-layout` (gallery) |
 | `FormControl.required` | `formcontrol-required` (mini-gallery) |
-| `FormControl.id` | render-test assertion: input `id` set, label `htmlFor` matches |
 
 (Subcomponent props map back to these fixtures — see each subcomponent doc's coverage map.)
 

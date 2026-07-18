@@ -25,7 +25,6 @@ Composed as the child of `Popover` (see `popover.md`).
 | `height` | carry | no | `z.enum(['small','medium','large','xlarge','auto','fit-content']) (default: "fit-content")` | The height of the content box. |
 | `overflow` | carry | no | `z.enum(['auto','hidden','scroll','visible']) (default: "auto")` | How content exceeding the box's bounds is handled. |
 | `onClickOutside` | carry | no | `Action` | The action performed when a click occurs outside the box, typically to dismiss it. |
-| `as` | carry | no | `z.enum(['div','section','aside']) (default: "div")` | The HTML element used for the box; the choices are display-equivalent and differ only in semantic/landmark identity. |
 | `accessibility` | carry | no | `AccessibilityAttributes` | Accessible name, description, and role for the content region, for assistive technologies. |
 
 Notes:
@@ -48,6 +47,7 @@ Notes:
 
 | prop | reason |
 |---|---|
+| `as` | Dropped: Primer's `Popover.Content` is not polymorphic — it renders a hardcoded `<div>` and ignores `as` — so the prop would be inert. The root `Popover`'s `as` carries the landmark identity. |
 | `ignoreClickRefs` | Dropped: an array of live DOM refs (`RefObject<HTMLElement>[]`) excluded from outside-click detection; not JSON-serializable (the `Dialog` `returnFocusRef`/`initialFocusRef` precedent). |
 | `className` / `style` and the rest of the non-`aria-*` `HTMLDivElement` spread | Dropped: styling passthroughs / no A2UI representation (categorical). |
 
@@ -72,8 +72,6 @@ covers the `Popover.Content` props.
 
 Render-test assertions (non-visual):
 
-- **`as`** — the rendered box element matches each enum value (`div` / `section` / `aside`
-  render identically, so no baseline).
 - **`accessibility`** — the authored `aria-*` attributes are emitted on the content box.
 
 ### Prop-coverage map
@@ -85,7 +83,6 @@ Render-test assertions (non-visual):
 | `height` | `content-height` (`fit-content` default in base) |
 | `overflow` | `content-overflow` (`auto` default in base) |
 | `onClickOutside` | `content-clickoutside-fn` (functionCall) + `content-clickoutside-event` (event) |
-| `as` | render-test assertion (non-visual) |
 | `accessibility` | render-test assertion (non-visual) |
 
 ---
