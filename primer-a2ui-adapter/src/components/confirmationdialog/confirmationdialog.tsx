@@ -1,4 +1,4 @@
-import {type ReactNode} from 'react';
+import {type ReactNode, useState} from 'react';
 import {ConfirmationDialog as PrimerConfirmationDialog} from '@primer/react';
 import type {ConfirmationDialogProps as PrimerConfirmationDialogProps} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
@@ -42,12 +42,22 @@ export function ConfirmationDialogView({
   height,
   children,
 }: ConfirmationDialogViewProps) {
+  // Primer's ConfirmationDialog has no self-managed open state — it shows whenever it is mounted —
+  // so the leaf owns visibility (the `{isOpen && <Dialog>}` pattern, mirroring the Dialog family).
+  // Unlike Dialog there is no bound `open` path, so this is local-only: once dismissed it stays
+  // dismissed (until the surface reloads).
+  const [isOpen, setIsOpen] = useState(true);
+  if (!isOpen) return null;
+
   // The single required onClose(gesture) is split back out: 'confirm' → onConfirm, everything else
   // ('cancel' from the cancel button, 'close-button' from the header X, 'escape' from the Escape key
-  // and the backdrop) → onCancel. Mirrors the component's own true/false collapse.
+  // and the backdrop) → onCancel. Mirrors the component's own true/false collapse. The two footer
+  // buttons ('confirm'/'cancel') fire their action and leave the dialog open (like Dialog's footer
+  // buttons); the pure dismissal gestures ('close-button'/'escape'/backdrop) also close it locally.
   const handleClose = (gesture: 'confirm' | 'close-button' | 'cancel' | 'escape') => {
     if (gesture === 'confirm') onConfirm?.();
     else onCancel?.();
+    if (gesture === 'close-button' || gesture === 'escape') setIsOpen(false);
   };
 
   return (

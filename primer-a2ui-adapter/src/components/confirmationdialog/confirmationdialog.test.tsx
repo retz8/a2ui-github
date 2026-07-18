@@ -73,7 +73,7 @@ describe('ConfirmationDialogView', () => {
     expect(onConfirm).not.toHaveBeenCalled();
   });
 
-  it('routes the header close button (X) to onCancel', () => {
+  it('routes the header close button (X) to onCancel and dismisses the dialog', () => {
     const onCancel = vi.fn();
     renderInTheme(
       <ConfirmationDialogView title="Discard changes?" onConfirm={vi.fn()} onCancel={onCancel}>
@@ -82,6 +82,22 @@ describe('ConfirmationDialogView', () => {
     );
     fireEvent.click(screen.getByRole('button', {name: 'Close'}));
     expect(onCancel).toHaveBeenCalledTimes(1);
+    // The close button is a pure dismissal gesture: the leaf owns visibility, so the dialog unmounts.
+    expect(screen.queryByRole('alertdialog')).not.toBeInTheDocument();
+  });
+
+  it('keeps the dialog open when a footer button is clicked (cancel button leaves it mounted)', () => {
+    const onCancel = vi.fn();
+    renderInTheme(
+      <ConfirmationDialogView title="Discard changes?" onConfirm={vi.fn()} onCancel={onCancel}>
+        Body
+      </ConfirmationDialogView>,
+    );
+    fireEvent.click(screen.getByRole('button', {name: 'Cancel'}));
+    expect(onCancel).toHaveBeenCalledTimes(1);
+    // Footer buttons fire their action but do not self-close — an agent writeback (loading/body
+    // swap) stays observable. Only ✕ / Escape / backdrop dismiss.
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
   });
 
   it('focuses the confirm button by default (non-destructive)', () => {
