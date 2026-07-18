@@ -122,6 +122,11 @@ import {DialogCloseButtonComponent} from './components/dialog-closebutton';
 import {ConfirmationDialogComponent} from './components/confirmationdialog';
 import {PopoverComponent} from './components/popover';
 import {PopoverContentComponent} from './components/popover-content';
+import {FormControlComponent} from './components/formcontrol';
+import {FormControlLabelComponent} from './components/formcontrol-label';
+import {FormControlCaptionComponent} from './components/formcontrol-caption';
+import {FormControlValidationComponent} from './components/formcontrol-validation';
+import {FormControlLeadingVisualComponent} from './components/formcontrol-leadingvisual';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -251,6 +256,11 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     ConfirmationDialogComponent,
     PopoverComponent,
     PopoverContentComponent,
+    FormControlComponent,
+    FormControlLabelComponent,
+    FormControlCaptionComponent,
+    FormControlValidationComponent,
+    FormControlLeadingVisualComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );
