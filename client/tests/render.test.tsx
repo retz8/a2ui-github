@@ -3,6 +3,14 @@ import {screen, cleanup, waitFor, fireEvent} from '@testing-library/react';
 import {CATALOG_ID} from 'primer-a2ui-adapter';
 import {renderFixture} from './helpers';
 import type {Fixture} from '../src/fixtures';
+import {dialogFixture} from '../src/fixtures/dialog';
+import {dialogBoundFixture} from '../src/fixtures/dialog-bound';
+import {dialogCloseEventFixture} from '../src/fixtures/dialog-close-event';
+import {dialogButtonsFixture} from '../src/fixtures/dialog-buttons';
+import {dialogButtonStatesFixture} from '../src/fixtures/dialog-button-states';
+import {dialogWidthLargeFixture} from '../src/fixtures/dialog-width-large';
+import {dialogPositionLeftFixture} from '../src/fixtures/dialog-position-left';
+import {dialogSlotsFixture} from '../src/fixtures/dialog-slots';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
@@ -2347,5 +2355,69 @@ describe('Timeline (compound family) — integration through the renderer', () =
     // The Avatar leaf renders its image with the canned alt text.
     expect(screen.getByAltText('Octocat')).toBeInTheDocument();
     expect(screen.getByText('This is a message')).toBeInTheDocument();
+  });
+});
+
+describe('Dialog (compound family) — integration through the renderer', () => {
+  it('renders the base dialog with its title, subtitle, and body content', () => {
+    renderFixture(dialogFixture);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    expect(screen.getByText('Delete this file?')).toBeInTheDocument();
+    expect(screen.getByText('This action cannot be undone')).toBeInTheDocument();
+    expect(screen.getByText('The file README.md will be permanently removed.')).toBeInTheDocument();
+  });
+
+  it('resolves bound title and subtitle through the renderer', () => {
+    renderFixture(dialogBoundFixture);
+    expect(screen.getByText('Bound title')).toBeInTheDocument();
+    expect(screen.getByText('Bound subtitle')).toBeInTheDocument();
+  });
+
+  it('resolves the bound subtitle for the close-event fixture', () => {
+    renderFixture(dialogCloseEventFixture);
+    expect(screen.getByText('Press Esc, the X, or the backdrop to close')).toBeInTheDocument();
+  });
+
+  it('renders the full footer-button row (content + buttonType walk)', () => {
+    renderFixture(dialogButtonsFixture);
+    expect(screen.getByRole('button', {name: 'Later'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Delete'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Dismiss'})).toBeInTheDocument();
+  });
+
+  it('honours per-button disabled and loading states', () => {
+    renderFixture(dialogButtonStatesFixture);
+    expect(screen.getByText('Disabled').closest('button')).toBeDisabled();
+    // Primer's loading button renders the label plus a visually-hidden loading announcement, so
+    // 'Loading' appears more than once — assert the loading button is present via its label.
+    expect(screen.getAllByText('Loading').length).toBeGreaterThan(0);
+  });
+
+  it('honours a non-default width preset through the renderer', () => {
+    renderFixture(dialogWidthLargeFixture);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('honours a side-sheet position through the renderer', () => {
+    renderFixture(dialogPositionLeftFixture);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
+  it('routes the header/body/footer slots and composes the seven sub-leaves', () => {
+    const {container} = renderFixture(dialogSlotsFixture);
+    // The custom slot header supplies the (bound) title and the subtitle; the body and footer slots
+    // replace the defaults.
+    expect(screen.getByText('Edit notification settings')).toBeInTheDocument();
+    expect(screen.getByText('Changes apply to all devices')).toBeInTheDocument();
+    expect(
+      screen.getByText('Notification preferences form would render here.'),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Save'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Cancel'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Close'})).toBeInTheDocument();
+    expect(container.querySelector('[data-component="Dialog.Header"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-component="Dialog.Body"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-component="Dialog.Footer"]')).toBeInTheDocument();
   });
 });

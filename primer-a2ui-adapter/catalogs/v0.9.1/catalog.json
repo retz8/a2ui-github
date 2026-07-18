@@ -6139,6 +6139,158 @@
       "required": ["component"],
       "unevaluatedProperties": false
     },
+    "Dialog": {
+      "type": "object",
+      "description": "A modal window overlaid on the page for focused tasks such as confirming an action, asking for disambiguation, or presenting a small form; it traps focus and blocks interaction with the page beneath until closed.",
+      "properties": {
+        "component": {
+          "const": "Dialog"
+        },
+        "title": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The dialog's heading; also its accessible name."
+        },
+        "subtitle": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Secondary text rendered below the title; also the accessible description.",
+          "default": ""
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The dialog's body content; may include header/body/footer slot components to replace those sections."
+        },
+        "open": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the dialog is shown. Two-way bound: a dismissal (close button, Escape, or backdrop) writes `false` back to the bound path, so the agent sees the close and can reopen by setting it `true`. Defaults to open when absent."
+        },
+        "closeAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An optional custom action performed on dismissal (the close button, the Escape key, or clicking the backdrop), fired alongside the built-in close."
+        },
+        "footerButtons": {
+          "type": "array",
+          "default": [],
+          "description": "The buttons rendered in the dialog's footer.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+                "description": "The button's label."
+              },
+              "buttonType": {
+                "type": "string",
+                "enum": ["default", "primary", "danger", "normal"],
+                "default": "default",
+                "description": "The button's visual emphasis; `normal` is a legacy alias the implementation maps to `default`."
+              },
+              "action": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+                "description": "The action performed when the button is clicked."
+              },
+              "autoFocus": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether this button receives focus when the dialog opens; only the first entry marked applies."
+              },
+              "disabled": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+                "description": "Whether the button is disabled and cannot be clicked."
+              },
+              "loading": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+                "description": "Whether the button shows a loading state while an operation is pending."
+              }
+            },
+            "required": ["content", "action"],
+            "additionalProperties": false
+          }
+        },
+        "role": {
+          "type": "string",
+          "enum": ["dialog", "alertdialog"],
+          "default": "dialog",
+          "description": "The dialog's semantic role; `alertdialog` marks an interruption that requires a response."
+        },
+        "width": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": ["small", "medium", "large", "xlarge"]
+            },
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "default": "xlarge",
+          "description": "The dialog's width: preset sizes (small 296px, medium 320px, large 480px, xlarge 640px) or any CSS width value."
+        },
+        "height": {
+          "type": "string",
+          "enum": ["small", "large", "auto"],
+          "default": "auto",
+          "description": "The dialog's height: small 480px, large 640px, auto sizes to the contents."
+        },
+        "position": {
+          "anyOf": [
+            {
+              "type": "string",
+              "enum": ["center", "left", "right"]
+            },
+            {
+              "type": "string",
+              "enum": ["left", "right", "bottom", "fullscreen", "center"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "narrow": {
+                  "type": "string",
+                  "enum": ["left", "right", "bottom", "fullscreen", "center"]
+                },
+                "regular": {
+                  "type": "string",
+                  "enum": ["left", "right", "bottom", "fullscreen", "center"]
+                },
+                "wide": {
+                  "type": "string",
+                  "enum": ["left", "right", "bottom", "fullscreen", "center"]
+                }
+              },
+              "additionalProperties": false
+            }
+          ],
+          "default": "center",
+          "description": "Where the dialog appears: centered over the page or as a side sheet; narrow viewports may use a bottom sheet or fullscreen."
+        },
+        "align": {
+          "type": "string",
+          "enum": ["top", "center", "bottom"],
+          "default": "center",
+          "description": "Vertical alignment when the dialog is centered."
+        }
+      },
+      "required": ["component", "title"],
+      "unevaluatedProperties": false
+    },
+    "DialogHeader": {
+      "type": "object",
+      "description": "A custom header region for a dialog, replacing the default title/subtitle/close-button header.",
+      "properties": {
+        "component": {
+          "const": "DialogHeader"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The dialog's header content, replacing the default title/subtitle/close-button header."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
     "TimelineActions": {
       "type": "object",
       "description": "Action controls displayed with a timeline entry, such as buttons.",
@@ -6167,6 +6319,130 @@
         }
       },
       "required": ["component", "child"],
+      "unevaluatedProperties": false
+    },
+    "DialogTitle": {
+      "type": "object",
+      "description": "The dialog's heading text, rendered inside a custom dialog header.",
+      "properties": {
+        "component": {
+          "const": "DialogTitle"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The dialog's heading text, shown in the header."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "DialogSubtitle": {
+      "type": "object",
+      "description": "Secondary text rendered below the dialog's title inside a custom dialog header.",
+      "properties": {
+        "component": {
+          "const": "DialogSubtitle"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Secondary text shown below the dialog's title."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "DialogBody": {
+      "type": "object",
+      "description": "A custom body region for a dialog, replacing the default scrollable body.",
+      "properties": {
+        "component": {
+          "const": "DialogBody"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The dialog's scrollable body content, replacing the default body."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "DialogFooter": {
+      "type": "object",
+      "description": "A custom footer region for a dialog, replacing the default button footer.",
+      "properties": {
+        "component": {
+          "const": "DialogFooter"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The dialog's footer content, replacing the default button footer."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "DialogButtons": {
+      "type": "object",
+      "description": "A row of action buttons rendered inside a dialog's footer.",
+      "properties": {
+        "component": {
+          "const": "DialogButtons"
+        },
+        "buttons": {
+          "type": "array",
+          "description": "The buttons rendered as the dialog's footer actions.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+                "description": "The button's label."
+              },
+              "buttonType": {
+                "type": "string",
+                "enum": ["default", "primary", "danger", "normal"],
+                "default": "default",
+                "description": "The button's visual emphasis; `normal` is a legacy alias the implementation maps to `default`."
+              },
+              "action": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+                "description": "The action performed when the button is clicked."
+              },
+              "autoFocus": {
+                "type": "boolean",
+                "default": false,
+                "description": "Whether this button receives focus when the dialog opens; only the first entry marked applies."
+              },
+              "disabled": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+                "description": "Whether the button is disabled and cannot be clicked."
+              },
+              "loading": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+                "description": "Whether the button shows a loading state while an operation is pending."
+              }
+            },
+            "required": ["content", "action"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["component", "buttons"],
+      "unevaluatedProperties": false
+    },
+    "DialogCloseButton": {
+      "type": "object",
+      "description": "An icon button that closes the dialog, rendered inside a custom dialog header.",
+      "properties": {
+        "component": {
+          "const": "DialogCloseButton"
+        },
+        "closeAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "Performed when the close button is clicked."
+        }
+      },
+      "required": ["component", "closeAction"],
       "unevaluatedProperties": false
     }
   },
@@ -6579,6 +6855,30 @@
         },
         {
           "$ref": "#/components/TimelineAvatar"
+        },
+        {
+          "$ref": "#/components/Dialog"
+        },
+        {
+          "$ref": "#/components/DialogHeader"
+        },
+        {
+          "$ref": "#/components/DialogTitle"
+        },
+        {
+          "$ref": "#/components/DialogSubtitle"
+        },
+        {
+          "$ref": "#/components/DialogBody"
+        },
+        {
+          "$ref": "#/components/DialogFooter"
+        },
+        {
+          "$ref": "#/components/DialogButtons"
+        },
+        {
+          "$ref": "#/components/DialogCloseButton"
         }
       ]
     },

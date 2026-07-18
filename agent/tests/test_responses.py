@@ -461,6 +461,104 @@ def test_retry_subtree_writes_message_then_swaps_subtree_to_loading_with_surface
     ]
 
 
+DIALOG_CLOSE = {
+    "name": "dialog-close",
+    "surfaceId": "dialog-close-event",
+    "sourceComponentId": "root",
+    "context": {},
+}
+
+
+def test_dialog_close_acknowledges_dismissal_reopens_then_swaps_body_with_surface_echoed():
+    msgs = build_response(DIALOG_CLOSE)
+    assert len(msgs) == 3
+
+    # The /closeStatus write is visible through the dialog `subtitle <- /closeStatus` coupling;
+    # the body Text swap is the self-visible reaction.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "dialog-close-event"
+    assert dm["path"] == "/closeStatus"
+    assert dm["value"] == "✅ Close received — server acknowledged the dismissal"
+
+    # The dismissal wrote /dialogOpen false (the `open` two-way binding); the agent reopens the
+    # dialog by writing it back to true so the acknowledgement is visible.
+    reopen = msgs[1]["updateDataModel"]
+    assert reopen["surfaceId"] == "dialog-close-event"
+    assert reopen["path"] == "/dialogOpen"
+    assert reopen["value"] is True
+
+    uc = msgs[2]["updateComponents"]
+    assert uc["surfaceId"] == "dialog-close-event"
+    assert uc["components"] == [
+        {
+            "id": "dialog-body",
+            "component": "Text",
+            "text": "The server has logged this dialog as dismissed.",
+        }
+    ]
+
+
+CONFIRM_DELETE = {
+    "name": "confirm-delete",
+    "surfaceId": "dialog-buttons",
+    "sourceComponentId": "root",
+    "context": {},
+}
+
+
+def test_confirm_delete_disables_the_danger_button_then_swaps_body_with_surface_echoed():
+    msgs = build_response(CONFIRM_DELETE)
+    assert len(msgs) == 2
+
+    # The /deleted write disables the danger button (`disabled <- /deleted`), so the action cannot
+    # be repeated; the body Text swap is the self-visible reaction.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "dialog-buttons"
+    assert dm["path"] == "/deleted"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "dialog-buttons"
+    assert uc["components"] == [
+        {
+            "id": "dialog-body",
+            "component": "Text",
+            "text": "🗑️ Deleted — server received confirm-delete",
+        }
+    ]
+
+
+SAVE_CHANGES = {
+    "name": "save-changes",
+    "surfaceId": "dialog-slots",
+    "sourceComponentId": "slots-buttons",
+    "context": {},
+}
+
+
+def test_save_changes_writes_title_through_the_slot_subtree_then_swaps_body_with_surface_echoed():
+    msgs = build_response(SAVE_CHANGES)
+    assert len(msgs) == 2
+
+    # The /dialog/title write resolves through the slot-composed subtree (root -> DialogHeader ->
+    # DialogTitle `text <- /dialog/title`) — data binding at depth; the DialogBody Text swap is the
+    # self-visible half.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "dialog-slots"
+    assert dm["path"] == "/dialog/title"
+    assert dm["value"] == "✅ Settings saved"
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "dialog-slots"
+    assert uc["components"] == [
+        {
+            "id": "slots-body-text",
+            "component": "Text",
+            "text": "The server saved your changes — you can close this dialog.",
+        }
+    ]
+
+
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1

@@ -111,6 +111,14 @@ import {TimelineBodyComponent} from './components/timeline-body';
 import {TimelineBreakComponent} from './components/timeline-break';
 import {TimelineActionsComponent} from './components/timeline-actions';
 import {TimelineAvatarComponent} from './components/timeline-avatar';
+import {DialogComponent} from './components/dialog';
+import {DialogHeaderComponent} from './components/dialog-header';
+import {DialogTitleComponent} from './components/dialog-title';
+import {DialogSubtitleComponent} from './components/dialog-subtitle';
+import {DialogBodyComponent} from './components/dialog-body';
+import {DialogFooterComponent} from './components/dialog-footer';
+import {DialogButtonsComponent} from './components/dialog-buttons';
+import {DialogCloseButtonComponent} from './components/dialog-closebutton';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -229,6 +237,14 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     TimelineBreakComponent,
     TimelineActionsComponent,
     TimelineAvatarComponent,
+    DialogComponent,
+    DialogHeaderComponent,
+    DialogTitleComponent,
+    DialogSubtitleComponent,
+    DialogBodyComponent,
+    DialogFooterComponent,
+    DialogButtonsComponent,
+    DialogCloseButtonComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

@@ -1175,6 +1175,65 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'timeline-avatar',
     load: () => import('./timeline-avatar').then(m => m.timelineAvatarFixture),
   },
+  {name: 'dialog', load: () => import('./dialog').then(m => m.dialogFixture)},
+  {name: 'dialog-bound', load: () => import('./dialog-bound').then(m => m.dialogBoundFixture)},
+  {
+    name: 'dialog-close-fn',
+    load: () => import('./dialog-close-fn').then(m => m.dialogCloseFnFixture),
+  },
+  {
+    name: 'dialog-close-event',
+    load: () => import('./dialog-close-event').then(m => m.dialogCloseEventFixture),
+  },
+  {
+    name: 'dialog-buttons',
+    load: () => import('./dialog-buttons').then(m => m.dialogButtonsFixture),
+  },
+  {
+    name: 'dialog-button-states',
+    load: () => import('./dialog-button-states').then(m => m.dialogButtonStatesFixture),
+  },
+  {
+    name: 'dialog-width-small',
+    load: () => import('./dialog-width-small').then(m => m.dialogWidthSmallFixture),
+  },
+  {
+    name: 'dialog-width-medium',
+    load: () => import('./dialog-width-medium').then(m => m.dialogWidthMediumFixture),
+  },
+  {
+    name: 'dialog-width-large',
+    load: () => import('./dialog-width-large').then(m => m.dialogWidthLargeFixture),
+  },
+  {
+    name: 'dialog-width-custom',
+    load: () => import('./dialog-width-custom').then(m => m.dialogWidthCustomFixture),
+  },
+  {
+    name: 'dialog-height-small',
+    load: () => import('./dialog-height-small').then(m => m.dialogHeightSmallFixture),
+  },
+  {
+    name: 'dialog-height-large',
+    load: () => import('./dialog-height-large').then(m => m.dialogHeightLargeFixture),
+  },
+  {
+    name: 'dialog-position-left',
+    load: () => import('./dialog-position-left').then(m => m.dialogPositionLeftFixture),
+  },
+  {
+    name: 'dialog-position-right',
+    load: () => import('./dialog-position-right').then(m => m.dialogPositionRightFixture),
+  },
+  {
+    name: 'dialog-align-top',
+    load: () => import('./dialog-align-top').then(m => m.dialogAlignTopFixture),
+  },
+  {
+    name: 'dialog-align-bottom',
+    load: () => import('./dialog-align-bottom').then(m => m.dialogAlignBottomFixture),
+  },
+  {name: 'dialog-slots', load: () => import('./dialog-slots').then(m => m.dialogSlotsFixture)},
 ];
 
 export function getFixture(name: string | null): FixtureEntry {

@@ -108,6 +108,14 @@ import {TimelineBodyApi} from './components/timeline-body';
 import {TimelineBreakApi} from './components/timeline-break';
 import {TimelineActionsApi} from './components/timeline-actions';
 import {TimelineAvatarApi} from './components/timeline-avatar';
+import {DialogApi} from './components/dialog';
+import {DialogHeaderApi} from './components/dialog-header';
+import {DialogTitleApi} from './components/dialog-title';
+import {DialogSubtitleApi} from './components/dialog-subtitle';
+import {DialogBodyApi} from './components/dialog-body';
+import {DialogFooterApi} from './components/dialog-footer';
+import {DialogButtonsApi} from './components/dialog-buttons';
+import {DialogCloseButtonApi} from './components/dialog-closebutton';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -226,6 +234,14 @@ export const COMPONENTS = {
   TimelineBreak: TimelineBreakApi,
   TimelineActions: TimelineActionsApi,
   TimelineAvatar: TimelineAvatarApi,
+  Dialog: DialogApi,
+  DialogHeader: DialogHeaderApi,
+  DialogTitle: DialogTitleApi,
+  DialogSubtitle: DialogSubtitleApi,
+  DialogBody: DialogBodyApi,
+  DialogFooter: DialogFooterApi,
+  DialogButtons: DialogButtonsApi,
+  DialogCloseButton: DialogCloseButtonApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;
