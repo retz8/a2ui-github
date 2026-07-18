@@ -6159,9 +6159,13 @@
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
           "description": "The dialog's body content; may include header/body/footer slot components to replace those sections."
         },
+        "open": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the dialog is shown. Two-way bound: a dismissal (close button, Escape, or backdrop) writes `false` back to the bound path, so the agent sees the close and can reopen by setting it `true`. Defaults to open when absent."
+        },
         "closeAction": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "Performed when the user closes the dialog — the close button, the Escape key, or clicking the backdrop."
+          "description": "An optional custom action performed on dismissal (the close button, the Escape key, or clicking the backdrop), fired alongside the built-in close."
         },
         "footerButtons": {
           "type": "array",
@@ -6269,7 +6273,7 @@
           "description": "Vertical alignment when the dialog is centered."
         }
       },
-      "required": ["component", "title", "closeAction"],
+      "required": ["component", "title"],
       "unevaluatedProperties": false
     },
     "DialogHeader": {

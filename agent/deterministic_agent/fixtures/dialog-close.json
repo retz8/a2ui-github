@@ -8,6 +8,13 @@
   },
   {
     "version": "v0.9",
+    "updateDataModel": {
+      "path": "/dialogOpen",
+      "value": true
+    }
+  },
+  {
+    "version": "v0.9",
     "updateComponents": {
       "components": [
         {

@@ -1,4 +1,4 @@
-import type {ReactNode} from 'react';
+import {type ReactNode, useEffect, useState} from 'react';
 import {Dialog as PrimerDialog} from '@primer/react';
 import type {DialogProps as PrimerDialogProps} from '@primer/react';
 import {createComponentImplementation} from '@a2ui/react/v0_9';
@@ -53,7 +53,12 @@ function toPrimerButton(button: ResolvedDialogButton): PrimerFooterButtons[numbe
 type DialogViewProps = {
   title: string;
   subtitle?: string;
+  /** The custom close hook (resolved `closeAction`), fired on dismissal alongside the built-in close. */
   onClose?: () => void;
+  /** Controlled visibility (resolved `open`); undefined ⇒ the dialog defaults to open. */
+  open?: boolean;
+  /** The binder's auto-generated two-way setter for a bound `open`; called with the new state on close. */
+  setOpen?: (open: boolean) => void;
   footerButtons?: PrimerFooterButtons;
   role?: 'dialog' | 'alertdialog';
   width?: PrimerDialogProps['width'];
@@ -67,6 +72,8 @@ export function DialogView({
   title,
   subtitle,
   onClose,
+  open,
+  setOpen,
   footerButtons,
   role,
   width,
@@ -75,12 +82,35 @@ export function DialogView({
   align,
   children,
 }: DialogViewProps) {
+  // Primer's Dialog has no self-managed open state — it shows whenever it is mounted — so the leaf
+  // owns visibility (the `{isOpen && <Dialog>}` pattern from Primer's own example), seeded from the
+  // controlled `open` (defaulting to open when unbound). The bound `open` path stays the source of
+  // truth: one guarded effect syncs an external (agent) change into local state so a dismissed dialog
+  // can be reopened by setting the path back to true.
+  const [isOpen, setIsOpen] = useState(open ?? true);
+
+  // path -> local: react only to external `open` changes (`isOpen` intentionally omitted from deps;
+  // react-hooks/exhaustive-deps is not enforced in the adapter package).
+  useEffect(() => {
+    if (open !== undefined && open !== isOpen) setIsOpen(open);
+  }, [open]);
+
+  if (!isOpen) return null;
+
+  // Dismissal (X / Escape / backdrop): close locally, write `false` back through the bound `open`
+  // (no-op when unbound), then fire the custom close hook. Primer's onClose passes a gesture
+  // argument our authored Action does not consume.
+  const handleClose = () => {
+    setIsOpen(false);
+    setOpen?.(false);
+    onClose?.();
+  };
+
   return (
     <PrimerDialog
       title={title}
       subtitle={subtitle}
-      // Primer's onClose receives a gesture argument our authored Action does not consume.
-      onClose={onClose ?? (() => {})}
+      onClose={handleClose}
       footerButtons={footerButtons}
       role={role}
       width={width}
@@ -116,6 +146,8 @@ export const DialogComponent = createComponentImplementation(
         title={props.title}
         subtitle={props.subtitle}
         onClose={props.closeAction}
+        open={props.open}
+        setOpen={props.setOpen}
         footerButtons={footerButtons}
         role={props.role}
         width={props.width}

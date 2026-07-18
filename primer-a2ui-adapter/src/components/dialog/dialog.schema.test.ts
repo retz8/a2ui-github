@@ -71,8 +71,18 @@ describe('DialogApi.schema', () => {
     expect(DialogApi.schema.safeParse({closeAction: fnAction}).success).toBe(false);
   });
 
-  it('rejects a missing required closeAction', () => {
-    expect(DialogApi.schema.safeParse({title: 'T'}).success).toBe(false);
+  it('accepts a Dialog without closeAction (optional custom close hook)', () => {
+    expect(DialogApi.schema.safeParse({title: 'T'}).success).toBe(true);
+  });
+
+  it('accepts a bound open path (two-way controlled visibility)', () => {
+    expect(DialogApi.schema.safeParse({title: 'T', open: {path: '/dialogOpen'}}).success).toBe(
+      true,
+    );
+  });
+
+  it('accepts a literal boolean open', () => {
+    expect(DialogApi.schema.safeParse({title: 'T', open: true}).success).toBe(true);
   });
 
   it('rejects an out-of-enum role', () => {

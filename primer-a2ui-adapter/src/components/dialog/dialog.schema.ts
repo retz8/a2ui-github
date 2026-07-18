@@ -48,8 +48,14 @@ export const dialogButtonSchema = z
  *   dialog's accessible name.
  * - `children` are slot-scanned by the renderer: `DialogHeader`/`DialogBody`/`DialogFooter` children
  *   replace the default sections; every remaining child renders as the default body content.
- * - `closeAction` (← `onClose`) is synthetic and required; it does not forward the library callback's
- *   gesture parameter (`Action` context is authored, not per-invocation).
+ * - `open` is the controlled visibility state -> DynamicBoolean (optional; the component defaults to
+ *   open when it is absent). Two-way bound like Details: the binder auto-generates `setOpen`, and a
+ *   dismissal (X / Escape / backdrop) writes `false` back to the bound path, so the agent sees the
+ *   close and can reopen by setting the path `true`. Absent (unbound) it is pure local state — the
+ *   dialog still closes on dismissal, the agent just is not told.
+ * - `closeAction` (← `onClose`) is the optional custom hook fired on dismissal (a `functionCall` or
+ *   agent `event`), alongside the built-in close; it does not forward the library callback's gesture
+ *   parameter (`Action` context is authored, not per-invocation).
  * - `footerButtons` uses the shared `dialogButton` element type (default `[]`).
  * - `role`/`height`/`align` are plain enums; `width` and `position` carry their real unions (`width`
  *   presets or any CSS value; `position` a scalar side/center or the `responsive()` object arm whose
@@ -66,7 +72,8 @@ export const DialogApi = {
       title: CommonSchemas.DynamicString,
       subtitle: CommonSchemas.DynamicString.optional(),
       children: CommonSchemas.ChildList.optional(),
-      closeAction: CommonSchemas.Action,
+      open: CommonSchemas.DynamicBoolean.optional(),
+      closeAction: CommonSchemas.Action.optional(),
       footerButtons: z.array(dialogButtonSchema).optional(),
       role: z.enum(['dialog', 'alertdialog']).optional(),
       width: z

@@ -1,7 +1,10 @@
 import {CATALOG_ID} from 'primer-a2ui-adapter';
 import type {Fixture} from './types';
 
-// closeAction on the event path (agent-coupled: dialog-close). subtitle <- /closeStatus.
+// closeAction on the event path (agent-coupled: dialog-close), with `open` two-way bound to
+// `/dialogOpen`. Dismissing (X / Escape / backdrop) closes the dialog locally, writes `/dialogOpen`
+// false, and fires the `dialog-close` event; the deterministic agent replies by reopening it
+// (`/dialogOpen` back to true) with the acknowledgement in `subtitle <- /closeStatus` and the body.
 export const dialogCloseEventFixture: Fixture = {
   name: 'dialog-close-event',
   messages: [
@@ -23,6 +26,9 @@ export const dialogCloseEventFixture: Fixture = {
             title: 'Notice',
             subtitle: {
               path: '/closeStatus',
+            },
+            open: {
+              path: '/dialogOpen',
             },
             closeAction: {
               event: {
@@ -47,6 +53,7 @@ export const dialogCloseEventFixture: Fixture = {
         path: '/',
         value: {
           closeStatus: 'Press Esc, the X, or the backdrop to close',
+          dialogOpen: true,
         },
       },
     },

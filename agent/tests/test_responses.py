@@ -469,9 +469,9 @@ DIALOG_CLOSE = {
 }
 
 
-def test_dialog_close_acknowledges_dismissal_then_swaps_body_with_surface_echoed():
+def test_dialog_close_acknowledges_dismissal_reopens_then_swaps_body_with_surface_echoed():
     msgs = build_response(DIALOG_CLOSE)
-    assert len(msgs) == 2
+    assert len(msgs) == 3
 
     # The /closeStatus write is visible through the dialog `subtitle <- /closeStatus` coupling;
     # the body Text swap is the self-visible reaction.
@@ -480,7 +480,14 @@ def test_dialog_close_acknowledges_dismissal_then_swaps_body_with_surface_echoed
     assert dm["path"] == "/closeStatus"
     assert dm["value"] == "✅ Close received — server acknowledged the dismissal"
 
-    uc = msgs[1]["updateComponents"]
+    # The dismissal wrote /dialogOpen false (the `open` two-way binding); the agent reopens the
+    # dialog by writing it back to true so the acknowledgement is visible.
+    reopen = msgs[1]["updateDataModel"]
+    assert reopen["surfaceId"] == "dialog-close-event"
+    assert reopen["path"] == "/dialogOpen"
+    assert reopen["value"] is True
+
+    uc = msgs[2]["updateComponents"]
     assert uc["surfaceId"] == "dialog-close-event"
     assert uc["components"] == [
         {

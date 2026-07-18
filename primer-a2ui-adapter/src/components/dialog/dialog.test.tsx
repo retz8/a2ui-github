@@ -53,6 +53,51 @@ describe('DialogView', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
+  it('closes (unmounts) when the X is clicked', () => {
+    renderInTheme(<DialogView title="Notice">Body</DialogView>);
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('renders nothing when open is false', () => {
+    renderInTheme(
+      <DialogView title="Notice" open={false}>
+        Body
+      </DialogView>,
+    );
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+  });
+
+  it('writes back false through setOpen on close', () => {
+    const setOpen = vi.fn();
+    renderInTheme(
+      <DialogView title="Notice" setOpen={setOpen}>
+        Body
+      </DialogView>,
+    );
+    fireEvent.click(screen.getByRole('button', {name: 'Close'}));
+    expect(setOpen).toHaveBeenCalledWith(false);
+  });
+
+  it('is controlled by open — reopens when open returns to true', () => {
+    const frame = (open: boolean) => (
+      <ThemeProvider>
+        <BaseStyles>
+          <DialogView title="Notice" open={open}>
+            Body
+          </DialogView>
+        </BaseStyles>
+      </ThemeProvider>
+    );
+    const {rerender} = render(frame(true));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+    rerender(frame(false));
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    rerender(frame(true));
+    expect(screen.getByRole('dialog')).toBeInTheDocument();
+  });
+
   it('renders footer buttons and fires their onClick', () => {
     const onSave = vi.fn();
     renderInTheme(
