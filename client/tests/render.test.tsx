@@ -28,6 +28,14 @@ import {formcontrolLabelVisuallyHiddenFixture} from '../src/fixtures/formcontrol
 import {formcontrolLayoutFixture} from '../src/fixtures/formcontrol-layout';
 import {formcontrolLeadingVisualFixture} from '../src/fixtures/formcontrol-leading-visual';
 import {formcontrolFullFixture} from '../src/fixtures/formcontrol-full';
+import {anchoredOverlayFixture} from '../src/fixtures/anchored-overlay';
+import {anchoredOverlayBoundFixture} from '../src/fixtures/anchored-overlay-bound';
+import {anchoredOverlayClosedFixture} from '../src/fixtures/anchored-overlay-closed';
+import {anchoredOverlayActionsEventFixture} from '../src/fixtures/anchored-overlay-actions-event';
+import {anchoredOverlaySideInsideCenterFixture} from '../src/fixtures/anchored-overlay-side-inside-center';
+import {anchoredOverlayAlignCenterFixture} from '../src/fixtures/anchored-overlay-align-center';
+import {anchoredOverlayHeightLargeFixture} from '../src/fixtures/anchored-overlay-height-large';
+import {anchoredOverlayWidthLargeFixture} from '../src/fixtures/anchored-overlay-width-large';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
@@ -2650,5 +2658,52 @@ describe('FormControl (compound family) — integration through the renderer', (
     expect(screen.getByText('Choose a unique repository name')).toBeInTheDocument();
     expect(screen.getByText('That name is already taken')).toBeInTheDocument();
     expect(screen.getByRole('textbox')).toHaveValue('octocat');
+  });
+});
+
+describe('AnchoredOverlay — integration through the renderer', () => {
+  it('renders the trigger and, when open, the panel content', () => {
+    renderFixture(anchoredOverlayFixture);
+    expect(screen.getByRole('button', {name: 'Open panel'})).toBeInTheDocument();
+    expect(screen.getByText('Panel content')).toBeInTheDocument();
+  });
+
+  it('resolves the bound open path through the renderer (panel shown)', () => {
+    renderFixture(anchoredOverlayBoundFixture);
+    expect(screen.getByRole('button', {name: 'Open panel'})).toBeInTheDocument();
+    expect(screen.getByText('Panel content')).toBeInTheDocument();
+  });
+
+  it('renders only the trigger when open is false — the panel is absent from the DOM', () => {
+    renderFixture(anchoredOverlayClosedFixture);
+    expect(screen.getByRole('button', {name: 'Open panel'})).toBeInTheDocument();
+    expect(screen.queryByText('Panel content')).not.toBeInTheDocument();
+  });
+
+  it('renders the event fixture closed with the bound trigger label (only surface visible when closed)', () => {
+    renderFixture(anchoredOverlayActionsEventFixture);
+    // Bound open starts false → only the trigger renders; its label resolves from /anchor/label.
+    expect(screen.getByRole('button', {name: 'Open panel'})).toBeInTheDocument();
+    expect(screen.queryByText('Loading…')).not.toBeInTheDocument();
+  });
+
+  it('honours a non-default side through the renderer', () => {
+    renderFixture(anchoredOverlaySideInsideCenterFixture);
+    expect(screen.getByText('Panel content')).toBeInTheDocument();
+  });
+
+  it('honours a non-default align through the renderer', () => {
+    renderFixture(anchoredOverlayAlignCenterFixture);
+    expect(screen.getByText('Panel content')).toBeInTheDocument();
+  });
+
+  it('honours a height preset through the renderer', () => {
+    renderFixture(anchoredOverlayHeightLargeFixture);
+    expect(screen.getByText('Panel content')).toBeInTheDocument();
+  });
+
+  it('honours a width preset through the renderer', () => {
+    renderFixture(anchoredOverlayWidthLargeFixture);
+    expect(screen.getByText('Panel content')).toBeInTheDocument();
   });
 });

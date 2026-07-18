@@ -124,6 +124,7 @@ import {FormControlLabelApi} from './components/formcontrol-label';
 import {FormControlCaptionApi} from './components/formcontrol-caption';
 import {FormControlValidationApi} from './components/formcontrol-validation';
 import {FormControlLeadingVisualApi} from './components/formcontrol-leadingvisual';
+import {AnchoredOverlayApi} from './components/anchoredoverlay';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -258,6 +259,7 @@ export const COMPONENTS = {
   FormControlCaption: FormControlCaptionApi,
   FormControlValidation: FormControlValidationApi,
   FormControlLeadingVisual: FormControlLeadingVisualApi,
+  AnchoredOverlay: AnchoredOverlayApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

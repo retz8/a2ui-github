@@ -9,6 +9,9 @@ import {confirmationDialogFixture} from '../src/fixtures/confirmation-dialog';
 import {confirmationDialogEventFixture} from '../src/fixtures/confirmation-dialog-event';
 import {contentClickoutsideFnFixture} from '../src/fixtures/content-clickoutside-fn';
 import {contentClickoutsideEventFixture} from '../src/fixtures/content-clickoutside-event';
+import {anchoredOverlayBoundFixture} from '../src/fixtures/anchored-overlay-bound';
+import {anchoredOverlayActionsFnFixture} from '../src/fixtures/anchored-overlay-actions-fn';
+import {anchoredOverlayActionsEventFixture} from '../src/fixtures/anchored-overlay-actions-event';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
 import {buttonEventFixture} from '../src/fixtures/button-event';
 import {iconbuttonFnFixture} from '../src/fixtures/iconbutton-fn';
@@ -810,6 +813,67 @@ describe('ConfirmationDialog action paths', () => {
     await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
     expect(handler).toHaveBeenCalledWith(
       expect.objectContaining({name: 'cd-cancel-delete', surfaceId: 'confirmation-dialog-event'}),
+    );
+  });
+});
+
+describe('AnchoredOverlay action paths', () => {
+  it('two-way write-back: clicking the trigger of a bound-open panel writes /open false and hides the panel', async () => {
+    const handler = vi.fn();
+    renderFixture(anchoredOverlayBoundFixture, {actionHandler: handler});
+
+    // Bound open starts true → the panel is shown.
+    expect(screen.getByText('Panel content')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', {name: 'Open panel'}));
+
+    // The close gesture called the binder's auto-generated setOpen(false), writing /open false; the
+    // panel unmounts. No client->server action is dispatched for a data-model write.
+    await vi.waitFor(() => expect(screen.queryByText('Panel content')).not.toBeInTheDocument());
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('onOpen/onClose functionCall runs consoleLog locally on each gesture; the handler is not called', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(anchoredOverlayActionsFnFixture, {actionHandler: handler});
+
+    // Starts open (open: true). First click is a close gesture -> onClose consoleLog 'closed'.
+    fireEvent.click(screen.getByRole('button', {name: 'Open panel'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'closed');
+
+    // Second click is an open gesture -> onOpen consoleLog 'opened'.
+    fireEvent.click(screen.getByRole('button', {name: 'Open panel'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'opened');
+
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('onOpen/onClose event is dispatched to the actionHandler on each gesture', async () => {
+    const handler = vi.fn();
+    renderFixture(anchoredOverlayActionsEventFixture, {actionHandler: handler});
+
+    // Bound open starts false. First click is an open gesture -> panel-open event.
+    fireEvent.click(screen.getByRole('button', {name: 'Open panel'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'panel-open',
+        surfaceId: 'anchored-overlay-actions-event',
+        sourceComponentId: 'root',
+      }),
+    );
+
+    // Second click is a close gesture -> panel-close event.
+    fireEvent.click(screen.getByRole('button', {name: 'Open panel'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(2));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'panel-close',
+        surfaceId: 'anchored-overlay-actions-event',
+        sourceComponentId: 'root',
+      }),
     );
   });
 });

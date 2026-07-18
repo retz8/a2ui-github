@@ -127,6 +127,7 @@ import {FormControlLabelComponent} from './components/formcontrol-label';
 import {FormControlCaptionComponent} from './components/formcontrol-caption';
 import {FormControlValidationComponent} from './components/formcontrol-validation';
 import {FormControlLeadingVisualComponent} from './components/formcontrol-leadingvisual';
+import {AnchoredOverlayComponent} from './components/anchoredoverlay';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -261,6 +262,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     FormControlCaptionComponent,
     FormControlValidationComponent,
     FormControlLeadingVisualComponent,
+    AnchoredOverlayComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

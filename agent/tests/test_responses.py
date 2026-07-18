@@ -565,6 +565,18 @@ CD_CONFIRM_DELETE = {
     "sourceComponentId": "root",
     "context": {},
 }
+PANEL_OPEN = {
+    "name": "panel-open",
+    "surfaceId": "anchored-overlay-actions-event",
+    "sourceComponentId": "root",
+    "context": {},
+}
+PANEL_CLOSE = {
+    "name": "panel-close",
+    "surfaceId": "anchored-overlay-actions-event",
+    "sourceComponentId": "root",
+    "context": {},
+}
 
 
 POPOVER_DISMISS = {
@@ -593,6 +605,29 @@ def test_cd_confirm_delete_enters_loading_then_swaps_body_with_surface_echoed():
             "id": "cd-body",
             "component": "Text",
             "text": "🗑️ Deleting branch — server received confirm",
+        }
+    ]
+
+
+def test_panel_open_loads_options_then_swaps_status_with_surface_echoed():
+    msgs = build_response(PANEL_OPEN)
+    assert len(msgs) == 2
+
+    # The /panel/message write is visible through the bound `panel-message` Text
+    # (`text <- /panel/message`) inside the open panel — the binding-proof half.
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "anchored-overlay-actions-event"
+    assert dm["path"] == "/panel/message"
+    assert dm["value"] == "Loaded 3 items from server"
+
+    # The panel-status swap is the self-visible reaction, also landing inside the open panel.
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "anchored-overlay-actions-event"
+    assert uc["components"] == [
+        {
+            "id": "panel-status",
+            "component": "Text",
+            "text": "✅ Options loaded — server acknowledged",
         }
     ]
 
@@ -644,6 +679,19 @@ def test_popover_dismiss_acknowledges_and_stays_open_with_surface_echoed():
     assert uc["components"] == [
         {"id": "popover-heading", "component": "Heading", "text": "✅ Dismissed"}
     ]
+
+
+def test_panel_close_writes_the_trigger_label_only_with_surface_echoed():
+    # The panel is hidden when panel-close fires, so the only visible surface is the trigger: the
+    # single write targets the trigger's bound `anchor-label` (`text <- /anchor/label`). No
+    # component swap — the closed-visibility constraint (no distinct visible target when closed).
+    msgs = build_response(PANEL_CLOSE)
+    assert len(msgs) == 1
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "anchored-overlay-actions-event"
+    assert dm["path"] == "/anchor/label"
+    assert dm["value"] == "Filter: 3 active"
 
 
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
