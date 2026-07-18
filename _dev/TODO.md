@@ -108,7 +108,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.43** `UnderlineNav` (#88)
 - [x] **6.44** `Breadcrumbs` (#70)
 - [x] **6.45** `TreeView` (#73)
-- [WIP] **6.46** `Timeline` (#85)
+- [x] **6.46** `Timeline` (#89)
 - [ ] **6.47** `FormControl`
 - [ ] **6.48** `CheckboxGroup`
 - [ ] **6.49** `RadioGroup`
