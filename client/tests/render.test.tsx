@@ -11,6 +11,13 @@ import {dialogButtonStatesFixture} from '../src/fixtures/dialog-button-states';
 import {dialogWidthLargeFixture} from '../src/fixtures/dialog-width-large';
 import {dialogPositionLeftFixture} from '../src/fixtures/dialog-position-left';
 import {dialogSlotsFixture} from '../src/fixtures/dialog-slots';
+import {confirmationDialogFixture} from '../src/fixtures/confirmation-dialog';
+import {confirmationDialogBoundFixture} from '../src/fixtures/confirmation-dialog-bound';
+import {confirmationDialogEventFixture} from '../src/fixtures/confirmation-dialog-event';
+import {confirmationDialogConfirmDangerFixture} from '../src/fixtures/confirmation-dialog-confirm-danger';
+import {confirmationDialogLoadingFixture} from '../src/fixtures/confirmation-dialog-loading';
+import {confirmationDialogWidthLargeFixture} from '../src/fixtures/confirmation-dialog-width-large';
+import {confirmationDialogHeightSmallFixture} from '../src/fixtures/confirmation-dialog-height-small';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
@@ -2419,5 +2426,54 @@ describe('Dialog (compound family) — integration through the renderer', () => 
     expect(container.querySelector('[data-component="Dialog.Header"]')).toBeInTheDocument();
     expect(container.querySelector('[data-component="Dialog.Body"]')).toBeInTheDocument();
     expect(container.querySelector('[data-component="Dialog.Footer"]')).toBeInTheDocument();
+  });
+});
+
+describe('ConfirmationDialog — integration through the renderer', () => {
+  it('renders as an alertdialog with title, body, and the two default-labelled buttons', () => {
+    renderFixture(confirmationDialogFixture);
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(screen.getByText('Discard changes?')).toBeInTheDocument();
+    expect(screen.getByText('Your unsaved edits will be lost.')).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'OK'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Cancel'})).toBeInTheDocument();
+  });
+
+  it('resolves bound title and both button labels through the renderer', () => {
+    renderFixture(confirmationDialogBoundFixture);
+    expect(screen.getByText('Bound title')).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Yes'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'No'})).toBeInTheDocument();
+  });
+
+  it('resolves the bound title and custom labels for the event fixture', () => {
+    renderFixture(confirmationDialogEventFixture);
+    expect(screen.getByText('Delete branch?')).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Delete'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Keep'})).toBeInTheDocument();
+  });
+
+  it('honours a destructive confirm button through the renderer', () => {
+    renderFixture(confirmationDialogConfirmDangerFixture);
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    // The danger rule moves default focus to the cancel button.
+    expect(document.activeElement).toBe(screen.getByRole('button', {name: 'Cancel'}));
+  });
+
+  it('honours both buttons in a loading state through the renderer', () => {
+    renderFixture(confirmationDialogLoadingFixture);
+    // Primer's loading button renders the label plus a visually-hidden loading announcement.
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'OK'})).toBeInTheDocument();
+  });
+
+  it('honours a non-default width preset through the renderer', () => {
+    renderFixture(confirmationDialogWidthLargeFixture);
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+  });
+
+  it('honours a non-default height through the renderer', () => {
+    renderFixture(confirmationDialogHeightSmallFixture);
+    expect(screen.getByRole('alertdialog')).toBeInTheDocument();
   });
 });

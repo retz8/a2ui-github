@@ -119,6 +119,7 @@ import {DialogBodyComponent} from './components/dialog-body';
 import {DialogFooterComponent} from './components/dialog-footer';
 import {DialogButtonsComponent} from './components/dialog-buttons';
 import {DialogCloseButtonComponent} from './components/dialog-closebutton';
+import {ConfirmationDialogComponent} from './components/confirmationdialog';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -245,6 +246,7 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     DialogFooterComponent,
     DialogButtonsComponent,
     DialogCloseButtonComponent,
+    ConfirmationDialogComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

@@ -5,6 +5,8 @@ import {dialogCloseFnFixture} from '../src/fixtures/dialog-close-fn';
 import {dialogCloseEventFixture} from '../src/fixtures/dialog-close-event';
 import {dialogButtonsFixture} from '../src/fixtures/dialog-buttons';
 import {dialogSlotsFixture} from '../src/fixtures/dialog-slots';
+import {confirmationDialogFixture} from '../src/fixtures/confirmation-dialog';
+import {confirmationDialogEventFixture} from '../src/fixtures/confirmation-dialog-event';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
 import {buttonEventFixture} from '../src/fixtures/button-event';
 import {iconbuttonFnFixture} from '../src/fixtures/iconbutton-fn';
@@ -747,5 +749,43 @@ describe('Dialog action paths', () => {
     fireEvent.click(screen.getByRole('button', {name: 'Close'}));
     expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'closebutton');
     logSpy.mockRestore();
+  });
+});
+
+describe('ConfirmationDialog action paths', () => {
+  it('confirmAction/cancelAction functionCall run consoleLog locally; the handler is not called', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(confirmationDialogFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'OK'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'confirmed');
+
+    fireEvent.click(screen.getByRole('button', {name: 'Cancel'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'cancelled');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('confirmAction event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(confirmationDialogEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Delete'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({name: 'cd-confirm-delete', surfaceId: 'confirmation-dialog-event'}),
+    );
+  });
+
+  it('cancelAction event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(confirmationDialogEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('button', {name: 'Keep'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({name: 'cd-cancel-delete', surfaceId: 'confirmation-dialog-event'}),
+    );
   });
 });
