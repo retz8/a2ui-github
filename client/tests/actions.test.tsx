@@ -7,6 +7,8 @@ import {dialogButtonsFixture} from '../src/fixtures/dialog-buttons';
 import {dialogSlotsFixture} from '../src/fixtures/dialog-slots';
 import {confirmationDialogFixture} from '../src/fixtures/confirmation-dialog';
 import {confirmationDialogEventFixture} from '../src/fixtures/confirmation-dialog-event';
+import {contentClickoutsideFnFixture} from '../src/fixtures/content-clickoutside-fn';
+import {contentClickoutsideEventFixture} from '../src/fixtures/content-clickoutside-event';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
 import {buttonEventFixture} from '../src/fixtures/button-event';
 import {iconbuttonFnFixture} from '../src/fixtures/iconbutton-fn';
@@ -749,6 +751,28 @@ describe('Dialog action paths', () => {
     fireEvent.click(screen.getByRole('button', {name: 'Close'}));
     expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'closebutton');
     logSpy.mockRestore();
+  });
+
+  it('Popover.Content onClickOutside functionCall runs locally and does not dispatch', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(contentClickoutsideFnFixture, {actionHandler: handler});
+
+    fireEvent.mouseDown(document.body);
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'clicked outside');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('Popover.Content onClickOutside event is dispatched to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(contentClickoutsideEventFixture, {actionHandler: handler});
+
+    fireEvent.mouseDown(document.body);
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({name: 'popover-dismiss', surfaceId: 'content-clickoutside-event'}),
+    );
   });
 });
 

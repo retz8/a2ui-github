@@ -275,6 +275,13 @@ import {timelineBadgeVariantsFixture} from '../src/fixtures/timeline-badge-varia
 import {timelineBreakFixture} from '../src/fixtures/timeline-break';
 import {timelineActionsFixture} from '../src/fixtures/timeline-actions';
 import {timelineAvatarFixture} from '../src/fixtures/timeline-avatar';
+import {popoverBaseFixture} from '../src/fixtures/popover-base';
+import {popoverCaretFixture} from '../src/fixtures/popover-caret';
+import {popoverOpenBoundFixture} from '../src/fixtures/popover-open-bound';
+import {contentWidthFixture} from '../src/fixtures/content-width';
+import {contentHeightFixture} from '../src/fixtures/content-height';
+import {contentOverflowFixture} from '../src/fixtures/content-overflow';
+import {contentClickoutsideEventFixture} from '../src/fixtures/content-clickoutside-event';
 
 afterEach(cleanup);
 
@@ -2475,5 +2482,74 @@ describe('ConfirmationDialog — integration through the renderer', () => {
   it('honours a non-default height through the renderer', () => {
     renderFixture(confirmationDialogHeightSmallFixture);
     expect(screen.getByRole('alertdialog')).toBeInTheDocument();
+  });
+});
+
+describe('Popover (compound family) — integration through the renderer', () => {
+  it('renders the base popover: heading, message, and action composed root -> content', () => {
+    const {container} = renderFixture(popoverBaseFixture);
+    expect(container.querySelector('[data-component="Popover"]')).toBeInTheDocument();
+    expect(container.querySelector('[data-component="Popover.Content"]')).toBeInTheDocument();
+    expect(screen.getByText('Popover')).toBeInTheDocument();
+    expect(screen.getByText('Click outside to dismiss')).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Got it'})).toBeInTheDocument();
+  });
+
+  it('shows the popover (data-open) and positions it in-flow (data-relative)', () => {
+    const {container} = renderFixture(popoverBaseFixture);
+    const root = container.querySelector('[data-component="Popover"]') as HTMLElement;
+    expect(root).toHaveAttribute('data-open', '');
+    expect(root).toHaveAttribute('data-relative', '');
+  });
+
+  it('walks the caret enum, stamping data-caret per surface', () => {
+    const {container} = renderFixture(popoverCaretFixture);
+    const carets = [...container.querySelectorAll('[data-component="Popover"]')].map(el =>
+      el.getAttribute('data-caret'),
+    );
+    expect(carets).toContain('top');
+    expect(carets).toContain('bottom-left');
+    expect(carets).toContain('right-top');
+    expect(carets).toHaveLength(12);
+  });
+
+  it('resolves the bound open path (two-way controlled visibility)', () => {
+    renderFixture(popoverOpenBoundFixture);
+    expect(screen.getByText('Bound visibility (open ← /popoverOpen)')).toBeInTheDocument();
+  });
+
+  it('honours the width enum through the renderer', () => {
+    const {container} = renderFixture(contentWidthFixture);
+    const widths = [...container.querySelectorAll('[data-component="Popover.Content"]')].map(el =>
+      el.getAttribute('data-width'),
+    );
+    expect(widths).toContain('xsmall');
+    expect(widths).toContain('xlarge');
+    expect(widths).toHaveLength(6);
+  });
+
+  it('honours the height enum through the renderer', () => {
+    const {container} = renderFixture(contentHeightFixture);
+    const heights = [...container.querySelectorAll('[data-component="Popover.Content"]')].map(el =>
+      el.getAttribute('data-height'),
+    );
+    expect(heights).toContain('small');
+    expect(heights).toContain('fit-content');
+    expect(heights).toHaveLength(6);
+  });
+
+  it('applies the overflow enum as an inline style per surface', () => {
+    const {container} = renderFixture(contentOverflowFixture);
+    const overflows = [...container.querySelectorAll('[data-component="Popover.Content"]')].map(
+      el => (el as HTMLElement).style.overflow,
+    );
+    expect(overflows).toContain('scroll');
+    expect(overflows).toContain('hidden');
+    expect(overflows).toHaveLength(4);
+  });
+
+  it('resolves the bound message text for the click-outside event fixture', () => {
+    renderFixture(contentClickoutsideEventFixture);
+    expect(screen.getByText('Click outside to dismiss')).toBeInTheDocument();
   });
 });

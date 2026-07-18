@@ -6522,6 +6522,102 @@
       },
       "required": ["component", "confirmAction", "cancelAction", "title"],
       "unevaluatedProperties": false
+    },
+    "Popover": {
+      "type": "object",
+      "description": "A floating content container anchored near a related element, used to bring attention to it with brief contextual content.",
+      "properties": {
+        "component": {
+          "const": "Popover"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The popover's content — typically a single content box."
+        },
+        "caret": {
+          "type": "string",
+          "enum": [
+            "top",
+            "bottom",
+            "left",
+            "right",
+            "bottom-left",
+            "bottom-right",
+            "top-left",
+            "top-right",
+            "left-bottom",
+            "left-top",
+            "right-bottom",
+            "right-top"
+          ],
+          "default": "top",
+          "description": "Where the pointing arrow attaches, indicating the direction of the element the popover is anchored to."
+        },
+        "open": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the popover is currently shown."
+        },
+        "relative": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the popover positions in-flow relative to its parent instead of floating over the layout."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["div", "section", "aside"],
+          "default": "div",
+          "description": "The HTML element used for the wrapper; the choices are display-equivalent and differ only in semantic/landmark identity."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "PopoverContent": {
+      "type": "object",
+      "description": "The visible content box of a popover, holding its heading, message text, and action controls.",
+      "properties": {
+        "component": {
+          "const": "PopoverContent"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The content shown inside the box — heading, message text, and action controls."
+        },
+        "width": {
+          "type": "string",
+          "enum": ["xsmall", "small", "medium", "large", "xlarge", "auto"],
+          "default": "small",
+          "description": "The width of the content box."
+        },
+        "height": {
+          "type": "string",
+          "enum": ["small", "medium", "large", "xlarge", "auto", "fit-content"],
+          "default": "fit-content",
+          "description": "The height of the content box."
+        },
+        "overflow": {
+          "type": "string",
+          "enum": ["auto", "hidden", "scroll", "visible"],
+          "default": "auto",
+          "description": "How content exceeding the box's bounds is handled."
+        },
+        "onClickOutside": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when a click occurs outside the box, typically to dismiss it."
+        },
+        "as": {
+          "type": "string",
+          "enum": ["div", "section", "aside"],
+          "default": "div",
+          "description": "The HTML element used for the box; the choices are display-equivalent and differ only in semantic/landmark identity."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible name, description, and role for the content region, for assistive technologies."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -6960,6 +7056,12 @@
         },
         {
           "$ref": "#/components/ConfirmationDialog"
+        },
+        {
+          "$ref": "#/components/Popover"
+        },
+        {
+          "$ref": "#/components/PopoverContent"
         }
       ]
     },
