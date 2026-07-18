@@ -1125,6 +1125,28 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'tree-view-error-dialog',
     load: () => import('./tree-view-error-dialog').then(m => m.treeViewErrorDialogFixture),
   },
+  {name: 'underline-nav', load: () => import('./underline-nav').then(m => m.underlineNavFixture)},
+  {
+    name: 'underline-nav-children-template',
+    load: () =>
+      import('./underline-nav-children-template').then(m => m.underlineNavChildrenTemplateFixture),
+  },
+  {
+    name: 'underline-nav-variant',
+    load: () => import('./underline-nav-variant').then(m => m.underlineNavVariantFixture),
+  },
+  {
+    name: 'underline-nav-loading',
+    load: () => import('./underline-nav-loading').then(m => m.underlineNavLoadingFixture),
+  },
+  {
+    name: 'underline-nav-item-fn',
+    load: () => import('./underline-nav-item-fn').then(m => m.underlineNavItemFnFixture),
+  },
+  {
+    name: 'underline-nav-item-event',
+    load: () => import('./underline-nav-item-event').then(m => m.underlineNavItemEventFixture),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {

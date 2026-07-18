@@ -102,6 +102,8 @@ import {TreeViewLeadingVisualComponent} from './components/treeview-leadingvisua
 import {TreeViewTrailingVisualComponent} from './components/treeview-trailingvisual';
 import {TreeViewDirectoryIconComponent} from './components/treeview-directoryicon';
 import {TreeViewErrorDialogComponent} from './components/treeview-errordialog';
+import {UnderlineNavComponent} from './components/underline-nav';
+import {UnderlineNavItemComponent} from './components/underline-nav-item';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -211,6 +213,8 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     TreeViewTrailingVisualComponent,
     TreeViewDirectoryIconComponent,
     TreeViewErrorDialogComponent,
+    UnderlineNavComponent,
+    UnderlineNavItemComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

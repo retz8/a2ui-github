@@ -99,6 +99,8 @@ import {TreeViewLeadingVisualApi} from './components/treeview-leadingvisual';
 import {TreeViewTrailingVisualApi} from './components/treeview-trailingvisual';
 import {TreeViewDirectoryIconApi} from './components/treeview-directoryicon';
 import {TreeViewErrorDialogApi} from './components/treeview-errordialog';
+import {UnderlineNavApi} from './components/underline-nav';
+import {UnderlineNavItemApi} from './components/underline-nav-item';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -208,6 +210,8 @@ export const COMPONENTS = {
   TreeViewTrailingVisual: TreeViewTrailingVisualApi,
   TreeViewDirectoryIcon: TreeViewDirectoryIconApi,
   TreeViewErrorDialog: TreeViewErrorDialogApi,
+  UnderlineNav: UnderlineNavApi,
+  'UnderlineNav.Item': UnderlineNavItemApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

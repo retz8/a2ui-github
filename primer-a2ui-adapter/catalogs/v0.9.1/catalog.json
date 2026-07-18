@@ -5969,6 +5969,72 @@
       },
       "required": ["component", "children"],
       "unevaluatedProperties": false
+    },
+    "UnderlineNav": {
+      "type": "object",
+      "description": "A horizontal row of navigation tabs indicating the current page with an underline.",
+      "properties": {
+        "component": {
+          "const": "UnderlineNav"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The navigation items arranged in the tab row."
+        },
+        "aria-label": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "An accessible name for the navigation region."
+        },
+        "loadingCounters": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "default": false,
+          "description": "Whether the items' counters are loading; all counters show a loading state until every count resolves."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["inset", "flush"],
+          "default": "inset",
+          "description": "Whether items are offset from the container edges (`inset`) or flush with them (`flush`)."
+        }
+      },
+      "required": ["component", "children", "aria-label"],
+      "unevaluatedProperties": false
+    },
+    "UnderlineNav.Item": {
+      "type": "object",
+      "description": "A single navigation tab; navigates via its link or performs an action when selected, and can mark itself the current page.",
+      "properties": {
+        "component": {
+          "const": "UnderlineNav.Item"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The tab's label."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the tab is selected by click or keyboard."
+        },
+        "href": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The URL the tab navigates to."
+        },
+        "aria-current": {
+          "type": "string",
+          "enum": ["page", "step", "location", "date", "time", "true", "false"],
+          "description": "Marks this tab as the user's current page or location."
+        },
+        "leadingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual rendered before the tab's label, typically an icon."
+        },
+        "counter": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The count displayed in a counter label after the tab's label."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -6353,6 +6419,12 @@
         },
         {
           "$ref": "#/components/TreeViewErrorDialog"
+        },
+        {
+          "$ref": "#/components/UnderlineNav"
+        },
+        {
+          "$ref": "#/components/UnderlineNav.Item"
         }
       ]
     },

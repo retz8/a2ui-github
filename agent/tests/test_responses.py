@@ -328,6 +328,49 @@ def test_radio_select_still_falls_through_to_the_static_fixture():
     assert msgs[0]["updateDataModel"]["path"] == "/selected"
 
 
+# --- UnderlineNav family (6.43) ---
+
+UNDERLINE_NAV_SELECT = {
+    "name": "select",
+    "surfaceId": "underline-nav-item-event",
+    "sourceComponentId": "tab-pulls",
+    "context": {"tab": "pulls"},
+}
+
+
+def test_underline_nav_select_refreshes_the_count_then_marks_the_tab_current_with_surface_echoed():
+    # The UnderlineNav.Item `select` (context `{tab}`) confirms the selection: it writes the tab's
+    # refreshed count and re-emits `tab-pulls` as the current tab. The /pullsCount write is visible
+    # through the item's `counter <- /pullsCount` coupling (4 -> 5).
+    msgs = build_response(UNDERLINE_NAV_SELECT)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "underline-nav-item-event"
+    assert dm["path"] == "/pullsCount"
+    assert dm["value"] == "5"
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "underline-nav-item-event"
+    assert uc["components"] == [
+        {
+            "id": "tab-pulls",
+            "component": "UnderlineNav.Item",
+            "text": "Pull requests",
+            "aria-current": "page",
+            "counter": {"path": "/pullsCount"},
+            "href": "#/pulls",
+            "action": {"event": {"name": "select", "context": {"tab": "pulls"}}},
+        }
+    ]
+
+
+def test_radio_select_not_captured_by_the_underline_nav_tab_branch():
+    # The Radio `select` (context `{value}`, no `tab`) still returns the static select.json.
+    msgs = build_response(SELECT)
+    assert msgs[0]["updateDataModel"]["path"] == "/selected"
+
+
 def test_actionlist_remove_writes_removed_then_swaps_status_with_surface_echoed():
     # TrailingAction carries no two-way state; /removed is written only by the server. The write
     # is visible through the neighboring `Item.disabled <- /removed` coupling (the row greys out).

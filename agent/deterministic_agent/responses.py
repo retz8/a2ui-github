@@ -124,6 +124,12 @@ def build_response(action: dict) -> list[dict]:
         return _change_response(action, surface_id)
     if name == "select" and "assigned" in action.get("context", {}):
         return _select_assigned_response(action, surface_id)
+    if name == "select" and "tab" in action.get("context", {}):
+        # UnderlineNav.Item `select` (context `{tab}`): confirm the selection and refresh the
+        # selected tab's count. Shares the `select` event name with the Radio (context `{value}`)
+        # and ActionList.Item (context `{assigned}`) variants; keyed on `tab`, which only this event
+        # carries. The response is fully canned (targets `tab-pulls`), so it loads a static fixture.
+        return _stamp_surface(_load_fixture("underline-nav-select.json"), surface_id)
     fixture = _EVENT_FIXTURES.get(name)
     if fixture is None:
         return _fallback(name, surface_id)

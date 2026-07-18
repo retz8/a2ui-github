@@ -39,6 +39,8 @@ import {treeViewItemFnFixture} from '../src/fixtures/tree-view-item-fn';
 import {treeViewItemEventFixture} from '../src/fixtures/tree-view-item-event';
 import {treeViewItemSecondaryActionsFixture} from '../src/fixtures/tree-view-item-secondary-actions';
 import {treeViewErrorDialogFixture} from '../src/fixtures/tree-view-error-dialog';
+import {underlineNavItemFnFixture} from '../src/fixtures/underline-nav-item-fn';
+import {underlineNavItemEventFixture} from '../src/fixtures/underline-nav-item-event';
 
 afterEach(cleanup);
 
@@ -641,5 +643,33 @@ describe('TreeView action paths', () => {
     fireEvent.click(screen.getByRole('button', {name: 'Dismiss'}));
     expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'dismissed');
     logSpy.mockRestore();
+  });
+
+  it('path-1 (UnderlineNav.Item): selecting a tab runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(underlineNavItemFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByText('Run local'));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'underline-nav-item clicked');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('path-2 (UnderlineNav.Item): selecting a tab dispatches the event from the item', async () => {
+    const handler = vi.fn();
+    renderFixture(underlineNavItemEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('link', {name: /Pull requests/}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'select',
+        surfaceId: 'underline-nav-item-event',
+        sourceComponentId: 'tab-pulls',
+      }),
+    );
   });
 });

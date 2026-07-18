@@ -249,6 +249,10 @@ import {treeViewSubtreeStatesFixture} from '../src/fixtures/tree-view-subtree-st
 import {treeViewVisualsFixture} from '../src/fixtures/tree-view-visuals';
 import {treeViewDirectoryIconFixture} from '../src/fixtures/tree-view-directory-icon';
 import {treeViewErrorDialogFixture} from '../src/fixtures/tree-view-error-dialog';
+import {underlineNavFixture} from '../src/fixtures/underline-nav';
+import {underlineNavChildrenTemplateFixture} from '../src/fixtures/underline-nav-children-template';
+import {underlineNavVariantFixture} from '../src/fixtures/underline-nav-variant';
+import {underlineNavLoadingFixture} from '../src/fixtures/underline-nav-loading';
 
 afterEach(cleanup);
 
@@ -2236,5 +2240,47 @@ describe('TreeView (compound family) — integration through the renderer', () =
     expect(screen.getByText('Failed to load')).toBeInTheDocument();
     // The dialog body Text is bound to /retryMessage and resolves through the renderer.
     expect(screen.getByText('Could not load the folder')).toBeInTheDocument();
+  });
+});
+
+describe('UnderlineNav (container) — integration through the renderer', () => {
+  it('renders a static ChildList of tabs; the current one gets aria-current, tabs link and count', () => {
+    renderFixture(underlineNavFixture);
+    // The nav landmark is named by aria-label.
+    expect(screen.getByRole('navigation', {name: 'Repository'})).toBeInTheDocument();
+    // Code is the current tab; it links to #/code.
+    const code = screen.getByRole('link', {name: /Code/});
+    expect(code).toHaveAttribute('aria-current', 'page');
+    expect(code).toHaveAttribute('href', '#/code');
+    // Issues / Pull requests carry counters; Settings is plain.
+    expect(screen.getByRole('link', {name: /Issues/})).toBeInTheDocument();
+    expect(screen.getByText('12')).toBeInTheDocument();
+    expect(screen.getByText('4')).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: /Settings/})).not.toHaveAttribute('aria-current');
+  });
+
+  it('expands a dynamic-template ChildList over the bound array (one tab per item, own scope)', () => {
+    renderFixture(underlineNavChildrenTemplateFixture);
+    expect(screen.getByRole('link', {name: /Code/})).toHaveAttribute('href', '#/code');
+    expect(screen.getByRole('link', {name: /Issues/})).toHaveAttribute('href', '#/issues');
+    expect(screen.getByRole('link', {name: /Pull requests/})).toHaveAttribute('href', '#/pulls');
+  });
+
+  it('honors the variant enum through the renderer (one surface per value)', () => {
+    const {container} = renderFixture(underlineNavVariantFixture);
+    const variants = [...container.querySelectorAll('nav[data-variant]')]
+      .map(el => el.getAttribute('data-variant'))
+      .sort();
+    expect(variants).toEqual(['flush', 'inset']);
+  });
+
+  it('honors loadingCounters through the renderer (counters render in a loading state)', () => {
+    const {container} = renderFixture(underlineNavLoadingFixture);
+    // All three tabs render with their counters present under loadingCounters.
+    expect(screen.getByRole('navigation', {name: 'Repository'})).toBeInTheDocument();
+    expect(screen.getByRole('link', {name: /Code/})).toBeInTheDocument();
+    expect(container.querySelectorAll('[data-component="counter"]').length).toBeGreaterThanOrEqual(
+      3,
+    );
   });
 });
