@@ -1,982 +1,1132 @@
-import {buttonEventFixture} from './button-event';
-import {buttonFnFixture} from './button-fn';
-import {buttonVariantsFixture} from './button-variants';
-import {buttonSizesFixture} from './button-sizes';
-import {buttonAligncontentFixture} from './button-aligncontent';
-import {buttonDisabledFixture} from './button-disabled';
-import {buttonInactiveFixture} from './button-inactive';
-import {buttonLoadingFixture} from './button-loading';
-import {buttonBlockFixture} from './button-block';
-import {buttonLabelwrapFixture} from './button-labelwrap';
-import {buttonCountFixture} from './button-count';
-import {buttonIconFixture} from './button-icon';
-import {buttonLeadingVisualFixture} from './button-leading-visual';
-import {buttonTrailingVisualFixture} from './button-trailing-visual';
-import {buttonTrailingActionFixture} from './button-trailing-action';
-import {iconbuttonFnFixture} from './iconbutton-fn';
-import {iconbuttonEventFixture} from './iconbutton-event';
-import {iconbuttonVariantsFixture} from './iconbutton-variants';
-import {iconbuttonSizesFixture} from './iconbutton-sizes';
-import {iconbuttonDisabledFixture} from './iconbutton-disabled';
-import {iconbuttonLoadingFixture} from './iconbutton-loading';
-import {iconbuttonInactiveFixture} from './iconbutton-inactive';
-import {iconbuttonBlockFixture} from './iconbutton-block';
-import {iconbuttonTooltipFixture} from './iconbutton-tooltip';
-import {iconNamesFixture} from './icon-names';
-import {iconSizesFixture} from './icon-sizes';
-import {iconFillsFixture} from './icon-fills';
-import {linkFixture} from './link';
-import {linkBoundFixture} from './link-bound';
-import {linkMutedFixture} from './link-muted';
-import {linkInlineFixture} from './link-inline';
-import {headingFixture} from './heading';
-import {headingBoundFixture} from './heading-bound';
-import {headingVariantsFixture} from './heading-variants';
-import {branchnameFixture} from './branchname';
-import {branchnameBoundFixture} from './branchname-bound';
-import {branchnameAsFixture} from './branchname-as';
-import {relativeTimeFixture} from './relative-time';
-import {relativeTimeBoundFixture} from './relative-time-bound';
-import {relativeTimeFormatsFixture} from './relative-time-formats';
-import {relativeTimeFormatStylesFixture} from './relative-time-format-styles';
-import {relativeTimeTensesFixture} from './relative-time-tenses';
-import {relativeTimePrecisionFixture} from './relative-time-precision';
-import {relativeTimeThresholdFixture} from './relative-time-threshold';
-import {relativeTimePrefixFixture} from './relative-time-prefix';
-import {relativeTimeDatetimePartsFixture} from './relative-time-datetime-parts';
-import {labelFixture} from './label';
-import {labelBoundFixture} from './label-bound';
-import {labelVariantsFixture} from './label-variants';
-import {labelSizesFixture} from './label-sizes';
-import {statelabelFixture} from './statelabel';
-import {statelabelBoundFixture} from './statelabel-bound';
-import {statelabelStatusFixture} from './statelabel-status';
-import {statelabelSizeFixture} from './statelabel-size';
-import {counterlabelFixture} from './counterlabel';
-import {counterlabelBoundFixture} from './counterlabel-bound';
-import {counterlabelVariantsFixture} from './counterlabel-variants';
-import {avatarFixture} from './avatar';
-import {avatarBoundFixture} from './avatar-bound';
-import {avatarSizesFixture} from './avatar-sizes';
-import {avatarSquareFixture} from './avatar-square';
-import {spinnerFixture} from './spinner';
-import {spinnerSizesFixture} from './spinner-sizes';
-import {spinnerBoundFixture} from './spinner-bound';
-import {tokenFixture} from './token';
-import {tokenBoundFixture} from './token-bound';
-import {tokenLeadingvisualFixture} from './token-leadingvisual';
-import {tokenSizesFixture} from './token-sizes';
-import {tokenSelectedFixture} from './token-selected';
-import {tokenDisabledFixture} from './token-disabled';
-import {tokenRemoveFnFixture} from './token-remove-fn';
-import {tokenRemoveEventFixture} from './token-remove-event';
-import {tokenHideremovebuttonFixture} from './token-hideremovebutton';
-import {issuelabeltokenFixture} from './issuelabeltoken';
-import {issuelabeltokenBoundFixture} from './issuelabeltoken-bound';
-import {issuelabeltokenFillcolorFixture} from './issuelabeltoken-fillcolor';
-import {issuelabeltokenSizesFixture} from './issuelabeltoken-sizes';
-import {issuelabeltokenSelectedFixture} from './issuelabeltoken-selected';
-import {issuelabeltokenDisabledFixture} from './issuelabeltoken-disabled';
-import {issuelabeltokenRemoveFnFixture} from './issuelabeltoken-remove-fn';
-import {issuelabeltokenRemoveEventFixture} from './issuelabeltoken-remove-event';
-import {issuelabeltokenHideremovebuttonFixture} from './issuelabeltoken-hideremovebutton';
-import {checkboxFixture} from './checkbox';
-import {checkboxCheckedFixture} from './checkbox-checked';
-import {checkboxBoundFixture} from './checkbox-bound';
-import {checkboxIndeterminateFixture} from './checkbox-indeterminate';
-import {checkboxDisabledFixture} from './checkbox-disabled';
-import {textAsFixture} from './text-as';
-import {textBoundFixture} from './text-bound';
-import {textSizesFixture} from './text-sizes';
-import {textWeightsFixture} from './text-weights';
-import {textWhitespaceFixture} from './text-whitespace';
-import {textFixture} from './text';
-import {progressbarFixture} from './progressbar';
-import {progressbarBoundFixture} from './progressbar-bound';
-import {progressbarSegmentsFixture} from './progressbar-segments';
-import {progressbarSegmentsBoundFixture} from './progressbar-segments-bound';
-import {progressbarBgFixture} from './progressbar-bg';
-import {progressbarSizesFixture} from './progressbar-sizes';
-import {radioFixture} from './radio';
-import {radioCheckedFixture} from './radio-checked';
-import {radioDisabledFixture} from './radio-disabled';
-import {radioFnFixture} from './radio-fn';
-import {radioEventFixture} from './radio-event';
-import {toggleswitchFixture} from './toggleswitch';
-import {toggleswitchCheckedFixture} from './toggleswitch-checked';
-import {toggleswitchBoundFixture} from './toggleswitch-bound';
-import {toggleswitchFnFixture} from './toggleswitch-fn';
-import {toggleswitchEventFixture} from './toggleswitch-event';
-import {toggleswitchDisabledFixture} from './toggleswitch-disabled';
-import {toggleswitchLoadingFixture} from './toggleswitch-loading';
-import {toggleswitchSizesFixture} from './toggleswitch-sizes';
-import {toggleswitchLabelPositionFixture} from './toggleswitch-label-position';
-import {toggleswitchCustomLabelsFixture} from './toggleswitch-custom-labels';
-import {textareaFixture} from './textarea';
-import {textareaBoundFixture} from './textarea-bound';
-import {textareaPlaceholderFixture} from './textarea-placeholder';
-import {textareaDisabledFixture} from './textarea-disabled';
-import {textareaValidationFixture} from './textarea-validation';
-import {textareaBlockFixture} from './textarea-block';
-import {textareaContrastFixture} from './textarea-contrast';
-import {textareaRowsFixture} from './textarea-rows';
-import {textareaColsFixture} from './textarea-cols';
-import {textareaCharacterLimitFixture} from './textarea-character-limit';
-import {textareaMinHeightFixture} from './textarea-min-height';
-import {textinputFixture} from './textinput';
-import {textinputBoundFixture} from './textinput-bound';
-import {textinputPlaceholderFixture} from './textinput-placeholder';
-import {textinputDisabledFixture} from './textinput-disabled';
-import {textinputValidationFixture} from './textinput-validation';
-import {textinputTypeFixture} from './textinput-type';
-import {textinputLoadingFixture} from './textinput-loading';
-import {textinputLeadingVisualFixture} from './textinput-leading-visual';
-import {textinputTrailingVisualFixture} from './textinput-trailing-visual';
-import {textinputTrailingActionFixture} from './textinput-trailing-action';
-import {textinputSizeFixture} from './textinput-size';
-import {textinputBlockFixture} from './textinput-block';
-import {textinputContrastFixture} from './textinput-contrast';
-import {textinputMonospaceFixture} from './textinput-monospace';
-import {textinputCharacterLimitFixture} from './textinput-character-limit';
-import {textinputActionFnFixture} from './textinput-action-fn';
-import {textinputActionEventFixture} from './textinput-action-event';
-import {textinputActionDisabledFixture} from './textinput-action-disabled';
-import {textinputActionTooltipFixture} from './textinput-action-tooltip';
-import {skeletonboxFixture} from './skeletonbox';
-import {skeletonboxSizedFixture} from './skeletonbox-sized';
-import {truncateFixture} from './truncate';
-import {truncateBoundFixture} from './truncate-bound';
-import {truncateMaxwidthFixture} from './truncate-maxwidth';
-import {truncateAsFixture} from './truncate-as';
-import {keybindinghintFixture} from './keybindinghint';
-import {keybindinghintBoundFixture} from './keybindinghint-bound';
-import {keybindinghintFormatsFixture} from './keybindinghint-formats';
-import {keybindinghintVariantsFixture} from './keybindinghint-variants';
-import {keybindinghintSizesFixture} from './keybindinghint-sizes';
-import {stackFixture} from './stack';
-import {stackChildrenTemplateFixture} from './stack-children-template';
-import {stackDirectionFixture} from './stack-direction';
-import {stackGapFixture} from './stack-gap';
-import {stackAlignFixture} from './stack-align';
-import {stackJustifyFixture} from './stack-justify';
-import {stackWrapFixture} from './stack-wrap';
-import {stackPaddingFixture} from './stack-padding';
-import {stackPaddingblockFixture} from './stack-paddingblock';
-import {stackPaddinginlineFixture} from './stack-paddinginline';
-import {stackResponsiveFixture} from './stack-responsive';
-import {stackitemFixture} from './stackitem';
-import {stackitemGrowFixture} from './stackitem-grow';
-import {stackitemShrinkFixture} from './stackitem-shrink';
-import {labelGroupFixture} from './label-group';
-import {labelGroupChildrenTemplateFixture} from './label-group-children-template';
-import {labelGroupTruncatedFixture} from './label-group-truncated';
-import {avatarstackFixture} from './avatarstack';
-import {avatarstackChildrenTemplateFixture} from './avatarstack-children-template';
-import {avatarstackAlignrightFixture} from './avatarstack-alignright';
-import {avatarstackVariantFixture} from './avatarstack-variant';
-import {avatarstackShapeFixture} from './avatarstack-shape';
-import {avatarstackSizeFixture} from './avatarstack-size';
-import {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
-import {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
-import {buttonGroupFixture} from './button-group';
-import {buttonGroupChildrenTemplateFixture} from './button-group-children-template';
-import {paginationFixture} from './pagination';
-import {paginationLargeFixture} from './pagination-large';
-import {paginationFirstFixture} from './pagination-first';
-import {paginationLastFixture} from './pagination-last';
-import {paginationNoPagesFixture} from './pagination-no-pages';
-import {paginationMarginFixture} from './pagination-margin';
-import {paginationSurroundingFixture} from './pagination-surrounding';
-import {paginationControlledFixture} from './pagination-controlled';
-import {paginationHrefFixture} from './pagination-href';
-import {paginationAccessibilityFixture} from './pagination-accessibility';
-import {segmentedcontrolFixture} from './segmentedcontrol';
-import {segmentedcontrolChildrenTemplateFixture} from './segmentedcontrol-children-template';
-import {segmentedcontrolSelectedFixture} from './segmentedcontrol-selected';
-import {segmentedcontrolBoundFixture} from './segmentedcontrol-bound';
-import {segmentedcontrolFnFixture} from './segmentedcontrol-fn';
-import {segmentedcontrolEventFixture} from './segmentedcontrol-event';
-import {segmentedcontrolFullwidthFixture} from './segmentedcontrol-fullwidth';
-import {segmentedcontrolSizeFixture} from './segmentedcontrol-size';
-import {segmentedcontrolVariantFixture} from './segmentedcontrol-variant';
-import {segmentedcontrolbuttonFixture} from './segmentedcontrolbutton';
-import {segmentedcontrolbuttonLeadingvisualFixture} from './segmentedcontrolbutton-leadingvisual';
-import {segmentedcontrolbuttonCountFixture} from './segmentedcontrolbutton-count';
-import {segmentedcontrolbuttonDisabledFixture} from './segmentedcontrolbutton-disabled';
-import {segmentedcontroliconbuttonFixture} from './segmentedcontroliconbutton';
-import {segmentedcontroliconbuttonDisabledFixture} from './segmentedcontroliconbutton-disabled';
-import {detailsOpenFixture} from './details-open';
-import {detailsChildrenTemplateFixture} from './details-children-template';
-import {detailsClickoutsideFnFixture} from './details-clickoutside-fn';
-import {detailsBoundFixture} from './details-bound';
-import {selectFixture} from './select';
-import {selectChildrenTemplateFixture} from './select-children-template';
-import {selectBoundFixture} from './select-bound';
-import {selectPlaceholderFixture} from './select-placeholder';
-import {selectDisabledFixture} from './select-disabled';
-import {selectValidationFixture} from './select-validation';
-import {selectBlockFixture} from './select-block';
-import {selectSizeFixture} from './select-size';
-import {selectoptionFixture} from './selectoption';
-import {selectoptionDisabledFixture} from './selectoption-disabled';
-import {selectoptgroupFixture} from './selectoptgroup';
-import {selectoptgroupDisabledFixture} from './selectoptgroup-disabled';
-import {breadcrumbsFixture} from './breadcrumbs';
-import {breadcrumbsChildrenTemplateFixture} from './breadcrumbs-children-template';
-import {breadcrumbsVariantFixture} from './breadcrumbs-variant';
-import {breadcrumbsitemFixture} from './breadcrumbsitem';
-import {breadcrumbsitemSelectedFixture} from './breadcrumbsitem-selected';
-import {navlistFixture} from './navlist';
-import {navlistItemInactiveFixture} from './navlist-item-inactive';
-import {navlistTrailingactionFnFixture} from './navlist-trailingaction-fn';
-import {navlistTrailingactionEventFixture} from './navlist-trailingaction-event';
-import {navlistTrailingactionLoadingFixture} from './navlist-trailingaction-loading';
-import {navlistGroupBoundFixture} from './navlist-group-bound';
-import {navlistGroupheadingVariantsFixture} from './navlist-groupheading-variants';
-import {navlistGroupheadingBoundFixture} from './navlist-groupheading-bound';
-import {navlistDescriptionVariantsFixture} from './navlist-description-variants';
-import {navlistDescriptionTruncateFixture} from './navlist-description-truncate';
-import {navlistGroupexpandFixture, navlistGroupexpandShowmoreFixture} from './navlist-groupexpand';
-import {pagelayoutFixture} from './pagelayout';
-import {pagelayoutSidebarFixture} from './pagelayout-sidebar';
-import {pagelayoutContainerwidthFixture} from './pagelayout-containerwidth';
-import {pagelayoutPaddingFixture} from './pagelayout-padding';
-import {pagelayoutRowgapFixture} from './pagelayout-rowgap';
-import {pagelayoutColumngapFixture} from './pagelayout-columngap';
-import {pagelayoutHeaderPaddingFixture} from './pagelayout-header-padding';
-import {pagelayoutHeaderDividerFixture} from './pagelayout-header-divider';
-import {pagelayoutFooterPaddingFixture} from './pagelayout-footer-padding';
-import {pagelayoutFooterDividerFixture} from './pagelayout-footer-divider';
-import {pagelayoutContentWidthFixture} from './pagelayout-content-width';
-import {pagelayoutContentPaddingFixture} from './pagelayout-content-padding';
-import {pagelayoutContentTemplateFixture} from './pagelayout-content-template';
-import {pagelayoutPanePositionFixture} from './pagelayout-pane-position';
-import {pagelayoutPaneWidthFixture} from './pagelayout-pane-width';
-import {pagelayoutPaneWidthCustomFixture} from './pagelayout-pane-width-custom';
-import {pagelayoutPaneDividerFixture} from './pagelayout-pane-divider';
-import {pagelayoutPaneResizableFixture} from './pagelayout-pane-resizable';
-import {pagelayoutPanePaddingFixture} from './pagelayout-pane-padding';
-import {pagelayoutPaneCurrentwidthFixture} from './pagelayout-pane-currentwidth';
-import {pagelayoutSidebarPositionFixture} from './pagelayout-sidebar-position';
-import {pagelayoutSidebarWidthFixture} from './pagelayout-sidebar-width';
-import {pagelayoutSidebarWidthCustomFixture} from './pagelayout-sidebar-width-custom';
-import {pagelayoutSidebarDividerFixture} from './pagelayout-sidebar-divider';
-import {pagelayoutSidebarResizableFixture} from './pagelayout-sidebar-resizable';
-import {pagelayoutSidebarPaddingFixture} from './pagelayout-sidebar-padding';
-import {pagelayoutSidebarCurrentwidthFixture} from './pagelayout-sidebar-currentwidth';
-import {splitPageLayoutFixture} from './split-page-layout';
-import {splitPageLayoutSidebarFixture} from './split-page-layout-sidebar';
-import {splHeaderDividerFixture} from './spl-header-divider';
-import {splContentWidthFixture} from './spl-content-width';
-import {splContentPaddingFixture} from './spl-content-padding';
-import {splContentChildrenTemplateFixture} from './spl-content-children-template';
-import {splPanePositionFixture} from './spl-pane-position';
-import {splPaneWidthFixture} from './spl-pane-width';
-import {splPaneDividerFixture} from './spl-pane-divider';
-import {splPaneResizableFixture} from './spl-pane-resizable';
-import {pageheaderFixture} from './pageheader';
-import {pageheaderHasborderFixture} from './pageheader-hasborder';
-import {parentlinkFixture} from './parentlink';
-import {parentlinkBoundFixture} from './parentlink-bound';
-import {titleFixture} from './title';
-import {titleBoundFixture} from './title-bound';
-import {titleareaVariantFixture} from './titlearea-variant';
-import {breadcrumbsTemplateFixture} from './breadcrumbs-template';
-import {actionlistFixture} from './actionlist';
-import {actionlistChildrenTemplateFixture} from './actionlist-children-template';
-import {actionlistSelectionFixture} from './actionlist-selection';
-import {actionlistSelectedBoundFixture} from './actionlist-selected-bound';
-import {actionlistItemFnFixture} from './actionlist-item-fn';
-import {actionlistItemEventFixture} from './actionlist-item-event';
-import {actionlistItemActiveFixture} from './actionlist-item-active';
-import {actionlistItemDisabledFixture} from './actionlist-item-disabled';
-import {actionlistItemLoadingFixture} from './actionlist-item-loading';
-import {actionlistItemInactiveFixture} from './actionlist-item-inactive';
-import {actionlistItemVariantFixture} from './actionlist-item-variant';
-import {actionlistItemSizeFixture} from './actionlist-item-size';
-import {actionlistVariantFixture} from './actionlist-variant';
-import {actionlistDividersFixture} from './actionlist-dividers';
-import {actionlistGroupVariantFixture} from './actionlist-group-variant';
-import {actionlistDescriptionFixture} from './actionlist-description';
-import {actionlistTrailingactionFnFixture} from './actionlist-trailingaction-fn';
-import {actionlistTrailingactionEventFixture} from './actionlist-trailingaction-event';
-import {actionlistTrailingactionLoadingFixture} from './actionlist-trailingaction-loading';
-import {actionBarFixture} from './action-bar';
-import {actionBarChildrenTemplateFixture} from './action-bar-children-template';
-import {actionBarSizesFixture} from './action-bar-sizes';
-import {actionBarGapFixture} from './action-bar-gap';
-import {actionBarFlushFixture} from './action-bar-flush';
-import {actionBarOverflowFixture} from './action-bar-overflow';
-import {actionBarIconButtonFnFixture} from './action-bar-icon-button-fn';
-import {actionBarIconButtonEventFixture} from './action-bar-icon-button-event';
-import {actionBarIconButtonDisabledFixture} from './action-bar-icon-button-disabled';
-import {actionBarGroupFixture} from './action-bar-group';
-import {actionBarMenuFixture} from './action-bar-menu';
-import {treeViewNestedFixture} from './tree-view-nested';
-import {treeViewFlatFixture} from './tree-view-flat';
-import {treeViewTruncateFixture} from './tree-view-truncate';
-import {treeViewItemCurrentFixture} from './tree-view-item-current';
-import {treeViewItemExpandedBoundFixture} from './tree-view-item-expanded-bound';
-import {treeViewItemFnFixture} from './tree-view-item-fn';
-import {treeViewItemEventFixture} from './tree-view-item-event';
-import {treeViewItemSecondaryActionsFixture} from './tree-view-item-secondary-actions';
-import {treeViewSubtreeStatesFixture} from './tree-view-subtree-states';
-import {treeViewVisualsFixture} from './tree-view-visuals';
-import {treeViewDirectoryIconFixture} from './tree-view-directory-icon';
-import {treeViewErrorDialogFixture} from './tree-view-error-dialog';
 import type {Fixture} from './types';
 
 export type {Fixture} from './types';
 
-export {textFixture} from './text';
-export {textBoundFixture} from './text-bound';
-export {textSizesFixture} from './text-sizes';
-export {textWeightsFixture} from './text-weights';
-export {textAsFixture} from './text-as';
-export {textWhitespaceFixture} from './text-whitespace';
-export {buttonFnFixture} from './button-fn';
-export {buttonEventFixture} from './button-event';
-export {buttonVariantsFixture} from './button-variants';
-export {buttonSizesFixture} from './button-sizes';
-export {buttonAligncontentFixture} from './button-aligncontent';
-export {buttonDisabledFixture} from './button-disabled';
-export {buttonInactiveFixture} from './button-inactive';
-export {buttonLoadingFixture} from './button-loading';
-export {buttonBlockFixture} from './button-block';
-export {buttonLabelwrapFixture} from './button-labelwrap';
-export {buttonCountFixture} from './button-count';
-export {buttonIconFixture} from './button-icon';
-export {buttonLeadingVisualFixture} from './button-leading-visual';
-export {buttonTrailingVisualFixture} from './button-trailing-visual';
-export {buttonTrailingActionFixture} from './button-trailing-action';
-export {iconbuttonFnFixture} from './iconbutton-fn';
-export {iconbuttonEventFixture} from './iconbutton-event';
-export {iconbuttonVariantsFixture} from './iconbutton-variants';
-export {iconbuttonSizesFixture} from './iconbutton-sizes';
-export {iconbuttonDisabledFixture} from './iconbutton-disabled';
-export {iconbuttonLoadingFixture} from './iconbutton-loading';
-export {iconbuttonInactiveFixture} from './iconbutton-inactive';
-export {iconbuttonBlockFixture} from './iconbutton-block';
-export {iconbuttonTooltipFixture} from './iconbutton-tooltip';
-export {iconNamesFixture} from './icon-names';
-export {iconSizesFixture} from './icon-sizes';
-export {iconFillsFixture} from './icon-fills';
-export {linkFixture} from './link';
-export {linkBoundFixture} from './link-bound';
-export {linkMutedFixture} from './link-muted';
-export {linkInlineFixture} from './link-inline';
-export {headingFixture} from './heading';
-export {headingBoundFixture} from './heading-bound';
-export {headingVariantsFixture} from './heading-variants';
-export {branchnameFixture} from './branchname';
-export {branchnameBoundFixture} from './branchname-bound';
-export {branchnameAsFixture} from './branchname-as';
-export {relativeTimeFixture} from './relative-time';
-export {relativeTimeBoundFixture} from './relative-time-bound';
-export {relativeTimeFormatsFixture} from './relative-time-formats';
-export {relativeTimeFormatStylesFixture} from './relative-time-format-styles';
-export {relativeTimeTensesFixture} from './relative-time-tenses';
-export {relativeTimePrecisionFixture} from './relative-time-precision';
-export {relativeTimeThresholdFixture} from './relative-time-threshold';
-export {relativeTimePrefixFixture} from './relative-time-prefix';
-export {relativeTimeDatetimePartsFixture} from './relative-time-datetime-parts';
-export {labelFixture} from './label';
-export {labelBoundFixture} from './label-bound';
-export {labelVariantsFixture} from './label-variants';
-export {labelSizesFixture} from './label-sizes';
-export {statelabelFixture} from './statelabel';
-export {statelabelBoundFixture} from './statelabel-bound';
-export {statelabelStatusFixture} from './statelabel-status';
-export {statelabelSizeFixture} from './statelabel-size';
-export {counterlabelFixture} from './counterlabel';
-export {counterlabelBoundFixture} from './counterlabel-bound';
-export {counterlabelVariantsFixture} from './counterlabel-variants';
-export {avatarFixture} from './avatar';
-export {avatarBoundFixture} from './avatar-bound';
-export {avatarSizesFixture} from './avatar-sizes';
-export {avatarSquareFixture} from './avatar-square';
-export {spinnerFixture} from './spinner';
-export {spinnerSizesFixture} from './spinner-sizes';
-export {spinnerBoundFixture} from './spinner-bound';
-export {tokenFixture} from './token';
-export {tokenBoundFixture} from './token-bound';
-export {tokenLeadingvisualFixture} from './token-leadingvisual';
-export {tokenSizesFixture} from './token-sizes';
-export {tokenSelectedFixture} from './token-selected';
-export {tokenDisabledFixture} from './token-disabled';
-export {tokenRemoveFnFixture} from './token-remove-fn';
-export {tokenRemoveEventFixture} from './token-remove-event';
-export {tokenHideremovebuttonFixture} from './token-hideremovebutton';
-export {issuelabeltokenFixture} from './issuelabeltoken';
-export {issuelabeltokenBoundFixture} from './issuelabeltoken-bound';
-export {issuelabeltokenFillcolorFixture} from './issuelabeltoken-fillcolor';
-export {issuelabeltokenSizesFixture} from './issuelabeltoken-sizes';
-export {issuelabeltokenSelectedFixture} from './issuelabeltoken-selected';
-export {issuelabeltokenDisabledFixture} from './issuelabeltoken-disabled';
-export {issuelabeltokenRemoveFnFixture} from './issuelabeltoken-remove-fn';
-export {issuelabeltokenRemoveEventFixture} from './issuelabeltoken-remove-event';
-export {issuelabeltokenHideremovebuttonFixture} from './issuelabeltoken-hideremovebutton';
-export {checkboxFixture} from './checkbox';
-export {checkboxCheckedFixture} from './checkbox-checked';
-export {checkboxBoundFixture} from './checkbox-bound';
-export {checkboxIndeterminateFixture} from './checkbox-indeterminate';
-export {checkboxDisabledFixture} from './checkbox-disabled';
-export {progressbarFixture} from './progressbar';
-export {progressbarBoundFixture} from './progressbar-bound';
-export {progressbarSegmentsFixture} from './progressbar-segments';
-export {progressbarSegmentsBoundFixture} from './progressbar-segments-bound';
-export {progressbarBgFixture} from './progressbar-bg';
-export {progressbarSizesFixture} from './progressbar-sizes';
-export {radioFixture} from './radio';
-export {radioCheckedFixture} from './radio-checked';
-export {radioDisabledFixture} from './radio-disabled';
-export {radioFnFixture} from './radio-fn';
-export {radioEventFixture} from './radio-event';
-export {toggleswitchFixture} from './toggleswitch';
-export {toggleswitchCheckedFixture} from './toggleswitch-checked';
-export {toggleswitchBoundFixture} from './toggleswitch-bound';
-export {toggleswitchFnFixture} from './toggleswitch-fn';
-export {toggleswitchEventFixture} from './toggleswitch-event';
-export {toggleswitchDisabledFixture} from './toggleswitch-disabled';
-export {toggleswitchLoadingFixture} from './toggleswitch-loading';
-export {toggleswitchSizesFixture} from './toggleswitch-sizes';
-export {toggleswitchLabelPositionFixture} from './toggleswitch-label-position';
-export {toggleswitchCustomLabelsFixture} from './toggleswitch-custom-labels';
-export {textareaFixture} from './textarea';
-export {textareaBoundFixture} from './textarea-bound';
-export {textareaPlaceholderFixture} from './textarea-placeholder';
-export {textareaDisabledFixture} from './textarea-disabled';
-export {textareaValidationFixture} from './textarea-validation';
-export {textareaBlockFixture} from './textarea-block';
-export {textareaContrastFixture} from './textarea-contrast';
-export {textareaRowsFixture} from './textarea-rows';
-export {textareaColsFixture} from './textarea-cols';
-export {textareaCharacterLimitFixture} from './textarea-character-limit';
-export {textareaMinHeightFixture} from './textarea-min-height';
-export {textinputFixture} from './textinput';
-export {textinputBoundFixture} from './textinput-bound';
-export {textinputPlaceholderFixture} from './textinput-placeholder';
-export {textinputDisabledFixture} from './textinput-disabled';
-export {textinputValidationFixture} from './textinput-validation';
-export {textinputTypeFixture} from './textinput-type';
-export {textinputLoadingFixture} from './textinput-loading';
-export {textinputLeadingVisualFixture} from './textinput-leading-visual';
-export {textinputTrailingVisualFixture} from './textinput-trailing-visual';
-export {textinputTrailingActionFixture} from './textinput-trailing-action';
-export {textinputSizeFixture} from './textinput-size';
-export {textinputBlockFixture} from './textinput-block';
-export {textinputContrastFixture} from './textinput-contrast';
-export {textinputMonospaceFixture} from './textinput-monospace';
-export {textinputCharacterLimitFixture} from './textinput-character-limit';
-export {textinputActionFnFixture} from './textinput-action-fn';
-export {textinputActionEventFixture} from './textinput-action-event';
-export {textinputActionDisabledFixture} from './textinput-action-disabled';
-export {textinputActionTooltipFixture} from './textinput-action-tooltip';
-export {skeletonboxFixture} from './skeletonbox';
-export {skeletonboxSizedFixture} from './skeletonbox-sized';
-export {truncateFixture} from './truncate';
-export {truncateBoundFixture} from './truncate-bound';
-export {truncateMaxwidthFixture} from './truncate-maxwidth';
-export {truncateAsFixture} from './truncate-as';
-export {keybindinghintFixture} from './keybindinghint';
-export {keybindinghintBoundFixture} from './keybindinghint-bound';
-export {keybindinghintFormatsFixture} from './keybindinghint-formats';
-export {keybindinghintVariantsFixture} from './keybindinghint-variants';
-export {keybindinghintSizesFixture} from './keybindinghint-sizes';
-export {stackFixture} from './stack';
-export {stackChildrenTemplateFixture} from './stack-children-template';
-export {stackDirectionFixture} from './stack-direction';
-export {stackGapFixture} from './stack-gap';
-export {stackAlignFixture} from './stack-align';
-export {stackJustifyFixture} from './stack-justify';
-export {stackWrapFixture} from './stack-wrap';
-export {stackPaddingFixture} from './stack-padding';
-export {stackPaddingblockFixture} from './stack-paddingblock';
-export {stackPaddinginlineFixture} from './stack-paddinginline';
-export {stackResponsiveFixture} from './stack-responsive';
-export {stackitemFixture} from './stackitem';
-export {stackitemGrowFixture} from './stackitem-grow';
-export {stackitemShrinkFixture} from './stackitem-shrink';
-export {labelGroupFixture} from './label-group';
-export {labelGroupChildrenTemplateFixture} from './label-group-children-template';
-export {labelGroupTruncatedFixture} from './label-group-truncated';
-export {avatarstackFixture} from './avatarstack';
-export {avatarstackChildrenTemplateFixture} from './avatarstack-children-template';
-export {avatarstackAlignrightFixture} from './avatarstack-alignright';
-export {avatarstackVariantFixture} from './avatarstack-variant';
-export {avatarstackShapeFixture} from './avatarstack-shape';
-export {avatarstackSizeFixture} from './avatarstack-size';
-export {avatarstackSizeResponsiveFixture} from './avatarstack-size-responsive';
-export {avatarstackDisableexpandFixture} from './avatarstack-disableexpand';
-export {buttonGroupFixture} from './button-group';
-export {buttonGroupChildrenTemplateFixture} from './button-group-children-template';
-export {paginationFixture} from './pagination';
-export {paginationLargeFixture} from './pagination-large';
-export {paginationFirstFixture} from './pagination-first';
-export {paginationLastFixture} from './pagination-last';
-export {paginationNoPagesFixture} from './pagination-no-pages';
-export {paginationMarginFixture} from './pagination-margin';
-export {paginationSurroundingFixture} from './pagination-surrounding';
-export {paginationControlledFixture} from './pagination-controlled';
-export {paginationHrefFixture} from './pagination-href';
-export {paginationAccessibilityFixture} from './pagination-accessibility';
-export {segmentedcontrolFixture} from './segmentedcontrol';
-export {segmentedcontrolChildrenTemplateFixture} from './segmentedcontrol-children-template';
-export {segmentedcontrolSelectedFixture} from './segmentedcontrol-selected';
-export {segmentedcontrolBoundFixture} from './segmentedcontrol-bound';
-export {segmentedcontrolFnFixture} from './segmentedcontrol-fn';
-export {segmentedcontrolEventFixture} from './segmentedcontrol-event';
-export {segmentedcontrolFullwidthFixture} from './segmentedcontrol-fullwidth';
-export {segmentedcontrolSizeFixture} from './segmentedcontrol-size';
-export {segmentedcontrolVariantFixture} from './segmentedcontrol-variant';
-export {segmentedcontrolbuttonFixture} from './segmentedcontrolbutton';
-export {segmentedcontrolbuttonLeadingvisualFixture} from './segmentedcontrolbutton-leadingvisual';
-export {segmentedcontrolbuttonCountFixture} from './segmentedcontrolbutton-count';
-export {segmentedcontrolbuttonDisabledFixture} from './segmentedcontrolbutton-disabled';
-export {segmentedcontroliconbuttonFixture} from './segmentedcontroliconbutton';
-export {segmentedcontroliconbuttonDisabledFixture} from './segmentedcontroliconbutton-disabled';
-export {detailsOpenFixture} from './details-open';
-export {detailsChildrenTemplateFixture} from './details-children-template';
-export {detailsClickoutsideFnFixture} from './details-clickoutside-fn';
-export {detailsBoundFixture} from './details-bound';
-export {selectFixture} from './select';
-export {selectChildrenTemplateFixture} from './select-children-template';
-export {selectBoundFixture} from './select-bound';
-export {selectPlaceholderFixture} from './select-placeholder';
-export {selectDisabledFixture} from './select-disabled';
-export {selectValidationFixture} from './select-validation';
-export {selectBlockFixture} from './select-block';
-export {selectSizeFixture} from './select-size';
-export {selectoptionFixture} from './selectoption';
-export {selectoptionDisabledFixture} from './selectoption-disabled';
-export {selectoptgroupFixture} from './selectoptgroup';
-export {selectoptgroupDisabledFixture} from './selectoptgroup-disabled';
-export {breadcrumbsFixture} from './breadcrumbs';
-export {breadcrumbsChildrenTemplateFixture} from './breadcrumbs-children-template';
-export {breadcrumbsVariantFixture} from './breadcrumbs-variant';
-export {breadcrumbsitemFixture} from './breadcrumbsitem';
-export {breadcrumbsitemSelectedFixture} from './breadcrumbsitem-selected';
-export {navlistFixture} from './navlist';
-export {navlistItemInactiveFixture} from './navlist-item-inactive';
-export {navlistTrailingactionFnFixture} from './navlist-trailingaction-fn';
-export {navlistTrailingactionEventFixture} from './navlist-trailingaction-event';
-export {navlistTrailingactionLoadingFixture} from './navlist-trailingaction-loading';
-export {navlistGroupBoundFixture} from './navlist-group-bound';
-export {navlistGroupheadingVariantsFixture} from './navlist-groupheading-variants';
-export {navlistGroupheadingBoundFixture} from './navlist-groupheading-bound';
-export {navlistDescriptionVariantsFixture} from './navlist-description-variants';
-export {navlistDescriptionTruncateFixture} from './navlist-description-truncate';
-export {navlistGroupexpandFixture, navlistGroupexpandShowmoreFixture} from './navlist-groupexpand';
-export {pagelayoutFixture} from './pagelayout';
-export {pagelayoutSidebarFixture} from './pagelayout-sidebar';
-export {pagelayoutContainerwidthFixture} from './pagelayout-containerwidth';
-export {pagelayoutPaddingFixture} from './pagelayout-padding';
-export {pagelayoutRowgapFixture} from './pagelayout-rowgap';
-export {pagelayoutColumngapFixture} from './pagelayout-columngap';
-export {pagelayoutHeaderPaddingFixture} from './pagelayout-header-padding';
-export {pagelayoutHeaderDividerFixture} from './pagelayout-header-divider';
-export {pagelayoutFooterPaddingFixture} from './pagelayout-footer-padding';
-export {pagelayoutFooterDividerFixture} from './pagelayout-footer-divider';
-export {pagelayoutContentWidthFixture} from './pagelayout-content-width';
-export {pagelayoutContentPaddingFixture} from './pagelayout-content-padding';
-export {pagelayoutContentTemplateFixture} from './pagelayout-content-template';
-export {pagelayoutPanePositionFixture} from './pagelayout-pane-position';
-export {pagelayoutPaneWidthFixture} from './pagelayout-pane-width';
-export {pagelayoutPaneWidthCustomFixture} from './pagelayout-pane-width-custom';
-export {pagelayoutPaneDividerFixture} from './pagelayout-pane-divider';
-export {pagelayoutPaneResizableFixture} from './pagelayout-pane-resizable';
-export {pagelayoutPanePaddingFixture} from './pagelayout-pane-padding';
-export {pagelayoutPaneCurrentwidthFixture} from './pagelayout-pane-currentwidth';
-export {pagelayoutSidebarPositionFixture} from './pagelayout-sidebar-position';
-export {pagelayoutSidebarWidthFixture} from './pagelayout-sidebar-width';
-export {pagelayoutSidebarWidthCustomFixture} from './pagelayout-sidebar-width-custom';
-export {pagelayoutSidebarDividerFixture} from './pagelayout-sidebar-divider';
-export {pagelayoutSidebarResizableFixture} from './pagelayout-sidebar-resizable';
-export {pagelayoutSidebarPaddingFixture} from './pagelayout-sidebar-padding';
-export {pagelayoutSidebarCurrentwidthFixture} from './pagelayout-sidebar-currentwidth';
-export {splitPageLayoutFixture} from './split-page-layout';
-export {splitPageLayoutSidebarFixture} from './split-page-layout-sidebar';
-export {splHeaderDividerFixture} from './spl-header-divider';
-export {splContentWidthFixture} from './spl-content-width';
-export {splContentPaddingFixture} from './spl-content-padding';
-export {splContentChildrenTemplateFixture} from './spl-content-children-template';
-export {splPanePositionFixture} from './spl-pane-position';
-export {splPaneWidthFixture} from './spl-pane-width';
-export {splPaneDividerFixture} from './spl-pane-divider';
-export {splPaneResizableFixture} from './spl-pane-resizable';
-export {actionlistFixture} from './actionlist';
-export {actionlistChildrenTemplateFixture} from './actionlist-children-template';
-export {actionlistSelectionFixture} from './actionlist-selection';
-export {actionlistSelectedBoundFixture} from './actionlist-selected-bound';
-export {actionlistItemFnFixture} from './actionlist-item-fn';
-export {actionlistItemEventFixture} from './actionlist-item-event';
-export {actionlistItemActiveFixture} from './actionlist-item-active';
-export {actionlistItemDisabledFixture} from './actionlist-item-disabled';
-export {actionlistItemLoadingFixture} from './actionlist-item-loading';
-export {actionlistItemInactiveFixture} from './actionlist-item-inactive';
-export {actionlistItemVariantFixture} from './actionlist-item-variant';
-export {actionlistItemSizeFixture} from './actionlist-item-size';
-export {actionlistVariantFixture} from './actionlist-variant';
-export {actionlistDividersFixture} from './actionlist-dividers';
-export {actionlistGroupVariantFixture} from './actionlist-group-variant';
-export {actionlistDescriptionFixture} from './actionlist-description';
-export {actionlistTrailingactionFnFixture} from './actionlist-trailingaction-fn';
-export {actionlistTrailingactionEventFixture} from './actionlist-trailingaction-event';
-export {actionlistTrailingactionLoadingFixture} from './actionlist-trailingaction-loading';
-export {actionBarFixture} from './action-bar';
-export {actionBarChildrenTemplateFixture} from './action-bar-children-template';
-export {actionBarSizesFixture} from './action-bar-sizes';
-export {actionBarGapFixture} from './action-bar-gap';
-export {actionBarFlushFixture} from './action-bar-flush';
-export {actionBarOverflowFixture} from './action-bar-overflow';
-export {actionBarIconButtonFnFixture} from './action-bar-icon-button-fn';
-export {actionBarIconButtonEventFixture} from './action-bar-icon-button-event';
-export {actionBarIconButtonDisabledFixture} from './action-bar-icon-button-disabled';
-export {actionBarGroupFixture} from './action-bar-group';
-export {actionBarMenuFixture} from './action-bar-menu';
-export {treeViewNestedFixture} from './tree-view-nested';
-export {treeViewFlatFixture} from './tree-view-flat';
-export {treeViewTruncateFixture} from './tree-view-truncate';
-export {treeViewItemCurrentFixture} from './tree-view-item-current';
-export {treeViewItemExpandedBoundFixture} from './tree-view-item-expanded-bound';
-export {treeViewItemFnFixture} from './tree-view-item-fn';
-export {treeViewItemEventFixture} from './tree-view-item-event';
-export {treeViewItemSecondaryActionsFixture} from './tree-view-item-secondary-actions';
-export {treeViewSubtreeStatesFixture} from './tree-view-subtree-states';
-export {treeViewVisualsFixture} from './tree-view-visuals';
-export {treeViewDirectoryIconFixture} from './tree-view-directory-icon';
-export {treeViewErrorDialogFixture} from './tree-view-error-dialog';
+/**
+ * A selectable test-space fixture: its stable `name` (shown in the selector and used as the
+ * `?fixture=` URL value) plus a lazy `load()` that dynamically imports the fixture body only
+ * when it is actually needed. The selector is populated from `name` alone — no fixture body is
+ * imported until one is selected — so a dev page load fetches a single fixture module instead of
+ * all ~327 of them.
+ */
+export interface FixtureEntry {
+  name: string;
+  load: () => Promise<Fixture>;
+}
 
-export const FIXTURES: Fixture[] = [
-  textFixture,
-  textBoundFixture,
-  textSizesFixture,
-  textWeightsFixture,
-  textAsFixture,
-  textWhitespaceFixture,
-  buttonFnFixture,
-  buttonEventFixture,
-  buttonVariantsFixture,
-  buttonSizesFixture,
-  buttonAligncontentFixture,
-  buttonDisabledFixture,
-  buttonInactiveFixture,
-  buttonLoadingFixture,
-  buttonBlockFixture,
-  buttonLabelwrapFixture,
-  buttonCountFixture,
-  buttonIconFixture,
-  buttonLeadingVisualFixture,
-  buttonTrailingVisualFixture,
-  buttonTrailingActionFixture,
-  iconbuttonFnFixture,
-  iconbuttonEventFixture,
-  iconbuttonVariantsFixture,
-  iconbuttonSizesFixture,
-  iconbuttonDisabledFixture,
-  iconbuttonLoadingFixture,
-  iconbuttonInactiveFixture,
-  iconbuttonBlockFixture,
-  iconbuttonTooltipFixture,
-  iconNamesFixture,
-  iconSizesFixture,
-  iconFillsFixture,
-  linkFixture,
-  linkBoundFixture,
-  linkMutedFixture,
-  linkInlineFixture,
-  headingFixture,
-  headingBoundFixture,
-  headingVariantsFixture,
-  branchnameFixture,
-  branchnameBoundFixture,
-  branchnameAsFixture,
-  relativeTimeFixture,
-  relativeTimeBoundFixture,
-  relativeTimeFormatsFixture,
-  relativeTimeFormatStylesFixture,
-  relativeTimeTensesFixture,
-  relativeTimePrecisionFixture,
-  relativeTimeThresholdFixture,
-  relativeTimePrefixFixture,
-  relativeTimeDatetimePartsFixture,
-  labelFixture,
-  labelBoundFixture,
-  labelVariantsFixture,
-  labelSizesFixture,
-  statelabelFixture,
-  statelabelBoundFixture,
-  statelabelStatusFixture,
-  statelabelSizeFixture,
-  counterlabelFixture,
-  counterlabelBoundFixture,
-  counterlabelVariantsFixture,
-  avatarFixture,
-  avatarBoundFixture,
-  avatarSizesFixture,
-  avatarSquareFixture,
-  spinnerFixture,
-  spinnerSizesFixture,
-  spinnerBoundFixture,
-  tokenFixture,
-  tokenBoundFixture,
-  tokenLeadingvisualFixture,
-  tokenSizesFixture,
-  tokenSelectedFixture,
-  tokenDisabledFixture,
-  tokenRemoveFnFixture,
-  tokenRemoveEventFixture,
-  tokenHideremovebuttonFixture,
-  issuelabeltokenFixture,
-  issuelabeltokenBoundFixture,
-  issuelabeltokenFillcolorFixture,
-  issuelabeltokenSizesFixture,
-  issuelabeltokenSelectedFixture,
-  issuelabeltokenDisabledFixture,
-  issuelabeltokenRemoveFnFixture,
-  issuelabeltokenRemoveEventFixture,
-  issuelabeltokenHideremovebuttonFixture,
-  checkboxFixture,
-  checkboxCheckedFixture,
-  checkboxBoundFixture,
-  checkboxIndeterminateFixture,
-  checkboxDisabledFixture,
-  progressbarFixture,
-  progressbarBoundFixture,
-  progressbarSegmentsFixture,
-  progressbarSegmentsBoundFixture,
-  progressbarBgFixture,
-  progressbarSizesFixture,
-  radioFixture,
-  radioCheckedFixture,
-  radioDisabledFixture,
-  radioFnFixture,
-  radioEventFixture,
-  toggleswitchFixture,
-  toggleswitchCheckedFixture,
-  toggleswitchBoundFixture,
-  toggleswitchFnFixture,
-  toggleswitchEventFixture,
-  toggleswitchDisabledFixture,
-  toggleswitchLoadingFixture,
-  toggleswitchSizesFixture,
-  toggleswitchLabelPositionFixture,
-  toggleswitchCustomLabelsFixture,
-  textareaFixture,
-  textareaBoundFixture,
-  textareaPlaceholderFixture,
-  textareaDisabledFixture,
-  textareaValidationFixture,
-  textareaBlockFixture,
-  textareaContrastFixture,
-  textareaRowsFixture,
-  textareaColsFixture,
-  textareaCharacterLimitFixture,
-  textareaMinHeightFixture,
-  textinputFixture,
-  textinputBoundFixture,
-  textinputPlaceholderFixture,
-  textinputDisabledFixture,
-  textinputValidationFixture,
-  textinputTypeFixture,
-  textinputLoadingFixture,
-  textinputLeadingVisualFixture,
-  textinputTrailingVisualFixture,
-  textinputTrailingActionFixture,
-  textinputSizeFixture,
-  textinputBlockFixture,
-  textinputContrastFixture,
-  textinputMonospaceFixture,
-  textinputCharacterLimitFixture,
-  textinputActionFnFixture,
-  textinputActionEventFixture,
-  textinputActionDisabledFixture,
-  textinputActionTooltipFixture,
-  skeletonboxFixture,
-  skeletonboxSizedFixture,
-  truncateFixture,
-  truncateBoundFixture,
-  truncateMaxwidthFixture,
-  truncateAsFixture,
-  keybindinghintFixture,
-  keybindinghintBoundFixture,
-  keybindinghintFormatsFixture,
-  keybindinghintVariantsFixture,
-  keybindinghintSizesFixture,
-  stackFixture,
-  stackChildrenTemplateFixture,
-  stackDirectionFixture,
-  stackGapFixture,
-  stackAlignFixture,
-  stackJustifyFixture,
-  stackWrapFixture,
-  stackPaddingFixture,
-  stackPaddingblockFixture,
-  stackPaddinginlineFixture,
-  stackResponsiveFixture,
-  stackitemFixture,
-  stackitemGrowFixture,
-  stackitemShrinkFixture,
-  labelGroupFixture,
-  labelGroupChildrenTemplateFixture,
-  labelGroupTruncatedFixture,
-  avatarstackFixture,
-  avatarstackChildrenTemplateFixture,
-  avatarstackAlignrightFixture,
-  avatarstackVariantFixture,
-  avatarstackShapeFixture,
-  avatarstackSizeFixture,
-  avatarstackSizeResponsiveFixture,
-  avatarstackDisableexpandFixture,
-  buttonGroupFixture,
-  buttonGroupChildrenTemplateFixture,
-  paginationFixture,
-  paginationLargeFixture,
-  paginationFirstFixture,
-  paginationLastFixture,
-  paginationNoPagesFixture,
-  paginationMarginFixture,
-  paginationSurroundingFixture,
-  paginationControlledFixture,
-  paginationHrefFixture,
-  paginationAccessibilityFixture,
-  segmentedcontrolFixture,
-  segmentedcontrolChildrenTemplateFixture,
-  segmentedcontrolSelectedFixture,
-  segmentedcontrolBoundFixture,
-  segmentedcontrolFnFixture,
-  segmentedcontrolEventFixture,
-  segmentedcontrolFullwidthFixture,
-  segmentedcontrolSizeFixture,
-  segmentedcontrolVariantFixture,
-  segmentedcontrolbuttonFixture,
-  segmentedcontrolbuttonLeadingvisualFixture,
-  segmentedcontrolbuttonCountFixture,
-  segmentedcontrolbuttonDisabledFixture,
-  segmentedcontroliconbuttonFixture,
-  segmentedcontroliconbuttonDisabledFixture,
-  detailsOpenFixture,
-  detailsChildrenTemplateFixture,
-  detailsClickoutsideFnFixture,
-  detailsBoundFixture,
-  selectFixture,
-  selectChildrenTemplateFixture,
-  selectBoundFixture,
-  selectPlaceholderFixture,
-  selectDisabledFixture,
-  selectValidationFixture,
-  selectBlockFixture,
-  selectSizeFixture,
-  selectoptionFixture,
-  selectoptionDisabledFixture,
-  selectoptgroupFixture,
-  selectoptgroupDisabledFixture,
-  breadcrumbsFixture,
-  breadcrumbsChildrenTemplateFixture,
-  breadcrumbsVariantFixture,
-  breadcrumbsitemFixture,
-  breadcrumbsitemSelectedFixture,
-  navlistFixture,
-  navlistItemInactiveFixture,
-  navlistTrailingactionFnFixture,
-  navlistTrailingactionEventFixture,
-  navlistTrailingactionLoadingFixture,
-  navlistGroupBoundFixture,
-  navlistGroupheadingVariantsFixture,
-  navlistGroupheadingBoundFixture,
-  navlistDescriptionVariantsFixture,
-  navlistDescriptionTruncateFixture,
-  navlistGroupexpandFixture,
-  navlistGroupexpandShowmoreFixture,
-  pagelayoutFixture,
-  pagelayoutSidebarFixture,
-  pagelayoutContainerwidthFixture,
-  pagelayoutPaddingFixture,
-  pagelayoutRowgapFixture,
-  pagelayoutColumngapFixture,
-  pagelayoutHeaderPaddingFixture,
-  pagelayoutHeaderDividerFixture,
-  pagelayoutFooterPaddingFixture,
-  pagelayoutFooterDividerFixture,
-  pagelayoutContentWidthFixture,
-  pagelayoutContentPaddingFixture,
-  pagelayoutContentTemplateFixture,
-  pagelayoutPanePositionFixture,
-  pagelayoutPaneWidthFixture,
-  pagelayoutPaneWidthCustomFixture,
-  pagelayoutPaneDividerFixture,
-  pagelayoutPaneResizableFixture,
-  pagelayoutPanePaddingFixture,
-  pagelayoutPaneCurrentwidthFixture,
-  pagelayoutSidebarPositionFixture,
-  pagelayoutSidebarWidthFixture,
-  pagelayoutSidebarWidthCustomFixture,
-  pagelayoutSidebarDividerFixture,
-  pagelayoutSidebarResizableFixture,
-  pagelayoutSidebarPaddingFixture,
-  pagelayoutSidebarCurrentwidthFixture,
-  splitPageLayoutFixture,
-  splitPageLayoutSidebarFixture,
-  splHeaderDividerFixture,
-  splContentWidthFixture,
-  splContentPaddingFixture,
-  splContentChildrenTemplateFixture,
-  splPanePositionFixture,
-  splPaneWidthFixture,
-  splPaneDividerFixture,
-  splPaneResizableFixture,
-  pageheaderFixture,
-  pageheaderHasborderFixture,
-  parentlinkFixture,
-  parentlinkBoundFixture,
-  titleFixture,
-  titleBoundFixture,
-  titleareaVariantFixture,
-  breadcrumbsTemplateFixture,
-  actionlistFixture,
-  actionlistChildrenTemplateFixture,
-  actionlistSelectionFixture,
-  actionlistSelectedBoundFixture,
-  actionlistItemFnFixture,
-  actionlistItemEventFixture,
-  actionlistItemActiveFixture,
-  actionlistItemDisabledFixture,
-  actionlistItemLoadingFixture,
-  actionlistItemInactiveFixture,
-  actionlistItemVariantFixture,
-  actionlistItemSizeFixture,
-  actionlistVariantFixture,
-  actionlistDividersFixture,
-  actionlistGroupVariantFixture,
-  actionlistDescriptionFixture,
-  actionlistTrailingactionFnFixture,
-  actionlistTrailingactionEventFixture,
-  actionlistTrailingactionLoadingFixture,
-  actionBarFixture,
-  actionBarChildrenTemplateFixture,
-  actionBarSizesFixture,
-  actionBarGapFixture,
-  actionBarFlushFixture,
-  actionBarOverflowFixture,
-  actionBarIconButtonFnFixture,
-  actionBarIconButtonEventFixture,
-  actionBarIconButtonDisabledFixture,
-  actionBarGroupFixture,
-  actionBarMenuFixture,
-  treeViewNestedFixture,
-  treeViewFlatFixture,
-  treeViewTruncateFixture,
-  treeViewItemCurrentFixture,
-  treeViewItemExpandedBoundFixture,
-  treeViewItemFnFixture,
-  treeViewItemEventFixture,
-  treeViewItemSecondaryActionsFixture,
-  treeViewSubtreeStatesFixture,
-  treeViewVisualsFixture,
-  treeViewDirectoryIconFixture,
-  treeViewErrorDialogFixture,
+export const FIXTURES: FixtureEntry[] = [
+  {name: 'text', load: () => import('./text').then(m => m.textFixture)},
+  {name: 'text-bound', load: () => import('./text-bound').then(m => m.textBoundFixture)},
+  {name: 'text-sizes', load: () => import('./text-sizes').then(m => m.textSizesFixture)},
+  {name: 'text-weights', load: () => import('./text-weights').then(m => m.textWeightsFixture)},
+  {name: 'text-as', load: () => import('./text-as').then(m => m.textAsFixture)},
+  {
+    name: 'text-whitespace',
+    load: () => import('./text-whitespace').then(m => m.textWhitespaceFixture),
+  },
+  {name: 'button-fn', load: () => import('./button-fn').then(m => m.buttonFnFixture)},
+  {name: 'button-event', load: () => import('./button-event').then(m => m.buttonEventFixture)},
+  {
+    name: 'button-variants',
+    load: () => import('./button-variants').then(m => m.buttonVariantsFixture),
+  },
+  {name: 'button-sizes', load: () => import('./button-sizes').then(m => m.buttonSizesFixture)},
+  {
+    name: 'button-aligncontent',
+    load: () => import('./button-aligncontent').then(m => m.buttonAligncontentFixture),
+  },
+  {
+    name: 'button-disabled',
+    load: () => import('./button-disabled').then(m => m.buttonDisabledFixture),
+  },
+  {
+    name: 'button-inactive',
+    load: () => import('./button-inactive').then(m => m.buttonInactiveFixture),
+  },
+  {
+    name: 'button-loading',
+    load: () => import('./button-loading').then(m => m.buttonLoadingFixture),
+  },
+  {name: 'button-block', load: () => import('./button-block').then(m => m.buttonBlockFixture)},
+  {
+    name: 'button-labelwrap',
+    load: () => import('./button-labelwrap').then(m => m.buttonLabelwrapFixture),
+  },
+  {name: 'button-count', load: () => import('./button-count').then(m => m.buttonCountFixture)},
+  {name: 'button-icon', load: () => import('./button-icon').then(m => m.buttonIconFixture)},
+  {
+    name: 'button-leading-visual',
+    load: () => import('./button-leading-visual').then(m => m.buttonLeadingVisualFixture),
+  },
+  {
+    name: 'button-trailing-visual',
+    load: () => import('./button-trailing-visual').then(m => m.buttonTrailingVisualFixture),
+  },
+  {
+    name: 'button-trailing-action',
+    load: () => import('./button-trailing-action').then(m => m.buttonTrailingActionFixture),
+  },
+  {name: 'iconbutton-fn', load: () => import('./iconbutton-fn').then(m => m.iconbuttonFnFixture)},
+  {
+    name: 'iconbutton-event',
+    load: () => import('./iconbutton-event').then(m => m.iconbuttonEventFixture),
+  },
+  {
+    name: 'iconbutton-variants',
+    load: () => import('./iconbutton-variants').then(m => m.iconbuttonVariantsFixture),
+  },
+  {
+    name: 'iconbutton-sizes',
+    load: () => import('./iconbutton-sizes').then(m => m.iconbuttonSizesFixture),
+  },
+  {
+    name: 'iconbutton-disabled',
+    load: () => import('./iconbutton-disabled').then(m => m.iconbuttonDisabledFixture),
+  },
+  {
+    name: 'iconbutton-loading',
+    load: () => import('./iconbutton-loading').then(m => m.iconbuttonLoadingFixture),
+  },
+  {
+    name: 'iconbutton-inactive',
+    load: () => import('./iconbutton-inactive').then(m => m.iconbuttonInactiveFixture),
+  },
+  {
+    name: 'iconbutton-block',
+    load: () => import('./iconbutton-block').then(m => m.iconbuttonBlockFixture),
+  },
+  {
+    name: 'iconbutton-tooltip',
+    load: () => import('./iconbutton-tooltip').then(m => m.iconbuttonTooltipFixture),
+  },
+  {name: 'icon-names', load: () => import('./icon-names').then(m => m.iconNamesFixture)},
+  {name: 'icon-sizes', load: () => import('./icon-sizes').then(m => m.iconSizesFixture)},
+  {name: 'icon-fills', load: () => import('./icon-fills').then(m => m.iconFillsFixture)},
+  {name: 'link', load: () => import('./link').then(m => m.linkFixture)},
+  {name: 'link-bound', load: () => import('./link-bound').then(m => m.linkBoundFixture)},
+  {name: 'link-muted', load: () => import('./link-muted').then(m => m.linkMutedFixture)},
+  {name: 'link-inline', load: () => import('./link-inline').then(m => m.linkInlineFixture)},
+  {name: 'heading', load: () => import('./heading').then(m => m.headingFixture)},
+  {name: 'heading-bound', load: () => import('./heading-bound').then(m => m.headingBoundFixture)},
+  {
+    name: 'heading-variants',
+    load: () => import('./heading-variants').then(m => m.headingVariantsFixture),
+  },
+  {name: 'branchname', load: () => import('./branchname').then(m => m.branchnameFixture)},
+  {
+    name: 'branchname-bound',
+    load: () => import('./branchname-bound').then(m => m.branchnameBoundFixture),
+  },
+  {name: 'branchname-as', load: () => import('./branchname-as').then(m => m.branchnameAsFixture)},
+  {name: 'relative-time', load: () => import('./relative-time').then(m => m.relativeTimeFixture)},
+  {
+    name: 'relative-time-bound',
+    load: () => import('./relative-time-bound').then(m => m.relativeTimeBoundFixture),
+  },
+  {
+    name: 'relative-time-formats',
+    load: () => import('./relative-time-formats').then(m => m.relativeTimeFormatsFixture),
+  },
+  {
+    name: 'relative-time-format-styles',
+    load: () =>
+      import('./relative-time-format-styles').then(m => m.relativeTimeFormatStylesFixture),
+  },
+  {
+    name: 'relative-time-tenses',
+    load: () => import('./relative-time-tenses').then(m => m.relativeTimeTensesFixture),
+  },
+  {
+    name: 'relative-time-precision',
+    load: () => import('./relative-time-precision').then(m => m.relativeTimePrecisionFixture),
+  },
+  {
+    name: 'relative-time-threshold',
+    load: () => import('./relative-time-threshold').then(m => m.relativeTimeThresholdFixture),
+  },
+  {
+    name: 'relative-time-prefix',
+    load: () => import('./relative-time-prefix').then(m => m.relativeTimePrefixFixture),
+  },
+  {
+    name: 'relative-time-datetime-parts',
+    load: () =>
+      import('./relative-time-datetime-parts').then(m => m.relativeTimeDatetimePartsFixture),
+  },
+  {name: 'label', load: () => import('./label').then(m => m.labelFixture)},
+  {name: 'label-bound', load: () => import('./label-bound').then(m => m.labelBoundFixture)},
+  {
+    name: 'label-variants',
+    load: () => import('./label-variants').then(m => m.labelVariantsFixture),
+  },
+  {name: 'label-sizes', load: () => import('./label-sizes').then(m => m.labelSizesFixture)},
+  {name: 'statelabel', load: () => import('./statelabel').then(m => m.statelabelFixture)},
+  {
+    name: 'statelabel-bound',
+    load: () => import('./statelabel-bound').then(m => m.statelabelBoundFixture),
+  },
+  {
+    name: 'statelabel-status',
+    load: () => import('./statelabel-status').then(m => m.statelabelStatusFixture),
+  },
+  {
+    name: 'statelabel-size',
+    load: () => import('./statelabel-size').then(m => m.statelabelSizeFixture),
+  },
+  {name: 'counterlabel', load: () => import('./counterlabel').then(m => m.counterlabelFixture)},
+  {
+    name: 'counterlabel-bound',
+    load: () => import('./counterlabel-bound').then(m => m.counterlabelBoundFixture),
+  },
+  {
+    name: 'counterlabel-variants',
+    load: () => import('./counterlabel-variants').then(m => m.counterlabelVariantsFixture),
+  },
+  {name: 'avatar', load: () => import('./avatar').then(m => m.avatarFixture)},
+  {name: 'avatar-bound', load: () => import('./avatar-bound').then(m => m.avatarBoundFixture)},
+  {name: 'avatar-sizes', load: () => import('./avatar-sizes').then(m => m.avatarSizesFixture)},
+  {name: 'avatar-square', load: () => import('./avatar-square').then(m => m.avatarSquareFixture)},
+  {name: 'spinner', load: () => import('./spinner').then(m => m.spinnerFixture)},
+  {name: 'spinner-sizes', load: () => import('./spinner-sizes').then(m => m.spinnerSizesFixture)},
+  {name: 'spinner-bound', load: () => import('./spinner-bound').then(m => m.spinnerBoundFixture)},
+  {name: 'token', load: () => import('./token').then(m => m.tokenFixture)},
+  {name: 'token-bound', load: () => import('./token-bound').then(m => m.tokenBoundFixture)},
+  {
+    name: 'token-leadingvisual',
+    load: () => import('./token-leadingvisual').then(m => m.tokenLeadingvisualFixture),
+  },
+  {name: 'token-sizes', load: () => import('./token-sizes').then(m => m.tokenSizesFixture)},
+  {
+    name: 'token-selected',
+    load: () => import('./token-selected').then(m => m.tokenSelectedFixture),
+  },
+  {
+    name: 'token-disabled',
+    load: () => import('./token-disabled').then(m => m.tokenDisabledFixture),
+  },
+  {
+    name: 'token-remove-fn',
+    load: () => import('./token-remove-fn').then(m => m.tokenRemoveFnFixture),
+  },
+  {
+    name: 'token-remove-event',
+    load: () => import('./token-remove-event').then(m => m.tokenRemoveEventFixture),
+  },
+  {
+    name: 'token-hideremovebutton',
+    load: () => import('./token-hideremovebutton').then(m => m.tokenHideremovebuttonFixture),
+  },
+  {
+    name: 'issuelabeltoken',
+    load: () => import('./issuelabeltoken').then(m => m.issuelabeltokenFixture),
+  },
+  {
+    name: 'issuelabeltoken-bound',
+    load: () => import('./issuelabeltoken-bound').then(m => m.issuelabeltokenBoundFixture),
+  },
+  {
+    name: 'issuelabeltoken-fillcolor',
+    load: () => import('./issuelabeltoken-fillcolor').then(m => m.issuelabeltokenFillcolorFixture),
+  },
+  {
+    name: 'issuelabeltoken-sizes',
+    load: () => import('./issuelabeltoken-sizes').then(m => m.issuelabeltokenSizesFixture),
+  },
+  {
+    name: 'issuelabeltoken-selected',
+    load: () => import('./issuelabeltoken-selected').then(m => m.issuelabeltokenSelectedFixture),
+  },
+  {
+    name: 'issuelabeltoken-disabled',
+    load: () => import('./issuelabeltoken-disabled').then(m => m.issuelabeltokenDisabledFixture),
+  },
+  {
+    name: 'issuelabeltoken-remove-fn',
+    load: () => import('./issuelabeltoken-remove-fn').then(m => m.issuelabeltokenRemoveFnFixture),
+  },
+  {
+    name: 'issuelabeltoken-remove-event',
+    load: () =>
+      import('./issuelabeltoken-remove-event').then(m => m.issuelabeltokenRemoveEventFixture),
+  },
+  {
+    name: 'issuelabeltoken-hideremovebutton',
+    load: () =>
+      import('./issuelabeltoken-hideremovebutton').then(
+        m => m.issuelabeltokenHideremovebuttonFixture,
+      ),
+  },
+  {name: 'checkbox', load: () => import('./checkbox').then(m => m.checkboxFixture)},
+  {
+    name: 'checkbox-checked',
+    load: () => import('./checkbox-checked').then(m => m.checkboxCheckedFixture),
+  },
+  {
+    name: 'checkbox-bound',
+    load: () => import('./checkbox-bound').then(m => m.checkboxBoundFixture),
+  },
+  {
+    name: 'checkbox-indeterminate',
+    load: () => import('./checkbox-indeterminate').then(m => m.checkboxIndeterminateFixture),
+  },
+  {
+    name: 'checkbox-disabled',
+    load: () => import('./checkbox-disabled').then(m => m.checkboxDisabledFixture),
+  },
+  {name: 'progressbar', load: () => import('./progressbar').then(m => m.progressbarFixture)},
+  {
+    name: 'progressbar-bound',
+    load: () => import('./progressbar-bound').then(m => m.progressbarBoundFixture),
+  },
+  {
+    name: 'progressbar-segments',
+    load: () => import('./progressbar-segments').then(m => m.progressbarSegmentsFixture),
+  },
+  {
+    name: 'progressbar-segments-bound',
+    load: () => import('./progressbar-segments-bound').then(m => m.progressbarSegmentsBoundFixture),
+  },
+  {
+    name: 'progressbar-bg',
+    load: () => import('./progressbar-bg').then(m => m.progressbarBgFixture),
+  },
+  {
+    name: 'progressbar-sizes',
+    load: () => import('./progressbar-sizes').then(m => m.progressbarSizesFixture),
+  },
+  {name: 'radio', load: () => import('./radio').then(m => m.radioFixture)},
+  {name: 'radio-checked', load: () => import('./radio-checked').then(m => m.radioCheckedFixture)},
+  {
+    name: 'radio-disabled',
+    load: () => import('./radio-disabled').then(m => m.radioDisabledFixture),
+  },
+  {name: 'radio-fn', load: () => import('./radio-fn').then(m => m.radioFnFixture)},
+  {name: 'radio-event', load: () => import('./radio-event').then(m => m.radioEventFixture)},
+  {name: 'toggleswitch', load: () => import('./toggleswitch').then(m => m.toggleswitchFixture)},
+  {
+    name: 'toggleswitch-checked',
+    load: () => import('./toggleswitch-checked').then(m => m.toggleswitchCheckedFixture),
+  },
+  {
+    name: 'toggleswitch-bound',
+    load: () => import('./toggleswitch-bound').then(m => m.toggleswitchBoundFixture),
+  },
+  {
+    name: 'toggleswitch-fn',
+    load: () => import('./toggleswitch-fn').then(m => m.toggleswitchFnFixture),
+  },
+  {
+    name: 'toggleswitch-event',
+    load: () => import('./toggleswitch-event').then(m => m.toggleswitchEventFixture),
+  },
+  {
+    name: 'toggleswitch-disabled',
+    load: () => import('./toggleswitch-disabled').then(m => m.toggleswitchDisabledFixture),
+  },
+  {
+    name: 'toggleswitch-loading',
+    load: () => import('./toggleswitch-loading').then(m => m.toggleswitchLoadingFixture),
+  },
+  {
+    name: 'toggleswitch-sizes',
+    load: () => import('./toggleswitch-sizes').then(m => m.toggleswitchSizesFixture),
+  },
+  {
+    name: 'toggleswitch-label-position',
+    load: () =>
+      import('./toggleswitch-label-position').then(m => m.toggleswitchLabelPositionFixture),
+  },
+  {
+    name: 'toggleswitch-custom-labels',
+    load: () => import('./toggleswitch-custom-labels').then(m => m.toggleswitchCustomLabelsFixture),
+  },
+  {name: 'textarea', load: () => import('./textarea').then(m => m.textareaFixture)},
+  {
+    name: 'textarea-bound',
+    load: () => import('./textarea-bound').then(m => m.textareaBoundFixture),
+  },
+  {
+    name: 'textarea-placeholder',
+    load: () => import('./textarea-placeholder').then(m => m.textareaPlaceholderFixture),
+  },
+  {
+    name: 'textarea-disabled',
+    load: () => import('./textarea-disabled').then(m => m.textareaDisabledFixture),
+  },
+  {
+    name: 'textarea-validation',
+    load: () => import('./textarea-validation').then(m => m.textareaValidationFixture),
+  },
+  {
+    name: 'textarea-block',
+    load: () => import('./textarea-block').then(m => m.textareaBlockFixture),
+  },
+  {
+    name: 'textarea-contrast',
+    load: () => import('./textarea-contrast').then(m => m.textareaContrastFixture),
+  },
+  {name: 'textarea-rows', load: () => import('./textarea-rows').then(m => m.textareaRowsFixture)},
+  {name: 'textarea-cols', load: () => import('./textarea-cols').then(m => m.textareaColsFixture)},
+  {
+    name: 'textarea-character-limit',
+    load: () => import('./textarea-character-limit').then(m => m.textareaCharacterLimitFixture),
+  },
+  {
+    name: 'textarea-min-height',
+    load: () => import('./textarea-min-height').then(m => m.textareaMinHeightFixture),
+  },
+  {name: 'textinput', load: () => import('./textinput').then(m => m.textinputFixture)},
+  {
+    name: 'textinput-bound',
+    load: () => import('./textinput-bound').then(m => m.textinputBoundFixture),
+  },
+  {
+    name: 'textinput-placeholder',
+    load: () => import('./textinput-placeholder').then(m => m.textinputPlaceholderFixture),
+  },
+  {
+    name: 'textinput-disabled',
+    load: () => import('./textinput-disabled').then(m => m.textinputDisabledFixture),
+  },
+  {
+    name: 'textinput-validation',
+    load: () => import('./textinput-validation').then(m => m.textinputValidationFixture),
+  },
+  {
+    name: 'textinput-type',
+    load: () => import('./textinput-type').then(m => m.textinputTypeFixture),
+  },
+  {
+    name: 'textinput-loading',
+    load: () => import('./textinput-loading').then(m => m.textinputLoadingFixture),
+  },
+  {
+    name: 'textinput-leading-visual',
+    load: () => import('./textinput-leading-visual').then(m => m.textinputLeadingVisualFixture),
+  },
+  {
+    name: 'textinput-trailing-visual',
+    load: () => import('./textinput-trailing-visual').then(m => m.textinputTrailingVisualFixture),
+  },
+  {
+    name: 'textinput-trailing-action',
+    load: () => import('./textinput-trailing-action').then(m => m.textinputTrailingActionFixture),
+  },
+  {
+    name: 'textinput-size',
+    load: () => import('./textinput-size').then(m => m.textinputSizeFixture),
+  },
+  {
+    name: 'textinput-block',
+    load: () => import('./textinput-block').then(m => m.textinputBlockFixture),
+  },
+  {
+    name: 'textinput-contrast',
+    load: () => import('./textinput-contrast').then(m => m.textinputContrastFixture),
+  },
+  {
+    name: 'textinput-monospace',
+    load: () => import('./textinput-monospace').then(m => m.textinputMonospaceFixture),
+  },
+  {
+    name: 'textinput-character-limit',
+    load: () => import('./textinput-character-limit').then(m => m.textinputCharacterLimitFixture),
+  },
+  {
+    name: 'textinput-action-fn',
+    load: () => import('./textinput-action-fn').then(m => m.textinputActionFnFixture),
+  },
+  {
+    name: 'textinput-action-event',
+    load: () => import('./textinput-action-event').then(m => m.textinputActionEventFixture),
+  },
+  {
+    name: 'textinput-action-disabled',
+    load: () => import('./textinput-action-disabled').then(m => m.textinputActionDisabledFixture),
+  },
+  {
+    name: 'textinput-action-tooltip',
+    load: () => import('./textinput-action-tooltip').then(m => m.textinputActionTooltipFixture),
+  },
+  {name: 'skeletonbox', load: () => import('./skeletonbox').then(m => m.skeletonboxFixture)},
+  {
+    name: 'skeletonbox-sized',
+    load: () => import('./skeletonbox-sized').then(m => m.skeletonboxSizedFixture),
+  },
+  {name: 'truncate', load: () => import('./truncate').then(m => m.truncateFixture)},
+  {
+    name: 'truncate-bound',
+    load: () => import('./truncate-bound').then(m => m.truncateBoundFixture),
+  },
+  {
+    name: 'truncate-maxwidth',
+    load: () => import('./truncate-maxwidth').then(m => m.truncateMaxwidthFixture),
+  },
+  {name: 'truncate-as', load: () => import('./truncate-as').then(m => m.truncateAsFixture)},
+  {
+    name: 'keybindinghint',
+    load: () => import('./keybindinghint').then(m => m.keybindinghintFixture),
+  },
+  {
+    name: 'keybindinghint-bound',
+    load: () => import('./keybindinghint-bound').then(m => m.keybindinghintBoundFixture),
+  },
+  {
+    name: 'keybindinghint-formats',
+    load: () => import('./keybindinghint-formats').then(m => m.keybindinghintFormatsFixture),
+  },
+  {
+    name: 'keybindinghint-variants',
+    load: () => import('./keybindinghint-variants').then(m => m.keybindinghintVariantsFixture),
+  },
+  {
+    name: 'keybindinghint-sizes',
+    load: () => import('./keybindinghint-sizes').then(m => m.keybindinghintSizesFixture),
+  },
+  {name: 'stack', load: () => import('./stack').then(m => m.stackFixture)},
+  {
+    name: 'stack-children-template',
+    load: () => import('./stack-children-template').then(m => m.stackChildrenTemplateFixture),
+  },
+  {
+    name: 'stack-direction',
+    load: () => import('./stack-direction').then(m => m.stackDirectionFixture),
+  },
+  {name: 'stack-gap', load: () => import('./stack-gap').then(m => m.stackGapFixture)},
+  {name: 'stack-align', load: () => import('./stack-align').then(m => m.stackAlignFixture)},
+  {name: 'stack-justify', load: () => import('./stack-justify').then(m => m.stackJustifyFixture)},
+  {name: 'stack-wrap', load: () => import('./stack-wrap').then(m => m.stackWrapFixture)},
+  {name: 'stack-padding', load: () => import('./stack-padding').then(m => m.stackPaddingFixture)},
+  {
+    name: 'stack-paddingblock',
+    load: () => import('./stack-paddingblock').then(m => m.stackPaddingblockFixture),
+  },
+  {
+    name: 'stack-paddinginline',
+    load: () => import('./stack-paddinginline').then(m => m.stackPaddinginlineFixture),
+  },
+  {
+    name: 'stack-responsive',
+    load: () => import('./stack-responsive').then(m => m.stackResponsiveFixture),
+  },
+  {name: 'stackitem', load: () => import('./stackitem').then(m => m.stackitemFixture)},
+  {
+    name: 'stackitem-grow',
+    load: () => import('./stackitem-grow').then(m => m.stackitemGrowFixture),
+  },
+  {
+    name: 'stackitem-shrink',
+    load: () => import('./stackitem-shrink').then(m => m.stackitemShrinkFixture),
+  },
+  {name: 'label-group', load: () => import('./label-group').then(m => m.labelGroupFixture)},
+  {
+    name: 'label-group-children-template',
+    load: () =>
+      import('./label-group-children-template').then(m => m.labelGroupChildrenTemplateFixture),
+  },
+  {
+    name: 'label-group-truncated',
+    load: () => import('./label-group-truncated').then(m => m.labelGroupTruncatedFixture),
+  },
+  {name: 'avatarstack', load: () => import('./avatarstack').then(m => m.avatarstackFixture)},
+  {
+    name: 'avatarstack-children-template',
+    load: () =>
+      import('./avatarstack-children-template').then(m => m.avatarstackChildrenTemplateFixture),
+  },
+  {
+    name: 'avatarstack-alignright',
+    load: () => import('./avatarstack-alignright').then(m => m.avatarstackAlignrightFixture),
+  },
+  {
+    name: 'avatarstack-variant',
+    load: () => import('./avatarstack-variant').then(m => m.avatarstackVariantFixture),
+  },
+  {
+    name: 'avatarstack-shape',
+    load: () => import('./avatarstack-shape').then(m => m.avatarstackShapeFixture),
+  },
+  {
+    name: 'avatarstack-size',
+    load: () => import('./avatarstack-size').then(m => m.avatarstackSizeFixture),
+  },
+  {
+    name: 'avatarstack-size-responsive',
+    load: () =>
+      import('./avatarstack-size-responsive').then(m => m.avatarstackSizeResponsiveFixture),
+  },
+  {
+    name: 'avatarstack-disableexpand',
+    load: () => import('./avatarstack-disableexpand').then(m => m.avatarstackDisableexpandFixture),
+  },
+  {name: 'button-group', load: () => import('./button-group').then(m => m.buttonGroupFixture)},
+  {
+    name: 'button-group-children-template',
+    load: () =>
+      import('./button-group-children-template').then(m => m.buttonGroupChildrenTemplateFixture),
+  },
+  {name: 'pagination', load: () => import('./pagination').then(m => m.paginationFixture)},
+  {
+    name: 'pagination-large',
+    load: () => import('./pagination-large').then(m => m.paginationLargeFixture),
+  },
+  {
+    name: 'pagination-first',
+    load: () => import('./pagination-first').then(m => m.paginationFirstFixture),
+  },
+  {
+    name: 'pagination-last',
+    load: () => import('./pagination-last').then(m => m.paginationLastFixture),
+  },
+  {
+    name: 'pagination-no-pages',
+    load: () => import('./pagination-no-pages').then(m => m.paginationNoPagesFixture),
+  },
+  {
+    name: 'pagination-margin',
+    load: () => import('./pagination-margin').then(m => m.paginationMarginFixture),
+  },
+  {
+    name: 'pagination-surrounding',
+    load: () => import('./pagination-surrounding').then(m => m.paginationSurroundingFixture),
+  },
+  {
+    name: 'pagination-controlled',
+    load: () => import('./pagination-controlled').then(m => m.paginationControlledFixture),
+  },
+  {
+    name: 'pagination-href',
+    load: () => import('./pagination-href').then(m => m.paginationHrefFixture),
+  },
+  {
+    name: 'pagination-accessibility',
+    load: () => import('./pagination-accessibility').then(m => m.paginationAccessibilityFixture),
+  },
+  {
+    name: 'segmentedcontrol',
+    load: () => import('./segmentedcontrol').then(m => m.segmentedcontrolFixture),
+  },
+  {
+    name: 'segmentedcontrol-children-template',
+    load: () =>
+      import('./segmentedcontrol-children-template').then(
+        m => m.segmentedcontrolChildrenTemplateFixture,
+      ),
+  },
+  {
+    name: 'segmentedcontrol-selected',
+    load: () => import('./segmentedcontrol-selected').then(m => m.segmentedcontrolSelectedFixture),
+  },
+  {
+    name: 'segmentedcontrol-bound',
+    load: () => import('./segmentedcontrol-bound').then(m => m.segmentedcontrolBoundFixture),
+  },
+  {
+    name: 'segmentedcontrol-fn',
+    load: () => import('./segmentedcontrol-fn').then(m => m.segmentedcontrolFnFixture),
+  },
+  {
+    name: 'segmentedcontrol-event',
+    load: () => import('./segmentedcontrol-event').then(m => m.segmentedcontrolEventFixture),
+  },
+  {
+    name: 'segmentedcontrol-fullwidth',
+    load: () =>
+      import('./segmentedcontrol-fullwidth').then(m => m.segmentedcontrolFullwidthFixture),
+  },
+  {
+    name: 'segmentedcontrol-size',
+    load: () => import('./segmentedcontrol-size').then(m => m.segmentedcontrolSizeFixture),
+  },
+  {
+    name: 'segmentedcontrol-variant',
+    load: () => import('./segmentedcontrol-variant').then(m => m.segmentedcontrolVariantFixture),
+  },
+  {
+    name: 'segmentedcontrolbutton',
+    load: () => import('./segmentedcontrolbutton').then(m => m.segmentedcontrolbuttonFixture),
+  },
+  {
+    name: 'segmentedcontrolbutton-leadingvisual',
+    load: () =>
+      import('./segmentedcontrolbutton-leadingvisual').then(
+        m => m.segmentedcontrolbuttonLeadingvisualFixture,
+      ),
+  },
+  {
+    name: 'segmentedcontrolbutton-count',
+    load: () =>
+      import('./segmentedcontrolbutton-count').then(m => m.segmentedcontrolbuttonCountFixture),
+  },
+  {
+    name: 'segmentedcontrolbutton-disabled',
+    load: () =>
+      import('./segmentedcontrolbutton-disabled').then(
+        m => m.segmentedcontrolbuttonDisabledFixture,
+      ),
+  },
+  {
+    name: 'segmentedcontroliconbutton',
+    load: () =>
+      import('./segmentedcontroliconbutton').then(m => m.segmentedcontroliconbuttonFixture),
+  },
+  {
+    name: 'segmentedcontroliconbutton-disabled',
+    load: () =>
+      import('./segmentedcontroliconbutton-disabled').then(
+        m => m.segmentedcontroliconbuttonDisabledFixture,
+      ),
+  },
+  {name: 'details-open', load: () => import('./details-open').then(m => m.detailsOpenFixture)},
+  {
+    name: 'details-children-template',
+    load: () => import('./details-children-template').then(m => m.detailsChildrenTemplateFixture),
+  },
+  {
+    name: 'details-clickoutside-fn',
+    load: () => import('./details-clickoutside-fn').then(m => m.detailsClickoutsideFnFixture),
+  },
+  {name: 'details-bound', load: () => import('./details-bound').then(m => m.detailsBoundFixture)},
+  {name: 'select', load: () => import('./select').then(m => m.selectFixture)},
+  {
+    name: 'select-children-template',
+    load: () => import('./select-children-template').then(m => m.selectChildrenTemplateFixture),
+  },
+  {name: 'select-bound', load: () => import('./select-bound').then(m => m.selectBoundFixture)},
+  {
+    name: 'select-placeholder',
+    load: () => import('./select-placeholder').then(m => m.selectPlaceholderFixture),
+  },
+  {
+    name: 'select-disabled',
+    load: () => import('./select-disabled').then(m => m.selectDisabledFixture),
+  },
+  {
+    name: 'select-validation',
+    load: () => import('./select-validation').then(m => m.selectValidationFixture),
+  },
+  {name: 'select-block', load: () => import('./select-block').then(m => m.selectBlockFixture)},
+  {name: 'select-size', load: () => import('./select-size').then(m => m.selectSizeFixture)},
+  {name: 'selectoption', load: () => import('./selectoption').then(m => m.selectoptionFixture)},
+  {
+    name: 'selectoption-disabled',
+    load: () => import('./selectoption-disabled').then(m => m.selectoptionDisabledFixture),
+  },
+  {
+    name: 'selectoptgroup',
+    load: () => import('./selectoptgroup').then(m => m.selectoptgroupFixture),
+  },
+  {
+    name: 'selectoptgroup-disabled',
+    load: () => import('./selectoptgroup-disabled').then(m => m.selectoptgroupDisabledFixture),
+  },
+  {name: 'breadcrumbs', load: () => import('./breadcrumbs').then(m => m.breadcrumbsFixture)},
+  {
+    name: 'breadcrumbs-children-template',
+    load: () =>
+      import('./breadcrumbs-children-template').then(m => m.breadcrumbsChildrenTemplateFixture),
+  },
+  {
+    name: 'breadcrumbs-variant',
+    load: () => import('./breadcrumbs-variant').then(m => m.breadcrumbsVariantFixture),
+  },
+  {
+    name: 'breadcrumbsitem',
+    load: () => import('./breadcrumbsitem').then(m => m.breadcrumbsitemFixture),
+  },
+  {
+    name: 'breadcrumbsitem-selected',
+    load: () => import('./breadcrumbsitem-selected').then(m => m.breadcrumbsitemSelectedFixture),
+  },
+  {name: 'navlist', load: () => import('./navlist').then(m => m.navlistFixture)},
+  {
+    name: 'navlist-item-inactive',
+    load: () => import('./navlist-item-inactive').then(m => m.navlistItemInactiveFixture),
+  },
+  {
+    name: 'navlist-trailingaction-fn',
+    load: () => import('./navlist-trailingaction-fn').then(m => m.navlistTrailingactionFnFixture),
+  },
+  {
+    name: 'navlist-trailingaction-event',
+    load: () =>
+      import('./navlist-trailingaction-event').then(m => m.navlistTrailingactionEventFixture),
+  },
+  {
+    name: 'navlist-trailingaction-loading',
+    load: () =>
+      import('./navlist-trailingaction-loading').then(m => m.navlistTrailingactionLoadingFixture),
+  },
+  {
+    name: 'navlist-group-bound',
+    load: () => import('./navlist-group-bound').then(m => m.navlistGroupBoundFixture),
+  },
+  {
+    name: 'navlist-groupheading-variants',
+    load: () =>
+      import('./navlist-groupheading-variants').then(m => m.navlistGroupheadingVariantsFixture),
+  },
+  {
+    name: 'navlist-groupheading-bound',
+    load: () => import('./navlist-groupheading-bound').then(m => m.navlistGroupheadingBoundFixture),
+  },
+  {
+    name: 'navlist-description-variants',
+    load: () =>
+      import('./navlist-description-variants').then(m => m.navlistDescriptionVariantsFixture),
+  },
+  {
+    name: 'navlist-description-truncate',
+    load: () =>
+      import('./navlist-description-truncate').then(m => m.navlistDescriptionTruncateFixture),
+  },
+  {
+    name: 'navlist-groupexpand',
+    load: () => import('./navlist-groupexpand').then(m => m.navlistGroupexpandFixture),
+  },
+  {
+    name: 'navlist-groupexpand-showmore',
+    load: () => import('./navlist-groupexpand').then(m => m.navlistGroupexpandShowmoreFixture),
+  },
+  {name: 'pagelayout', load: () => import('./pagelayout').then(m => m.pagelayoutFixture)},
+  {
+    name: 'pagelayout-sidebar',
+    load: () => import('./pagelayout-sidebar').then(m => m.pagelayoutSidebarFixture),
+  },
+  {
+    name: 'pagelayout-containerwidth',
+    load: () => import('./pagelayout-containerwidth').then(m => m.pagelayoutContainerwidthFixture),
+  },
+  {
+    name: 'pagelayout-padding',
+    load: () => import('./pagelayout-padding').then(m => m.pagelayoutPaddingFixture),
+  },
+  {
+    name: 'pagelayout-rowgap',
+    load: () => import('./pagelayout-rowgap').then(m => m.pagelayoutRowgapFixture),
+  },
+  {
+    name: 'pagelayout-columngap',
+    load: () => import('./pagelayout-columngap').then(m => m.pagelayoutColumngapFixture),
+  },
+  {
+    name: 'pagelayout-header-padding',
+    load: () => import('./pagelayout-header-padding').then(m => m.pagelayoutHeaderPaddingFixture),
+  },
+  {
+    name: 'pagelayout-header-divider',
+    load: () => import('./pagelayout-header-divider').then(m => m.pagelayoutHeaderDividerFixture),
+  },
+  {
+    name: 'pagelayout-footer-padding',
+    load: () => import('./pagelayout-footer-padding').then(m => m.pagelayoutFooterPaddingFixture),
+  },
+  {
+    name: 'pagelayout-footer-divider',
+    load: () => import('./pagelayout-footer-divider').then(m => m.pagelayoutFooterDividerFixture),
+  },
+  {
+    name: 'pagelayout-content-width',
+    load: () => import('./pagelayout-content-width').then(m => m.pagelayoutContentWidthFixture),
+  },
+  {
+    name: 'pagelayout-content-padding',
+    load: () => import('./pagelayout-content-padding').then(m => m.pagelayoutContentPaddingFixture),
+  },
+  {
+    name: 'pagelayout-content-template',
+    load: () =>
+      import('./pagelayout-content-template').then(m => m.pagelayoutContentTemplateFixture),
+  },
+  {
+    name: 'pagelayout-pane-position',
+    load: () => import('./pagelayout-pane-position').then(m => m.pagelayoutPanePositionFixture),
+  },
+  {
+    name: 'pagelayout-pane-width',
+    load: () => import('./pagelayout-pane-width').then(m => m.pagelayoutPaneWidthFixture),
+  },
+  {
+    name: 'pagelayout-pane-width-custom',
+    load: () =>
+      import('./pagelayout-pane-width-custom').then(m => m.pagelayoutPaneWidthCustomFixture),
+  },
+  {
+    name: 'pagelayout-pane-divider',
+    load: () => import('./pagelayout-pane-divider').then(m => m.pagelayoutPaneDividerFixture),
+  },
+  {
+    name: 'pagelayout-pane-resizable',
+    load: () => import('./pagelayout-pane-resizable').then(m => m.pagelayoutPaneResizableFixture),
+  },
+  {
+    name: 'pagelayout-pane-padding',
+    load: () => import('./pagelayout-pane-padding').then(m => m.pagelayoutPanePaddingFixture),
+  },
+  {
+    name: 'pagelayout-pane-currentwidth',
+    load: () =>
+      import('./pagelayout-pane-currentwidth').then(m => m.pagelayoutPaneCurrentwidthFixture),
+  },
+  {
+    name: 'pagelayout-sidebar-position',
+    load: () =>
+      import('./pagelayout-sidebar-position').then(m => m.pagelayoutSidebarPositionFixture),
+  },
+  {
+    name: 'pagelayout-sidebar-width',
+    load: () => import('./pagelayout-sidebar-width').then(m => m.pagelayoutSidebarWidthFixture),
+  },
+  {
+    name: 'pagelayout-sidebar-width-custom',
+    load: () =>
+      import('./pagelayout-sidebar-width-custom').then(m => m.pagelayoutSidebarWidthCustomFixture),
+  },
+  {
+    name: 'pagelayout-sidebar-divider',
+    load: () => import('./pagelayout-sidebar-divider').then(m => m.pagelayoutSidebarDividerFixture),
+  },
+  {
+    name: 'pagelayout-sidebar-resizable',
+    load: () =>
+      import('./pagelayout-sidebar-resizable').then(m => m.pagelayoutSidebarResizableFixture),
+  },
+  {
+    name: 'pagelayout-sidebar-padding',
+    load: () => import('./pagelayout-sidebar-padding').then(m => m.pagelayoutSidebarPaddingFixture),
+  },
+  {
+    name: 'pagelayout-sidebar-currentwidth',
+    load: () =>
+      import('./pagelayout-sidebar-currentwidth').then(m => m.pagelayoutSidebarCurrentwidthFixture),
+  },
+  {
+    name: 'split-page-layout',
+    load: () => import('./split-page-layout').then(m => m.splitPageLayoutFixture),
+  },
+  {
+    name: 'split-page-layout-sidebar',
+    load: () => import('./split-page-layout-sidebar').then(m => m.splitPageLayoutSidebarFixture),
+  },
+  {
+    name: 'spl-header-divider',
+    load: () => import('./spl-header-divider').then(m => m.splHeaderDividerFixture),
+  },
+  {
+    name: 'spl-content-width',
+    load: () => import('./spl-content-width').then(m => m.splContentWidthFixture),
+  },
+  {
+    name: 'spl-content-padding',
+    load: () => import('./spl-content-padding').then(m => m.splContentPaddingFixture),
+  },
+  {
+    name: 'spl-content-children-template',
+    load: () =>
+      import('./spl-content-children-template').then(m => m.splContentChildrenTemplateFixture),
+  },
+  {
+    name: 'spl-pane-position',
+    load: () => import('./spl-pane-position').then(m => m.splPanePositionFixture),
+  },
+  {name: 'spl-pane-width', load: () => import('./spl-pane-width').then(m => m.splPaneWidthFixture)},
+  {
+    name: 'spl-pane-divider',
+    load: () => import('./spl-pane-divider').then(m => m.splPaneDividerFixture),
+  },
+  {
+    name: 'spl-pane-resizable',
+    load: () => import('./spl-pane-resizable').then(m => m.splPaneResizableFixture),
+  },
+  {name: 'pageheader', load: () => import('./pageheader').then(m => m.pageheaderFixture)},
+  {
+    name: 'pageheader-hasborder',
+    load: () => import('./pageheader-hasborder').then(m => m.pageheaderHasborderFixture),
+  },
+  {name: 'parentlink', load: () => import('./parentlink').then(m => m.parentlinkFixture)},
+  {
+    name: 'parentlink-bound',
+    load: () => import('./parentlink-bound').then(m => m.parentlinkBoundFixture),
+  },
+  {name: 'title', load: () => import('./title').then(m => m.titleFixture)},
+  {name: 'title-bound', load: () => import('./title-bound').then(m => m.titleBoundFixture)},
+  {
+    name: 'titlearea-variant',
+    load: () => import('./titlearea-variant').then(m => m.titleareaVariantFixture),
+  },
+  {
+    name: 'breadcrumbs-template',
+    load: () => import('./breadcrumbs-template').then(m => m.breadcrumbsTemplateFixture),
+  },
+  {name: 'actionlist', load: () => import('./actionlist').then(m => m.actionlistFixture)},
+  {
+    name: 'actionlist-children-template',
+    load: () =>
+      import('./actionlist-children-template').then(m => m.actionlistChildrenTemplateFixture),
+  },
+  {
+    name: 'actionlist-selection',
+    load: () => import('./actionlist-selection').then(m => m.actionlistSelectionFixture),
+  },
+  {
+    name: 'actionlist-selected-bound',
+    load: () => import('./actionlist-selected-bound').then(m => m.actionlistSelectedBoundFixture),
+  },
+  {
+    name: 'actionlist-item-fn',
+    load: () => import('./actionlist-item-fn').then(m => m.actionlistItemFnFixture),
+  },
+  {
+    name: 'actionlist-item-event',
+    load: () => import('./actionlist-item-event').then(m => m.actionlistItemEventFixture),
+  },
+  {
+    name: 'actionlist-item-active',
+    load: () => import('./actionlist-item-active').then(m => m.actionlistItemActiveFixture),
+  },
+  {
+    name: 'actionlist-item-disabled',
+    load: () => import('./actionlist-item-disabled').then(m => m.actionlistItemDisabledFixture),
+  },
+  {
+    name: 'actionlist-item-loading',
+    load: () => import('./actionlist-item-loading').then(m => m.actionlistItemLoadingFixture),
+  },
+  {
+    name: 'actionlist-item-inactive',
+    load: () => import('./actionlist-item-inactive').then(m => m.actionlistItemInactiveFixture),
+  },
+  {
+    name: 'actionlist-item-variant',
+    load: () => import('./actionlist-item-variant').then(m => m.actionlistItemVariantFixture),
+  },
+  {
+    name: 'actionlist-item-size',
+    load: () => import('./actionlist-item-size').then(m => m.actionlistItemSizeFixture),
+  },
+  {
+    name: 'actionlist-variant',
+    load: () => import('./actionlist-variant').then(m => m.actionlistVariantFixture),
+  },
+  {
+    name: 'actionlist-dividers',
+    load: () => import('./actionlist-dividers').then(m => m.actionlistDividersFixture),
+  },
+  {
+    name: 'actionlist-group-variant',
+    load: () => import('./actionlist-group-variant').then(m => m.actionlistGroupVariantFixture),
+  },
+  {
+    name: 'actionlist-description',
+    load: () => import('./actionlist-description').then(m => m.actionlistDescriptionFixture),
+  },
+  {
+    name: 'actionlist-trailingaction-fn',
+    load: () =>
+      import('./actionlist-trailingaction-fn').then(m => m.actionlistTrailingactionFnFixture),
+  },
+  {
+    name: 'actionlist-trailingaction-event',
+    load: () =>
+      import('./actionlist-trailingaction-event').then(m => m.actionlistTrailingactionEventFixture),
+  },
+  {
+    name: 'actionlist-trailingaction-loading',
+    load: () =>
+      import('./actionlist-trailingaction-loading').then(
+        m => m.actionlistTrailingactionLoadingFixture,
+      ),
+  },
+  {name: 'action-bar', load: () => import('./action-bar').then(m => m.actionBarFixture)},
+  {
+    name: 'action-bar-children-template',
+    load: () =>
+      import('./action-bar-children-template').then(m => m.actionBarChildrenTemplateFixture),
+  },
+  {
+    name: 'action-bar-sizes',
+    load: () => import('./action-bar-sizes').then(m => m.actionBarSizesFixture),
+  },
+  {name: 'action-bar-gap', load: () => import('./action-bar-gap').then(m => m.actionBarGapFixture)},
+  {
+    name: 'action-bar-flush',
+    load: () => import('./action-bar-flush').then(m => m.actionBarFlushFixture),
+  },
+  {
+    name: 'action-bar-overflow',
+    load: () => import('./action-bar-overflow').then(m => m.actionBarOverflowFixture),
+  },
+  {
+    name: 'action-bar-icon-button-fn',
+    load: () => import('./action-bar-icon-button-fn').then(m => m.actionBarIconButtonFnFixture),
+  },
+  {
+    name: 'action-bar-icon-button-event',
+    load: () =>
+      import('./action-bar-icon-button-event').then(m => m.actionBarIconButtonEventFixture),
+  },
+  {
+    name: 'action-bar-icon-button-disabled',
+    load: () =>
+      import('./action-bar-icon-button-disabled').then(m => m.actionBarIconButtonDisabledFixture),
+  },
+  {
+    name: 'action-bar-group',
+    load: () => import('./action-bar-group').then(m => m.actionBarGroupFixture),
+  },
+  {
+    name: 'action-bar-menu',
+    load: () => import('./action-bar-menu').then(m => m.actionBarMenuFixture),
+  },
+  {
+    name: 'tree-view-nested',
+    load: () => import('./tree-view-nested').then(m => m.treeViewNestedFixture),
+  },
+  {name: 'tree-view-flat', load: () => import('./tree-view-flat').then(m => m.treeViewFlatFixture)},
+  {
+    name: 'tree-view-truncate',
+    load: () => import('./tree-view-truncate').then(m => m.treeViewTruncateFixture),
+  },
+  {
+    name: 'tree-view-item-current',
+    load: () => import('./tree-view-item-current').then(m => m.treeViewItemCurrentFixture),
+  },
+  {
+    name: 'tree-view-item-expanded-bound',
+    load: () =>
+      import('./tree-view-item-expanded-bound').then(m => m.treeViewItemExpandedBoundFixture),
+  },
+  {
+    name: 'tree-view-item-fn',
+    load: () => import('./tree-view-item-fn').then(m => m.treeViewItemFnFixture),
+  },
+  {
+    name: 'tree-view-item-event',
+    load: () => import('./tree-view-item-event').then(m => m.treeViewItemEventFixture),
+  },
+  {
+    name: 'tree-view-item-secondary-actions',
+    load: () =>
+      import('./tree-view-item-secondary-actions').then(m => m.treeViewItemSecondaryActionsFixture),
+  },
+  {
+    name: 'tree-view-subtree-states',
+    load: () => import('./tree-view-subtree-states').then(m => m.treeViewSubtreeStatesFixture),
+  },
+  {
+    name: 'tree-view-visuals',
+    load: () => import('./tree-view-visuals').then(m => m.treeViewVisualsFixture),
+  },
+  {
+    name: 'tree-view-directory-icon',
+    load: () => import('./tree-view-directory-icon').then(m => m.treeViewDirectoryIconFixture),
+  },
+  {
+    name: 'tree-view-error-dialog',
+    load: () => import('./tree-view-error-dialog').then(m => m.treeViewErrorDialogFixture),
+  },
 ];
 
-export function getFixture(name: string | null): Fixture {
+export function getFixture(name: string | null): FixtureEntry {
   return FIXTURES.find(f => f.name === name) ?? FIXTURES[0];
 }

@@ -1,6 +1,7 @@
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import type {ActionListener, A2uiMessage} from '@a2ui/web_core/v0_9';
 import {FIXTURES, getFixture} from '../fixtures';
+import type {Fixture} from '../fixtures';
 import {FixtureView} from './FixtureView';
 
 function readFixtureFromUrl(): string {
@@ -14,6 +15,22 @@ export function TestSpace({
   makeActionHandler?: (apply: (messages: A2uiMessage[]) => void) => ActionListener;
 } = {}) {
   const [selected, setSelected] = useState(readFixtureFromUrl);
+  // Only the selected fixture's body is imported (on demand); the selector below is populated
+  // from the cheap name list without pulling in any fixture body.
+  const [fixture, setFixture] = useState<Fixture | null>(null);
+
+  // Normalize the selection through getFixture so an unknown ?fixture= falls back to the first.
+  const entry = getFixture(selected);
+
+  useEffect(() => {
+    let active = true;
+    entry.load().then(loaded => {
+      if (active) setFixture(loaded);
+    });
+    return () => {
+      active = false;
+    };
+  }, [entry]);
 
   const onSelect = (name: string) => {
     setSelected(name);
@@ -24,15 +41,13 @@ export function TestSpace({
     }
   };
 
-  const fixture = getFixture(selected);
-
   return (
     <main>
       <label>
         Fixture:{' '}
         <select
           data-testid="fixture-select"
-          value={fixture.name}
+          value={entry.name}
           onChange={e => onSelect(e.target.value)}
         >
           {FIXTURES.map(f => (
@@ -43,7 +58,9 @@ export function TestSpace({
         </select>
       </label>
 
-      <FixtureView key={fixture.name} fixture={fixture} makeActionHandler={makeActionHandler} />
+      {fixture && (
+        <FixtureView key={fixture.name} fixture={fixture} makeActionHandler={makeActionHandler} />
+      )}
     </main>
   );
 }

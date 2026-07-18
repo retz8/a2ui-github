@@ -1,5 +1,5 @@
 import {describe, it, expect, afterEach, beforeEach} from 'vitest';
-import {render, screen, cleanup, fireEvent, within} from '@testing-library/react';
+import {render, screen, cleanup, fireEvent, within, waitFor} from '@testing-library/react';
 import {BaseStyles, ThemeProvider} from '@primer/react';
 import {TestSpace} from '../src/test-space/TestSpace';
 import {FIXTURES} from '../src/fixtures';
@@ -18,25 +18,27 @@ beforeEach(() => window.history.replaceState({}, '', '/'));
 afterEach(cleanup);
 
 describe('TestSpace selector', () => {
-  it('lists every fixture and defaults to the first', () => {
+  it('lists every fixture and defaults to the first', async () => {
     renderTestSpace();
     const select = screen.getByTestId('fixture-select') as HTMLSelectElement;
+    // The option list is populated from the cheap name list — no fixture body imported yet.
     expect(within(select).getAllByRole('option')).toHaveLength(FIXTURES.length);
     expect(select.value).toBe('text');
-    expect(screen.getByText('Hello from Primer')).toBeInTheDocument();
+    // The selected fixture's body loads on demand, so its rendered output appears asynchronously.
+    expect(await screen.findByText('Hello from Primer')).toBeInTheDocument();
   });
 
-  it('swaps the rendered surface when a new fixture is chosen', () => {
+  it('swaps the rendered surface when a new fixture is chosen', async () => {
     renderTestSpace();
     fireEvent.change(screen.getByTestId('fixture-select'), {target: {value: 'button-fn'}});
-    expect(screen.getByRole('button', {name: 'Run local function'})).toBeInTheDocument();
-    expect(screen.queryByText('Hello from Primer')).not.toBeInTheDocument();
+    expect(await screen.findByRole('button', {name: 'Run local function'})).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByText('Hello from Primer')).not.toBeInTheDocument());
   });
 
-  it('deep-links the initial fixture from the ?fixture= URL param', () => {
+  it('deep-links the initial fixture from the ?fixture= URL param', async () => {
     window.history.replaceState({}, '', '/?fixture=button-event');
     renderTestSpace();
     expect((screen.getByTestId('fixture-select') as HTMLSelectElement).value).toBe('button-event');
-    expect(screen.getByRole('button', {name: 'Send event'})).toBeInTheDocument();
+    expect(await screen.findByRole('button', {name: 'Send event'})).toBeInTheDocument();
   });
 });
