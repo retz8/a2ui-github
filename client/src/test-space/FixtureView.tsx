@@ -1,8 +1,9 @@
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import type {ActionListener, A2uiMessage} from '@a2ui/web_core/v0_9';
 import {A2uiSurface} from '@a2ui/react/v0_9';
 import {CATALOG} from 'primer-a2ui-adapter';
+import {useSurfaces} from '../a2ui/useSurfaces';
 import type {Fixture} from '../fixtures';
 
 /** Renders every surface produced by one fixture's canned messages. */
@@ -27,16 +28,7 @@ export function FixtureView({
     return p;
   });
 
-  const [surfaces, setSurfaces] = useState(() => Array.from(processor.model.surfacesMap.values()));
-  useEffect(() => {
-    const sync = () => setSurfaces(Array.from(processor.model.surfacesMap.values()));
-    const created = processor.onSurfaceCreated(sync);
-    const deleted = processor.onSurfaceDeleted(sync);
-    return () => {
-      created.unsubscribe();
-      deleted.unsubscribe();
-    };
-  }, [processor]);
+  const surfaces = useSurfaces(processor);
 
   return (
     <div data-testid="fixture-view">
