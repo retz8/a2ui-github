@@ -708,7 +708,7 @@ def test_text_prompt_returns_fresh_chat_surface_echoing_the_prompt():
     from deterministic_agent.responses import build_text_response
 
     msgs = build_text_response("show me open PRs")
-    assert len(msgs) == 2
+    assert len(msgs) == 3
 
     cs = msgs[0]["createSurface"]
     assert cs["surfaceId"].startswith("chat-")
@@ -719,10 +719,31 @@ def test_text_prompt_returns_fresh_chat_surface_echoing_the_prompt():
     assert uc["components"] == [
         {
             "id": "root",
+            "component": "Stack",
+            "direction": "vertical",
+            "gap": "normal",
+            "children": ["echo", "ack"],
+        },
+        {
+            "id": "echo",
             "component": "Text",
             "text": '✅ Deterministic agent received: "show me open PRs"',
-        }
+        },
+        {
+            "id": "ack",
+            "component": "Button",
+            "child": "label",
+            "variant": "primary",
+            "disabled": {"path": "/submitted"},
+            "action": {"event": {"name": "submit", "context": {}}},
+        },
+        {"id": "label", "component": "Text", "text": "Acknowledge"},
     ]
+
+    dm = msgs[2]["updateDataModel"]
+    assert dm["surfaceId"] == cs["surfaceId"]
+    assert dm["path"] == "/"
+    assert dm["value"] == {"submitted": False}
 
 
 def test_each_text_prompt_gets_its_own_surface():

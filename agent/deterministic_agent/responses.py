@@ -172,10 +172,33 @@ def build_text_response(text: str) -> list[dict]:
                 "components": [
                     {
                         "id": "root",
+                        "component": "Stack",
+                        "direction": "vertical",
+                        "gap": "normal",
+                        "children": ["echo", "ack"],
+                    },
+                    {
+                        "id": "echo",
                         "component": "Text",
                         "text": f'✅ Deterministic agent received: "{text}"',
-                    }
+                    },
+                    # The interactive half of the loop: clicking fires the existing `submit`
+                    # event back over A2A; its canned response swaps `label` and flips
+                    # /submitted, which disables the button via the binding below.
+                    {
+                        "id": "ack",
+                        "component": "Button",
+                        "child": "label",
+                        "variant": "primary",
+                        "disabled": {"path": "/submitted"},
+                        "action": {"event": {"name": "submit", "context": {}}},
+                    },
+                    {"id": "label", "component": "Text", "text": "Acknowledge"},
                 ],
             },
+        },
+        {
+            "version": "v0.9",
+            "updateDataModel": {"surfaceId": surface_id, "path": "/", "value": {"submitted": False}},
         },
     ]
