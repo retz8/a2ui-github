@@ -101,7 +101,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.36** `PageHeader` (#67)
 - [x] **6.37** `Header` — dropped, not shipped: undocumented legacy app-bar, silently deprecated in favor of `PageHeader` (6.36, documented). No official doc page exists to ground the design contract (the design skill's descriptions translate documented semantics — there are none). Same rationale as `Flash` (6.24) and the §2 exclusions; an app-bar grows lazily if a later flow needs one `PageHeader` can't cover.
 - [x] **6.38** `ActionList` (#72)
-- [ ] **6.39** `ActionMenu`
+- [WIP] **6.39** `ActionMenu`
 - [x] **6.40** `ActionBar` (#71)
 - [x] **6.41** `NavList` (#74)
 - [x] **6.42** `SubNav` — dropped, not shipped: absent from the official docs component index, with the legacy doc URLs redirecting to the Primer homepage — no official doc page exists to ground the design contract. Silently superseded by `UnderlineNav` (6.43, documented, beta) for horizontal nav. Same rationale as `Flash` (6.24) and `Header` (6.37); a pill-style sub-navigation bar grows lazily if a later flow needs one `UnderlineNav` can't cover.
@@ -111,9 +111,9 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.46** `Timeline` (#89)
 - [x] **6.47** `FormControl` (#92)
 - [WIP] **6.48** `CheckboxGroup` (#99)
-- [ ] **6.49** `RadioGroup`
-- [ ] **6.50** `SelectPanel`
-- [ ] **6.51** `Autocomplete`
+- [WIP] **6.49** `RadioGroup` (#100)
+- [WIP] **6.50** `SelectPanel`
+- [WIP] **6.51** `Autocomplete`
 - [x] **6.52** `Dialog` (#90)
 - [x] **6.53** `ConfirmationDialog` (#91)
 - [x] **6.54** `Overlay` — dropped, not shipped: the official doc explicitly marks it "an internal component and is intended to be used as a private API, composing other components. It is not intended to be used on its own," pointing to `AnchoredOverlay` / `Dialog` instead. Same rationale as the §2 `Portal` exclusion (a private-API composition primitive, not a composable leaf) and `Header` (6.37) / `SubNav` (6.42); its standalone-overlay capability is delivered by the public `Dialog` (6.52) and the pending `AnchoredOverlay` (6.55) / `Popover` (6.56) / `SelectPanel` (6.50). A bare floating-surface leaf grows lazily if a later flow needs one those can't cover.
