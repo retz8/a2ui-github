@@ -1644,6 +1644,117 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'actionmenu-maxheight',
     load: () => import('./actionmenu-maxheight').then(m => m.actionmenuMaxheightFixture),
   },
+  {name: 'selectpanel', load: () => import('./selectpanel').then(m => m.selectPanelFixture)},
+  {
+    name: 'selectpanel-children-template',
+    load: () =>
+      import('./selectpanel-children-template').then(m => m.selectPanelChildrenTemplateFixture),
+  },
+  {
+    name: 'selectpanel-open-bound',
+    load: () => import('./selectpanel-open-bound').then(m => m.selectPanelOpenBoundFixture),
+  },
+  {
+    name: 'selectpanel-closed',
+    load: () => import('./selectpanel-closed').then(m => m.selectPanelClosedFixture),
+  },
+  {
+    name: 'selectpanel-toggle',
+    load: () => import('./selectpanel-toggle').then(m => m.selectPanelToggleFixture),
+  },
+  {
+    name: 'selectpanel-filter',
+    load: () => import('./selectpanel-filter').then(m => m.selectPanelFilterFixture),
+  },
+  {
+    name: 'selectpanel-filter-type',
+    load: () => import('./selectpanel-filter-type').then(m => m.selectPanelFilterTypeFixture),
+  },
+  {
+    name: 'selectpanel-selectionvariant',
+    load: () =>
+      import('./selectpanel-selectionvariant').then(m => m.selectPanelSelectionvariantFixture),
+  },
+  {
+    name: 'selectpanel-variant-modal',
+    load: () => import('./selectpanel-variant-modal').then(m => m.selectPanelVariantModalFixture),
+  },
+  {
+    name: 'selectpanel-notice',
+    load: () => import('./selectpanel-notice').then(m => m.selectPanelNoticeFixture),
+  },
+  {
+    name: 'selectpanel-message',
+    load: () => import('./selectpanel-message').then(m => m.selectPanelMessageFixture),
+  },
+  {
+    name: 'selectpanel-loading',
+    load: () => import('./selectpanel-loading').then(m => m.selectPanelLoadingFixture),
+  },
+  {
+    name: 'selectpanel-selectall',
+    load: () => import('./selectpanel-selectall').then(m => m.selectPanelSelectallFixture),
+  },
+  {
+    name: 'selectpanel-selectedfirst',
+    load: () => import('./selectpanel-selectedfirst').then(m => m.selectPanelSelectedfirstFixture),
+  },
+  {
+    name: 'selectpanel-dividers',
+    load: () => import('./selectpanel-dividers').then(m => m.selectPanelDividersFixture),
+  },
+  {
+    name: 'selectpanel-align',
+    load: () => import('./selectpanel-align').then(m => m.selectPanelAlignFixture),
+  },
+  {
+    name: 'selectpanel-height',
+    load: () => import('./selectpanel-height').then(m => m.selectPanelHeightFixture),
+  },
+  {
+    name: 'selectpanel-width',
+    load: () => import('./selectpanel-width').then(m => m.selectPanelWidthFixture),
+  },
+  {
+    name: 'selectpanel-onopenchange-fn',
+    load: () =>
+      import('./selectpanel-onopenchange-fn').then(m => m.selectPanelOnopenchangeFnFixture),
+  },
+  {
+    name: 'selectpanel-onopenchange-event',
+    load: () =>
+      import('./selectpanel-onopenchange-event').then(m => m.selectPanelOnopenchangeEventFixture),
+  },
+  {
+    name: 'selectpanel-oncancel',
+    load: () => import('./selectpanel-oncancel').then(m => m.selectPanelOncancelFixture),
+  },
+  {
+    name: 'selectpanel-item-description',
+    load: () =>
+      import('./selectpanel-item-description').then(m => m.selectPanelItemDescriptionFixture),
+  },
+  {
+    name: 'selectpanel-item-variant',
+    load: () => import('./selectpanel-item-variant').then(m => m.selectPanelItemVariantFixture),
+  },
+  {
+    name: 'selectpanel-item-disabled',
+    load: () => import('./selectpanel-item-disabled').then(m => m.selectPanelItemDisabledFixture),
+  },
+  {
+    name: 'selectpanel-item-fn',
+    load: () => import('./selectpanel-item-fn').then(m => m.selectPanelItemFnFixture),
+  },
+  {
+    name: 'selectpanel-item-selected-bound',
+    load: () =>
+      import('./selectpanel-item-selected-bound').then(m => m.selectPanelItemSelectedBoundFixture),
+  },
+  {
+    name: 'selectpanel-item-event',
+    load: () => import('./selectpanel-item-event').then(m => m.selectPanelItemEventFixture),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {

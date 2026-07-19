@@ -53,6 +53,20 @@ import {actionmenuSideInsideCenterFixture} from '../src/fixtures/actionmenu-side
 import {actionmenuWidthLargeFixture} from '../src/fixtures/actionmenu-width-large';
 import {actionmenuHeightLargeFixture} from '../src/fixtures/actionmenu-height-large';
 import {actionmenuMaxheightFixture} from '../src/fixtures/actionmenu-maxheight';
+import {selectPanelFixture} from '../src/fixtures/selectpanel';
+import {selectPanelChildrenTemplateFixture} from '../src/fixtures/selectpanel-children-template';
+import {selectPanelOpenBoundFixture} from '../src/fixtures/selectpanel-open-bound';
+import {selectPanelClosedFixture} from '../src/fixtures/selectpanel-closed';
+import {selectPanelFilterFixture} from '../src/fixtures/selectpanel-filter';
+import {selectPanelSelectionvariantFixture} from '../src/fixtures/selectpanel-selectionvariant';
+import {selectPanelVariantModalFixture} from '../src/fixtures/selectpanel-variant-modal';
+import {selectPanelNoticeFixture} from '../src/fixtures/selectpanel-notice';
+import {selectPanelMessageFixture} from '../src/fixtures/selectpanel-message';
+import {selectPanelLoadingFixture} from '../src/fixtures/selectpanel-loading';
+import {selectPanelDividersFixture} from '../src/fixtures/selectpanel-dividers';
+import {selectPanelItemDescriptionFixture} from '../src/fixtures/selectpanel-item-description';
+import {selectPanelItemVariantFixture} from '../src/fixtures/selectpanel-item-variant';
+import {selectPanelItemDisabledFixture} from '../src/fixtures/selectpanel-item-disabled';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
@@ -2843,5 +2857,86 @@ describe('ActionMenu — integration through the renderer', () => {
     expect(screen.getByText('View pull request')).toBeInTheDocument();
     expect(screen.getByText('Transfer issue')).toBeInTheDocument();
     expect(screen.getByText('Delete branch')).toBeInTheDocument();
+  });
+});
+
+describe('SelectPanel — integration through the renderer', () => {
+  it('renders the trigger and, when open, the panel title and items', () => {
+    renderFixture(selectPanelFixture);
+    expect(screen.getByRole('button', {name: 'Labels'})).toBeInTheDocument();
+    expect(screen.getByText('Apply labels')).toBeInTheDocument();
+    expect(screen.getByText('bug')).toBeInTheDocument();
+    expect(screen.getByText('duplicate')).toBeInTheDocument();
+  });
+
+  it('resolves the bound open path through the renderer (panel shown)', () => {
+    renderFixture(selectPanelOpenBoundFixture);
+    expect(screen.getByText('bug')).toBeInTheDocument();
+  });
+
+  it('expands a dynamic children template over the bound array', () => {
+    renderFixture(selectPanelChildrenTemplateFixture);
+    expect(screen.getByText('bug')).toBeInTheDocument();
+    expect(screen.getByText('docs')).toBeInTheDocument();
+    expect(screen.getByText('ci')).toBeInTheDocument();
+  });
+
+  it('renders only the trigger when open is false — the items are absent from the DOM', () => {
+    renderFixture(selectPanelClosedFixture);
+    expect(screen.getByRole('button', {name: 'Labels'})).toBeInTheDocument();
+    expect(screen.queryByText('bug')).not.toBeInTheDocument();
+  });
+
+  it('filters the list locally against filterValue', () => {
+    renderFixture(selectPanelFilterFixture);
+    expect(screen.getByText('documentation')).toBeInTheDocument();
+    expect(screen.queryByText('enhancement')).not.toBeInTheDocument();
+  });
+
+  it('renders the single/multiple selectionVariant gallery', () => {
+    renderFixture(selectPanelSelectionvariantFixture);
+    expect(screen.getAllByText('bug').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('renders the modal variant', () => {
+    renderFixture(selectPanelVariantModalFixture);
+    expect(screen.getByText('Apply labels')).toBeInTheDocument();
+    expect(screen.getByText('bug')).toBeInTheDocument();
+  });
+
+  it('renders the notice banner gallery', () => {
+    renderFixture(selectPanelNoticeFixture);
+    expect(screen.getAllByText('Some labels are managed by policy').length).toBe(3);
+  });
+
+  it('renders the message empty/error/warning state gallery (list replaced)', () => {
+    renderFixture(selectPanelMessageFixture);
+    expect(screen.getByText('No labels')).toBeInTheDocument();
+    expect(screen.getByText('Could not load labels')).toBeInTheDocument();
+  });
+
+  it('renders the loading state', () => {
+    renderFixture(selectPanelLoadingFixture);
+    expect(screen.getByRole('button', {name: 'Labels'})).toBeInTheDocument();
+  });
+
+  it('renders item dividers', () => {
+    renderFixture(selectPanelDividersFixture);
+    expect(screen.getByText('bug')).toBeInTheDocument();
+  });
+
+  it('renders the item descriptionVariant gallery', () => {
+    renderFixture(selectPanelItemDescriptionFixture);
+    expect(screen.getAllByText("Something isn't working").length).toBe(2);
+  });
+
+  it('renders the item variant gallery', () => {
+    renderFixture(selectPanelItemVariantFixture);
+    expect(screen.getAllByText('wontfix').length).toBe(2);
+  });
+
+  it('renders a disabled item', () => {
+    renderFixture(selectPanelItemDisabledFixture);
+    expect(screen.getByText('documentation')).toBeInTheDocument();
   });
 });

@@ -51,6 +51,19 @@ if (typeof globalThis.ResizeObserver === 'undefined') {
   globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
 }
 
+// jsdom does not implement element scrolling. Primer's FilteredActionList (used by SelectPanel)
+// scrolls its active descendant into view via `scrollIntoView` → `Element.scrollTo`, which throws
+// "not a function" in a passive effect under jsdom. Provide no-op stubs so the panel mounts (scroll
+// positioning is a browser-only concern covered by the Playwright baseline, not the render tests).
+if (typeof Element !== 'undefined') {
+  if (typeof Element.prototype.scrollTo !== 'function') {
+    Element.prototype.scrollTo = () => {};
+  }
+  if (typeof Element.prototype.scrollIntoView !== 'function') {
+    Element.prototype.scrollIntoView = () => {};
+  }
+}
+
 // Primer's TooltipV2 (used by IconButton, e.g. inside TextInput.Action) loads the
 // `@oddbird/popover-polyfill` under jsdom, whose `injectStyles` spreads
 // `root.adoptedStyleSheets`. jsdom does not implement `adoptedStyleSheets`, so the spread

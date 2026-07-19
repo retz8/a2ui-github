@@ -694,6 +694,61 @@ def test_panel_close_writes_the_trigger_label_only_with_surface_echoed():
     assert dm["value"] == "Filter: 3 active"
 
 
+# --- SelectPanel family (6.50) ---
+
+PANEL_TOGGLE = {
+    "name": "panel-toggle",
+    "surfaceId": "selectpanel-onopenchange-event",
+    "sourceComponentId": "root",
+    "context": {},
+}
+LABEL_SELECT = {
+    "name": "label-select",
+    "surfaceId": "selectpanel-item-event",
+    "sourceComponentId": "root",
+    "context": {"selected": True},
+}
+
+
+def test_panel_toggle_writes_panel_title_then_swaps_trigger_label_with_surface_echoed():
+    # onOpenChange fires on both open and close, so one authored response works in both states: it
+    # writes the in-panel `title <- /panel/title` (visible when open, the binding-proof half) and
+    # swaps the always-rendered trigger `anchor-label` (self-visible in both states).
+    msgs = build_response(PANEL_TOGGLE)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "selectpanel-onopenchange-event"
+    assert dm["path"] == "/panel/title"
+    assert dm["value"] == "Apply labels — 12 available"
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "selectpanel-onopenchange-event"
+    assert uc["components"] == [{"id": "anchor-label", "component": "Text", "text": "Labels ▾"}]
+
+
+def test_label_select_echoes_selected_then_swaps_trigger_label_with_surface_echoed():
+    # SelectPanel.Item `label-select` echoes the item's optimistic `context.selected` write
+    # dynamically. The /sel/bug echo is visible through the item's `selected <- /sel/bug` coupling.
+    msgs = build_response(LABEL_SELECT)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "selectpanel-item-event"
+    assert dm["path"] == "/sel/bug"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "selectpanel-item-event"
+    assert uc["components"] == [{"id": "anchor-label", "component": "Text", "text": "✅ bug applied"}]
+
+
+def test_label_select_echoes_a_false_selection_not_a_canned_value():
+    # Proves the response echoes `context.selected` rather than a fixed True.
+    msgs = build_response({**LABEL_SELECT, "context": {"selected": False}})
+    assert msgs[0]["updateDataModel"]["value"] is False
+
+
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     msgs = build_response({"name": "wat", "surfaceId": "s9", "context": {}})
     assert len(msgs) == 1

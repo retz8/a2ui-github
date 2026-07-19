@@ -137,6 +137,8 @@ import {ActionMenuButtonComponent} from './components/actionmenu-button';
 import {ActionMenuAnchorComponent} from './components/actionmenu-anchor';
 import {ActionMenuOverlayComponent} from './components/actionmenu-overlay';
 import {ActionMenuDividerComponent} from './components/actionmenu-divider';
+import {SelectPanelComponent} from './components/selectpanel';
+import {SelectPanelItemComponent} from './components/selectpanel-item';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -281,6 +283,8 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     ActionMenuAnchorComponent,
     ActionMenuOverlayComponent,
     ActionMenuDividerComponent,
+    SelectPanelComponent,
+    SelectPanelItemComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );

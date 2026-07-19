@@ -134,6 +134,8 @@ import {ActionMenuButtonApi} from './components/actionmenu-button';
 import {ActionMenuAnchorApi} from './components/actionmenu-anchor';
 import {ActionMenuOverlayApi} from './components/actionmenu-overlay';
 import {ActionMenuDividerApi} from './components/actionmenu-divider';
+import {SelectPanelApi} from './components/selectpanel';
+import {SelectPanelItemApi} from './components/selectpanel-item';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -278,6 +280,8 @@ export const COMPONENTS = {
   'ActionMenu.Anchor': ActionMenuAnchorApi,
   'ActionMenu.Overlay': ActionMenuOverlayApi,
   'ActionMenu.Divider': ActionMenuDividerApi,
+  SelectPanel: SelectPanelApi,
+  'SelectPanel.Item': SelectPanelItemApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;
