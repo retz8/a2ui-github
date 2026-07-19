@@ -8,7 +8,10 @@ existing A2A middleware. Parent: `_dev/TODO.md` 7.4; phase spec `_dev/docs/spec/
 
 - A user types a natural-language prompt, it is sent over A2A, and A2UI surfaces stream in and
   render through the existing pipeline (`MessageProcessor` → `A2uiSurface`, adapter catalog).
-- Client-only. No agent-side changes; verifiable against the Phase-2 deterministic agent.
+- Client-side, verifiable against the Phase-2 deterministic agent. One agent-side exception,
+  discovered during verification: the deterministic executor answered only A2UI actions, so a
+  canned text-prompt response (a fresh per-prompt chat surface echoing the prompt) is added to
+  make the shell's text path live-verifiable.
 - The fixture TestSpace and its Playwright baselines keep working; their page URL update is in
   scope (see decision 1).
 - Presentation polish, conversational chrome, and transcript UX are Phase 8.
