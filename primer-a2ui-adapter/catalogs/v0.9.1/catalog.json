@@ -7343,6 +7343,253 @@
       },
       "required": ["component", "text"],
       "unevaluatedProperties": false
+    },
+    "Autocomplete": {
+      "type": "object",
+      "description": "A text field paired with a filterable dropdown of suggestions: the user types to narrow the options and selects one or more.",
+      "properties": {
+        "component": {
+          "const": "Autocomplete"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The autocomplete's text field and its suggestion overlay."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "Autocomplete.Input": {
+      "type": "object",
+      "description": "The text field of an autocomplete; the text typed into it filters the suggestion list.",
+      "properties": {
+        "component": {
+          "const": "Autocomplete.Input"
+        },
+        "value": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The text typed into the field; drives suggestion filtering. Two-way bound: user edits write back to the bound data-model path."
+        },
+        "placeholder": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Hint text shown while the field is empty."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the field is inactive and cannot be edited."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether a value is required; conveyed to assistive technologies."
+        },
+        "validationStatus": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["error", "success"]
+            },
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+            }
+          ],
+          "description": "Styles the field to reflect the current validation state. Bindable through the data model (there is no `DynamicEnum`, so a union of the enum + `DataBinding`)."
+        },
+        "type": {
+          "type": "string",
+          "enum": ["text", "search"],
+          "default": "text",
+          "description": "The kind of text input; `search` adds search semantics."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether to show a loading indicator inside the field."
+        },
+        "loaderPosition": {
+          "type": "string",
+          "enum": ["auto", "leading", "trailing"],
+          "default": "auto",
+          "description": "Where the loading indicator renders."
+        },
+        "loaderText": {
+          "type": "string",
+          "default": "Loading",
+          "description": "Screen-reader text conveying the loading state."
+        },
+        "leadingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual rendered inside the field before the typing area."
+        },
+        "trailingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual rendered inside the field after the typing area."
+        },
+        "trailingAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "An action button rendered inside the field at the trailing edge (references a `TextInput.Action`)."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "The field's overall size."
+        },
+        "block": {
+          "type": "boolean",
+          "default": false,
+          "description": "Expands the field to fill the parent's width."
+        },
+        "contrast": {
+          "type": "boolean",
+          "default": false,
+          "description": "Uses a higher-contrast background color."
+        },
+        "monospace": {
+          "type": "boolean",
+          "default": false,
+          "description": "Renders the text in a monospace font."
+        },
+        "characterLimit": {
+          "type": "number",
+          "description": "Optional character limit; shows a live counter and error styling when exceeded."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Label/description for assistive technologies."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "Autocomplete.Overlay": {
+      "type": "object",
+      "description": "The floating panel that contains an autocomplete's suggestion menu.",
+      "properties": {
+        "component": {
+          "const": "Autocomplete.Overlay"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The suggestion menu shown inside the floating panel."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "Autocomplete.Menu": {
+      "type": "object",
+      "description": "The filterable list of selectable suggestions shown inside an autocomplete's overlay.",
+      "properties": {
+        "component": {
+          "const": "Autocomplete.Menu"
+        },
+        "items": {
+          "type": "array",
+          "description": "The suggestion options shown in the dropdown.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "description": "The option's identity, keyed by `selectedItemIds`."
+              },
+              "text": {
+                "type": "string",
+                "description": "The option's label."
+              },
+              "leadingVisual": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+                "description": "An icon shown before the label."
+              },
+              "trailingVisual": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+                "description": "An icon shown after the label."
+              },
+              "disabled": {
+                "type": "boolean",
+                "description": "Whether the option cannot be selected."
+              },
+              "variant": {
+                "type": "string",
+                "enum": ["default", "danger"],
+                "description": "A destructive-styled option."
+              }
+            },
+            "required": ["id"],
+            "additionalProperties": false
+          }
+        },
+        "selectedItemIds": {
+          "oneOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+            }
+          ],
+          "description": "The ids of the currently selected options. Two-way bound: selecting/deselecting writes the new id array back to the bound data-model path."
+        },
+        "selectionVariant": {
+          "type": "string",
+          "enum": ["single", "multiple"],
+          "default": "single",
+          "description": "Whether one or multiple options may be selected."
+        },
+        "emptyStateText": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "default": "No selectable options",
+          "description": "Text shown when there are no options to display."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the options are still loading."
+        },
+        "addNewItem": {
+          "type": "object",
+          "description": "An extra row that lets the user create a value not in the list; its `action` runs when the row is chosen.",
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "The option's identity, keyed by `selectedItemIds`."
+            },
+            "text": {
+              "type": "string",
+              "description": "The option's label."
+            },
+            "leadingVisual": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+              "description": "An icon shown before the label."
+            },
+            "trailingVisual": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+              "description": "An icon shown after the label."
+            },
+            "disabled": {
+              "type": "boolean",
+              "description": "Whether the option cannot be selected."
+            },
+            "variant": {
+              "type": "string",
+              "enum": ["default", "danger"],
+              "description": "A destructive-styled option."
+            },
+            "action": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+              "description": "The action performed when the create-new row is chosen."
+            }
+          },
+          "required": ["id", "action"],
+          "additionalProperties": false
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible name for the options list (the `aria-labelledby` requirement; visible labeling ships via `FormControl`, the Select/TextInput deferral)."
+        }
+      },
+      "required": ["component", "items"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -7838,6 +8085,18 @@
         },
         {
           "$ref": "#/components/SelectPanel.Item"
+        },
+        {
+          "$ref": "#/components/Autocomplete"
+        },
+        {
+          "$ref": "#/components/Autocomplete.Input"
+        },
+        {
+          "$ref": "#/components/Autocomplete.Overlay"
+        },
+        {
+          "$ref": "#/components/Autocomplete.Menu"
         }
       ]
     },

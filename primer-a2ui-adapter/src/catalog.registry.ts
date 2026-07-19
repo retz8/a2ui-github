@@ -136,6 +136,10 @@ import {ActionMenuOverlayApi} from './components/actionmenu-overlay';
 import {ActionMenuDividerApi} from './components/actionmenu-divider';
 import {SelectPanelApi} from './components/selectpanel';
 import {SelectPanelItemApi} from './components/selectpanel-item';
+import {AutocompleteApi} from './components/autocomplete';
+import {AutocompleteInputApi} from './components/autocomplete-input';
+import {AutocompleteOverlayApi} from './components/autocomplete-overlay';
+import {AutocompleteMenuApi} from './components/autocomplete-menu';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -282,6 +286,10 @@ export const COMPONENTS = {
   'ActionMenu.Divider': ActionMenuDividerApi,
   SelectPanel: SelectPanelApi,
   'SelectPanel.Item': SelectPanelItemApi,
+  Autocomplete: AutocompleteApi,
+  'Autocomplete.Input': AutocompleteInputApi,
+  'Autocomplete.Overlay': AutocompleteOverlayApi,
+  'Autocomplete.Menu': AutocompleteMenuApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

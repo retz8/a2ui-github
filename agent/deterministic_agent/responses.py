@@ -30,6 +30,7 @@ _EVENT_FIXTURES = {
     "panel-open": "panel-open.json",
     "panel-close": "panel-close.json",
     "panel-toggle": "panel-toggle.json",
+    "create-label": "create-label.json",
 }
 # The operation key whose object carries the surfaceId we stamp.
 _OPERATION_KEYS = ("updateComponents", "updateDataModel", "createSurface")

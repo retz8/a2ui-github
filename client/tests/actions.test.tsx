@@ -60,6 +60,8 @@ import {selectPanelItemSelectedBoundFixture} from '../src/fixtures/selectpanel-i
 import {selectPanelToggleFixture} from '../src/fixtures/selectpanel-toggle';
 import {selectPanelOnopenchangeFnFixture} from '../src/fixtures/selectpanel-onopenchange-fn';
 import {selectPanelOnopenchangeEventFixture} from '../src/fixtures/selectpanel-onopenchange-event';
+import {autocompleteAddnewFnFixture} from '../src/fixtures/autocomplete-addnew-fn';
+import {autocompleteAddnewEventFixture} from '../src/fixtures/autocomplete-addnew-event';
 
 afterEach(cleanup);
 
@@ -984,5 +986,36 @@ describe('SelectPanel — action paths', () => {
       expect(document.querySelector('[aria-selected="true"]')).toBeInTheDocument(),
     );
     expect(handler).not.toHaveBeenCalled();
+  });
+});
+
+describe('Autocomplete.Menu addNewItem action', () => {
+  it('functionCall path: choosing the create row runs consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(autocompleteAddnewFnFixture, {actionHandler: handler});
+
+    fireEvent.focus(screen.getByRole('combobox'));
+    fireEvent.click(screen.getByText('Create new label'));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'create label');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('event path: choosing the create row dispatches create-label to the actionHandler', async () => {
+    const handler = vi.fn();
+    renderFixture(autocompleteAddnewEventFixture, {actionHandler: handler});
+
+    fireEvent.focus(screen.getByRole('combobox'));
+    fireEvent.click(screen.getByText('Create new label'));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'create-label',
+        surfaceId: 'autocomplete-addnew-event',
+      }),
+    );
   });
 });

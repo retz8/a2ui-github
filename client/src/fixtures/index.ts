@@ -1755,6 +1755,60 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'selectpanel-item-event',
     load: () => import('./selectpanel-item-event').then(m => m.selectPanelItemEventFixture),
   },
+  {
+    name: 'autocomplete',
+    load: () => import('./autocomplete').then(m => m.autocompleteFixture),
+  },
+  {
+    name: 'autocomplete-placeholder',
+    load: () => import('./autocomplete-placeholder').then(m => m.autocompletePlaceholderFixture),
+  },
+  {
+    name: 'autocomplete-disabled',
+    load: () => import('./autocomplete-disabled').then(m => m.autocompleteDisabledFixture),
+  },
+  {
+    name: 'autocomplete-open',
+    load: () => import('./autocomplete-open').then(m => m.autocompleteOpenFixture),
+  },
+  {
+    name: 'autocomplete-multiple-select',
+    load: () =>
+      import('./autocomplete-multiple-select').then(m => m.autocompleteMultipleSelectFixture),
+  },
+  {
+    name: 'autocomplete-selected-bound',
+    load: () =>
+      import('./autocomplete-selected-bound').then(m => m.autocompleteSelectedBoundFixture),
+  },
+  {
+    name: 'autocomplete-value-bound',
+    load: () => import('./autocomplete-value-bound').then(m => m.autocompleteValueBoundFixture),
+  },
+  {
+    name: 'autocomplete-empty',
+    load: () => import('./autocomplete-empty').then(m => m.autocompleteEmptyFixture),
+  },
+  {
+    name: 'autocomplete-loading',
+    load: () => import('./autocomplete-loading').then(m => m.autocompleteLoadingFixture),
+  },
+  {
+    name: 'autocomplete-addnew-fn',
+    load: () => import('./autocomplete-addnew-fn').then(m => m.autocompleteAddnewFnFixture),
+  },
+  {
+    name: 'autocomplete-addnew-event',
+    load: () => import('./autocomplete-addnew-event').then(m => m.autocompleteAddnewEventFixture),
+  },
+  {
+    name: 'autocomplete-item-disabled',
+    load: () => import('./autocomplete-item-disabled').then(m => m.autocompleteItemDisabledFixture),
+  },
+  {
+    name: 'autocomplete-item-variant',
+    load: () => import('./autocomplete-item-variant').then(m => m.autocompleteItemVariantFixture),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {
