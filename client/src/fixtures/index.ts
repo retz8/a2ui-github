@@ -1505,6 +1505,114 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'anchored-overlay-offset',
     load: () => import('./anchored-overlay-offset').then(m => m.anchoredOverlayOffsetFixture),
   },
+  {name: 'actionmenu', load: () => import('./actionmenu').then(m => m.actionmenuFixture)},
+  {
+    name: 'actionmenu-open-bound',
+    load: () => import('./actionmenu-open-bound').then(m => m.actionmenuOpenBoundFixture),
+  },
+  {
+    name: 'actionmenu-open-closed',
+    load: () => import('./actionmenu-open-closed').then(m => m.actionmenuOpenClosedFixture),
+  },
+  {
+    name: 'actionmenu-anchor',
+    load: () => import('./actionmenu-anchor').then(m => m.actionmenuAnchorFixture),
+  },
+  {
+    name: 'actionmenu-trigger-icon',
+    load: () => import('./actionmenu-trigger-icon').then(m => m.actionmenuTriggerIconFixture),
+  },
+  {
+    name: 'actionmenu-align-center',
+    load: () => import('./actionmenu-align-center').then(m => m.actionmenuAlignCenterFixture),
+  },
+  {
+    name: 'actionmenu-align-end',
+    load: () => import('./actionmenu-align-end').then(m => m.actionmenuAlignEndFixture),
+  },
+  {
+    name: 'actionmenu-side-outside-top',
+    load: () =>
+      import('./actionmenu-side-outside-top').then(m => m.actionmenuSideOutsideTopFixture),
+  },
+  {
+    name: 'actionmenu-side-outside-left',
+    load: () =>
+      import('./actionmenu-side-outside-left').then(m => m.actionmenuSideOutsideLeftFixture),
+  },
+  {
+    name: 'actionmenu-side-outside-right',
+    load: () =>
+      import('./actionmenu-side-outside-right').then(m => m.actionmenuSideOutsideRightFixture),
+  },
+  {
+    name: 'actionmenu-side-inside-top',
+    load: () => import('./actionmenu-side-inside-top').then(m => m.actionmenuSideInsideTopFixture),
+  },
+  {
+    name: 'actionmenu-side-inside-bottom',
+    load: () =>
+      import('./actionmenu-side-inside-bottom').then(m => m.actionmenuSideInsideBottomFixture),
+  },
+  {
+    name: 'actionmenu-side-inside-left',
+    load: () =>
+      import('./actionmenu-side-inside-left').then(m => m.actionmenuSideInsideLeftFixture),
+  },
+  {
+    name: 'actionmenu-side-inside-right',
+    load: () =>
+      import('./actionmenu-side-inside-right').then(m => m.actionmenuSideInsideRightFixture),
+  },
+  {
+    name: 'actionmenu-side-inside-center',
+    load: () =>
+      import('./actionmenu-side-inside-center').then(m => m.actionmenuSideInsideCenterFixture),
+  },
+  {
+    name: 'actionmenu-width-small',
+    load: () => import('./actionmenu-width-small').then(m => m.actionmenuWidthSmallFixture),
+  },
+  {
+    name: 'actionmenu-width-medium',
+    load: () => import('./actionmenu-width-medium').then(m => m.actionmenuWidthMediumFixture),
+  },
+  {
+    name: 'actionmenu-width-large',
+    load: () => import('./actionmenu-width-large').then(m => m.actionmenuWidthLargeFixture),
+  },
+  {
+    name: 'actionmenu-width-xlarge',
+    load: () => import('./actionmenu-width-xlarge').then(m => m.actionmenuWidthXlargeFixture),
+  },
+  {
+    name: 'actionmenu-width-xxlarge',
+    load: () => import('./actionmenu-width-xxlarge').then(m => m.actionmenuWidthXxlargeFixture),
+  },
+  {
+    name: 'actionmenu-height-xsmall',
+    load: () => import('./actionmenu-height-xsmall').then(m => m.actionmenuHeightXsmallFixture),
+  },
+  {
+    name: 'actionmenu-height-small',
+    load: () => import('./actionmenu-height-small').then(m => m.actionmenuHeightSmallFixture),
+  },
+  {
+    name: 'actionmenu-height-medium',
+    load: () => import('./actionmenu-height-medium').then(m => m.actionmenuHeightMediumFixture),
+  },
+  {
+    name: 'actionmenu-height-large',
+    load: () => import('./actionmenu-height-large').then(m => m.actionmenuHeightLargeFixture),
+  },
+  {
+    name: 'actionmenu-height-xlarge',
+    load: () => import('./actionmenu-height-xlarge').then(m => m.actionmenuHeightXlargeFixture),
+  },
+  {
+    name: 'actionmenu-maxheight',
+    load: () => import('./actionmenu-maxheight').then(m => m.actionmenuMaxheightFixture),
+  },
 ];
 
 export function getFixture(name: string | null): FixtureEntry {

@@ -36,6 +36,16 @@ import {anchoredOverlaySideInsideCenterFixture} from '../src/fixtures/anchored-o
 import {anchoredOverlayAlignCenterFixture} from '../src/fixtures/anchored-overlay-align-center';
 import {anchoredOverlayHeightLargeFixture} from '../src/fixtures/anchored-overlay-height-large';
 import {anchoredOverlayWidthLargeFixture} from '../src/fixtures/anchored-overlay-width-large';
+import {actionmenuFixture} from '../src/fixtures/actionmenu';
+import {actionmenuOpenBoundFixture} from '../src/fixtures/actionmenu-open-bound';
+import {actionmenuOpenClosedFixture} from '../src/fixtures/actionmenu-open-closed';
+import {actionmenuAnchorFixture} from '../src/fixtures/actionmenu-anchor';
+import {actionmenuTriggerIconFixture} from '../src/fixtures/actionmenu-trigger-icon';
+import {actionmenuAlignCenterFixture} from '../src/fixtures/actionmenu-align-center';
+import {actionmenuSideInsideCenterFixture} from '../src/fixtures/actionmenu-side-inside-center';
+import {actionmenuWidthLargeFixture} from '../src/fixtures/actionmenu-width-large';
+import {actionmenuHeightLargeFixture} from '../src/fixtures/actionmenu-height-large';
+import {actionmenuMaxheightFixture} from '../src/fixtures/actionmenu-maxheight';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
@@ -2705,5 +2715,67 @@ describe('AnchoredOverlay — integration through the renderer', () => {
   it('honours a width preset through the renderer', () => {
     renderFixture(anchoredOverlayWidthLargeFixture);
     expect(screen.getByText('Panel content')).toBeInTheDocument();
+  });
+});
+
+describe('ActionMenu — integration through the renderer', () => {
+  it('renders the trigger and, when open, the slotted menu content', () => {
+    renderFixture(actionmenuFixture);
+    // The trigger (ActionMenu.Button) is slotted as the anchor; the overlay's ActionList renders open.
+    expect(screen.getByRole('button', {name: /Actions/})).toBeInTheDocument();
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+    expect(screen.getByText('Edit')).toBeInTheDocument();
+    expect(screen.getByText('Delete branch')).toBeInTheDocument();
+  });
+
+  it('resolves the bound open path through the renderer (menu shown)', () => {
+    renderFixture(actionmenuOpenBoundFixture);
+    expect(screen.getByRole('button', {name: /Actions/})).toBeInTheDocument();
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+  });
+
+  it('renders only the trigger when open is false — the menu is absent from the DOM', () => {
+    renderFixture(actionmenuOpenClosedFixture);
+    expect(screen.getByRole('button', {name: /Actions/})).toBeInTheDocument();
+    expect(screen.queryByText('View pull request')).not.toBeInTheDocument();
+  });
+
+  it('slots a custom ActionMenu.Anchor trigger and renders the menu open', () => {
+    renderFixture(actionmenuAnchorFixture);
+    expect(screen.getByRole('button', {name: 'Open menu'})).toBeInTheDocument();
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+  });
+
+  it('renders an ActionMenu.Button trigger carrying a trailing visual', () => {
+    renderFixture(actionmenuTriggerIconFixture);
+    expect(screen.getByRole('button', {name: /Actions/})).toBeInTheDocument();
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+  });
+
+  it('honours a non-default overlay align through the renderer', () => {
+    renderFixture(actionmenuAlignCenterFixture);
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+  });
+
+  it('honours a non-default overlay side through the renderer', () => {
+    renderFixture(actionmenuSideInsideCenterFixture);
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+  });
+
+  it('honours an overlay width preset through the renderer', () => {
+    renderFixture(actionmenuWidthLargeFixture);
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+  });
+
+  it('honours an overlay height preset through the renderer', () => {
+    renderFixture(actionmenuHeightLargeFixture);
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+  });
+
+  it('caps a long list with maxHeight, keeping all items in the DOM (scrolled)', () => {
+    renderFixture(actionmenuMaxheightFixture);
+    expect(screen.getByText('View pull request')).toBeInTheDocument();
+    expect(screen.getByText('Transfer issue')).toBeInTheDocument();
+    expect(screen.getByText('Delete branch')).toBeInTheDocument();
   });
 });
