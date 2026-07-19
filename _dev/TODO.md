@@ -123,7 +123,17 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 Order: 6.1 first → 6.2 `Icon` → 6.3 → 6.4 → L0 → L1 → L2. Within a layer, sub-tasks are parallel-eligible (no coupling); cross-layer, a later slotter may defer a slot rather than wait and backfill once the referenced leaf exists (`deferred-catalog-work.md`).
 
 ## Phase 7 — Agent
-The agent that generates A2UI surfaces from the catalog, against the live GitHub repo.
+The live LLM agent that generates A2UI surfaces from the catalog, against the live GitHub repo — single-beat capable, verified beat-by-beat ("the machine works"; the arc is Phase 8). Spec: `_dev/docs/spec/phase-7-agent.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
+
+- [ ] **7.1** Agent knowledge curation — the combined research task: Primer-guidance brand doc + curated GitHub-domain idiom examples (catalog-validated); living artifacts, refined in 7.7.
+- [ ] **7.2** Live agent core — the LLM agent alongside the deterministic one: schema manager over the catalog, prompt assembly wired to 7.1, ADK `LlmAgent` (model env knob), stream parser, validator + retry, single-version card; L0 tests; stub data tool (canned real-shaped PR fixtures) so DoD is "prompt → tool call → data-bound valid surface" before MCP.
+- [ ] **7.3** GitHub MCP wiring — re-point the proven tool→surface path from the stub to the official remote read-only MCP toolset (fine-grained read-only PAT, scoped toolsets); proven by a live-data surface.
+- [ ] **7.4** Client chat shell — minimal prompt box + surface area over the existing A2A middleware; verifiable against the deterministic agent.
+- [ ] **7.5** Record/replay harness (L1) — capture real sessions into replayable canned streams; zero-LLM client/integration work.
+- [ ] **7.6** Scenario runner (L2) — the five beats as on-demand scenarios: structural validation + per-beat semantic assertions, cheap-model default.
+- [ ] **7.7** Beat-by-beat verification and refinement — drive each beat through the live stack, iterating on the 7.1 artifacts until beats pass; demand-driven local functions grow here (beat 5 proves the mechanism). Phase definition-of-done.
+
+Order: 7.1 ∥ 7.4 from the start · 7.2 after 7.1 · 7.3 after 7.2 · 7.5 ∥ 7.6 after 7.3 · 7.7 last.
 
 ## Phase 8 — Demo integration
 The full maintainer-triage arc running end-to-end on the live a2ui repo.
