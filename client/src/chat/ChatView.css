@@ -1,0 +1,106 @@
+/* Chat shell layout. Colors come from Primer primitives CSS vars so light/dark
+   themes resolve through the ThemeProvider color mode. */
+
+.chat-app {
+  display: flex;
+  flex-direction: column;
+  height: 100dvh;
+  background: var(--bgColor-inset);
+}
+
+.chat-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--borderColor-default);
+  background: var(--bgColor-default);
+}
+
+.chat-header-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fgColor-default);
+}
+
+.chat-header-sub {
+  font-size: 12px;
+  color: var(--fgColor-muted);
+}
+
+.chat-scroll {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.chat-thread {
+  max-width: 768px;
+  margin: 0 auto;
+  padding: 24px 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chat-empty {
+  margin-top: 18vh;
+  text-align: center;
+  color: var(--fgColor-muted);
+  font-size: 14px;
+}
+
+.chat-user-turn {
+  align-self: flex-end;
+  max-width: 85%;
+  padding: 8px 14px;
+  border-radius: 16px 16px 4px 16px;
+  background: var(--bgColor-accent-emphasis);
+  color: var(--fgColor-onEmphasis);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.chat-surface-turn {
+  align-self: stretch;
+  padding: 16px;
+  border: 1px solid var(--borderColor-default);
+  border-radius: 12px;
+  background: var(--bgColor-default);
+  overflow-x: auto;
+}
+
+.chat-pending {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fgColor-muted);
+  font-size: 13px;
+}
+
+.chat-composer-bar {
+  border-top: 1px solid var(--borderColor-default);
+  background: var(--bgColor-default);
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+}
+
+.chat-composer {
+  max-width: 768px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+.chat-composer-input {
+  flex: 1;
+}
+
+.chat-hint {
+  max-width: 768px;
+  margin: 6px auto 0;
+  text-align: right;
+  font-size: 11px;
+  color: var(--fgColor-muted);
+}
