@@ -113,7 +113,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [WIP] **6.48** `CheckboxGroup` (#99)
 - [WIP] **6.49** `RadioGroup` (#100)
 - [WIP] **6.50** `SelectPanel` (#102)
-- [WIP] **6.51** `Autocomplete`
+- [WIP] **6.51** `Autocomplete` (#103)
 - [x] **6.52** `Dialog` (#90)
 - [x] **6.53** `ConfirmationDialog` (#91)
 - [x] **6.54** `Overlay` — dropped, not shipped: the official doc explicitly marks it "an internal component and is intended to be used as a private API, composing other components. It is not intended to be used on its own," pointing to `AnchoredOverlay` / `Dialog` instead. Same rationale as the §2 `Portal` exclusion (a private-API composition primitive, not a composable leaf) and `Header` (6.37) / `SubNav` (6.42); its standalone-overlay capability is delivered by the public `Dialog` (6.52) and the pending `AnchoredOverlay` (6.55) / `Popover` (6.56) / `SelectPanel` (6.50). A bare floating-surface leaf grows lazily if a later flow needs one those can't cover.

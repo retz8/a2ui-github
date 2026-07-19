@@ -197,3 +197,20 @@ Deferred in the 6.55 design session (`_dev/docs/new-components/anchoredoverlay.m
   maps to `{narrow: 'fullscreen'}` and `displayCloseButton` is forwarded; the anchored (regular)
   presentation is fully baselined. Revisit once multi-viewport visual baselining exists — then add
   a narrow capture for the `fullscreen` variant with its close button.
+
+### Autocomplete — open-menu visual baseline + selection action
+
+Deferred in the 6.51 design session (`_dev/docs/new-components/autocomplete*.md`):
+
+- **Open-menu pixel baseline** — the whole `Autocomplete.Menu` surface (items, leading/trailing
+  icons, selection highlight, filtering, `emptyStateText`, `loading`, add-new row) renders only when
+  the menu is open, and the menu opens purely from internal context state (input focus/typing). The
+  family drops the only props that could force it open (`Autocomplete.Overlay.visibility`,
+  `Autocomplete.Input.openOnFocus`), and the client baseline harness (`client/e2e/visual.spec.ts`)
+  is static-render-only (`goto → screenshot`, no focus/type driving) — the same "consumes, never
+  builds infra" limit as the `TextInput.Action` tooltip entry. Coverage meanwhile: the entire
+  open-menu surface is covered by **vitest render-tests** (`userEvent` focus/type), and the closed
+  input is baselined. Revisit the open-menu pixel baseline once focus-capture baseline infra exists.
+- **`Autocomplete.Menu.onSelectedChange` optional selection `Action`** — dropped, represented by the
+  two-way binding on `selectedItemIds` (the `Select`/`Checkbox` precedent). Backfill an optional
+  selection `Action` only if a future flow needs selection-initiated agent round-trips.
