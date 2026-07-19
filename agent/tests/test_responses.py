@@ -701,3 +701,33 @@ def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
     assert uc["surfaceId"] == "s9"
     assert uc["components"][0]["component"] == "Text"
     assert uc["components"][0]["text"] == "Unhandled event: wat"
+
+
+def test_text_prompt_returns_fresh_chat_surface_echoing_the_prompt():
+    from deterministic_agent.catalog import get_catalog
+    from deterministic_agent.responses import build_text_response
+
+    msgs = build_text_response("show me open PRs")
+    assert len(msgs) == 2
+
+    cs = msgs[0]["createSurface"]
+    assert cs["surfaceId"].startswith("chat-")
+    assert cs["catalogId"] == get_catalog().catalog_id
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == cs["surfaceId"]
+    assert uc["components"] == [
+        {
+            "id": "root",
+            "component": "Text",
+            "text": '✅ Deterministic agent received: "show me open PRs"',
+        }
+    ]
+
+
+def test_each_text_prompt_gets_its_own_surface():
+    from deterministic_agent.responses import build_text_response
+
+    first = build_text_response("one")[0]["createSurface"]["surfaceId"]
+    second = build_text_response("one")[0]["createSurface"]["surfaceId"]
+    assert first != second

@@ -44,3 +44,33 @@ async def run_executor(action: dict) -> list[dict]:
             if is_a2ui_part(part):
                 payload.append(get_a2ui_datapart(part).data)
     return payload
+
+
+def _incoming_text_message(text: str) -> Message:
+    from a2a.types import TextPart
+
+    return Message(
+        message_id="test-msg",
+        role=Role.user,
+        parts=[Part(root=TextPart(text=text))],
+        kind="message",
+    )
+
+
+async def run_executor_text(text: str) -> list[dict]:
+    context = MagicMock(spec=RequestContext)
+    context.message = _incoming_text_message(text)
+    context.current_task = None
+
+    queue = MagicMock(spec=EventQueue)
+    queue.enqueue_event = AsyncMock()
+
+    await DeterministicAgentExecutor().execute(context, queue)
+
+    payload: list[dict] = []
+    for call in queue.enqueue_event.call_args_list:
+        event = call.args[0]
+        for part in _parts_from_event(event):
+            if is_a2ui_part(part):
+                payload.append(get_a2ui_datapart(part).data)
+    return payload

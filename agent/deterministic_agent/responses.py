@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+from itertools import count
 from pathlib import Path
 
 _FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures"
@@ -142,3 +143,39 @@ def build_response(action: dict) -> list[dict]:
     if fixture is None:
         return _fallback(name, surface_id)
     return _stamp_surface(_load_fixture(fixture), surface_id)
+
+
+# Each text prompt creates its own surface (chat-1, chat-2, ...): a surfaceId may not be
+# re-created on the client, and the stateless executor cannot know what already exists, so
+# fresh ids keep every turn renderable (responses stack as chat history).
+_chat_counter = count(1)
+
+
+def build_text_response(text: str) -> list[dict]:
+    """Canned chat surface for a plain-text prompt (the 7.4 chat shell's send path).
+
+    Unlike action responses, a text prompt arrives with no surface to update, so this
+    creates one.
+    """
+    from deterministic_agent.catalog import get_catalog
+
+    surface_id = f"chat-{next(_chat_counter)}"
+    return [
+        {
+            "version": "v0.9",
+            "createSurface": {"surfaceId": surface_id, "catalogId": get_catalog().catalog_id},
+        },
+        {
+            "version": "v0.9",
+            "updateComponents": {
+                "surfaceId": surface_id,
+                "components": [
+                    {
+                        "id": "root",
+                        "component": "Text",
+                        "text": f'✅ Deterministic agent received: "{text}"',
+                    }
+                ],
+            },
+        },
+    ]
