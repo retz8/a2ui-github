@@ -1367,6 +1367,37 @@ export const FIXTURES: FixtureEntry[] = [
     load: () => import('./formcontrol-full').then(m => m.formcontrolFullFixture),
   },
   {
+    name: 'checkbox-group',
+    load: () => import('./checkbox-group').then(m => m.checkboxGroupFixture),
+  },
+  {
+    name: 'checkbox-group-label-bound',
+    load: () => import('./checkbox-group-label-bound').then(m => m.checkboxGroupLabelBoundFixture),
+  },
+  {
+    name: 'checkbox-group-caption',
+    load: () => import('./checkbox-group-caption').then(m => m.checkboxGroupCaptionFixture),
+  },
+  {
+    name: 'checkbox-group-validation',
+    load: () => import('./checkbox-group-validation').then(m => m.checkboxGroupValidationFixture),
+  },
+  {
+    name: 'checkbox-group-disabled',
+    load: () => import('./checkbox-group-disabled').then(m => m.checkboxGroupDisabledFixture),
+  },
+  {
+    name: 'checkbox-group-label-visually-hidden',
+    load: () =>
+      import('./checkbox-group-label-visually-hidden').then(
+        m => m.checkboxGroupLabelVisuallyHiddenFixture,
+      ),
+  },
+  {
+    name: 'checkbox-group-full',
+    load: () => import('./checkbox-group-full').then(m => m.checkboxGroupFullFixture),
+  },
+  {
     name: 'anchored-overlay',
     load: () => import('./anchored-overlay').then(m => m.anchoredOverlayFixture),
   },
