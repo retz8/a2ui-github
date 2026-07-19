@@ -7590,6 +7590,103 @@
       },
       "required": ["component", "items"],
       "unevaluatedProperties": false
+    },
+    "RadioGroup": {
+      "type": "object",
+      "description": "Groups a set of radio inputs under a shared label so the user selects a single option from the group.",
+      "properties": {
+        "component": {
+          "const": "RadioGroup"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "Slot-scanned: the group's label, an optional caption / validation message, and the radio inputs."
+        },
+        "name": {
+          "type": "string",
+          "description": "The group key; the radios sharing this name are mutually exclusive."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "The action performed when the selected radio in the group changes."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the whole group is disabled and no option can be selected."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether a selection must be made before the containing form can be submitted."
+        },
+        "aria-labelledby": {
+          "type": "string",
+          "description": "Points the group at an external element (by id) that labels it for assistive technologies; used when the group is labeled by something other than its own `RadioGroup.Label`."
+        }
+      },
+      "required": ["component", "children", "name"],
+      "unevaluatedProperties": false
+    },
+    "RadioGroupLabel": {
+      "type": "object",
+      "description": "The visible label naming the radio group.",
+      "properties": {
+        "component": {
+          "const": "RadioGroupLabel"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The visible label naming the radio group."
+        },
+        "visuallyHidden": {
+          "type": "boolean",
+          "description": "Hides the label visually while keeping it available to assistive technologies.",
+          "default": false
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "RadioGroupCaption": {
+      "type": "object",
+      "description": "Helper text describing the radio group, shown below its label.",
+      "properties": {
+        "component": {
+          "const": "RadioGroupCaption"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Helper text describing the radio group, shown below its label."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "RadioGroupValidation": {
+      "type": "object",
+      "description": "A validation message shown for the radio group, indicating an error or success state.",
+      "properties": {
+        "component": {
+          "const": "RadioGroupValidation"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The validation message shown for the radio group."
+        },
+        "variant": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["error", "success"]
+            },
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+            }
+          ],
+          "description": "The validation status the message represents. `error` renders it as a failure (red, alert icon); `success` as a pass (green, check). Bindable: an agent can drive it through the data model (there is no `DynamicEnum`, so this is a union of the enum + `DataBinding`), mirroring `FormControlValidation.variant`."
+        }
+      },
+      "required": ["component", "text", "variant"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -8097,6 +8194,18 @@
         },
         {
           "$ref": "#/components/Autocomplete.Menu"
+        },
+        {
+          "$ref": "#/components/RadioGroup"
+        },
+        {
+          "$ref": "#/components/RadioGroupLabel"
+        },
+        {
+          "$ref": "#/components/RadioGroupCaption"
+        },
+        {
+          "$ref": "#/components/RadioGroupValidation"
         }
       ]
     },

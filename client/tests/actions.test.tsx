@@ -25,6 +25,8 @@ import {checkboxGroupFixture} from '../src/fixtures/checkbox-group';
 import {paginationControlledFixture} from '../src/fixtures/pagination-controlled';
 import {radioFnFixture} from '../src/fixtures/radio-fn';
 import {radioEventFixture} from '../src/fixtures/radio-event';
+import {radiogroupFnFixture} from '../src/fixtures/radiogroup-fn';
+import {radiogroupEventFixture} from '../src/fixtures/radiogroup-event';
 import {toggleswitchFnFixture} from '../src/fixtures/toggleswitch-fn';
 import {toggleswitchEventFixture} from '../src/fixtures/toggleswitch-event';
 import {segmentedcontrolFnFixture} from '../src/fixtures/segmentedcontrol-fn';
@@ -270,6 +272,35 @@ describe('action paths', () => {
         name: 'select',
         surfaceId: 'radio-event',
         sourceComponentId: 'radio',
+      }),
+    );
+  });
+
+  it('path-1 (RadioGroup): selecting a radio runs the group consoleLog locally, not via the handler', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(radiogroupFnFixture, {actionHandler: handler});
+
+    // The group's onChange fires from any radio (RadioGroupContext); functionCall runs locally.
+    fireEvent.click(screen.getByRole('radio', {name: 'Choice one'}));
+
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'radiogroup-fn changed');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('path-2 (RadioGroup): the group event is dispatched to the actionHandler on selection', async () => {
+    const handler = vi.fn();
+    renderFixture(radiogroupEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByRole('radio', {name: 'Choice one'}));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'select',
+        surfaceId: 'radiogroup-event',
+        sourceComponentId: 'group',
       }),
     );
   });

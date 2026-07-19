@@ -128,6 +128,10 @@ import {CheckboxGroupApi} from './components/checkboxgroup';
 import {CheckboxGroupLabelApi} from './components/checkboxgroup-label';
 import {CheckboxGroupCaptionApi} from './components/checkboxgroup-caption';
 import {CheckboxGroupValidationApi} from './components/checkboxgroup-validation';
+import {RadioGroupApi} from './components/radiogroup';
+import {RadioGroupLabelApi} from './components/radiogroup-label';
+import {RadioGroupCaptionApi} from './components/radiogroup-caption';
+import {RadioGroupValidationApi} from './components/radiogroup-validation';
 import {AnchoredOverlayApi} from './components/anchoredoverlay';
 import {ActionMenuApi} from './components/actionmenu';
 import {ActionMenuButtonApi} from './components/actionmenu-button';
@@ -278,6 +282,10 @@ export const COMPONENTS = {
   CheckboxGroupLabel: CheckboxGroupLabelApi,
   CheckboxGroupCaption: CheckboxGroupCaptionApi,
   CheckboxGroupValidation: CheckboxGroupValidationApi,
+  RadioGroup: RadioGroupApi,
+  RadioGroupLabel: RadioGroupLabelApi,
+  RadioGroupCaption: RadioGroupCaptionApi,
+  RadioGroupValidation: RadioGroupValidationApi,
   AnchoredOverlay: AnchoredOverlayApi,
   ActionMenu: ActionMenuApi,
   'ActionMenu.Button': ActionMenuButtonApi,

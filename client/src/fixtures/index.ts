@@ -1398,6 +1398,45 @@ export const FIXTURES: FixtureEntry[] = [
     load: () => import('./checkbox-group-full').then(m => m.checkboxGroupFullFixture),
   },
   {
+    name: 'radiogroup',
+    load: () => import('./radiogroup').then(m => m.radiogroupFixture),
+  },
+  {
+    name: 'radiogroup-label-bound',
+    load: () => import('./radiogroup-label-bound').then(m => m.radiogroupLabelBoundFixture),
+  },
+  {
+    name: 'radiogroup-caption',
+    load: () => import('./radiogroup-caption').then(m => m.radiogroupCaptionFixture),
+  },
+  {
+    name: 'radiogroup-validation',
+    load: () => import('./radiogroup-validation').then(m => m.radiogroupValidationFixture),
+  },
+  {
+    name: 'radiogroup-disabled',
+    load: () => import('./radiogroup-disabled').then(m => m.radiogroupDisabledFixture),
+  },
+  {
+    name: 'radiogroup-label-visually-hidden',
+    load: () =>
+      import('./radiogroup-label-visually-hidden').then(
+        m => m.radiogroupLabelVisuallyHiddenFixture,
+      ),
+  },
+  {
+    name: 'radiogroup-fn',
+    load: () => import('./radiogroup-fn').then(m => m.radiogroupFnFixture),
+  },
+  {
+    name: 'radiogroup-event',
+    load: () => import('./radiogroup-event').then(m => m.radiogroupEventFixture),
+  },
+  {
+    name: 'radiogroup-full',
+    load: () => import('./radiogroup-full').then(m => m.radiogroupFullFixture),
+  },
+  {
     name: 'anchored-overlay',
     load: () => import('./anchored-overlay').then(m => m.anchoredOverlayFixture),
   },

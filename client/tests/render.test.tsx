@@ -35,6 +35,13 @@ import {checkboxGroupValidationFixture} from '../src/fixtures/checkbox-group-val
 import {checkboxGroupDisabledFixture} from '../src/fixtures/checkbox-group-disabled';
 import {checkboxGroupLabelVisuallyHiddenFixture} from '../src/fixtures/checkbox-group-label-visually-hidden';
 import {checkboxGroupFullFixture} from '../src/fixtures/checkbox-group-full';
+import {radiogroupFixture} from '../src/fixtures/radiogroup';
+import {radiogroupLabelBoundFixture} from '../src/fixtures/radiogroup-label-bound';
+import {radiogroupCaptionFixture} from '../src/fixtures/radiogroup-caption';
+import {radiogroupValidationFixture} from '../src/fixtures/radiogroup-validation';
+import {radiogroupDisabledFixture} from '../src/fixtures/radiogroup-disabled';
+import {radiogroupLabelVisuallyHiddenFixture} from '../src/fixtures/radiogroup-label-visually-hidden';
+import {radiogroupFullFixture} from '../src/fixtures/radiogroup-full';
 import {anchoredOverlayFixture} from '../src/fixtures/anchored-overlay';
 import {anchoredOverlayBoundFixture} from '../src/fixtures/anchored-overlay-bound';
 import {anchoredOverlayClosedFixture} from '../src/fixtures/anchored-overlay-closed';
@@ -2761,6 +2768,65 @@ describe('CheckboxGroup (compound family) — integration through the renderer',
     expect(screen.getAllByText('Select at least one option').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeInTheDocument();
     expect(screen.getByRole('checkbox', {name: 'Pull requests'})).toBeInTheDocument();
+  });
+});
+
+describe('RadioGroup (compound family) — integration through the renderer', () => {
+  it('groups a label over FormControl-wrapped radio options in a fieldset', () => {
+    const {container} = renderFixture(radiogroupFixture);
+    expect(screen.getByText('Choices')).toBeInTheDocument();
+    expect(screen.getByRole('radio', {name: 'Choice one'})).toBeInTheDocument();
+    expect(screen.getByRole('radio', {name: 'Choice two'})).toBeInTheDocument();
+    expect(screen.getByRole('radio', {name: 'Choice three'})).toBeInTheDocument();
+    expect(container.querySelector('fieldset')).toBeInTheDocument();
+    // The pre-selected option renders checked.
+    expect(screen.getByRole('radio', {name: 'Choice two'})).toBeChecked();
+    // The radios share the group `name` via RadioGroupContext (mutual exclusivity).
+    expect(screen.getByRole('radio', {name: 'Choice one'})).toHaveAttribute('name', 'choices');
+    expect(screen.getByRole('radio', {name: 'Choice two'})).toHaveAttribute('name', 'choices');
+  });
+
+  it('resolves the bound group label text through the renderer', () => {
+    renderFixture(radiogroupLabelBoundFixture);
+    expect(screen.getByText('Choices')).toBeInTheDocument();
+  });
+
+  it('renders the helper caption alongside the label and options', () => {
+    renderFixture(radiogroupCaptionFixture);
+    expect(screen.getByText('Choices')).toBeInTheDocument();
+    expect(screen.getByText('Select one option')).toBeInTheDocument();
+    expect(screen.getByRole('radio', {name: 'Choice one'})).toBeInTheDocument();
+  });
+
+  it('renders both validation variants across the gallery', () => {
+    renderFixture(radiogroupValidationFixture);
+    // Primer renders the validation message twice per surface: the visible message plus a
+    // screenreader-accessible copy inside the <legend>. getAllByText tolerates both.
+    expect(screen.getAllByText('Please select an option').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Looks good').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('cascades root disabled onto every radio option via the disabled fieldset', () => {
+    renderFixture(radiogroupDisabledFixture);
+    expect(screen.getByText('Choices')).toBeInTheDocument();
+    expect(screen.getByRole('radio', {name: 'Choice one'})).toBeDisabled();
+    expect(screen.getByRole('radio', {name: 'Choice two'})).toBeDisabled();
+  });
+
+  it('keeps a visually-hidden group label in the accessibility tree', () => {
+    renderFixture(radiogroupLabelVisuallyHiddenFixture);
+    expect(screen.getByText('Choices')).toBeInTheDocument();
+    expect(screen.getByRole('radio', {name: 'Choice one'})).toBeInTheDocument();
+  });
+
+  it('composes the full stack: label, caption, validation, and the option set', () => {
+    renderFixture(radiogroupFullFixture);
+    expect(screen.getByText('Choices')).toBeInTheDocument();
+    expect(screen.getByText('Select one option')).toBeInTheDocument();
+    // Validation message renders twice (visible + a VisuallyHidden legend copy for AT).
+    expect(screen.getAllByText('Please select an option').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('radio', {name: 'Choice one'})).toBeInTheDocument();
+    expect(screen.getByRole('radio', {name: 'Choice two'})).toBeInTheDocument();
   });
 });
 
