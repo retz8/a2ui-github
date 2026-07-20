@@ -52,7 +52,7 @@ Build the autonomous half of the daily-work harness properly and make it project
 
 Order: 5.1 → 5.2 → 5.3, strictly sequential — contract-first, and the consuming side follows the contract the producing side defines. Cross-repo: commits land in `../daily-work-harness`; tracked here, no `a2ui-github` worktree.
 
-## Phase 6 — Catalog build-out [WIP]
+## Phase 6 — Catalog build-out [done]
 Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf (the Phase-7 agent composes screens from them). Leaf vocabulary only — no screen composition here. Spec: `_dev/docs/spec/phase-6-catalog-build-out.md`. Inventory: `_dev/docs/primer-react-full-list.md`.
 
 **Component sub-tasks use a divergent track** (not 6.1/6.3/6.4): sole planning route is `design-catalog-component` → decision doc at `_dev/docs/new-components/<component>.md` (not a `task-<N.M>` spec); `delegate-task` points References at that doc, names `build-catalog-component` as Execution skill, no Plan skill. Per spec §5.
@@ -125,7 +125,7 @@ Order: 6.1 first → 6.2 `Icon` → 6.3 → 6.4 → L0 → L1 → L2. Within a l
 ## Phase 7 — Agent [WIP]
 The live LLM agent that generates A2UI surfaces from the catalog, against the live GitHub repo — single-beat capable, verified beat-by-beat ("the machine works"; the arc is Phase 8). Spec: `_dev/docs/spec/phase-7-agent.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
-- [ ] **7.1** Agent knowledge curation — the combined research task: Primer-guidance brand doc + curated GitHub-domain idiom examples (catalog-validated); living artifacts, refined in 7.7.
+- [WIP] **7.1** Agent knowledge curation — the combined research task: Primer-guidance brand doc + curated GitHub-domain idiom examples (catalog-validated); living artifacts, refined in 7.7.
 - [ ] **7.2** Live agent core — the LLM agent alongside the deterministic one: schema manager over the catalog, prompt assembly wired to 7.1, ADK `LlmAgent` (model env knob), stream parser, validator + retry, single-version card; L0 tests; stub data tool (canned real-shaped PR fixtures) so DoD is "prompt → tool call → data-bound valid surface" before MCP.
 - [ ] **7.3** GitHub MCP wiring — re-point the proven tool→surface path from the stub to the official remote read-only MCP toolset (fine-grained read-only PAT, scoped toolsets); proven by a live-data surface.
 - [WIP] **7.4** Client chat shell — minimal prompt box + surface area over the existing A2A middleware; verifiable against the deterministic agent.
