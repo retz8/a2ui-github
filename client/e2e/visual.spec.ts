@@ -216,6 +216,26 @@ const FIXTURE_NAMES = [
   'autocomplete',
   'autocomplete-placeholder',
   'autocomplete-disabled',
+  'checkbox-group',
+  'checkbox-group-caption',
+  'checkbox-group-disabled',
+  'checkbox-group-full',
+  'checkbox-group-label-bound',
+  'checkbox-group-label-visually-hidden',
+  'checkbox-group-validation',
+  'radiogroup',
+  'radiogroup-caption',
+  'radiogroup-disabled',
+  'radiogroup-event',
+  'radiogroup-fn',
+  'radiogroup-full',
+  'radiogroup-label-bound',
+  'radiogroup-label-visually-hidden',
+  'radiogroup-validation',
+  // ActionMenu and SelectPanel are intentionally not baselined: their entire visual payload
+  // (the menu / panel) renders in a `document.body` React portal, outside the screenshotted
+  // `fixture-view`, so a baseline would freeze only the bare trigger. Capturing them would need
+  // a harness change (full-page screenshot, or routing portals into `fixture-view`).
 ];
 
 for (const name of FIXTURE_NAMES) {
