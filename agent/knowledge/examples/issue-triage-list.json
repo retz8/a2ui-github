@@ -1,0 +1,146 @@
+{
+  "name": "issue-triage-list",
+  "intent": "Show me the open issues in this repo that still need triage, most recently updated first.",
+  "messages": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "issue-triage-list",
+        "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "issue-triage-list",
+        "components": [
+          {
+            "id": "root",
+            "component": "Stack",
+            "direction": "vertical",
+            "gap": "normal",
+            "children": ["header", "list"]
+          },
+          {
+            "id": "header",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["title", "count"]
+          },
+          {
+            "id": "title",
+            "component": "Heading",
+            "text": "Issues needing triage",
+            "as": "h2",
+            "variant": "medium"
+          },
+          {
+            "id": "count",
+            "component": "CounterLabel",
+            "count": {
+              "path": "/openCount"
+            }
+          },
+          {
+            "id": "list",
+            "component": "ActionList",
+            "role": "listbox",
+            "showDividers": true,
+            "children": {
+              "componentId": "issue-row",
+              "path": "/issues"
+            }
+          },
+          {
+            "id": "issue-row",
+            "component": "ActionList.Item",
+            "children": ["row-lv", "row-title", "row-desc", "row-tv"],
+            "action": {
+              "event": {
+                "name": "open-issue",
+                "context": {
+                  "number": {
+                    "path": "number"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "id": "row-lv",
+            "component": "ActionList.LeadingVisual",
+            "children": ["row-icon"]
+          },
+          {
+            "id": "row-icon",
+            "component": "Icon",
+            "name": "issue-opened",
+            "accessibility": {
+              "label": "Open issue"
+            }
+          },
+          {
+            "id": "row-title",
+            "component": "Text",
+            "text": {
+              "path": "title"
+            },
+            "weight": "semibold"
+          },
+          {
+            "id": "row-desc",
+            "component": "ActionList.Description",
+            "text": {
+              "path": "meta"
+            },
+            "variant": "block"
+          },
+          {
+            "id": "row-tv",
+            "component": "ActionList.TrailingVisual",
+            "children": ["row-time"]
+          },
+          {
+            "id": "row-time",
+            "component": "RelativeTime",
+            "datetime": {
+              "path": "updatedAt"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "issue-triage-list",
+        "path": "/",
+        "value": {
+          "openCount": 3,
+          "issues": [
+            {
+              "number": 512,
+              "title": "Streaming heal drops trailing partial",
+              "meta": "octo/a2ui-github \u00b7 reported by maintainer",
+              "updatedAt": "2026-07-19T14:02:00Z"
+            },
+            {
+              "number": 508,
+              "title": "Catalog validator rejects bound counter",
+              "meta": "octo/a2ui-github \u00b7 4 comments",
+              "updatedAt": "2026-07-18T09:41:00Z"
+            },
+            {
+              "number": 501,
+              "title": "Docs: clarify relative template paths",
+              "meta": "octo/a2ui-github \u00b7 good first issue",
+              "updatedAt": "2026-07-17T21:15:00Z"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

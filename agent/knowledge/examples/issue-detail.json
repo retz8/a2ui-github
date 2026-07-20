@@ -1,0 +1,237 @@
+{
+  "name": "issue-detail",
+  "intent": "Open issue #482 in full detail, with its conversation timeline and the assignees and labels alongside.",
+  "messages": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "issue-detail",
+        "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "issue-detail",
+        "components": [
+          {
+            "id": "root",
+            "component": "PageLayout",
+            "padding": "normal",
+            "columnGap": "normal",
+            "header": "hd",
+            "content": "ct",
+            "pane": "pn"
+          },
+          {
+            "id": "hd",
+            "component": "PageLayout.Header",
+            "divider": "line",
+            "children": ["ph"]
+          },
+          {
+            "id": "ph",
+            "component": "PageHeader",
+            "aria-label": "Issue header",
+            "children": ["ph-ta", "ph-desc"]
+          },
+          {
+            "id": "ph-ta",
+            "component": "PageHeader.TitleArea",
+            "variant": "large",
+            "children": ["ph-lv", "ph-title", "ph-tv"]
+          },
+          {
+            "id": "ph-lv",
+            "component": "PageHeader.LeadingVisual",
+            "children": ["ph-icon"]
+          },
+          {
+            "id": "ph-icon",
+            "component": "Icon",
+            "name": "issue-opened",
+            "accessibility": {
+              "label": "Open issue"
+            }
+          },
+          {
+            "id": "ph-title",
+            "component": "PageHeader.Title",
+            "text": "Docs: clarify streaming heal order",
+            "as": "h1"
+          },
+          {
+            "id": "ph-tv",
+            "component": "PageHeader.TrailingVisual",
+            "children": ["ph-state"]
+          },
+          {
+            "id": "ph-state",
+            "component": "StateLabel",
+            "status": "issueOpened",
+            "text": "Open"
+          },
+          {
+            "id": "ph-desc",
+            "component": "PageHeader.Description",
+            "children": ["ph-desc-text"]
+          },
+          {
+            "id": "ph-desc-text",
+            "component": "Text",
+            "text": "#482 opened 3 days ago by octocat \u00b7 5 comments",
+            "size": "small"
+          },
+          {
+            "id": "ct",
+            "component": "PageLayout.Content",
+            "padding": "normal",
+            "children": ["tl"]
+          },
+          {
+            "id": "tl",
+            "component": "Timeline",
+            "children": ["ti1", "ti2"]
+          },
+          {
+            "id": "ti1",
+            "component": "TimelineItem",
+            "children": ["ti1-av", "ti1-badge", "ti1-body"]
+          },
+          {
+            "id": "ti1-av",
+            "component": "TimelineAvatar",
+            "child": "ti1-avatar"
+          },
+          {
+            "id": "ti1-avatar",
+            "component": "Avatar",
+            "src": "https://avatars.githubusercontent.com/u/583231?v=4",
+            "alt": "octocat"
+          },
+          {
+            "id": "ti1-badge",
+            "component": "TimelineBadge",
+            "child": "ti1-icon",
+            "variant": "open"
+          },
+          {
+            "id": "ti1-icon",
+            "component": "Icon",
+            "name": "comment"
+          },
+          {
+            "id": "ti1-body",
+            "component": "TimelineBody",
+            "children": ["ti1-text"]
+          },
+          {
+            "id": "ti1-text",
+            "component": "Text",
+            "text": "The heal order should flush trailing partials before closing the surface."
+          },
+          {
+            "id": "ti2",
+            "component": "TimelineItem",
+            "children": ["ti2-av", "ti2-badge", "ti2-body"]
+          },
+          {
+            "id": "ti2-av",
+            "component": "TimelineAvatar",
+            "child": "ti2-avatar"
+          },
+          {
+            "id": "ti2-avatar",
+            "component": "Avatar",
+            "src": "https://avatars.githubusercontent.com/u/9919?v=4",
+            "alt": "hubot"
+          },
+          {
+            "id": "ti2-badge",
+            "component": "TimelineBadge",
+            "child": "ti2-icon",
+            "variant": "done"
+          },
+          {
+            "id": "ti2-icon",
+            "component": "Icon",
+            "name": "git-commit"
+          },
+          {
+            "id": "ti2-body",
+            "component": "TimelineBody",
+            "children": ["ti2-text"]
+          },
+          {
+            "id": "ti2-text",
+            "component": "Text",
+            "text": "Referenced in commit a1b2c3d \u2014 parser now heals in order."
+          },
+          {
+            "id": "pn",
+            "component": "PageLayout.Pane",
+            "position": "end",
+            "width": "small",
+            "divider": "line",
+            "children": ["meta"]
+          },
+          {
+            "id": "meta",
+            "component": "Stack",
+            "direction": "vertical",
+            "gap": "normal",
+            "children": ["asg-head", "asg-stack", "lbl-head", "lbl-group"]
+          },
+          {
+            "id": "asg-head",
+            "component": "Heading",
+            "text": "Assignees",
+            "as": "h3",
+            "variant": "small"
+          },
+          {
+            "id": "asg-stack",
+            "component": "AvatarStack",
+            "children": ["asg1", "asg2"]
+          },
+          {
+            "id": "asg1",
+            "component": "Avatar",
+            "src": "https://avatars.githubusercontent.com/u/583231?v=4",
+            "alt": "octocat"
+          },
+          {
+            "id": "asg2",
+            "component": "Avatar",
+            "src": "https://avatars.githubusercontent.com/u/9919?v=4",
+            "alt": "hubot"
+          },
+          {
+            "id": "lbl-head",
+            "component": "Heading",
+            "text": "Labels",
+            "as": "h3",
+            "variant": "small"
+          },
+          {
+            "id": "lbl-group",
+            "component": "LabelGroup",
+            "children": ["lbl1", "lbl2"]
+          },
+          {
+            "id": "lbl1",
+            "component": "IssueLabelToken",
+            "text": "documentation",
+            "fillColor": "#0969da"
+          },
+          {
+            "id": "lbl2",
+            "component": "IssueLabelToken",
+            "text": "good first issue",
+            "fillColor": "#7057ff"
+          }
+        ]
+      }
+    }
+  ]
+}
