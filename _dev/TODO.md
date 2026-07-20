@@ -128,7 +128,7 @@ The live LLM agent that generates A2UI surfaces from the catalog, against the li
 - [WIP] **7.1** Agent knowledge curation — the combined research task: Primer-guidance brand doc + curated GitHub-domain idiom examples (catalog-validated); living artifacts, refined in 7.7. (#109)
 - [ ] **7.2** Live agent core — the LLM agent alongside the deterministic one: schema manager over the catalog, prompt assembly wired to 7.1, ADK `LlmAgent` (model env knob), stream parser, validator + retry, single-version card; L0 tests; stub data tool (canned real-shaped PR fixtures) so DoD is "prompt → tool call → data-bound valid surface" before MCP.
 - [ ] **7.3** GitHub MCP wiring — re-point the proven tool→surface path from the stub to the official remote read-only MCP toolset (fine-grained read-only PAT, scoped toolsets); proven by a live-data surface.
-- [WIP] **7.4** Client chat shell — minimal prompt box + surface area over the existing A2A middleware; verifiable against the deterministic agent.
+- [x] **7.4** Client chat shell — minimal prompt box + surface area over the existing A2A middleware; verifiable against the deterministic agent.
 - [ ] **7.5** Record/replay harness (L1) — capture real sessions into replayable canned streams; zero-LLM client/integration work.
 - [ ] **7.6** Scenario runner (L2) — the five beats as on-demand scenarios: structural validation + per-beat semantic assertions, cheap-model default.
 - [ ] **7.7** Beat-by-beat verification and refinement — drive each beat through the live stack, iterating on the 7.1 artifacts until beats pass; demand-driven local functions grow here (beat 5 proves the mechanism). Phase definition-of-done.

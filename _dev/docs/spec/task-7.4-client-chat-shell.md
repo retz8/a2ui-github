@@ -14,7 +14,7 @@ existing A2A middleware. Parent: `_dev/TODO.md` 7.4; phase spec `_dev/docs/spec/
   make the shell's text path live-verifiable.
 - The fixture TestSpace and its Playwright baselines keep working; their page URL update is in
   scope (see decision 1).
-- Presentation polish, conversational chrome, and transcript UX are Phase 8.
+- Deeper presentation polish and the multi-turn conversational arc are Phase 8.
 
 ## Locked decisions
 
@@ -32,13 +32,16 @@ the A2A extraction helper. The deterministic agent's single-terminal-Task reply 
 case and remains the live verification target; the progressive case is covered by unit tests over
 mocked stream events.
 
-### 3. Minimal UX — prompt box + surface area + pending state
+### 3. Chat UX — production-like transcript shell
 
-No transcript, no message-history list. The agent's rendered surface is the response view; the
-shell adds only a prompt input and a busy/pending indicator while a stream is open. The shell is
-**host chrome, hand-written React using stock Primer components directly** (e.g. prompt input,
-button, spinner, layout frame) — it does not go through the A2UI catalog/renderer, and gets no
-bespoke styling or layout work.
+A conversational transcript: user prompts and agent surfaces render as a message history of
+bubbles/cards, with a composer input, a header, and a busy/pending indicator while a stream is
+open. The shell is **host chrome, hand-written React using stock Primer components directly**
+(composer, button, spinner, layout frame) styled with Primer CSS variables — it does not go through
+the A2UI catalog/renderer.
+
+This supersedes the original minimal-UX scope (prompt box + surface area only, no transcript, no
+bespoke styling); the production-like chat UI was requested mid-task.
 
 ### 4. `contextId` threading in both send paths
 
