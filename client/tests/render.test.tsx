@@ -67,6 +67,19 @@ import {selectPanelDividersFixture} from '../src/fixtures/selectpanel-dividers';
 import {selectPanelItemDescriptionFixture} from '../src/fixtures/selectpanel-item-description';
 import {selectPanelItemVariantFixture} from '../src/fixtures/selectpanel-item-variant';
 import {selectPanelItemDisabledFixture} from '../src/fixtures/selectpanel-item-disabled';
+import {autocompleteFixture} from '../src/fixtures/autocomplete';
+import {autocompletePlaceholderFixture} from '../src/fixtures/autocomplete-placeholder';
+import {autocompleteDisabledFixture} from '../src/fixtures/autocomplete-disabled';
+import {autocompleteOpenFixture} from '../src/fixtures/autocomplete-open';
+import {autocompleteMultipleSelectFixture} from '../src/fixtures/autocomplete-multiple-select';
+import {autocompleteSelectedBoundFixture} from '../src/fixtures/autocomplete-selected-bound';
+import {autocompleteValueBoundFixture} from '../src/fixtures/autocomplete-value-bound';
+import {autocompleteEmptyFixture} from '../src/fixtures/autocomplete-empty';
+import {autocompleteLoadingFixture} from '../src/fixtures/autocomplete-loading';
+import {autocompleteAddnewFnFixture} from '../src/fixtures/autocomplete-addnew-fn';
+import {autocompleteAddnewEventFixture} from '../src/fixtures/autocomplete-addnew-event';
+import {autocompleteItemDisabledFixture} from '../src/fixtures/autocomplete-item-disabled';
+import {autocompleteItemVariantFixture} from '../src/fixtures/autocomplete-item-variant';
 import {textFixture} from '../src/fixtures/text';
 import {textBoundFixture} from '../src/fixtures/text-bound';
 import {buttonFnFixture} from '../src/fixtures/button-fn';
@@ -2938,5 +2951,130 @@ describe('SelectPanel — integration through the renderer', () => {
   it('renders a disabled item', () => {
     renderFixture(selectPanelItemDisabledFixture);
     expect(screen.getByText('documentation')).toBeInTheDocument();
+  });
+});
+
+describe('Autocomplete (compound family) — integration through the renderer', () => {
+  // The suggestion options render in the DOM; the menu opens on focus. Options carry role="option".
+  const openMenu = () => fireEvent.focus(screen.getByRole('combobox'));
+  const option = (label: string): HTMLElement | null =>
+    screen.getByText(label).closest('[role="option"]');
+
+  it('renders the composed family: the Input value plus its matching suggestion', () => {
+    const {container} = renderFixture(autocompleteFixture);
+    // The Input value 'bug' resolves and (via Primer's live filter) narrows the closed menu to Bug.
+    expect(screen.getByRole('combobox')).toHaveValue('bug');
+    expect(screen.getByText('Bug')).toBeInTheDocument();
+    // Input search leadingVisual + the matching item's leading icon render as svgs.
+    expect(container.querySelectorAll('svg').length).toBeGreaterThanOrEqual(2);
+  });
+
+  it('shows the Input placeholder while empty', () => {
+    renderFixture(autocompletePlaceholderFixture);
+    expect(screen.getByPlaceholderText('Search labels')).toBeInTheDocument();
+  });
+
+  it('honours the disabled Input through the renderer', () => {
+    renderFixture(autocompleteDisabledFixture);
+    expect(screen.getByRole('combobox')).toBeDisabled();
+  });
+
+  it('opens the menu on focus and renders the three suggestions with leading and trailing icons', () => {
+    const {container} = renderFixture(autocompleteOpenFixture);
+    openMenu();
+    for (const label of ['Bug', 'Feature', 'Docs']) {
+      expect(screen.getByText(label)).toBeInTheDocument();
+    }
+    // Bug carries both a leading and a trailing icon; the menu renders svgs.
+    expect(container.querySelectorAll('svg').length).toBeGreaterThanOrEqual(4);
+  });
+
+  it("narrows the suggestions with Primer's default case-insensitive filter as the user types", async () => {
+    renderFixture(autocompleteOpenFixture);
+    const input = screen.getByRole('combobox');
+    fireEvent.focus(input);
+    fireEvent.change(input, {target: {value: 'bu'}});
+    await waitFor(() => expect(screen.getByText('Bug')).toBeInTheDocument());
+    expect(screen.queryByText('Feature')).not.toBeInTheDocument();
+    expect(screen.queryByText('Docs')).not.toBeInTheDocument();
+  });
+
+  it('accumulates selection in the multiple variant and keeps the menu open', async () => {
+    renderFixture(autocompleteMultipleSelectFixture);
+    openMenu();
+    fireEvent.click(screen.getByText('Bug'));
+    await waitFor(() => expect(option('Bug')).toHaveAttribute('aria-selected', 'true'));
+    // The menu stays open in the multiple variant — the other options are still present.
+    expect(screen.getByText('Feature')).toBeInTheDocument();
+  });
+
+  it('resolves the bound selectedItemIds and writes a new selection back through the two-way binding', async () => {
+    renderFixture(autocompleteSelectedBoundFixture);
+    openMenu();
+    // Initial bound value: /selected = ['docs'] marks Docs selected.
+    expect(option('Docs')).toHaveAttribute('aria-selected', 'true');
+    // Selecting Feature writes ['docs','feature'] back through the setter; it round-trips through
+    // the bound path and marks Feature selected too.
+    fireEvent.click(screen.getByText('Feature'));
+    await waitFor(() => expect(option('Feature')).toHaveAttribute('aria-selected', 'true'));
+    expect(option('Docs')).toHaveAttribute('aria-selected', 'true');
+  });
+
+  it('resolves a path-bound Input value and writes user edits back (two-way binding)', async () => {
+    renderFixture(autocompleteValueBoundFixture);
+    const input = screen.getByRole('combobox');
+    expect(input).toHaveValue('bug');
+    fireEvent.change(input, {target: {value: 'feature'}});
+    await waitFor(() => expect(screen.getByRole('combobox')).toHaveValue('feature'));
+  });
+
+  it('shows the empty-state text when the typed input matches no option', async () => {
+    renderFixture(autocompleteEmptyFixture);
+    const input = screen.getByRole('combobox');
+    fireEvent.focus(input);
+    fireEvent.change(input, {target: {value: 'zzz'}});
+    await waitFor(() => expect(screen.getByText('No labels found')).toBeInTheDocument());
+    expect(screen.queryByText('Bug')).not.toBeInTheDocument();
+  });
+
+  it('shows the loading indicator instead of the options when the menu is loading', () => {
+    renderFixture(autocompleteLoadingFixture);
+    openMenu();
+    // Primer renders a Spinner in place of the option list while loading.
+    expect(screen.queryByText('Bug')).not.toBeInTheDocument();
+  });
+
+  it('renders the addNewItem (functionCall) create row', () => {
+    renderFixture(autocompleteAddnewFnFixture);
+    openMenu();
+    expect(screen.getByText('Create new label')).toBeInTheDocument();
+  });
+
+  it('renders the addNewItem (event) fixture closed with the bound query and initial message', () => {
+    renderFixture(autocompleteAddnewEventFixture);
+    expect(screen.getByRole('combobox')).toHaveValue('wontfix');
+    expect(screen.getByText('No label yet')).toBeInTheDocument();
+    expect(screen.getByText('Create new label')).toBeInTheDocument();
+  });
+
+  it('marks a disabled suggestion as not selectable', () => {
+    renderFixture(autocompleteItemDisabledFixture);
+    openMenu();
+    expect(option('Feature')).toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('renders a danger-variant suggestion', () => {
+    renderFixture(autocompleteItemVariantFixture);
+    openMenu();
+    expect(screen.getByText('Wontfix')).toBeInTheDocument();
+  });
+
+  it('labels the options listbox from the Menu accessibility.label', () => {
+    renderFixture(autocompleteFixture);
+    openMenu();
+    expect(screen.getByRole('listbox', {hidden: true})).toHaveAttribute(
+      'aria-labelledby',
+      'Labels',
+    );
   });
 });

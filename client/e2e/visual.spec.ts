@@ -213,6 +213,9 @@ const FIXTURE_NAMES = [
   'content-overflow',
   'content-clickoutside-fn',
   'content-clickoutside-event',
+  'autocomplete',
+  'autocomplete-placeholder',
+  'autocomplete-disabled',
 ];
 
 for (const name of FIXTURE_NAMES) {

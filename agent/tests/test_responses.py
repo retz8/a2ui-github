@@ -632,6 +632,43 @@ def test_panel_open_loads_options_then_swaps_status_with_surface_echoed():
     ]
 
 
+CREATE_LABEL = {
+    "name": "create-label",
+    "surfaceId": "autocomplete-addnew-event",
+    "sourceComponentId": "menu",
+    "context": {},
+}
+
+
+def test_create_label_confirms_selects_then_swaps_status_with_surface_echoed():
+    msgs = build_response(CREATE_LABEL)
+    assert len(msgs) == 3
+
+    # 1. The /add/message confirmation, visible through the bound `add-message` Text
+    # (`text <- /add/message`) — the binding-proof half.
+    dm1 = msgs[0]["updateDataModel"]
+    assert dm1["surfaceId"] == "autocomplete-addnew-event"
+    assert dm1["path"] == "/add/message"
+    assert dm1["value"] == 'Label "wontfix" created'
+
+    # 2. /selected selects the newly created value — proving the two-way selectedItemIds binding.
+    dm2 = msgs[1]["updateDataModel"]
+    assert dm2["surfaceId"] == "autocomplete-addnew-event"
+    assert dm2["path"] == "/selected"
+    assert dm2["value"] == ["wontfix"]
+
+    # 3. The add-status swap is the self-visible reaction.
+    uc = msgs[2]["updateComponents"]
+    assert uc["surfaceId"] == "autocomplete-addnew-event"
+    assert uc["components"] == [
+        {
+            "id": "add-status",
+            "component": "Text",
+            "text": "✅ Server added the label",
+        }
+    ]
+
+
 CD_CANCEL_DELETE = {
     "name": "cd-cancel-delete",
     "surfaceId": "confirmation-dialog-event",
