@@ -56,7 +56,7 @@
         },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
-          "description": "Label describing the button's function for assistive technologies; also serves as its tooltip text. Required \u2014 an icon-only button must be labeled."
+          "description": "Label describing the button's function for assistive technologies; also serves as its tooltip text. Required — an icon-only button must be labeled."
         },
         "disabled": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
@@ -281,11 +281,11 @@
         },
         "selected": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
-          "description": "Whether the item is selected; two-way bound \u2014 a click writes the new state back. Meaningful only when the list or group sets a `selectionVariant`."
+          "description": "Whether the item is selected; two-way bound — a click writes the new state back. Meaningful only when the list or group sets a `selectionVariant`."
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "An effect performed when the item is selected \u2014 a local function or a server event."
+          "description": "An effect performed when the item is selected — a local function or a server event."
         },
         "active": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
@@ -457,7 +457,7 @@
         },
         "children": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
-          "description": "The visual content shown before the item's label \u2014 typically an icon."
+          "description": "The visual content shown before the item's label — typically an icon."
         }
       },
       "required": ["component"],
@@ -472,7 +472,7 @@
         },
         "children": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
-          "description": "The visual content shown after the item's label \u2014 typically an icon, counter, or keyboard hint."
+          "description": "The visual content shown after the item's label — typically an icon, counter, or keyboard hint."
         }
       },
       "required": ["component"],
@@ -532,7 +532,7 @@
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "The action performed when the button is activated \u2014 a local function or a server event. Applies in button mode."
+          "description": "The action performed when the button is activated — a local function or a server event. Applies in button mode."
         },
         "as": {
           "type": "string",
@@ -719,7 +719,7 @@
         },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
-          "description": "Label for assistive technologies, and the button's tooltip text when no `description` is set. Required \u2014 an icon-only button must be labeled."
+          "description": "Label for assistive technologies, and the button's tooltip text when no `description` is set. Required — an icon-only button must be labeled."
         },
         "description": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
@@ -1269,7 +1269,7 @@
     },
     "Label": {
       "type": "object",
-      "description": "Displays a small badge of contextual metadata \u2014 such as a status or category \u2014 with a selectable color variant and size. A non-interactive display primitive.",
+      "description": "Displays a small badge of contextual metadata — such as a status or category — with a selectable color variant and size. A non-interactive display primitive.",
       "properties": {
         "component": {
           "const": "Label"
@@ -1490,7 +1490,7 @@
     },
     "Avatar": {
       "type": "object",
-      "description": "An image that represents a user or a non-human entity such as an organization, team, or bot \u2014 typically a profile picture.",
+      "description": "An image that represents a user or a non-human entity such as an organization, team, or bot — typically a profile picture.",
       "properties": {
         "component": {
           "const": "Avatar"
@@ -1539,7 +1539,7 @@
           "type": "string",
           "enum": ["none", "short", "long"],
           "default": "none",
-          "description": "Delay before the spinner becomes visible (`short` \u2248 300ms, `long` \u2248 1000ms), so briefly-loading content never flashes a spinner."
+          "description": "Delay before the spinner becomes visible (`short` ≈ 300ms, `long` ≈ 1000ms), so briefly-loading content never flashes a spinner."
         }
       },
       "required": ["component"],
@@ -1568,7 +1568,7 @@
         },
         "removeAction": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "The action performed when the user removes the token \u2014 via the remove button, or Backspace/Delete while focused. Omitting it renders no remove button."
+          "description": "The action performed when the user removes the token — via the remove button, or Backspace/Delete while focused. Omitting it renders no remove button."
         },
         "hideRemoveButton": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
@@ -1618,7 +1618,7 @@
         },
         "removeAction": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "The action performed when the user removes the token \u2014 via the remove button, or Backspace/Delete while focused. Omitting it renders no remove button."
+          "description": "The action performed when the user removes the token — via the remove button, or Backspace/Delete while focused. Omitting it renders no remove button."
         },
         "hideRemoveButton": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
@@ -1680,7 +1680,7 @@
         },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
-          "description": "Label/description for assistive technologies \u2014 the checkbox renders no visible label of its own."
+          "description": "Label/description for assistive technologies — the checkbox renders no visible label of its own."
         }
       },
       "required": ["component", "checked"],
@@ -1695,7 +1695,7 @@
         },
         "progress": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
-          "description": "The completion percentage, 0\u2013100. Mutually exclusive with `segments`; omitting both renders an empty track."
+          "description": "The completion percentage, 0–100. Mutually exclusive with `segments`; omitting both renders an empty track."
         },
         "segments": {
           "type": "array",
@@ -1705,7 +1705,7 @@
             "properties": {
               "progress": {
                 "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
-                "description": "The completion percentage of this segment, 0\u2013100."
+                "description": "The completion percentage of this segment, 0–100."
               },
               "bg": {
                 "type": "string",
@@ -1830,7 +1830,7 @@
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "Performed when the user toggles the switch \u2014 for settings that must reach the agent or run a local effect at flip time."
+          "description": "Performed when the user toggles the switch — for settings that must reach the agent or run a local effect at flip time."
         },
         "disabled": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
@@ -1874,7 +1874,7 @@
         },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
-          "description": "Label naming the setting the switch controls \u2014 the switch renders no visible label of its own, and an unnamed on/off control is meaningless to assistive technologies."
+          "description": "Label naming the setting the switch controls — the switch renders no visible label of its own, and an unnamed on/off control is meaningless to assistive technologies."
         }
       },
       "required": ["component", "checked", "accessibility"],
@@ -1948,7 +1948,7 @@
         },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
-          "description": "Label/description for assistive technologies \u2014 the textarea renders no visible label of its own."
+          "description": "Label/description for assistive technologies — the textarea renders no visible label of its own."
         }
       },
       "required": ["component", "value"],
@@ -2048,7 +2048,7 @@
         },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
-          "description": "Label/description for assistive technologies \u2014 the input renders no visible label of its own."
+          "description": "Label/description for assistive technologies — the input renders no visible label of its own."
         }
       },
       "required": ["component", "value"],
@@ -2056,7 +2056,7 @@
     },
     "TextInput.Action": {
       "type": "object",
-      "description": "An icon action button rendered inside a text input at its trailing edge \u2014 triggers an action such as clearing the field or toggling password visibility.",
+      "description": "An icon action button rendered inside a text input at its trailing edge — triggers an action such as clearing the field or toggling password visibility.",
       "properties": {
         "component": {
           "const": "TextInput.Action"
@@ -2107,7 +2107,7 @@
           "type": "string",
           "enum": ["none", "short", "long"],
           "default": "none",
-          "description": "Delay before the placeholder becomes visible (`short` \u2248 300ms, `long` \u2248 1000ms), so briefly-loading content never flashes a skeleton."
+          "description": "Delay before the placeholder becomes visible (`short` ≈ 300ms, `long` ≈ 1000ms), so briefly-loading content never flashes a skeleton."
         }
       },
       "required": ["component"],
@@ -2537,7 +2537,7 @@
           "type": "string",
           "enum": ["inline", "overlay"],
           "default": "overlay",
-          "description": "How items hidden by truncation are revealed \u2014 inline after the visible items, or in an overlay."
+          "description": "How items hidden by truncation are revealed — inline after the visible items, or in an overlay."
         },
         "visibleChildCount": {
           "description": "How many items to show before truncating; `'auto'` fits to the container width; omit to never truncate.",
@@ -2707,7 +2707,7 @@
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "An optional effect performed when the selection changes \u2014 a local function or a server event."
+          "description": "An optional effect performed when the selection changes — a local function or a server event."
         },
         "fullWidth": {
           "description": "Whether the control stretches to fill its container's width.",
@@ -2915,7 +2915,7 @@
         },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
-          "description": "Accessibility label/description for assistive technologies \u2014 the control renders no visible label of its own."
+          "description": "Accessibility label/description for assistive technologies — the control renders no visible label of its own."
         }
       },
       "required": ["component", "value"],
@@ -2996,7 +2996,7 @@
     },
     "BreadcrumbsItem": {
       "type": "object",
-      "description": "A single crumb within a breadcrumb trail \u2014 a link to one level of the hierarchy, or the current page.",
+      "description": "A single crumb within a breadcrumb trail — a link to one level of the hierarchy, or the current page.",
       "properties": {
         "component": {
           "const": "BreadcrumbsItem"
@@ -3007,7 +3007,7 @@
         },
         "href": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
-          "description": "The URL this crumb navigates to when clicked. Optional \u2014 the current-page crumb may be non-navigating."
+          "description": "The URL this crumb navigates to when clicked. Optional — the current-page crumb may be non-navigating."
         },
         "selected": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
@@ -3140,7 +3140,7 @@
         },
         "accessibility": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
-          "description": "Label for assistive technologies \u2014 the control is icon-only, so it must be labeled. Maps to `aria-label`."
+          "description": "Label for assistive technologies — the control is icon-only, so it must be labeled. Maps to `aria-label`."
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
@@ -3668,7 +3668,7 @@
               },
               "trailingAction": {
                 "type": "object",
-                "description": "A trailing action control on the item; `action \u2190 onClick`.",
+                "description": "A trailing action control on the item; `action ← onClick`.",
                 "properties": {
                   "icon": {
                     "type": "string",
@@ -4644,7 +4644,7 @@
     },
     "SplitPageLayout": {
       "type": "object",
-      "description": "A page layout with a fixed split arrangement \u2014 a full-width header and footer, a main content area, and an adjacent side panel or full-height sidebar.",
+      "description": "A page layout with a fixed split arrangement — a full-width header and footer, a main content area, and an adjacent side panel or full-height sidebar.",
       "properties": {
         "component": {
           "const": "SplitPageLayout"
@@ -4849,7 +4849,7 @@
           ]
         },
         "width": {
-          "description": "The pane width \u2014 a named size, or explicit min/default/max px constraints.",
+          "description": "The pane width — a named size, or explicit min/default/max px constraints.",
           "default": "medium",
           "oneOf": [
             {
@@ -4986,7 +4986,7 @@
           "description": "Which side of the layout the sidebar sits on."
         },
         "width": {
-          "description": "The sidebar width \u2014 a named size, or explicit min/default/max px constraints.",
+          "description": "The sidebar width — a named size, or explicit min/default/max px constraints.",
           "default": "medium",
           "oneOf": [
             {
@@ -5046,7 +5046,7 @@
           "type": "string",
           "enum": ["default", "fullscreen"],
           "default": "default",
-          "description": "Behavior at narrow viewports \u2014 retain the inline layout, or expand to a full-screen overlay."
+          "description": "Behavior at narrow viewports — retain the inline layout, or expand to a full-screen overlay."
         },
         "hidden": {
           "description": "Whether the sidebar is hidden.",
@@ -5157,7 +5157,7 @@
     },
     "PageHeader": {
       "type": "object",
-      "description": "The heading region at the top of a page \u2014 carries the page title and the contextual navigation, actions, and supporting metadata around it.",
+      "description": "The heading region at the top of a page — carries the page title and the contextual navigation, actions, and supporting metadata around it.",
       "properties": {
         "component": {
           "const": "PageHeader"
@@ -5361,7 +5361,7 @@
           "description": "The title and the visuals and actions flanking it."
         },
         "variant": {
-          "description": "The title's size \u2014 `subtitle`, `medium`, or `large` \u2014 optionally per viewport width.",
+          "description": "The title's size — `subtitle`, `medium`, or `large` — optionally per viewport width.",
           "default": "medium",
           "oneOf": [
             {
@@ -5808,7 +5808,7 @@
     },
     "TreeViewItem": {
       "type": "object",
-      "description": "A single row in a tree \u2014 a label with optional leading/trailing visuals, an expandable nested subtree, and a row of secondary actions.",
+      "description": "A single row in a tree — a label with optional leading/trailing visuals, an expandable nested subtree, and a row of secondary actions.",
       "properties": {
         "component": {
           "const": "TreeViewItem"
@@ -5819,7 +5819,7 @@
         },
         "expanded": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
-          "description": "Whether the item's subtree is open; two-way bound \u2014 toggling the item writes the new state back."
+          "description": "Whether the item's subtree is open; two-way bound — toggling the item writes the new state back."
         },
         "current": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
@@ -5828,7 +5828,7 @@
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "An effect performed when the item is activated \u2014 a local function or a server event."
+          "description": "An effect performed when the item is activated — a local function or a server event."
         },
         "secondaryActions": {
           "type": "array",
@@ -5960,7 +5960,7 @@
         },
         "retryAction": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "An effect performed when the user chooses to retry \u2014 a local function or a server event."
+          "description": "An effect performed when the user chooses to retry — a local function or a server event."
         },
         "dismissAction": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
@@ -6045,10 +6045,10 @@
         },
         "children": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
-          "description": "The timeline's entries \u2014 items and breaks, in display order."
+          "description": "The timeline's entries — items and breaks, in display order."
         },
         "clipSidebar": {
-          "description": "Which ends of the connecting line are clipped \u2014 `true` or `'both'` hides the line above the first and below the last entry; `'start'` or `'end'` clips only that end.",
+          "description": "Which ends of the connecting line are clipped — `true` or `'both'` hides the line above the first and below the last entry; `'start'` or `'end'` clips only that end.",
           "oneOf": [
             {
               "type": "boolean"
@@ -6065,7 +6065,7 @@
     },
     "TimelineItem": {
       "type": "object",
-      "description": "A single entry on the timeline \u2014 a badge on the connecting line plus its body content, with an optional avatar and action controls.",
+      "description": "A single entry on the timeline — a badge on the connecting line plus its body content, with an optional avatar and action controls.",
       "properties": {
         "component": {
           "const": "TimelineItem"
@@ -6085,7 +6085,7 @@
     },
     "TimelineBadge": {
       "type": "object",
-      "description": "The marker on the timeline's connecting line for one entry \u2014 a small circle holding an icon, colored by variant.",
+      "description": "The marker on the timeline's connecting line for one entry — a small circle holding an icon, colored by variant.",
       "properties": {
         "component": {
           "const": "TimelineBadge"
@@ -6728,6 +6728,206 @@
       "required": ["component", "child"],
       "unevaluatedProperties": false
     },
+    "ActionMenu": {
+      "type": "object",
+      "description": "A trigger element that opens a floating menu of actions or options positioned relative to itself; the menu opens and dismisses by mouse or keyboard, and choosing an item closes it.",
+      "properties": {
+        "component": {
+          "const": "ActionMenu"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The menu's trigger and the overlay of options it opens."
+        },
+        "open": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the menu is currently open; the trigger's open and close gestures write this value back automatically."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "ActionMenu.Anchor": {
+      "type": "object",
+      "description": "A custom element used as the menu's trigger, when a plain button is not wanted.",
+      "properties": {
+        "component": {
+          "const": "ActionMenu.Anchor"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The component used as the menu's trigger."
+        }
+      },
+      "required": ["component", "child"],
+      "unevaluatedProperties": false
+    },
+    "ActionMenu.Button": {
+      "type": "object",
+      "description": "The button that opens the menu.",
+      "properties": {
+        "component": {
+          "const": "ActionMenu.Button"
+        },
+        "child": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The component used as the button's label. Reference a Text component; do not define it inline. Optional: omit it when `icon` is set (the button renders icon-only)."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "primary", "invisible", "danger", "link"],
+          "default": "default",
+          "description": "The visual style; `primary` marks the main call-to-action, `danger` a destructive action, `invisible`/`link` for minimal contexts."
+        },
+        "size": {
+          "type": "string",
+          "enum": ["small", "medium", "large"],
+          "description": "The button's size."
+        },
+        "alignContent": {
+          "type": "string",
+          "enum": ["start", "center"],
+          "description": "How the label is aligned within the button when leading/trailing visuals are present."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button is disabled and cannot be activated."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button is in a loading state, showing a progress indicator in place of any leading/trailing visual."
+        },
+        "inactive": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the button appears disabled but remains interactive."
+        },
+        "count": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "A value shown alongside the label for counter-style buttons."
+        },
+        "block": {
+          "type": "boolean",
+          "description": "Whether the button expands to fill its container's width."
+        },
+        "labelWrap": {
+          "type": "boolean",
+          "description": "Whether the label may wrap onto multiple lines when longer than the button width."
+        },
+        "loadingAnnouncement": {
+          "type": "string",
+          "description": "Text announced to assistive technologies while the button is loading."
+        },
+        "icon": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "An icon rendered as the button's sole content, for an icon-only trigger."
+        },
+        "leadingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual rendered before the label."
+        },
+        "trailingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual rendered after the label (e.g. a dropdown caret)."
+        },
+        "trailingAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A trailing affordance rendered after the label."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessibility label/description for assistive technologies."
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionMenu.Divider": {
+      "type": "object",
+      "description": "A visual separator between items or groups in a menu.",
+      "properties": {
+        "component": {
+          "const": "ActionMenu.Divider"
+        }
+      },
+      "required": ["component"],
+      "unevaluatedProperties": false
+    },
+    "ActionMenu.Overlay": {
+      "type": "object",
+      "description": "The floating surface holding the menu's options, positioned relative to the trigger.",
+      "properties": {
+        "component": {
+          "const": "ActionMenu.Overlay"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The list of options shown in the menu."
+        },
+        "align": {
+          "type": "string",
+          "enum": ["start", "center", "end"],
+          "default": "start",
+          "description": "How the menu aligns along the trigger's edge."
+        },
+        "side": {
+          "type": "string",
+          "enum": [
+            "outside-bottom",
+            "outside-top",
+            "outside-left",
+            "outside-right",
+            "inside-top",
+            "inside-bottom",
+            "inside-left",
+            "inside-right",
+            "inside-center"
+          ],
+          "default": "outside-bottom",
+          "description": "Which side of the trigger the menu opens toward."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["anchored", "fullscreen"],
+          "default": "anchored",
+          "description": "Narrow-screen presentation: stay anchored to the trigger, or expand to fullscreen."
+        },
+        "displayInViewport": {
+          "type": "boolean",
+          "description": "Whether the menu is kept within the viewport bounds."
+        },
+        "width": {
+          "type": "string",
+          "enum": ["small", "medium", "large", "xlarge", "xxlarge", "auto"],
+          "description": "The menu's width: preset sizes, or `auto` to fit its content."
+        },
+        "height": {
+          "type": "string",
+          "enum": [
+            "xsmall",
+            "small",
+            "medium",
+            "large",
+            "xlarge",
+            "auto",
+            "initial",
+            "fit-content"
+          ],
+          "description": "The menu's height: preset sizes, or content-driven (`auto`/`initial`/`fit-content`)."
+        },
+        "maxHeight": {
+          "type": "string",
+          "enum": ["xsmall", "small", "medium", "large", "xlarge", "fit-content"],
+          "description": "The menu's maximum height; a longer list is capped and scrolls."
+        },
+        "maxWidth": {
+          "type": "string",
+          "enum": ["small", "medium", "large", "xlarge", "xxlarge"],
+          "description": "The menu's maximum width."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
     "AnchoredOverlay": {
       "type": "object",
       "description": "A trigger element that opens a floating panel positioned relative to itself; the panel can be opened and dismissed by keyboard or mouse.",
@@ -7296,6 +7496,21 @@
         },
         {
           "$ref": "#/components/AnchoredOverlay"
+        },
+        {
+          "$ref": "#/components/ActionMenu"
+        },
+        {
+          "$ref": "#/components/ActionMenu.Button"
+        },
+        {
+          "$ref": "#/components/ActionMenu.Anchor"
+        },
+        {
+          "$ref": "#/components/ActionMenu.Overlay"
+        },
+        {
+          "$ref": "#/components/ActionMenu.Divider"
         }
       ]
     },

@@ -125,6 +125,11 @@ import {FormControlCaptionApi} from './components/formcontrol-caption';
 import {FormControlValidationApi} from './components/formcontrol-validation';
 import {FormControlLeadingVisualApi} from './components/formcontrol-leadingvisual';
 import {AnchoredOverlayApi} from './components/anchoredoverlay';
+import {ActionMenuApi} from './components/actionmenu';
+import {ActionMenuButtonApi} from './components/actionmenu-button';
+import {ActionMenuAnchorApi} from './components/actionmenu-anchor';
+import {ActionMenuOverlayApi} from './components/actionmenu-overlay';
+import {ActionMenuDividerApi} from './components/actionmenu-divider';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -260,6 +265,11 @@ export const COMPONENTS = {
   FormControlValidation: FormControlValidationApi,
   FormControlLeadingVisual: FormControlLeadingVisualApi,
   AnchoredOverlay: AnchoredOverlayApi,
+  ActionMenu: ActionMenuApi,
+  'ActionMenu.Button': ActionMenuButtonApi,
+  'ActionMenu.Anchor': ActionMenuAnchorApi,
+  'ActionMenu.Overlay': ActionMenuOverlayApi,
+  'ActionMenu.Divider': ActionMenuDividerApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
 export const FUNCTIONS = {consoleLog, windowAlert, clearValue} as const;

@@ -128,6 +128,11 @@ import {FormControlCaptionComponent} from './components/formcontrol-caption';
 import {FormControlValidationComponent} from './components/formcontrol-validation';
 import {FormControlLeadingVisualComponent} from './components/formcontrol-leadingvisual';
 import {AnchoredOverlayComponent} from './components/anchoredoverlay';
+import {ActionMenuComponent} from './components/actionmenu';
+import {ActionMenuButtonComponent} from './components/actionmenu-button';
+import {ActionMenuAnchorComponent} from './components/actionmenu-anchor';
+import {ActionMenuOverlayComponent} from './components/actionmenu-overlay';
+import {ActionMenuDividerComponent} from './components/actionmenu-divider';
 import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
@@ -263,6 +268,11 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     FormControlValidationComponent,
     FormControlLeadingVisualComponent,
     AnchoredOverlayComponent,
+    ActionMenuComponent,
+    ActionMenuButtonComponent,
+    ActionMenuAnchorComponent,
+    ActionMenuOverlayComponent,
+    ActionMenuDividerComponent,
   ],
   [consoleLog, windowAlert, clearValue],
 );
