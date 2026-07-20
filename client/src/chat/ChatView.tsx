@@ -51,10 +51,14 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
         const live = new Set(liveIds);
         const kept = prev.filter(t => t.kind !== 'surface' || live.has(t.id));
         const known = new Set(
-          kept.filter((t): t is Extract<Turn, {kind: 'surface'}> => t.kind === 'surface').map(t => t.id),
+          kept
+            .filter((t): t is Extract<Turn, {kind: 'surface'}> => t.kind === 'surface')
+            .map(t => t.id),
         );
         const added = liveIds.filter(id => !known.has(id));
-        return added.length ? [...kept, ...added.map(id => ({kind: 'surface' as const, id}))] : kept;
+        return added.length
+          ? [...kept, ...added.map(id => ({kind: 'surface' as const, id}))]
+          : kept;
       });
     };
     sync();
@@ -109,7 +113,11 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
             ) : (
               (surface =>
                 surface && (
-                  <div key={turn.id} className="chat-surface-turn" data-testid={`surface-${turn.id}`}>
+                  <div
+                    key={turn.id}
+                    className="chat-surface-turn"
+                    data-testid={`surface-${turn.id}`}
+                  >
                     <A2uiSurface surface={surface} />
                   </div>
                 ))(wiring.processor.model.surfacesMap.get(turn.id))

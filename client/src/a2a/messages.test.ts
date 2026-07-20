@@ -1,5 +1,11 @@
 import {describe, it, expect} from 'vitest';
-import type {Message, Part, Task, TaskArtifactUpdateEvent, TaskStatusUpdateEvent} from '@a2a-js/sdk';
+import type {
+  Message,
+  Part,
+  Task,
+  TaskArtifactUpdateEvent,
+  TaskStatusUpdateEvent,
+} from '@a2a-js/sdk';
 import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
 import {
   buildActionMessageParams,
@@ -67,9 +73,7 @@ describe('buildTextMessageParams', () => {
 describe('buildActionMessageParams', () => {
   it('wraps the action as a version-tagged DataPart without a contextId by default', () => {
     const params = buildActionMessageParams(ACTION);
-    expect(params.message.parts).toEqual([
-      {kind: 'data', data: {version: 'v0.9', action: ACTION}},
-    ]);
+    expect(params.message.parts).toEqual([{kind: 'data', data: {version: 'v0.9', action: ACTION}}]);
     expect(params.message.contextId).toBeUndefined();
   });
 

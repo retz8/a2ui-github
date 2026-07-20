@@ -42,7 +42,9 @@ describe('createA2AActionHandler', () => {
     await handler(ACTION);
 
     expect(sent).toHaveLength(1);
-    expect(sent[0].message.parts).toEqual([{kind: 'data', data: {version: 'v0.9', action: ACTION}}]);
+    expect(sent[0].message.parts).toEqual([
+      {kind: 'data', data: {version: 'v0.9', action: ACTION}},
+    ]);
     expect(applied).toEqual([[A2UI_DATA]]);
   });
 
