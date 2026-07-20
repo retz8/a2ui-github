@@ -21,6 +21,7 @@ import {tokenRemoveEventFixture} from '../src/fixtures/token-remove-event';
 import {issuelabeltokenRemoveFnFixture} from '../src/fixtures/issuelabeltoken-remove-fn';
 import {issuelabeltokenRemoveEventFixture} from '../src/fixtures/issuelabeltoken-remove-event';
 import {checkboxBoundFixture} from '../src/fixtures/checkbox-bound';
+import {checkboxGroupFixture} from '../src/fixtures/checkbox-group';
 import {paginationControlledFixture} from '../src/fixtures/pagination-controlled';
 import {radioFnFixture} from '../src/fixtures/radio-fn';
 import {radioEventFixture} from '../src/fixtures/radio-event';
@@ -195,6 +196,27 @@ describe('action paths', () => {
     await vi.waitFor(() =>
       expect(screen.getByRole('checkbox', {name: 'Notify me about updates'})).toBeChecked(),
     );
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('two-way write-back: toggling an option in a CheckboxGroup writes the new state and re-renders checked, no client->server action', async () => {
+    const handler = vi.fn();
+    renderFixture(checkboxGroupFixture, {actionHandler: handler});
+
+    // Baseline: /comments is true, /prs is false.
+    expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeChecked();
+    const prs = screen.getByRole('checkbox', {name: 'Pull requests'});
+    expect(prs).not.toBeChecked();
+
+    fireEvent.click(prs);
+
+    // The option's Checkbox is a normal two-way input: its auto-generated setChecked wrote `true`
+    // back to /prs and the box re-renders checked. The CheckboxGroup is a pure grouping wrapper —
+    // it emits no Action, so no client->server message is dispatched.
+    await vi.waitFor(() =>
+      expect(screen.getByRole('checkbox', {name: 'Pull requests'})).toBeChecked(),
+    );
+    expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeChecked();
     expect(handler).not.toHaveBeenCalled();
   });
 

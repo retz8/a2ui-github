@@ -28,6 +28,13 @@ import {formcontrolLabelVisuallyHiddenFixture} from '../src/fixtures/formcontrol
 import {formcontrolLayoutFixture} from '../src/fixtures/formcontrol-layout';
 import {formcontrolLeadingVisualFixture} from '../src/fixtures/formcontrol-leading-visual';
 import {formcontrolFullFixture} from '../src/fixtures/formcontrol-full';
+import {checkboxGroupFixture} from '../src/fixtures/checkbox-group';
+import {checkboxGroupLabelBoundFixture} from '../src/fixtures/checkbox-group-label-bound';
+import {checkboxGroupCaptionFixture} from '../src/fixtures/checkbox-group-caption';
+import {checkboxGroupValidationFixture} from '../src/fixtures/checkbox-group-validation';
+import {checkboxGroupDisabledFixture} from '../src/fixtures/checkbox-group-disabled';
+import {checkboxGroupLabelVisuallyHiddenFixture} from '../src/fixtures/checkbox-group-label-visually-hidden';
+import {checkboxGroupFullFixture} from '../src/fixtures/checkbox-group-full';
 import {anchoredOverlayFixture} from '../src/fixtures/anchored-overlay';
 import {anchoredOverlayBoundFixture} from '../src/fixtures/anchored-overlay-bound';
 import {anchoredOverlayClosedFixture} from '../src/fixtures/anchored-overlay-closed';
@@ -2668,6 +2675,65 @@ describe('FormControl (compound family) — integration through the renderer', (
     expect(screen.getByText('Choose a unique repository name')).toBeInTheDocument();
     expect(screen.getByText('That name is already taken')).toBeInTheDocument();
     expect(screen.getByRole('textbox')).toHaveValue('octocat');
+  });
+});
+
+describe('CheckboxGroup (compound family) — integration through the renderer', () => {
+  it('groups a label over FormControl-wrapped checkbox options in a fieldset', () => {
+    const {container} = renderFixture(checkboxGroupFixture);
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', {name: 'Pull requests'})).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', {name: 'Mentions'})).toBeInTheDocument();
+    expect(container.querySelector('fieldset')).toBeInTheDocument();
+    // Each option's checked state is resolved from its bound data-model path.
+    expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeChecked();
+    expect(screen.getByRole('checkbox', {name: 'Pull requests'})).not.toBeChecked();
+  });
+
+  it('resolves the bound group label text through the renderer', () => {
+    renderFixture(checkboxGroupLabelBoundFixture);
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+  });
+
+  it('renders the helper caption alongside the label and options', () => {
+    renderFixture(checkboxGroupCaptionFixture);
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByText('Choose which events email you')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeInTheDocument();
+  });
+
+  it('renders both validation variants across the gallery', () => {
+    renderFixture(checkboxGroupValidationFixture);
+    // Primer renders the validation message twice per surface: the visible message plus a
+    // screenreader-accessible copy inside the <legend>. getAllByText tolerates both.
+    expect(screen.getAllByText('Select at least one option').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getAllByText('Preferences saved').length).toBeGreaterThanOrEqual(1);
+  });
+
+  it('cascades root disabled onto every checkbox option via the disabled fieldset', () => {
+    renderFixture(checkboxGroupDisabledFixture);
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    // The fixture sets disabled on the CheckboxGroup root only; the group renders a disabled
+    // <fieldset>, which natively disables every descendant checkbox.
+    expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeDisabled();
+    expect(screen.getByRole('checkbox', {name: 'Pull requests'})).toBeDisabled();
+  });
+
+  it('keeps a visually-hidden group label in the accessibility tree', () => {
+    renderFixture(checkboxGroupLabelVisuallyHiddenFixture);
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeInTheDocument();
+  });
+
+  it('composes the full stack: label, caption, validation, and the option set', () => {
+    renderFixture(checkboxGroupFullFixture);
+    expect(screen.getByText('Notifications')).toBeInTheDocument();
+    expect(screen.getByText('Choose which events email you')).toBeInTheDocument();
+    // Validation message renders twice (visible + a VisuallyHidden legend copy for AT).
+    expect(screen.getAllByText('Select at least one option').length).toBeGreaterThanOrEqual(1);
+    expect(screen.getByRole('checkbox', {name: 'Comments'})).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', {name: 'Pull requests'})).toBeInTheDocument();
   });
 });
 

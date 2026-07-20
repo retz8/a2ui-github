@@ -6928,6 +6928,91 @@
       "required": ["component", "children"],
       "unevaluatedProperties": false
     },
+    "CheckboxGroup": {
+      "type": "object",
+      "description": "Groups a set of related checkboxes under a shared label, optional helper caption, and optional validation message, laying them out and associating them for assistive technologies.",
+      "properties": {
+        "component": {
+          "const": "CheckboxGroup"
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "Slot-scanned: the group label, an optional caption / validation message, and the checkbox inputs."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the whole group is inactive and its checkboxes cannot be toggled."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether a selection is required before the form can be submitted."
+        }
+      },
+      "required": ["component", "children"],
+      "unevaluatedProperties": false
+    },
+    "CheckboxGroupLabel": {
+      "type": "object",
+      "description": "The visible label (fieldset legend) naming the group of checkboxes it belongs to.",
+      "properties": {
+        "component": {
+          "const": "CheckboxGroupLabel"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The visible label naming the group of checkboxes."
+        },
+        "visuallyHidden": {
+          "type": "boolean",
+          "description": "Hides the label visually while keeping it available to assistive technologies.",
+          "default": false
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "CheckboxGroupCaption": {
+      "type": "object",
+      "description": "Helper text describing the group of checkboxes, shown below its label.",
+      "properties": {
+        "component": {
+          "const": "CheckboxGroupCaption"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Helper text describing the group of checkboxes, shown below the label."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
+    },
+    "CheckboxGroupValidation": {
+      "type": "object",
+      "description": "A validation message shown for the checkbox group, indicating an error or success state.",
+      "properties": {
+        "component": {
+          "const": "CheckboxGroupValidation"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The validation message shown for the checkbox group."
+        },
+        "variant": {
+          "oneOf": [
+            {
+              "type": "string",
+              "enum": ["error", "success"]
+            },
+            {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DataBinding"
+            }
+          ],
+          "description": "The validation status the message represents. `error` renders it as a failure (red, alert icon); `success` as a pass (green, check). Bindable: an agent can drive it through the data model (there is no `DynamicEnum`, so this is a union of the enum + `DataBinding`), mirroring `FormControl.Validation`."
+        }
+      },
+      "required": ["component", "text", "variant"],
+      "unevaluatedProperties": false
+    },
     "AnchoredOverlay": {
       "type": "object",
       "description": "A trigger element that opens a floating panel positioned relative to itself; the panel can be opened and dismissed by keyboard or mouse.",
@@ -7493,6 +7578,18 @@
         },
         {
           "$ref": "#/components/FormControlLeadingVisual"
+        },
+        {
+          "$ref": "#/components/CheckboxGroup"
+        },
+        {
+          "$ref": "#/components/CheckboxGroupLabel"
+        },
+        {
+          "$ref": "#/components/CheckboxGroupCaption"
+        },
+        {
+          "$ref": "#/components/CheckboxGroupValidation"
         },
         {
           "$ref": "#/components/AnchoredOverlay"

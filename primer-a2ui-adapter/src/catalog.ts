@@ -127,6 +127,10 @@ import {FormControlLabelComponent} from './components/formcontrol-label';
 import {FormControlCaptionComponent} from './components/formcontrol-caption';
 import {FormControlValidationComponent} from './components/formcontrol-validation';
 import {FormControlLeadingVisualComponent} from './components/formcontrol-leadingvisual';
+import {CheckboxGroupComponent} from './components/checkboxgroup';
+import {CheckboxGroupLabelComponent} from './components/checkboxgroup-label';
+import {CheckboxGroupCaptionComponent} from './components/checkboxgroup-caption';
+import {CheckboxGroupValidationComponent} from './components/checkboxgroup-validation';
 import {AnchoredOverlayComponent} from './components/anchoredoverlay';
 import {ActionMenuComponent} from './components/actionmenu';
 import {ActionMenuButtonComponent} from './components/actionmenu-button';
@@ -267,6 +271,10 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     FormControlCaptionComponent,
     FormControlValidationComponent,
     FormControlLeadingVisualComponent,
+    CheckboxGroupComponent,
+    CheckboxGroupLabelComponent,
+    CheckboxGroupCaptionComponent,
+    CheckboxGroupValidationComponent,
     AnchoredOverlayComponent,
     ActionMenuComponent,
     ActionMenuButtonComponent,

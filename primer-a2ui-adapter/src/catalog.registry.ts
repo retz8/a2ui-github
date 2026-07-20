@@ -124,6 +124,10 @@ import {FormControlLabelApi} from './components/formcontrol-label';
 import {FormControlCaptionApi} from './components/formcontrol-caption';
 import {FormControlValidationApi} from './components/formcontrol-validation';
 import {FormControlLeadingVisualApi} from './components/formcontrol-leadingvisual';
+import {CheckboxGroupApi} from './components/checkboxgroup';
+import {CheckboxGroupLabelApi} from './components/checkboxgroup-label';
+import {CheckboxGroupCaptionApi} from './components/checkboxgroup-caption';
+import {CheckboxGroupValidationApi} from './components/checkboxgroup-validation';
 import {AnchoredOverlayApi} from './components/anchoredoverlay';
 import {ActionMenuApi} from './components/actionmenu';
 import {ActionMenuButtonApi} from './components/actionmenu-button';
@@ -264,6 +268,10 @@ export const COMPONENTS = {
   FormControlCaption: FormControlCaptionApi,
   FormControlValidation: FormControlValidationApi,
   FormControlLeadingVisual: FormControlLeadingVisualApi,
+  CheckboxGroup: CheckboxGroupApi,
+  CheckboxGroupLabel: CheckboxGroupLabelApi,
+  CheckboxGroupCaption: CheckboxGroupCaptionApi,
+  CheckboxGroupValidation: CheckboxGroupValidationApi,
   AnchoredOverlay: AnchoredOverlayApi,
   ActionMenu: ActionMenuApi,
   'ActionMenu.Button': ActionMenuButtonApi,
