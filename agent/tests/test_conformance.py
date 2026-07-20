@@ -28,3 +28,10 @@ def test_validator_rejects_non_conformant_component():
     ]
     with pytest.raises(ValueError):
         validate_payload(bad)
+
+
+async def test_emitted_text_prompt_payload_conforms_to_catalog():
+    from tests.helpers import run_executor_text
+
+    payload = await run_executor_text("hello agent")
+    validate_payload(payload)  # must not raise

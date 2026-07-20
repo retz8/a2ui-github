@@ -12,6 +12,15 @@ const adapterSrc = fileURLToPath(new URL('../primer-a2ui-adapter/src/index.ts', 
 
 export default defineConfig(({command}) => ({
   plugins: [react()],
+  build: {
+    rollupOptions: {
+      // Two pages: the chat client (default) and the fixture dev page.
+      input: {
+        index: fileURLToPath(new URL('./index.html', import.meta.url)),
+        dev: fileURLToPath(new URL('./dev.html', import.meta.url)),
+      },
+    },
+  },
   resolve:
     command === 'serve' && !process.env.VITEST
       ? {alias: [{find: /^primer-a2ui-adapter$/, replacement: adapterSrc}]}
