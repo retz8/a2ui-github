@@ -112,7 +112,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 - [x] **6.47** `FormControl` (#92)
 - [x] **6.48** `CheckboxGroup` (#99)
 - [WIP] **6.49** `RadioGroup` (#100)
-- [WIP] **6.50** `SelectPanel` (#102)
+- [x] **6.50** `SelectPanel` (#102)
 - [WIP] **6.51** `Autocomplete` (#103)
 - [x] **6.52** `Dialog` (#90)
 - [x] **6.53** `ConfirmationDialog` (#91)
