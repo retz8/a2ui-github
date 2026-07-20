@@ -159,6 +159,13 @@ def build_response(action: dict) -> list[dict]:
     surface_id = action.get("surfaceId", "")
     if name == "change":
         return _change_response(action, surface_id)
+    if name == "select" and not action.get("context"):
+        # RadioGroup `select` (empty context): the group's runtime "which radio" value cannot be
+        # captured statically, so the event honestly signals only "selection changed". Acknowledge
+        # and lock the group (write /locked=true, swap the status Text). Keyed on empty context,
+        # which distinguishes it from the Radio (`{value}`), ActionList.Item (`{assigned}`), and
+        # UnderlineNav.Item (`{tab}`) `select` variants — all of which carry a non-empty context.
+        return _stamp_surface(_load_fixture("radiogroup-select.json"), surface_id)
     if name == "select" and "assigned" in action.get("context", {}):
         return _select_assigned_response(action, surface_id)
     if name == "label-select":

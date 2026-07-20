@@ -131,6 +131,10 @@ import {CheckboxGroupComponent} from './components/checkboxgroup';
 import {CheckboxGroupLabelComponent} from './components/checkboxgroup-label';
 import {CheckboxGroupCaptionComponent} from './components/checkboxgroup-caption';
 import {CheckboxGroupValidationComponent} from './components/checkboxgroup-validation';
+import {RadioGroupComponent} from './components/radiogroup';
+import {RadioGroupLabelComponent} from './components/radiogroup-label';
+import {RadioGroupCaptionComponent} from './components/radiogroup-caption';
+import {RadioGroupValidationComponent} from './components/radiogroup-validation';
 import {AnchoredOverlayComponent} from './components/anchoredoverlay';
 import {ActionMenuComponent} from './components/actionmenu';
 import {ActionMenuButtonComponent} from './components/actionmenu-button';
@@ -281,6 +285,10 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     CheckboxGroupLabelComponent,
     CheckboxGroupCaptionComponent,
     CheckboxGroupValidationComponent,
+    RadioGroupComponent,
+    RadioGroupLabelComponent,
+    RadioGroupCaptionComponent,
+    RadioGroupValidationComponent,
     AnchoredOverlayComponent,
     ActionMenuComponent,
     ActionMenuButtonComponent,

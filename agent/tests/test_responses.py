@@ -784,6 +784,40 @@ def test_label_select_echoes_a_false_selection_not_a_canned_value():
     # Proves the response echoes `context.selected` rather than a fixed True.
     msgs = build_response({**LABEL_SELECT, "context": {"selected": False}})
     assert msgs[0]["updateDataModel"]["value"] is False
+# --- RadioGroup family (6.49) ---
+
+RADIOGROUP_SELECT = {
+    "name": "select",
+    "surfaceId": "radiogroup-event",
+    "sourceComponentId": "group",
+    "context": {},
+}
+
+
+def test_radiogroup_select_locks_the_group_then_swaps_status_with_surface_echoed():
+    # The RadioGroup `select` (empty context) acknowledges + locks: it writes /locked=true and swaps
+    # the status Text. The /locked write is visible through the group's `disabled <- /locked`
+    # coupling (the two-way binding proof on the group itself).
+    msgs = build_response(RADIOGROUP_SELECT)
+    assert len(msgs) == 2
+
+    dm = msgs[0]["updateDataModel"]
+    assert dm["surfaceId"] == "radiogroup-event"
+    assert dm["path"] == "/locked"
+    assert dm["value"] is True
+
+    uc = msgs[1]["updateComponents"]
+    assert uc["surfaceId"] == "radiogroup-event"
+    assert uc["components"] == [
+        {"id": "status", "component": "Text", "text": "✅ Selection received"}
+    ]
+
+
+def test_radio_select_with_value_not_captured_by_the_radiogroup_empty_context_branch():
+    # The Radio `select` (context `{value}`, non-empty) must not be captured by the RadioGroup
+    # empty-context branch — it still returns the static select.json (writes /selected).
+    msgs = build_response(SELECT)
+    assert msgs[0]["updateDataModel"]["path"] == "/selected"
 
 
 def test_unknown_event_returns_single_text_fallback_with_surface_echoed():
