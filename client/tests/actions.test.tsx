@@ -54,6 +54,12 @@ import {treeViewErrorDialogFixture} from '../src/fixtures/tree-view-error-dialog
 import {underlineNavItemFnFixture} from '../src/fixtures/underline-nav-item-fn';
 import {underlineNavItemEventFixture} from '../src/fixtures/underline-nav-item-event';
 import {timelineActionsFixture} from '../src/fixtures/timeline-actions';
+import {selectPanelItemFnFixture} from '../src/fixtures/selectpanel-item-fn';
+import {selectPanelItemEventFixture} from '../src/fixtures/selectpanel-item-event';
+import {selectPanelItemSelectedBoundFixture} from '../src/fixtures/selectpanel-item-selected-bound';
+import {selectPanelToggleFixture} from '../src/fixtures/selectpanel-toggle';
+import {selectPanelOnopenchangeFnFixture} from '../src/fixtures/selectpanel-onopenchange-fn';
+import {selectPanelOnopenchangeEventFixture} from '../src/fixtures/selectpanel-onopenchange-event';
 
 afterEach(cleanup);
 
@@ -897,5 +903,86 @@ describe('AnchoredOverlay action paths', () => {
         sourceComponentId: 'root',
       }),
     );
+  });
+});
+
+describe('SelectPanel — action paths', () => {
+  it('open gesture: clicking the trigger writes open=true back to the bound path and shows the panel', async () => {
+    const handler = vi.fn();
+    renderFixture(selectPanelToggleFixture, {actionHandler: handler});
+
+    // Bound open starts false → only the trigger renders.
+    expect(screen.queryByText('bug')).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', {name: 'Labels'}));
+
+    // The binder's auto-generated setOpen wrote true back to /open; the panel opens. No
+    // client->server action is dispatched for a pure data-model write.
+    await vi.waitFor(() => expect(screen.getByText('bug')).toBeInTheDocument());
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it('onOpenChange functionCall runs consoleLog locally on a gesture; the handler is not called', () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(selectPanelOnopenchangeFnFixture, {actionHandler: handler});
+
+    // Starts open; the first trigger click is a close gesture → onOpenChange consoleLog 'toggled'.
+    fireEvent.click(screen.getByRole('button', {name: 'Labels'}));
+    expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'toggled');
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('onOpenChange event is dispatched to the actionHandler on a gesture', async () => {
+    const handler = vi.fn();
+    renderFixture(selectPanelOnopenchangeEventFixture, {actionHandler: handler});
+
+    // Bound open starts false; clicking the trigger is an open gesture → panel-toggle event.
+    fireEvent.click(screen.getByRole('button', {name: 'Labels'}));
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({
+        name: 'panel-toggle',
+        surfaceId: 'selectpanel-onopenchange-event',
+      }),
+    );
+  });
+
+  it('Item functionCall runs the registered consoleLog locally, not via the handler', async () => {
+    const logSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+    const handler = vi.fn();
+    renderFixture(selectPanelItemFnFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByText('bug'));
+
+    await vi.waitFor(() => expect(logSpy).toHaveBeenCalledWith('[A2UI]', 'item selected'));
+    expect(handler).not.toHaveBeenCalled();
+    logSpy.mockRestore();
+  });
+
+  it('Item event is dispatched to the actionHandler with source metadata', async () => {
+    const handler = vi.fn();
+    renderFixture(selectPanelItemEventFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByText('bug'));
+
+    await vi.waitFor(() => expect(handler).toHaveBeenCalledTimes(1));
+    expect(handler).toHaveBeenCalledWith(
+      expect.objectContaining({name: 'label-select', surfaceId: 'selectpanel-item-event'}),
+    );
+  });
+
+  it('two-way write-back: selecting a bound Item writes selected back and the checkmark follows', async () => {
+    const handler = vi.fn();
+    renderFixture(selectPanelItemSelectedBoundFixture, {actionHandler: handler});
+
+    fireEvent.click(screen.getByText('bug'));
+
+    // The impl wrote /sel/bug = true; the item re-renders selected (aria-selected in a listbox).
+    // No client->server action is dispatched for the pure data-model write.
+    await vi.waitFor(() =>
+      expect(document.querySelector('[aria-selected="true"]')).toBeInTheDocument(),
+    );
+    expect(handler).not.toHaveBeenCalled();
   });
 });

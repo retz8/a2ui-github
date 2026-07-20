@@ -7119,6 +7119,230 @@
       },
       "required": ["component", "anchor", "open"],
       "unevaluatedProperties": false
+    },
+    "SelectPanel": {
+      "type": "object",
+      "description": "A dialog that lets a user find and select one or several items from a filterable list, opened from a trigger.",
+      "properties": {
+        "component": {
+          "const": "SelectPanel"
+        },
+        "anchor": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "The trigger component that opens the panel."
+        },
+        "children": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ChildList",
+          "description": "The selectable items shown in the panel."
+        },
+        "open": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the panel is open; the trigger's open and close gestures write this value back automatically."
+        },
+        "selectionVariant": {
+          "type": "string",
+          "enum": ["single", "multiple"],
+          "default": "single",
+          "description": "Whether one or several items may be selected at once."
+        },
+        "title": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The panel's heading."
+        },
+        "subtitle": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Secondary heading text shown below the title."
+        },
+        "filterValue": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The filter input's text; two-way bound, and the items are filtered against it locally."
+        },
+        "placeholderText": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Placeholder shown in the empty filter input.",
+          "default": "Filter items"
+        },
+        "inputLabel": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Accessible label for the filter input."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["anchored", "modal"],
+          "default": "anchored",
+          "description": "Whether the panel anchors to the trigger or opens as a centered modal."
+        },
+        "onOpenChange": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An additional action performed when the panel opens or closes; the open/close state itself is handled automatically."
+        },
+        "onCancel": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An additional action performed when a modal panel is cancelled; dismissal itself is handled automatically."
+        },
+        "secondaryAction": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A button or link shown in the panel's footer."
+        },
+        "notice": {
+          "type": "object",
+          "properties": {
+            "text": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The banner's text."
+            },
+            "variant": {
+              "type": "string",
+              "enum": ["info", "warning", "error"],
+              "description": "The banner's severity."
+            }
+          },
+          "required": ["text", "variant"],
+          "unevaluatedProperties": false,
+          "description": "A banner shown at the top of the panel."
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The empty/error state's heading."
+            },
+            "body": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The empty/error state's body text."
+            },
+            "variant": {
+              "type": "string",
+              "enum": ["empty", "error", "warning"],
+              "description": "The empty/error state's severity."
+            }
+          },
+          "required": ["title", "body", "variant"],
+          "unevaluatedProperties": false,
+          "description": "The empty or error state shown in place of the list."
+        },
+        "loading": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the panel is showing a loading state.",
+          "default": false
+        },
+        "showSelectedOptionsFirst": {
+          "type": "boolean",
+          "description": "Whether selected items are sorted to the top of the list."
+        },
+        "showSelectAll": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether a \"select all\" control is shown (multi-select)."
+        },
+        "align": {
+          "type": "string",
+          "enum": ["start", "center", "end"],
+          "default": "start",
+          "description": "How the panel aligns along the trigger's edge."
+        },
+        "height": {
+          "type": "string",
+          "enum": [
+            "xsmall",
+            "small",
+            "medium",
+            "large",
+            "xlarge",
+            "auto",
+            "initial",
+            "fit-content"
+          ],
+          "description": "The panel's height: preset sizes, or content-driven (`auto`/`initial`/`fit-content`)."
+        },
+        "width": {
+          "type": "string",
+          "enum": ["small", "medium", "large", "xlarge", "xxlarge", "auto"],
+          "description": "The panel's width: preset sizes, or `auto` to fit its content."
+        },
+        "displayInViewport": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether the panel is kept within the viewport bounds."
+        },
+        "showItemDividers": {
+          "type": "boolean",
+          "description": "Whether a divider is shown above each item."
+        },
+        "virtualized": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether only the visible rows are mounted, for performance with very large lists."
+        },
+        "focusOutBehavior": {
+          "type": "string",
+          "enum": ["stop", "wrap"],
+          "default": "wrap",
+          "description": "Whether keyboard navigation stops at the list's ends or wraps around to the other end."
+        },
+        "disableFullscreenOnNarrow": {
+          "type": "boolean",
+          "description": "Whether the panel stays anchored, rather than going fullscreen, on narrow viewports."
+        },
+        "accessibility": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/AccessibilityAttributes",
+          "description": "Accessible label/description for the panel dialog, for assistive technologies."
+        }
+      },
+      "required": ["component", "anchor", "open", "children"],
+      "unevaluatedProperties": false
+    },
+    "SelectPanel.Item": {
+      "type": "object",
+      "description": "A single selectable row in a select panel, holding a label with an optional secondary description and leading/trailing visuals.",
+      "properties": {
+        "component": {
+          "const": "SelectPanel.Item"
+        },
+        "text": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "The item's primary label."
+        },
+        "description": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "description": "Secondary text providing additional detail about the item."
+        },
+        "descriptionVariant": {
+          "type": "string",
+          "enum": ["inline", "block"],
+          "default": "inline",
+          "description": "Whether the secondary text sits beside the label (`inline`) or below it (`block`)."
+        },
+        "leadingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual (e.g. an icon) shown before the label."
+        },
+        "trailingVisual": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/ComponentId",
+          "description": "A visual shown after the label."
+        },
+        "variant": {
+          "type": "string",
+          "enum": ["default", "danger"],
+          "default": "default",
+          "description": "The item's style; `danger` marks a destructive choice."
+        },
+        "selected": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the item is selected; two-way bound — a click writes the new state back. Meaningful only when the panel sets a `selectionVariant`."
+        },
+        "disabled": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+          "description": "Whether the item is disabled and cannot be selected."
+        },
+        "action": {
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
+          "description": "An effect performed when the item is selected — a local function or a server event."
+        }
+      },
+      "required": ["component", "text"],
+      "unevaluatedProperties": false
     }
   },
   "functions": {
@@ -7608,6 +7832,12 @@
         },
         {
           "$ref": "#/components/ActionMenu.Divider"
+        },
+        {
+          "$ref": "#/components/SelectPanel"
+        },
+        {
+          "$ref": "#/components/SelectPanel.Item"
         }
       ]
     },

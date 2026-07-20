@@ -29,6 +29,7 @@ _EVENT_FIXTURES = {
     "cd-cancel-delete": "cd-cancel-delete.json",
     "panel-open": "panel-open.json",
     "panel-close": "panel-close.json",
+    "panel-toggle": "panel-toggle.json",
 }
 # The operation key whose object carries the surfaceId we stamp.
 _OPERATION_KEYS = ("updateComponents", "updateDataModel", "createSurface")
@@ -98,6 +99,33 @@ def _select_assigned_response(action: dict, surface_id: str) -> list[dict]:
     ]
 
 
+def _label_select_response(action: dict, surface_id: str) -> list[dict]:
+    """SelectPanel.Item `label-select`: echo the item's optimistic `context.selected` write, then
+    swap the always-rendered trigger label.
+
+    Built dynamically (like `change` / the ActionList `select`) so the response reflects the actual
+    selection carried by the item's optimistic two-way write before the event fires. The `/sel/bug`
+    echo is visible through the item's `selected <- /sel/bug` coupling (the checkmark follows the
+    data model); the `anchor-label` swap is self-visible in both the open and closed panel states.
+    """
+    selected = action.get("context", {}).get("selected", False)
+    return [
+        {
+            "version": "v0.9",
+            "updateDataModel": {"surfaceId": surface_id, "path": "/sel/bug", "value": selected},
+        },
+        {
+            "version": "v0.9",
+            "updateComponents": {
+                "surfaceId": surface_id,
+                "components": [
+                    {"id": "anchor-label", "component": "Text", "text": "✅ bug applied"}
+                ],
+            },
+        },
+    ]
+
+
 def _load_fixture(name: str) -> list[dict]:
     with open(_FIXTURES_DIR / name, encoding="utf-8") as f:
         return json.load(f)
@@ -132,6 +160,8 @@ def build_response(action: dict) -> list[dict]:
         return _change_response(action, surface_id)
     if name == "select" and "assigned" in action.get("context", {}):
         return _select_assigned_response(action, surface_id)
+    if name == "label-select":
+        return _label_select_response(action, surface_id)
     if name == "select" and "tab" in action.get("context", {}):
         # UnderlineNav.Item `select` (context `{tab}`): confirm the selection and refresh the
         # selected tab's count. Shares the `select` event name with the Radio (context `{value}`)

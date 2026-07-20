@@ -91,6 +91,20 @@ if (typeof globalThis !== 'undefined' && typeof globalThis.ResizeObserver !== 'f
   globalThis.ResizeObserver = ResizeObserverStub as unknown as typeof ResizeObserver;
 }
 
+// jsdom does not implement element scrolling. Primer's FilteredActionList (used by SelectPanel)
+// calls `scrollIntoView` on the active descendant, which reaches `Element.scrollTo`, and Primer
+// scrolls its list container via `scrollIntoView`. Both throw "not a function" in a passive effect
+// under jsdom. Provide no-op stubs so the panel mounts (scroll positioning is a browser-only
+// concern covered by the Playwright baseline, not the jsdom render tests).
+if (typeof Element !== 'undefined') {
+  if (typeof Element.prototype.scrollTo !== 'function') {
+    Element.prototype.scrollTo = () => {};
+  }
+  if (typeof Element.prototype.scrollIntoView !== 'function') {
+    Element.prototype.scrollIntoView = () => {};
+  }
+}
+
 // Primer announces screen-reader text (e.g. ToggleSwitch's loadingLabel, Button's
 // loadingAnnouncement) through a `<live-region>` custom element. Its node build fails to
 // upgrade under jsdom, so `announceFromElement` throws in a MutationObserver microtask.
