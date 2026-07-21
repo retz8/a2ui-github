@@ -14,11 +14,20 @@ export default defineConfig(({command}) => ({
   plugins: [react()],
   build: {
     rollupOptions: {
-      // Two pages: the chat client (default) and the fixture dev page.
+      // Three pages: the chat client (default), the fixture dev page, and the examples showcase.
       input: {
         index: fileURLToPath(new URL('./index.html', import.meta.url)),
         dev: fileURLToPath(new URL('./dev.html', import.meta.url)),
+        examples: fileURLToPath(new URL('./examples.html', import.meta.url)),
       },
+    },
+  },
+  server: {
+    fs: {
+      // The examples page reads the curated corpus from the sibling `agent/` subproject (outside
+      // the yarn workspace) via import.meta.glob. Allow the repo root so `vite dev` can serve those
+      // JSON files. (The production build inlines them through the glob and never hits fs.allow.)
+      allow: [fileURLToPath(new URL('..', import.meta.url))],
     },
   },
   resolve:

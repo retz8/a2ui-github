@@ -8,6 +8,14 @@ The fixture-driven test space is a **dev oracle**: known-good A2UI loaded locall
 involved during development. `functionCall` actions run locally; `event` actions go over A2A to the
 server and the response feeds back into the same processor to re-render.
 
+The build serves three pages: the chat client (`index.html`), the fixture dev page (`dev.html`), and
+the **examples showcase** (`examples.html`, open `/examples.html` in dev). The examples page is a
+third, **server-independent** dev oracle: it renders the curated agent knowledge examples from
+`agent/knowledge/examples/*.json` (bundled read-only via `import.meta.glob`) one at a time, selected
+by a dropdown with an `?example=` URL param, each shown with its natural-language intent as a caption
+above the rendered surface. No action handler is wired, so it needs no `VITE_A2A_SERVER_URL`, no
+agent, and no tunnel — `functionCall` actions run live while `event` actions are inert.
+
 ## Commands
 
 ```bash
