@@ -1,12 +1,13 @@
 [project]
 name = "a2ui-github-agent"
 version = "0.1.0"
-description = "Deterministic A2A server for the a2ui-github Phase 2 slice (and a permanent token-free local-test harness)."
+description = "A2A servers for a2ui-github: the deterministic Phase 2 harness and the Phase 7 live LLM agent."
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
     "a2ui-agent-sdk>=0.2.4,<0.3.0",
     "a2a-sdk[http-server]>=0.3.0,<0.4.0",
+    "google-adk>=2.5.0,<3.0.0",
     "uvicorn>=0.40.0",
     "click>=8.1.8",
 ]
