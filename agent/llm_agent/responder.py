@@ -52,6 +52,12 @@ class AdkLlmResponder:
     ) -> AsyncIterator[str]:
         from google.genai import types as genai_types
 
+        # A None correction marks a fresh request (the executor's first attempt); start a
+        # new session so independent requests don't leak conversation state into each
+        # other. A retry (correction set) continues the same session so the model sees
+        # its previous output and the validation error.
+        if correction is None:
+            self._session_id = None
         if self._session_id is None:
             session = await self._session_service.create_session(
                 app_name=self._app_name, user_id=self._user_id
