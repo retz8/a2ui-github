@@ -1,0 +1,205 @@
+{
+  "name": "review-queue-status-list",
+  "intent": "List the pull requests in my review queue with their current state so I can multi-select which ones to batch-review.",
+  "messages": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "review-queue-status-list",
+        "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "review-queue-status-list",
+        "components": [
+          {
+            "id": "root",
+            "component": "Stack",
+            "direction": "vertical",
+            "gap": "normal",
+            "children": ["heading", "list", "footer"]
+          },
+          {
+            "id": "heading",
+            "component": "Heading",
+            "text": "Your review queue",
+            "as": "h2",
+            "variant": "medium"
+          },
+          {
+            "id": "list",
+            "component": "ActionList",
+            "role": "listbox",
+            "selectionVariant": "multiple",
+            "showDividers": true,
+            "children": ["pr1", "pr2", "pr3", "pr4"]
+          },
+          {
+            "id": "pr1",
+            "component": "ActionList.Item",
+            "selected": {
+              "path": "/selected/pr1"
+            },
+            "children": ["pr1-lv", "pr1-label", "pr1-desc"]
+          },
+          {
+            "id": "pr1-lv",
+            "component": "ActionList.LeadingVisual",
+            "children": ["pr1-state"]
+          },
+          {
+            "id": "pr1-state",
+            "component": "StateLabel",
+            "status": "pullOpened",
+            "text": "Open",
+            "size": "small"
+          },
+          {
+            "id": "pr1-label",
+            "component": "Text",
+            "text": "Add incremental heal to stream parser"
+          },
+          {
+            "id": "pr1-desc",
+            "component": "ActionList.Description",
+            "text": "primer-a2ui-adapter \u00b7 awaiting your review",
+            "variant": "block"
+          },
+          {
+            "id": "pr2",
+            "component": "ActionList.Item",
+            "selected": {
+              "path": "/selected/pr2"
+            },
+            "children": ["pr2-lv", "pr2-label", "pr2-desc"]
+          },
+          {
+            "id": "pr2-lv",
+            "component": "ActionList.LeadingVisual",
+            "children": ["pr2-state"]
+          },
+          {
+            "id": "pr2-state",
+            "component": "StateLabel",
+            "status": "draft",
+            "text": "Draft",
+            "size": "small"
+          },
+          {
+            "id": "pr2-label",
+            "component": "Text",
+            "text": "Spike: allowed_components pruning"
+          },
+          {
+            "id": "pr2-desc",
+            "component": "ActionList.Description",
+            "text": "agent \u00b7 not ready",
+            "variant": "block"
+          },
+          {
+            "id": "pr3",
+            "component": "ActionList.Item",
+            "selected": {
+              "path": "/selected/pr3"
+            },
+            "children": ["pr3-lv", "pr3-label", "pr3-desc"]
+          },
+          {
+            "id": "pr3-lv",
+            "component": "ActionList.LeadingVisual",
+            "children": ["pr3-state"]
+          },
+          {
+            "id": "pr3-state",
+            "component": "StateLabel",
+            "status": "pullMerged",
+            "text": "Merged",
+            "size": "small"
+          },
+          {
+            "id": "pr3-label",
+            "component": "Text",
+            "text": "Ship StateLabel status enum"
+          },
+          {
+            "id": "pr3-desc",
+            "component": "ActionList.Description",
+            "text": "primer-a2ui-adapter \u00b7 merged, follow-up review",
+            "variant": "block"
+          },
+          {
+            "id": "pr4",
+            "component": "ActionList.Item",
+            "selected": {
+              "path": "/selected/pr4"
+            },
+            "children": ["pr4-lv", "pr4-label", "pr4-desc"]
+          },
+          {
+            "id": "pr4-lv",
+            "component": "ActionList.LeadingVisual",
+            "children": ["pr4-state"]
+          },
+          {
+            "id": "pr4-state",
+            "component": "StateLabel",
+            "status": "pullClosed",
+            "text": "Closed",
+            "size": "small"
+          },
+          {
+            "id": "pr4-label",
+            "component": "Text",
+            "text": "Revert experimental cache layer"
+          },
+          {
+            "id": "pr4-desc",
+            "component": "ActionList.Description",
+            "text": "agent \u00b7 closed without merge",
+            "variant": "block"
+          },
+          {
+            "id": "footer",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["footer-text", "footer-count"]
+          },
+          {
+            "id": "footer-text",
+            "component": "Text",
+            "text": "Selected for batch review",
+            "size": "small"
+          },
+          {
+            "id": "footer-count",
+            "component": "CounterLabel",
+            "count": {
+              "path": "/selectedCount"
+            },
+            "variant": "primary"
+          }
+        ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "review-queue-status-list",
+        "path": "/",
+        "value": {
+          "selectedCount": 0,
+          "selected": {
+            "pr1": false,
+            "pr2": false,
+            "pr3": false,
+            "pr4": false
+          }
+        }
+      }
+    }
+  ]
+}

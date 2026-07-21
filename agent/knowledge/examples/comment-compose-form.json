@@ -1,0 +1,175 @@
+{
+  "name": "comment-compose-form",
+  "intent": "Let me draft a comment on this issue and optionally tick which labels to apply before I post it.",
+  "messages": [
+    {
+      "version": "v0.9",
+      "createSurface": {
+        "surfaceId": "comment-compose-form",
+        "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json"
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateComponents": {
+        "surfaceId": "comment-compose-form",
+        "components": [
+          {
+            "id": "root",
+            "component": "Stack",
+            "direction": "vertical",
+            "gap": "normal",
+            "children": ["heading", "fc-comment", "cg-labels", "actions"]
+          },
+          {
+            "id": "heading",
+            "component": "Heading",
+            "text": "Add a comment",
+            "as": "h2",
+            "variant": "medium"
+          },
+          {
+            "id": "fc-comment",
+            "component": "FormControl",
+            "required": true,
+            "children": ["fc-label", "fc-caption", "ta"]
+          },
+          {
+            "id": "fc-label",
+            "component": "FormControlLabel",
+            "text": "Comment"
+          },
+          {
+            "id": "fc-caption",
+            "component": "FormControlCaption",
+            "text": "Markdown is supported."
+          },
+          {
+            "id": "ta",
+            "component": "Textarea",
+            "value": {
+              "path": "/draft"
+            },
+            "placeholder": "Leave a comment",
+            "required": true,
+            "block": true,
+            "rows": 4
+          },
+          {
+            "id": "cg-labels",
+            "component": "CheckboxGroup",
+            "children": ["cg-label", "cg-caption", "fc-needs", "fc-bug"]
+          },
+          {
+            "id": "cg-label",
+            "component": "CheckboxGroupLabel",
+            "text": "Apply labels on submit"
+          },
+          {
+            "id": "cg-caption",
+            "component": "CheckboxGroupCaption",
+            "text": "Optional \u2014 applied when the comment posts."
+          },
+          {
+            "id": "fc-needs",
+            "component": "FormControl",
+            "layout": "horizontal",
+            "children": ["cb-needs", "lbl-needs"]
+          },
+          {
+            "id": "cb-needs",
+            "component": "Checkbox",
+            "checked": {
+              "path": "/labels/needsReview"
+            },
+            "value": "needs-review"
+          },
+          {
+            "id": "lbl-needs",
+            "component": "FormControlLabel",
+            "text": "needs-review"
+          },
+          {
+            "id": "fc-bug",
+            "component": "FormControl",
+            "layout": "horizontal",
+            "children": ["cb-bug", "lbl-bug"]
+          },
+          {
+            "id": "cb-bug",
+            "component": "Checkbox",
+            "checked": {
+              "path": "/labels/bug"
+            },
+            "value": "bug"
+          },
+          {
+            "id": "lbl-bug",
+            "component": "FormControlLabel",
+            "text": "bug"
+          },
+          {
+            "id": "actions",
+            "component": "ButtonGroup",
+            "children": ["cancel", "submit"]
+          },
+          {
+            "id": "cancel",
+            "component": "Button",
+            "child": "cancel-label",
+            "variant": "invisible",
+            "action": {
+              "functionCall": {
+                "call": "clearValue",
+                "args": {
+                  "path": "/draft"
+                },
+                "returnType": "void"
+              }
+            }
+          },
+          {
+            "id": "cancel-label",
+            "component": "Text",
+            "text": "Cancel"
+          },
+          {
+            "id": "submit",
+            "component": "Button",
+            "child": "submit-label",
+            "variant": "primary",
+            "action": {
+              "event": {
+                "name": "post-comment",
+                "context": {
+                  "body": {
+                    "path": "/draft"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "id": "submit-label",
+            "component": "Text",
+            "text": "Comment"
+          }
+        ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "comment-compose-form",
+        "path": "/",
+        "value": {
+          "draft": "",
+          "labels": {
+            "needsReview": true,
+            "bug": false
+          }
+        }
+      }
+    }
+  ]
+}
