@@ -39,7 +39,7 @@
             "id": "ph-ta",
             "component": "PageHeader.TitleArea",
             "variant": "large",
-            "children": ["ph-lv", "ph-title", "ph-tv"]
+            "children": ["ph-lv", "ph-title"]
           },
           {
             "id": "ph-lv",
@@ -50,6 +50,7 @@
             "id": "ph-icon",
             "component": "Icon",
             "name": "issue-opened",
+            "fill": "open",
             "accessibility": {
               "label": "Open issue"
             }
@@ -57,13 +58,21 @@
           {
             "id": "ph-title",
             "component": "PageHeader.Title",
-            "text": "Docs: clarify streaming heal order",
+            "text": "Docs: clarify streaming heal order #482",
             "as": "h1"
           },
           {
-            "id": "ph-tv",
-            "component": "PageHeader.TrailingVisual",
-            "children": ["ph-state"]
+            "id": "ph-desc",
+            "component": "PageHeader.Description",
+            "children": ["ph-desc-row"]
+          },
+          {
+            "id": "ph-desc-row",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["ph-state", "ph-meta"]
           },
           {
             "id": "ph-state",
@@ -72,14 +81,9 @@
             "text": "Open"
           },
           {
-            "id": "ph-desc",
-            "component": "PageHeader.Description",
-            "children": ["ph-desc-text"]
-          },
-          {
-            "id": "ph-desc-text",
+            "id": "ph-meta",
             "component": "Text",
-            "text": "#482 opened 3 days ago by octocat \u00b7 5 comments",
+            "text": "octocat opened this issue · 5 comments",
             "size": "small"
           },
           {
@@ -91,7 +95,7 @@
           {
             "id": "tl",
             "component": "Timeline",
-            "children": ["ti1", "ti2"]
+            "children": ["ti1", "ti2", "ti3"]
           },
           {
             "id": "ti1",
@@ -107,13 +111,13 @@
             "id": "ti1-avatar",
             "component": "Avatar",
             "src": "https://avatars.githubusercontent.com/u/583231?v=4",
-            "alt": "octocat"
+            "alt": "octocat",
+            "size": 40
           },
           {
             "id": "ti1-badge",
             "component": "TimelineBadge",
-            "child": "ti1-icon",
-            "variant": "open"
+            "child": "ti1-icon"
           },
           {
             "id": "ti1-icon",
@@ -123,34 +127,45 @@
           {
             "id": "ti1-body",
             "component": "TimelineBody",
-            "children": ["ti1-text"]
+            "children": ["ti1-head", "ti1-text"]
+          },
+          {
+            "id": "ti1-head",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["ti1-author", "ti1-time"]
+          },
+          {
+            "id": "ti1-author",
+            "component": "Text",
+            "text": "octocat commented",
+            "weight": "semibold",
+            "size": "small"
+          },
+          {
+            "id": "ti1-time",
+            "component": "RelativeTime",
+            "datetime": "2026-07-20T09:12:00Z",
+            "format": "relative"
           },
           {
             "id": "ti1-text",
             "component": "Text",
-            "text": "The heal order should flush trailing partials before closing the surface."
+            "text": "The heal order should flush trailing partials before closing the surface.",
+            "as": "p"
           },
           {
             "id": "ti2",
             "component": "TimelineItem",
-            "children": ["ti2-av", "ti2-badge", "ti2-body"]
-          },
-          {
-            "id": "ti2-av",
-            "component": "TimelineAvatar",
-            "child": "ti2-avatar"
-          },
-          {
-            "id": "ti2-avatar",
-            "component": "Avatar",
-            "src": "https://avatars.githubusercontent.com/u/9919?v=4",
-            "alt": "hubot"
+            "condensed": true,
+            "children": ["ti2-badge", "ti2-body"]
           },
           {
             "id": "ti2-badge",
             "component": "TimelineBadge",
-            "child": "ti2-icon",
-            "variant": "done"
+            "child": "ti2-icon"
           },
           {
             "id": "ti2-icon",
@@ -160,12 +175,86 @@
           {
             "id": "ti2-body",
             "component": "TimelineBody",
-            "children": ["ti2-text"]
+            "children": ["ti2-row"]
+          },
+          {
+            "id": "ti2-row",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["ti2-text", "ti2-time"]
           },
           {
             "id": "ti2-text",
             "component": "Text",
-            "text": "Referenced in commit a1b2c3d \u2014 parser now heals in order."
+            "text": "hubot referenced this issue in commit a1b2c3d",
+            "size": "small"
+          },
+          {
+            "id": "ti2-time",
+            "component": "RelativeTime",
+            "datetime": "2026-07-21T16:40:00Z",
+            "format": "relative"
+          },
+          {
+            "id": "ti3",
+            "component": "TimelineItem",
+            "children": ["ti3-av", "ti3-badge", "ti3-body"]
+          },
+          {
+            "id": "ti3-av",
+            "component": "TimelineAvatar",
+            "child": "ti3-avatar"
+          },
+          {
+            "id": "ti3-avatar",
+            "component": "Avatar",
+            "src": "https://avatars.githubusercontent.com/u/9919?v=4",
+            "alt": "hubot",
+            "size": 40
+          },
+          {
+            "id": "ti3-badge",
+            "component": "TimelineBadge",
+            "child": "ti3-icon"
+          },
+          {
+            "id": "ti3-icon",
+            "component": "Icon",
+            "name": "comment"
+          },
+          {
+            "id": "ti3-body",
+            "component": "TimelineBody",
+            "children": ["ti3-head", "ti3-text"]
+          },
+          {
+            "id": "ti3-head",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["ti3-author", "ti3-time"]
+          },
+          {
+            "id": "ti3-author",
+            "component": "Text",
+            "text": "hubot commented",
+            "weight": "semibold",
+            "size": "small"
+          },
+          {
+            "id": "ti3-time",
+            "component": "RelativeTime",
+            "datetime": "2026-07-22T11:05:00Z",
+            "format": "relative"
+          },
+          {
+            "id": "ti3-text",
+            "component": "Text",
+            "text": "Confirmed — the parser now heals in order, so this can close once the docs land.",
+            "as": "p"
           },
           {
             "id": "pn",
@@ -180,7 +269,7 @@
             "component": "Stack",
             "direction": "vertical",
             "gap": "normal",
-            "children": ["asg-head", "asg-stack", "lbl-head", "lbl-group"]
+            "children": ["asg-head", "asg1-row", "asg2-row", "lbl-head", "lbl-group"]
           },
           {
             "id": "asg-head",
@@ -190,9 +279,12 @@
             "variant": "small"
           },
           {
-            "id": "asg-stack",
-            "component": "AvatarStack",
-            "children": ["asg1", "asg2"]
+            "id": "asg1-row",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["asg1", "asg1-name"]
           },
           {
             "id": "asg1",
@@ -201,10 +293,32 @@
             "alt": "octocat"
           },
           {
+            "id": "asg1-name",
+            "component": "Text",
+            "text": "octocat",
+            "size": "small",
+            "weight": "semibold"
+          },
+          {
+            "id": "asg2-row",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["asg2", "asg2-name"]
+          },
+          {
             "id": "asg2",
             "component": "Avatar",
             "src": "https://avatars.githubusercontent.com/u/9919?v=4",
             "alt": "hubot"
+          },
+          {
+            "id": "asg2-name",
+            "component": "Text",
+            "text": "hubot",
+            "size": "small",
+            "weight": "semibold"
           },
           {
             "id": "lbl-head",
