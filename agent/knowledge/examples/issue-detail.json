@@ -64,27 +64,13 @@
           {
             "id": "ph-desc",
             "component": "PageHeader.Description",
-            "children": ["ph-desc-row"]
-          },
-          {
-            "id": "ph-desc-row",
-            "component": "Stack",
-            "direction": "horizontal",
-            "gap": "condensed",
-            "align": "center",
-            "children": ["ph-state", "ph-meta"]
+            "children": ["ph-state"]
           },
           {
             "id": "ph-state",
             "component": "StateLabel",
             "status": "issueOpened",
             "text": "Open"
-          },
-          {
-            "id": "ph-meta",
-            "component": "Text",
-            "text": "octocat opened this issue · 5 comments",
-            "size": "small"
           },
           {
             "id": "ct",
@@ -95,165 +81,178 @@
           {
             "id": "tl",
             "component": "Timeline",
-            "children": ["ti1", "ti2", "ti3"]
+            "children": ["body", "ev1", "cm1"]
           },
           {
-            "id": "ti1",
+            "id": "body",
             "component": "TimelineItem",
-            "children": ["ti1-av", "ti1-badge", "ti1-body"]
+            "children": ["body-av", "body-badge", "body-content"]
           },
           {
-            "id": "ti1-av",
+            "id": "body-av",
             "component": "TimelineAvatar",
-            "child": "ti1-avatar"
+            "child": "body-avatar"
           },
           {
-            "id": "ti1-avatar",
+            "id": "body-avatar",
             "component": "Avatar",
             "src": "https://avatars.githubusercontent.com/u/583231?v=4",
             "alt": "octocat",
-            "size": 40
+            "size": 24
           },
           {
-            "id": "ti1-badge",
+            "id": "body-badge",
             "component": "TimelineBadge",
-            "child": "ti1-icon"
+            "child": "body-icon"
           },
           {
-            "id": "ti1-icon",
+            "id": "body-icon",
             "component": "Icon",
             "name": "comment"
           },
           {
-            "id": "ti1-body",
+            "id": "body-content",
             "component": "TimelineBody",
-            "children": ["ti1-head", "ti1-text"]
+            "children": ["body-head", "body-p1", "body-p2"]
           },
           {
-            "id": "ti1-head",
+            "id": "body-head",
             "component": "Stack",
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["ti1-author", "ti1-time"]
+            "children": ["body-author", "body-verb", "body-time"]
           },
           {
-            "id": "ti1-author",
+            "id": "body-author",
             "component": "Text",
-            "text": "octocat commented",
-            "weight": "semibold",
-            "size": "small"
+            "text": "octocat",
+            "weight": "semibold"
           },
           {
-            "id": "ti1-time",
+            "id": "body-verb",
+            "component": "Text",
+            "text": "opened this issue"
+          },
+          {
+            "id": "body-time",
             "component": "RelativeTime",
             "datetime": "2026-07-20T09:12:00Z",
             "format": "relative"
           },
           {
-            "id": "ti1-text",
+            "id": "body-p1",
             "component": "Text",
-            "text": "The heal order should flush trailing partials before closing the surface.",
+            "text": "The streaming docs never say what order a partial surface heals in when updateComponents and updateDataModel land in the same frame. Today the parser flushes components first, so a data-bound child can paint once with a stale value before its model arrives.",
             "as": "p"
           },
           {
-            "id": "ti2",
+            "id": "body-p2",
+            "component": "Text",
+            "text": "Either the docs should state the guaranteed order, or the parser should flush trailing partials before it closes the surface. Right now an integrator has to read the parser to find out.",
+            "as": "p"
+          },
+          {
+            "id": "ev1",
             "component": "TimelineItem",
             "condensed": true,
-            "children": ["ti2-badge", "ti2-body"]
+            "children": ["ev1-badge", "ev1-body"]
           },
           {
-            "id": "ti2-badge",
+            "id": "ev1-badge",
             "component": "TimelineBadge",
-            "child": "ti2-icon"
+            "child": "ev1-icon"
           },
           {
-            "id": "ti2-icon",
+            "id": "ev1-icon",
             "component": "Icon",
             "name": "git-commit"
           },
           {
-            "id": "ti2-body",
+            "id": "ev1-body",
             "component": "TimelineBody",
-            "children": ["ti2-row"]
+            "children": ["ev1-row"]
           },
           {
-            "id": "ti2-row",
+            "id": "ev1-row",
             "component": "Stack",
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["ti2-text", "ti2-time"]
+            "children": ["ev1-text", "ev1-time"]
           },
           {
-            "id": "ti2-text",
+            "id": "ev1-text",
             "component": "Text",
-            "text": "hubot referenced this issue in commit a1b2c3d",
-            "size": "small"
+            "text": "hubot referenced this issue in commit a1b2c3d"
           },
           {
-            "id": "ti2-time",
+            "id": "ev1-time",
             "component": "RelativeTime",
             "datetime": "2026-07-21T16:40:00Z",
             "format": "relative"
           },
           {
-            "id": "ti3",
+            "id": "cm1",
             "component": "TimelineItem",
-            "children": ["ti3-av", "ti3-badge", "ti3-body"]
+            "children": ["cm1-av", "cm1-badge", "cm1-content"]
           },
           {
-            "id": "ti3-av",
+            "id": "cm1-av",
             "component": "TimelineAvatar",
-            "child": "ti3-avatar"
+            "child": "cm1-avatar"
           },
           {
-            "id": "ti3-avatar",
+            "id": "cm1-avatar",
             "component": "Avatar",
             "src": "https://avatars.githubusercontent.com/u/9919?v=4",
             "alt": "hubot",
-            "size": 40
+            "size": 24
           },
           {
-            "id": "ti3-badge",
+            "id": "cm1-badge",
             "component": "TimelineBadge",
-            "child": "ti3-icon"
+            "child": "cm1-icon"
           },
           {
-            "id": "ti3-icon",
+            "id": "cm1-icon",
             "component": "Icon",
             "name": "comment"
           },
           {
-            "id": "ti3-body",
+            "id": "cm1-content",
             "component": "TimelineBody",
-            "children": ["ti3-head", "ti3-text"]
+            "children": ["cm1-head", "cm1-text"]
           },
           {
-            "id": "ti3-head",
+            "id": "cm1-head",
             "component": "Stack",
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["ti3-author", "ti3-time"]
+            "children": ["cm1-author", "cm1-verb", "cm1-time"]
           },
           {
-            "id": "ti3-author",
+            "id": "cm1-author",
             "component": "Text",
-            "text": "hubot commented",
-            "weight": "semibold",
-            "size": "small"
+            "text": "hubot",
+            "weight": "semibold"
           },
           {
-            "id": "ti3-time",
+            "id": "cm1-verb",
+            "component": "Text",
+            "text": "commented"
+          },
+          {
+            "id": "cm1-time",
             "component": "RelativeTime",
             "datetime": "2026-07-22T11:05:00Z",
             "format": "relative"
           },
           {
-            "id": "ti3-text",
+            "id": "cm1-text",
             "component": "Text",
-            "text": "Confirmed — the parser now heals in order, so this can close once the docs land.",
+            "text": "Confirmed — the parser heals in order as of a1b2c3d, so this is docs-only now. I'll write the ordering guarantee into the streaming page unless someone has already started.",
             "as": "p"
           },
           {
