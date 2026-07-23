@@ -1,4 +1,5 @@
 import {useState} from 'react';
+import type {CSSProperties} from 'react';
 import {FixtureView} from '../test-space/FixtureView';
 import {EXAMPLES, getExample} from './examples';
 
@@ -30,25 +31,57 @@ export function ExamplesSpace() {
   };
 
   return (
-    <main>
-      <label>
-        Example:{' '}
-        <select
-          data-testid="example-select"
-          value={example.name}
-          onChange={e => onSelect(e.target.value)}
-        >
-          {EXAMPLES.map(e => (
-            <option key={e.name} value={e.name}>
-              {e.name}
-            </option>
-          ))}
-        </select>
-      </label>
+    <main style={styles.page}>
+      <div style={styles.column}>
+        <label>
+          Example:{' '}
+          <select
+            data-testid="example-select"
+            value={example.name}
+            onChange={e => onSelect(e.target.value)}
+          >
+            {EXAMPLES.map(e => (
+              <option key={e.name} value={e.name}>
+                {e.name}
+              </option>
+            ))}
+          </select>
+        </label>
 
-      <p data-testid="example-intent">{example.intent}</p>
+        <p data-testid="example-intent" style={styles.intent}>
+          {example.intent}
+        </p>
 
-      <FixtureView key={example.name} fixture={example} />
+        {/* The surface is drawn inside a bounded, padded card rather than bleeding to the viewport
+            edges, so what it looks like here matches what it would look like on a real GitHub page
+            — an unbounded surface stretches its inputs and lists to any window width and misleads
+            the fidelity judgement this page exists to support. */}
+        <div style={styles.surface}>
+          <FixtureView key={example.name} fixture={example} />
+        </div>
+      </div>
     </main>
   );
 }
+
+// Primer functional tokens (set by ThemeProvider/BaseStyles) so the frame follows the active theme.
+const styles: Record<string, CSSProperties> = {
+  page: {
+    padding: '24px 16px',
+    minHeight: '100vh',
+    backgroundColor: 'var(--bgColor-inset)',
+  },
+  column: {
+    maxWidth: '1280px',
+    margin: '0 auto',
+  },
+  intent: {
+    color: 'var(--fgColor-muted)',
+  },
+  surface: {
+    padding: '24px',
+    borderRadius: '6px',
+    border: '1px solid var(--borderColor-default)',
+    backgroundColor: 'var(--bgColor-default)',
+  },
+};

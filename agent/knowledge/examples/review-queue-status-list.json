@@ -34,130 +34,47 @@
             "role": "listbox",
             "selectionVariant": "multiple",
             "showDividers": true,
-            "children": ["pr1", "pr2", "pr3", "pr4"]
+            "children": {
+              "componentId": "pr-row",
+              "path": "/prs"
+            }
           },
           {
-            "id": "pr1",
+            "id": "pr-row",
             "component": "ActionList.Item",
             "selected": {
-              "path": "/selected/pr1"
+              "path": "selected"
             },
-            "children": ["pr1-lv", "pr1-label", "pr1-desc"]
+            "children": ["pr-lv", "pr-title", "pr-desc"]
           },
           {
-            "id": "pr1-lv",
+            "id": "pr-lv",
             "component": "ActionList.LeadingVisual",
-            "children": ["pr1-state"]
+            "children": ["pr-icon"]
           },
           {
-            "id": "pr1-state",
-            "component": "StateLabel",
-            "status": "pullOpened",
-            "text": "Open",
-            "size": "small"
+            "id": "pr-icon",
+            "component": "Icon",
+            "name": "git-pull-request",
+            "fill": "muted",
+            "accessibility": {
+              "label": "Pull request"
+            }
           },
           {
-            "id": "pr1-label",
+            "id": "pr-title",
             "component": "Text",
-            "text": "Add incremental heal to stream parser"
-          },
-          {
-            "id": "pr1-desc",
-            "component": "ActionList.Description",
-            "text": "primer-a2ui-adapter \u00b7 awaiting your review",
-            "variant": "block"
-          },
-          {
-            "id": "pr2",
-            "component": "ActionList.Item",
-            "selected": {
-              "path": "/selected/pr2"
+            "text": {
+              "path": "title"
             },
-            "children": ["pr2-lv", "pr2-label", "pr2-desc"]
+            "weight": "semibold"
           },
           {
-            "id": "pr2-lv",
-            "component": "ActionList.LeadingVisual",
-            "children": ["pr2-state"]
-          },
-          {
-            "id": "pr2-state",
-            "component": "StateLabel",
-            "status": "draft",
-            "text": "Draft",
-            "size": "small"
-          },
-          {
-            "id": "pr2-label",
-            "component": "Text",
-            "text": "Spike: allowed_components pruning"
-          },
-          {
-            "id": "pr2-desc",
+            "id": "pr-desc",
             "component": "ActionList.Description",
-            "text": "agent \u00b7 not ready",
-            "variant": "block"
-          },
-          {
-            "id": "pr3",
-            "component": "ActionList.Item",
-            "selected": {
-              "path": "/selected/pr3"
+            "text": {
+              "path": "meta"
             },
-            "children": ["pr3-lv", "pr3-label", "pr3-desc"]
-          },
-          {
-            "id": "pr3-lv",
-            "component": "ActionList.LeadingVisual",
-            "children": ["pr3-state"]
-          },
-          {
-            "id": "pr3-state",
-            "component": "StateLabel",
-            "status": "pullMerged",
-            "text": "Merged",
-            "size": "small"
-          },
-          {
-            "id": "pr3-label",
-            "component": "Text",
-            "text": "Ship StateLabel status enum"
-          },
-          {
-            "id": "pr3-desc",
-            "component": "ActionList.Description",
-            "text": "primer-a2ui-adapter \u00b7 merged, follow-up review",
-            "variant": "block"
-          },
-          {
-            "id": "pr4",
-            "component": "ActionList.Item",
-            "selected": {
-              "path": "/selected/pr4"
-            },
-            "children": ["pr4-lv", "pr4-label", "pr4-desc"]
-          },
-          {
-            "id": "pr4-lv",
-            "component": "ActionList.LeadingVisual",
-            "children": ["pr4-state"]
-          },
-          {
-            "id": "pr4-state",
-            "component": "StateLabel",
-            "status": "pullClosed",
-            "text": "Closed",
-            "size": "small"
-          },
-          {
-            "id": "pr4-label",
-            "component": "Text",
-            "text": "Revert experimental cache layer"
-          },
-          {
-            "id": "pr4-desc",
-            "component": "ActionList.Description",
-            "text": "agent \u00b7 closed without merge",
             "variant": "block"
           },
           {
@@ -192,12 +109,28 @@
         "path": "/",
         "value": {
           "selectedCount": 0,
-          "selected": {
-            "pr1": false,
-            "pr2": false,
-            "pr3": false,
-            "pr4": false
-          }
+          "prs": [
+            {
+              "title": "Add incremental heal to stream parser",
+              "meta": "Open · primer-a2ui-adapter · awaiting your review",
+              "selected": false
+            },
+            {
+              "title": "Spike: allowed_components pruning",
+              "meta": "Draft · agent · not ready",
+              "selected": false
+            },
+            {
+              "title": "Ship StateLabel status enum",
+              "meta": "Merged · primer-a2ui-adapter · follow-up review",
+              "selected": false
+            },
+            {
+              "title": "Revert experimental cache layer",
+              "meta": "Closed · agent · closed without merge",
+              "selected": false
+            }
+          ]
         }
       }
     }
