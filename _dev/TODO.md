@@ -132,7 +132,7 @@ The live LLM agent that generates A2UI surfaces from the catalog, against the li
 - [ ] **7.5** Record/replay harness (L1) — capture real sessions into replayable canned streams; zero-LLM client/integration work.
 - [ ] **7.6** Scenario runner (L2) — the five beats as on-demand scenarios: structural validation + per-beat semantic assertions, cheap-model default.
 - [ ] **7.7** Beat-by-beat verification and refinement — drive each beat through the live stack, iterating on the 7.1 artifacts until beats pass; demand-driven local functions grow here (beat 5 proves the mechanism). Phase definition-of-done.
-- [WIP] **7.8** Examples showcase page — a permanent client page, alongside home + dev, that renders the 7.1 knowledge examples through the existing A2UI render pipeline; visual verification of the curated fixtures. (#111)
+- [x] **7.8** Examples showcase page — a permanent client page, alongside home + dev, that renders the 7.1 knowledge examples through the existing A2UI render pipeline; visual verification of the curated fixtures. (#111)
 
 Order: 7.1 ∥ 7.4 from the start · 7.2 after 7.1 · 7.3 after 7.2 · 7.5 ∥ 7.6 after 7.3 · 7.7 last · 7.8 after 7.1 (client-only; parallel to the whole 7.2→7.7 chain).
 
