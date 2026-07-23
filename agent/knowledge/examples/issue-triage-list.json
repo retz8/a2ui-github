@@ -77,6 +77,7 @@
             "id": "row-icon",
             "component": "Icon",
             "name": "issue-opened",
+            "fill": "open",
             "accessibility": {
               "label": "Open issue"
             }
@@ -123,19 +124,19 @@
             {
               "number": 512,
               "title": "Streaming heal drops trailing partial",
-              "meta": "octo/a2ui-github \u00b7 reported by maintainer",
+              "meta": "#512 opened by maintainer",
               "updatedAt": "2026-07-19T14:02:00Z"
             },
             {
               "number": 508,
               "title": "Catalog validator rejects bound counter",
-              "meta": "octo/a2ui-github \u00b7 4 comments",
+              "meta": "#508 opened by octocat \u00b7 4 comments",
               "updatedAt": "2026-07-18T09:41:00Z"
             },
             {
               "number": 501,
               "title": "Docs: clarify relative template paths",
-              "meta": "octo/a2ui-github \u00b7 good first issue",
+              "meta": "#501 opened by hubot \u00b7 good first issue",
               "updatedAt": "2026-07-17T21:15:00Z"
             }
           ]
