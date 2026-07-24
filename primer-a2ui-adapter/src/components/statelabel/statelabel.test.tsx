@@ -25,4 +25,19 @@ describe('StateLabelView', () => {
     render(<StateLabelView text="Open" status="issueOpened" size="small" />);
     expect(screen.getByText('Open')).toHaveAttribute('data-size', 'small');
   });
+
+  it('renders nothing for a status outside the enum', () => {
+    render(<StateLabelView text="Open" status={'bogus' as never} />);
+    expect(screen.queryByText('Open')).not.toBeInTheDocument();
+  });
+
+  it('renders nothing when a live agent leaves status unresolved (non-string)', () => {
+    render(<StateLabelView text="Open" status={{path: 'status'} as never} />);
+    expect(screen.queryByText('Open')).not.toBeInTheDocument();
+  });
+
+  it('renders nothing while status is still undefined mid-stream', () => {
+    render(<StateLabelView text="Open" status={undefined as never} />);
+    expect(screen.queryByText('Open')).not.toBeInTheDocument();
+  });
 });

@@ -13,30 +13,32 @@ import {CommonSchemas} from '@a2ui/web_core/v0_9';
  *   the same sizing axis.
  * - `.strict()` forbids any prop outside this surface.
  */
+export const STATELABEL_STATUSES = [
+  'issueOpened',
+  'issueClosed',
+  'issueClosedNotPlanned',
+  'pullOpened',
+  'pullClosed',
+  'pullMerged',
+  'draft',
+  'issueDraft',
+  'pullQueued',
+  'unavailable',
+  'alertOpened',
+  'alertFixed',
+  'alertDismissed',
+  'alertClosed',
+  'open',
+  'closed',
+  'archived',
+] as const;
+
 export const StateLabelApi = {
   name: 'StateLabel',
   schema: z
     .object({
       text: CommonSchemas.DynamicString,
-      status: z.enum([
-        'issueOpened',
-        'issueClosed',
-        'issueClosedNotPlanned',
-        'pullOpened',
-        'pullClosed',
-        'pullMerged',
-        'draft',
-        'issueDraft',
-        'pullQueued',
-        'unavailable',
-        'alertOpened',
-        'alertFixed',
-        'alertDismissed',
-        'alertClosed',
-        'open',
-        'closed',
-        'archived',
-      ]),
+      status: z.enum(STATELABEL_STATUSES),
       size: z.enum(['small', 'medium']).optional(),
     })
     .strict(),

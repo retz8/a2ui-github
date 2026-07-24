@@ -18,6 +18,19 @@ type IssueLabelTokenViewProps = {
   accessibility?: ResolvedAccessibility;
 };
 
+/**
+ * Normalize a bound fill color for Primer's color parser, which throws on anything
+ * it cannot parse. GitHub's API ships label colors as bare hex (`0e8a16`), so that
+ * form gets its `#` restored; a non-string (an unresolved binding) is dropped so
+ * the token falls back to its default fill.
+ */
+function normalizeFillColor(fillColor: unknown): string | undefined {
+  if (typeof fillColor !== 'string') return undefined;
+  return /^([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/.test(fillColor)
+    ? `#${fillColor}`
+    : fillColor;
+}
+
 export function IssueLabelTokenView({
   text,
   fillColor,
@@ -33,7 +46,7 @@ export function IssueLabelTokenView({
     <PrimerIssueLabelToken
       as={as}
       text={text}
-      fillColor={fillColor}
+      fillColor={normalizeFillColor(fillColor)}
       onRemove={onRemove}
       hideRemoveButton={hideRemoveButton}
       isSelected={isSelected}
