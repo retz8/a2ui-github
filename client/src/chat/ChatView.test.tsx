@@ -116,4 +116,34 @@ describe('ChatView', () => {
 
     expect(sent).toHaveLength(0);
   });
+
+  // Structural half of the "no growing bottom gap" invariant: the composer is
+  // pinned as a sibling *after* the scroll region, not nested inside it, so the
+  // transcript is the sole scroll container and the composer cannot be pushed
+  // down the page as turns accumulate. (The pixel-level half — shell == viewport
+  // height, no page scroll — depends on ChatView.css and is verified visually.)
+  it('pins the composer outside the single transcript scroll container', () => {
+    const {sender} = fakeSender();
+    const {container} = renderChat(sender);
+
+    const shell = container.querySelector('.chat-app');
+    const scroll = container.querySelector('.chat-scroll');
+    const composer = container.querySelector('.chat-composer-bar');
+    expect(shell).not.toBeNull();
+    expect(scroll).not.toBeNull();
+    expect(composer).not.toBeNull();
+
+    // Exactly one scroll container (the transcript).
+    expect(container.querySelectorAll('.chat-scroll')).toHaveLength(1);
+
+    // Transcript and composer are direct siblings under the shell...
+    expect(scroll!.parentElement).toBe(shell);
+    expect(composer!.parentElement).toBe(shell);
+    // ...the composer is not inside the scroll region...
+    expect(scroll!.contains(composer!)).toBe(false);
+    // ...and it follows the transcript in DOM order (pinned at the bottom).
+    expect(scroll!.compareDocumentPosition(composer!) & Node.DOCUMENT_POSITION_FOLLOWING).toBe(
+      Node.DOCUMENT_POSITION_FOLLOWING,
+    );
+  });
 });

@@ -1,10 +1,23 @@
 /* Chat shell layout. Colors come from Primer primitives CSS vars so light/dark
    themes resolve through the ThemeProvider color mode. */
 
+/* Establish a full-height chain and drop the UA body margin so the shell is
+   pinned to the viewport box: without this the default 8px body margin (and any
+   ancestor that can grow) lets the page scroll behind the shell. */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
 .chat-app {
   display: flex;
   flex-direction: column;
   height: 100dvh;
+  /* Clip rather than grow: the shell is exactly viewport-height, so no child
+     may spill below it and accumulate a page-level bottom gap. */
+  overflow: hidden;
   background: var(--bgColor-inset);
 }
 
@@ -30,6 +43,11 @@
 
 .chat-scroll {
   flex: 1;
+  /* min-height:0 overrides the flex default of `auto`, which would refuse to
+     shrink below the transcript's content size — the cause of the growing shell.
+     With it, the transcript is the only scroll container and stays within the
+     space the header and composer leave. */
+  min-height: 0;
   overflow-y: auto;
 }
 
