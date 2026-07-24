@@ -9,6 +9,7 @@ import {createSenderResolver} from '../a2a/client';
 import {createA2AActionHandler} from '../a2a/createA2AActionHandler';
 import {createA2ASession} from '../a2a/session';
 import {streamUserMessage} from '../a2a/streamUserMessage';
+import {SurfaceErrorBoundary} from './SurfaceErrorBoundary';
 import './ChatView.css';
 
 /** One transcript entry: a typed user prompt, or an agent surface keyed by its id. */
@@ -118,7 +119,9 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
                     className="chat-surface-turn"
                     data-testid={`surface-${turn.id}`}
                   >
-                    <A2uiSurface surface={surface} />
+                    <SurfaceErrorBoundary surfaceId={turn.id}>
+                      <A2uiSurface surface={surface} />
+                    </SurfaceErrorBoundary>
                   </div>
                 ))(wiring.processor.model.surfacesMap.get(turn.id))
             ),
