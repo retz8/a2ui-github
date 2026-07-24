@@ -3,7 +3,7 @@
 import json
 
 import pytest
-from a2a.types import Message, Part, Role, TextPart
+from a2a.types import DataPart, Message, Part, Role, TextPart
 
 from llm_agent.catalog import EXAMPLES_DIR
 from llm_agent.executor import APOLOGY_TEXT, MAX_ATTEMPTS, LlmAgentExecutor
@@ -22,9 +22,11 @@ class _FakeResponder:
         self._scripts = scripts
         self.calls = 0
         self.corrections = []
+        self.prompts = []
 
     async def stream(self, prompt, correction=None):
         self.corrections.append(correction)
+        self.prompts.append(prompt)
         text = self._scripts[min(self.calls, len(self._scripts) - 1)]
         self.calls += 1
         # yield in two chunks to exercise incremental parsing
@@ -37,6 +39,34 @@ class _Ctx:
     def __init__(self, prompt):
         self.message = Message(
             message_id="m1", role=Role.user, parts=[Part(root=TextPart(text=prompt))]
+        )
+        self.current_task = None
+
+
+class _ActionCtx:
+    """A message carrying one v0.9 A2UI action DataPart (the client's action wire form)."""
+
+    def __init__(self, action):
+        self.message = Message(
+            message_id="m1",
+            role=Role.user,
+            parts=[Part(root=DataPart(data={"version": "v0.9", "action": action}))],
+        )
+        self.current_task = None
+
+
+class _EmptyCtx:
+    """A message carrying a part that is neither usable text nor an A2UI action.
+
+    (A2A rejects a truly empty parts list, so this uses a v0.9 DataPart with no
+    `action` key — which the executor must still treat as "nothing to compose".)
+    """
+
+    def __init__(self):
+        self.message = Message(
+            message_id="m1",
+            role=Role.user,
+            parts=[Part(root=DataPart(data={"version": "v0.9"}))],
         )
         self.current_task = None
 
@@ -300,4 +330,41 @@ async def test_exhaustion_emits_plain_text_apology():
     queue = _FakeQueue()
     await executor.execute(_Ctx("show me open PRs"), queue)
     assert responder.calls == MAX_ATTEMPTS  # retried up to the cap
+    assert APOLOGY_TEXT in _all_text(queue)
+
+
+@pytest.mark.asyncio
+async def test_action_event_is_framed_into_the_model_prompt():
+    # An incoming A2UI action DataPart (no TextPart) must resolve to a model turn that
+    # names the action and carries its resolved context, not an empty prompt.
+    action = {
+        "name": "approve",
+        "surfaceId": "s1",
+        "sourceComponentId": "approve-btn",
+        "context": {"prNumber": 42, "assignee": "octocat"},
+    }
+    responder = _FakeResponder([_valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_ActionCtx(action), queue)
+
+    assert responder.calls == 1  # the action was turned into a real model call
+    prompt = responder.prompts[0]
+    assert prompt  # not empty
+    assert "approve" in prompt  # the action name is framed in
+    assert "prNumber" in prompt and "42" in prompt  # resolved context values carried
+    assert "assignee" in prompt and "octocat" in prompt
+    assert "action" in prompt.lower()  # framed as an activated action
+
+
+@pytest.mark.asyncio
+async def test_empty_message_apologizes_without_calling_the_model():
+    # A message with neither text nor an action part must not reach the model (an empty
+    # prompt is rejected by the provider); it gets the plain-text apology directly.
+    responder = _FakeResponder([_valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_EmptyCtx(), queue)
+
+    assert responder.calls == 0  # no model call at all
     assert APOLOGY_TEXT in _all_text(queue)
