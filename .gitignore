@@ -26,3 +26,4 @@ playwright-report/
 !.yarn/plugins
 !.yarn/sdks
 .yarn/cache
+system_prompt.dump.txt

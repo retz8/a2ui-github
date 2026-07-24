@@ -33,8 +33,11 @@ type IconViewProps = {
 };
 
 export function IconView({name, size, fill, accessibility}: IconViewProps) {
+  // A live agent can emit a non-string name (e.g. a data binding where the enum
+  // expects a literal); render nothing rather than crash the whole surface.
+  if (typeof name !== 'string') return null;
   const Glyph = OCTICONS[nameToExport(name)];
-  if (!Glyph) return null; // unreachable: the name enum is generated from the export list.
+  if (!Glyph) return null;
   // `default` inherits the surrounding text color (currentColor); every other role maps
   // to its theme-aware Primer functional foreground token.
   const svgFill = fill && fill !== 'default' ? `var(--fgColor-${fill})` : undefined;

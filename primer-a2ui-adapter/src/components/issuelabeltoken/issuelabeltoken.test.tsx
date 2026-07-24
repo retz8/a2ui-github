@@ -53,4 +53,15 @@ describe('IssueLabelTokenView', () => {
     expect(el).not.toBeNull();
     expect(el).toHaveAttribute('aria-description', 'Removes it');
   });
+
+  it('accepts a GitHub-style bare-hex fillColor (no leading #)', () => {
+    const {container} = render(<IssueLabelTokenView text="catalog" fillColor="0e8a16" />);
+    expect(screen.getByText('catalog')).toBeInTheDocument();
+    expect(container.querySelector('[style*="--label-r"]')).not.toBeNull();
+  });
+
+  it('falls back to the default fill when fillColor is unresolved (non-string)', () => {
+    render(<IssueLabelTokenView text="bug" fillColor={{path: 'color'} as never} />);
+    expect(screen.getByText('bug')).toBeInTheDocument();
+  });
 });
