@@ -7,7 +7,10 @@ real implementation wired by the server; it is exercised by the task's manual li
 
 from __future__ import annotations
 
+import logging
 from typing import AsyncIterator, Optional, Protocol, runtime_checkable
+
+logger = logging.getLogger(__name__)
 
 
 @runtime_checkable
@@ -68,6 +71,7 @@ class AdkLlmResponder:
         message = genai_types.Content(
             role="user", parts=[genai_types.Part(text=text)]
         )
+        logger.info("run_async begin: session=%s text=%r", self._session_id, text[:80])
         async for event in self._runner.run_async(
             user_id=self._user_id,
             session_id=self._session_id,
@@ -79,3 +83,4 @@ class AdkLlmResponder:
                     chunk = getattr(part, "text", None)
                     if chunk:
                         yield chunk
+        logger.info("run_async end: session=%s", self._session_id)

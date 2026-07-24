@@ -15,7 +15,7 @@ def test_card_advertises_single_version_a2ui_extension_and_our_catalog():
 
     extensions = card.capabilities.extensions
     assert extensions, "agent card must advertise the a2ui extension"
-    # single-version: exactly one a2ui extension, v0.9 only
-    a2ui = [e for e in extensions if e.uri.endswith("a2ui/v0.9")]
+    # single-version: exactly one a2ui extension, at the spec-fixed v0.9.1 URI
+    a2ui = [e for e in extensions if e.uri.endswith("a2ui/v0.9.1")]
     assert len(a2ui) == 1
     assert a2ui[0].params["supportedCatalogIds"] == supported_catalog_ids()

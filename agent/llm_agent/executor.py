@@ -13,8 +13,9 @@ from a2a.utils.errors import ServerError
 from a2ui.a2a.parts import create_a2ui_part
 from a2ui.parser.parser import parse_response
 from a2ui.parser.streaming_v09 import A2uiStreamParserV09
+from a2ui.schema.constants import VERSION_0_9
 
-from llm_agent.catalog import validate_surface
+from llm_agent.catalog import live_ref_fields, validate_surface
 from llm_agent.responder import LlmResponder
 
 logger = logging.getLogger(__name__)
@@ -22,6 +23,9 @@ logger = logging.getLogger(__name__)
 MAX_ATTEMPTS = 2  # one initial + one retry; tunable (spec decision 6)
 APOLOGY_TEXT = (
     "Sorry — I couldn't compose a valid interface for that request. Please try rephrasing."
+)
+UNAVAILABLE_TEXT = (
+    "Sorry — the language model is temporarily unavailable. Please try again in a moment."
 )
 
 
@@ -74,26 +78,68 @@ class LlmAgentExecutor(AgentExecutor):
             task = new_task(context.message)
             await event_queue.enqueue_event(task)
         updater = TaskUpdater(event_queue, task.id, task.context_id)
+        logger.info(
+            "execute start: task=%s context=%s prompt=%r", task.id, task.context_id, prompt
+        )
 
         correction: str | None = None
+        model_unavailable = False
         for attempt in range(1, self._max_attempts + 1):
             # Catalog-less v0.9 parser: incremental structural heal + yield only.
             # Validation is at-end (validate_surface); the parser must not reject the
             # id-bearing wire format the catalog does not model (spec decision 6).
             parser = A2uiStreamParserV09(catalog=None)
+            # Catalog-less construction leaves the parser's version unset, which arms
+            # its v0.8 compatibility shim: every relative binding path in streamed
+            # parts gets rewritten absolute ('title' -> '/title'), silently breaking
+            # template item bindings on the client. Pin the version to disarm it.
+            parser._version = VERSION_0_9
+            # It also leaves the ref-field map empty, so the parser's reachability
+            # yield cannot traverse the catalog's custom component-reference props
+            # (e.g. PageLayout's header/content/pane) and silently drops every
+            # component behind them. Hand it the map without the catalog itself.
+            parser._ref_fields_map = live_ref_fields()
             accumulated = ""
-            async for token in self._responder.stream(prompt, correction):
-                accumulated += token
-                for response_part in parser.process_chunk(token):
-                    parts = self._parts_for(response_part)
-                    if parts:
-                        await updater.update_status(
-                            TaskState.working,
-                            new_agent_parts_message(parts, task.context_id, task.id),
-                        )
+            stream_error: ValueError | None = None
+            created_surfaces: set[str] = set()
+            logger.info("attempt %d: calling model", attempt)
+            first_token = True
+            try:
+                async for token in self._responder.stream(prompt, correction):
+                    if first_token:
+                        logger.info("attempt %d: first model token received", attempt)
+                        first_token = False
+                    accumulated += token
+                    # A malformed A2UI block raises here mid-stream; that is the same
+                    # failure class as an invalid surface, so it feeds the same
+                    # correction/retry loop instead of escaping as a server error.
+                    try:
+                        response_parts = parser.process_chunk(token)
+                    except ValueError as err:
+                        stream_error = err
+                        break
+                    for response_part in response_parts:
+                        created_surfaces |= self._surface_ids(response_part)
+                        parts = self._parts_for(response_part)
+                        if parts:
+                            await updater.update_status(
+                                TaskState.working,
+                                new_agent_parts_message(parts, task.context_id, task.id),
+                            )
+            except Exception as err:  # model/infra failure (quota, 5xx, network)
+                # Must not abort the SSE stream raw — the client would see a bare
+                # network error. Retry with the prompt unchanged; a transient
+                # provider error is not a correction-worthy model mistake.
+                logger.warning("attempt %d model stream failed: %s", attempt, err)
+                model_unavailable = True
+                await self._teardown(updater, task, created_surfaces)
+                continue
+            model_unavailable = False
 
             payload = _collect_payload(accumulated)
             try:
+                if stream_error is not None:
+                    raise stream_error
                 if not payload:
                     raise ValueError("no A2UI surface found in the model response")
                 validate_surface(payload)
@@ -105,18 +151,51 @@ class LlmAgentExecutor(AgentExecutor):
                     "Your previous A2UI response failed validation with this error:\n"
                     f"{err}\nReturn a corrected, complete A2UI surface."
                 )
+                await self._teardown(updater, task, created_surfaces)
                 continue
 
+            logger.info("attempt %d: surface valid, task %s completed", attempt, task.id)
             await updater.update_status(TaskState.completed, final=True)
             return
 
-        # Attempts exhausted -> plain-text apology.
+        # Attempts exhausted -> plain-text apology, matched to the last failure kind.
+        apology = UNAVAILABLE_TEXT if model_unavailable else APOLOGY_TEXT
         await updater.update_status(
             TaskState.completed,
             new_agent_parts_message(
-                [Part(root=TextPart(text=APOLOGY_TEXT))], task.context_id, task.id
+                [Part(root=TextPart(text=apology))], task.context_id, task.id
             ),
             final=True,
+        )
+
+    @staticmethod
+    def _surface_ids(response_part) -> set[str]:
+        """Surface ids created by this part's createSurface messages."""
+        data = response_part.a2ui_json
+        if not data:
+            return set()
+        ids = set()
+        for msg in data if isinstance(data, list) else [data]:
+            surface_id = (msg.get("createSurface") or {}).get("surfaceId")
+            if surface_id:
+                ids.add(surface_id)
+        return ids
+
+    async def _teardown(self, updater: TaskUpdater, task, surface_ids: set[str]) -> None:
+        """Deletes surfaces a failed attempt created, so the client is not left with
+        a half-streamed zombie surface (and a retry can re-create the same id)."""
+        if not surface_ids:
+            return
+        parts = [
+            create_a2ui_part(
+                {"version": "v0.9", "deleteSurface": {"surfaceId": sid}},
+                version="v0.9",
+            )
+            for sid in sorted(surface_ids)
+        ]
+        await updater.update_status(
+            TaskState.working,
+            new_agent_parts_message(parts, task.context_id, task.id),
         )
 
     @staticmethod

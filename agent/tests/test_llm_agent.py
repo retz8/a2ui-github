@@ -16,9 +16,13 @@ def test_model_name_reads_env(monkeypatch):
 def test_build_llm_agent_wires_prompt_and_tools():
     a = build_llm_agent(model="gemini-2.5-flash")
     assert a.model == "gemini-2.5-flash"
+    # A provider callable, never a plain string: ADK state-templates string
+    # instructions, and the prompt's JSON braces would raise KeyError at runtime.
+    assert not isinstance(a.instruction, str)
+    prompt = a.instruction(None)
     # instruction carries the authored role and the SDK-injected schema block
-    assert "maintainer's-morning agent" in a.instruction
-    assert A2UI_SCHEMA_BLOCK_START in a.instruction
+    assert "maintainer's-morning agent" in prompt
+    assert A2UI_SCHEMA_BLOCK_START in prompt
     # both stub tools registered, no write tool
     assert len(a.tools) == 2
 

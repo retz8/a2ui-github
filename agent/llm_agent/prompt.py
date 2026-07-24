@@ -16,13 +16,22 @@ ROLE_DESCRIPTION = (
     "authors, or counts — every value shown on a surface comes from a tool result."
 )
 
+# The array-wrapping rule exists because the SDK's streaming parser only reads a
+# top-level JSON array inside an <a2ui-json> block; a bare object — which the SDK's
+# own at-end parse_response accepts — makes it raise mid-stream.
 WORKFLOW_DESCRIPTION = (
     "For a request that names or implies repository data (pull requests, reviews, a specific PR), "
     "first call the appropriate tool to fetch it, then compose one surface that presents the "
     "result. Bind dynamic values (titles, authors, counts, states) through the data model so the "
     "surface reflects the fetched data rather than hard-coding it. Prefer a list surface for "
     "'what needs my attention' requests and a detail surface for a single named PR. Keep the "
-    "surface to what the request asks for; do not add unrequested sections."
+    "surface to what the request asks for; do not add unrequested sections. Inside every "
+    "<a2ui-json> block, the content MUST be a single JSON array of A2UI messages — wrap even "
+    "a lone message in a list; never emit a bare object. Data-bind only properties whose "
+    "schema is a dynamic type; enum- or literal-typed properties (such as Icon's name) must "
+    "always carry a literal value. Inside a list template (children bound by componentId + "
+    "path), bind item fields with RELATIVE paths — {\"path\": \"title\"}, never "
+    "{\"path\": \"/title\"}; a leading slash resolves from the surface root, not the item."
 )
 
 

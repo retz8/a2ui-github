@@ -7,7 +7,7 @@ from a2a.server.request_handlers import DefaultRequestHandler
 from a2a.server.tasks import InMemoryTaskStore
 from a2a.types import AgentCapabilities, AgentCard, AgentSkill
 from a2ui.a2a.extension import get_a2ui_agent_extension
-from a2ui.schema.constants import VERSION_0_9
+from a2ui.schema.constants import VERSION_0_9_1
 from starlette.middleware.cors import CORSMiddleware
 
 from catalog_common import supported_catalog_ids
@@ -17,8 +17,11 @@ CORS_ORIGIN_REGEX = r"^(http://localhost:\d+|https://[a-z0-9-]+\.[a-z]+\.devtunn
 
 
 def build_agent_card(base_url: str) -> AgentCard:
+    # The v0.9.1 extension spec fixes the URI at .../a2ui/v0.9.1 — "the only URI
+    # accepted for this extension" — distinct from the v0.9 wire version marker
+    # carried inside A2UI messages.
     extension = get_a2ui_agent_extension(
-        VERSION_0_9,
+        VERSION_0_9_1,
         accepts_inline_catalogs=False,
         supported_catalog_ids=supported_catalog_ids(),
     )
