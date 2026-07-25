@@ -1,4 +1,4 @@
-import type {ActionListener, A2uiMessage} from '@a2ui/web_core/v0_9';
+import type {ActionListener, A2uiMessage, A2uiClientAction} from '@a2ui/web_core/v0_9';
 import type {A2AMessageSender, GetSender} from './client';
 import {createSenderResolver, sendAndApply} from './client';
 import {buildActionMessageParams} from './messages';
@@ -15,6 +15,10 @@ export interface A2AActionHandlerOptions {
   getSender?: GetSender;
   /** Conversation session; threads the contextId across turns when given. */
   session?: A2ASession;
+  /** Called when an action send begins — lets the host show a loading affordance. */
+  onActionStart?: (action: A2uiClientAction) => void;
+  /** Called when the action send settles (success or caught failure); pairs with onActionStart. */
+  onActionSettled?: () => void;
 }
 
 /**
@@ -24,15 +28,18 @@ export interface A2AActionHandlerOptions {
  * is skipped.
  */
 export function createA2AActionHandler(opts: A2AActionHandlerOptions): ActionListener {
-  const {apply, serverUrl, client, session} = opts;
+  const {apply, serverUrl, client, session, onActionStart, onActionSettled} = opts;
   const getSender = opts.getSender ?? createSenderResolver({serverUrl, client});
 
   return async action => {
+    onActionStart?.(action);
     try {
       const sender = await getSender();
       await sendAndApply(sender, buildActionMessageParams(action, session?.get()), apply, session);
     } catch (err) {
       console.error('[A2UI:a2a]', err);
+    } finally {
+      onActionSettled?.();
     }
   };
 }

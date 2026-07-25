@@ -7,6 +7,7 @@ import {CATALOG} from 'primer-a2ui-adapter';
 import type {A2ASenderOptions} from '../a2a/client';
 import {createSenderResolver} from '../a2a/client';
 import {createA2AActionHandler} from '../a2a/createA2AActionHandler';
+import {describeAction} from './describeAction';
 import {createA2ASession} from '../a2a/session';
 import {streamUserMessage} from '../a2a/streamUserMessage';
 import {SurfaceErrorBoundary} from './SurfaceErrorBoundary';
@@ -22,6 +23,10 @@ type Turn = {kind: 'user'; key: number; text: string} | {kind: 'surface'; id: st
  * (prompts and component actions) share one session and one lazily resolved A2A client.
  */
 export function ChatView({serverUrl, client}: A2ASenderOptions) {
+  // Declared before `wiring` so the action handler can capture the (stable) setters.
+  const [pending, setPending] = useState(false);
+  const [pendingLabel, setPendingLabel] = useState('Generating…');
+
   const [wiring] = useState(() => {
     const session = createA2ASession();
     const getSender = createSenderResolver({serverUrl, client});
@@ -31,7 +36,19 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     // eslint-disable-next-line prefer-const
     let target: {processMessages: (m: A2uiMessage[]) => void} | undefined;
     const apply = (messages: A2uiMessage[]) => target?.processMessages(messages);
-    const actionHandler = createA2AActionHandler({apply, getSender, session});
+    const actionHandler = createA2AActionHandler({
+      apply,
+      getSender,
+      session,
+      // Mirror the text path: a clicked action drives the same loading indicator, with
+      // an informational label derived from the action (falls back to the generic one).
+      onActionStart: action => {
+        const subject = describeAction(action);
+        setPendingLabel(subject ? `${subject} — generating…` : 'Generating…');
+        setPending(true);
+      },
+      onActionSettled: () => setPending(false),
+    });
     const processor = new MessageProcessor([CATALOG], actionHandler);
     target = processor;
     return {processor, getSender, session, apply};
@@ -39,7 +56,6 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
 
   const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState('');
-  const [pending, setPending] = useState(false);
   const userTurnKey = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -82,6 +98,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     if (!prompt || pending) return;
     setText('');
     setTurns(prev => [...prev, {kind: 'user', key: userTurnKey.current++, text: prompt}]);
+    setPendingLabel('Generating…');
     setPending(true);
     try {
       await streamUserMessage(prompt, {
@@ -129,7 +146,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
           {pending && (
             <div className="chat-pending" data-testid="chat-pending">
               <Spinner size="small" />
-              Generating…
+              {pendingLabel}
             </div>
           )}
         </div>
