@@ -134,3 +134,21 @@ state.** The residual cost is real but small: every input must be allocated a pa
 pinned to a literal). **Candidate A2UI OSS contribution:** initial-value sugar on
 `DataBinding` (e.g. `{path, default}`) — uncontrolled-mode ergonomics without
 protocol-invisible state.
+
+## 7. The renderer's unknown-component fallback is hardcoded and streaming-hostile
+
+`@a2ui/react`'s `DeferredChild` (`v0_9/index.js`) renders a fixed red
+`Unknown component: <type>` `<div>` whenever `surface.catalog.components.get(type)`
+misses, and `A2uiSurface` exposes no override for it. Under token-level streaming this
+fires **transiently**: the healing stream parser emits a component while its `type`
+string is still partial (`"Car"` before `"Card"`), the catalog lookup misses for that
+instant, and the red text flashes until a later chunk heals the type.
+
+For an end-user-facing app the developer-oriented "Unknown component" text is meaningless
+noise; rendering **`null`** is the wanted behavior. With no override hook, a consumer's
+only recourse is to **patch the package** (done here via `yarn patch`).
+
+**Candidate A2UI OSS contribution:** make the fallback configurable — a component-not-found
+render-prop on `A2uiSurface` (covering the sibling gray `[Loading id…]` deferred-child
+state too), or default the unknown-component case to `null` so a partial-type flash during
+streaming renders nothing rather than error text.
