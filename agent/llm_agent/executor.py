@@ -7,7 +7,7 @@ import logging
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
 from a2a.server.tasks import TaskUpdater
-from a2a.types import Part, Task, TaskState, TextPart, UnsupportedOperationError
+from a2a.types import DataPart, Part, Task, TaskState, TextPart, UnsupportedOperationError
 from a2a.utils import new_agent_parts_message, new_task
 from a2a.utils.errors import ServerError
 from a2ui.a2a.parts import create_a2ui_part
@@ -20,6 +20,10 @@ from llm_agent.responder import LlmResponder
 
 logger = logging.getLogger(__name__)
 
+# The A2UI DataPart version tag as it rides the A2A wire ("v0.9"), which is the
+# client's inline `version` field — distinct from the SDK's internal VERSION_0_9
+# ("0.9") used to pin the stream parser below.
+WIRE_VERSION = "v0.9"
 MAX_ATTEMPTS = 2  # one initial + one retry; tunable (spec decision 6)
 APOLOGY_TEXT = (
     "Sorry — I couldn't compose a valid interface for that request. Please try rephrasing."
@@ -36,6 +40,64 @@ def _extract_text(context: RequestContext) -> str:
             root = part.root
             if isinstance(root, TextPart) and root.text:
                 return root.text
+    return ""
+
+
+def _extract_action(context: RequestContext) -> dict | None:
+    """Returns the A2UI action carried by a v0.9 DataPart, or None.
+
+    The chat client ships a component action as one DataPart shaped
+    `{version: "v0.9", action: {name, surfaceId, sourceComponentId, context, ...}}`
+    (client/src/a2a/messages.ts -> buildActionMessageParams). The action's `context`
+    is already resolved to concrete values on the client before it is sent.
+    """
+    message = context.message
+    if not message or not message.parts:
+        return None
+    for part in message.parts:
+        root = part.root
+        if isinstance(root, DataPart) and root.data.get("version") == WIRE_VERSION:
+            action = root.data.get("action")
+            if isinstance(action, dict):
+                return action
+    return None
+
+
+def _frame_action_prompt(action: dict) -> str:
+    """Frames a resolved A2UI action as a model turn asking for the next surface.
+
+    An action arrives with no natural-language prompt, so the model is handed the
+    action name plus its resolved context values and told to compose the resulting
+    view — feeding the same stream/validate/retry loop the text path uses.
+    """
+    name = action.get("name") or "(unnamed)"
+    context_values = action.get("context") or {}
+    lines = [
+        f'The user activated the "{name}" action on the current surface. '
+        "Compose the next surface in response to this action.",
+    ]
+    if context_values:
+        lines.append("The action carried these resolved context values:")
+        for key, value in context_values.items():
+            lines.append(f"- {key}: {value!r}")
+    else:
+        lines.append("The action carried no additional context.")
+    return "\n".join(lines)
+
+
+def _resolve_prompt(context: RequestContext) -> str:
+    """Resolves the incoming message to a model prompt: text first, then an action.
+
+    Returns "" when the message carries neither usable text nor an A2UI action; the
+    executor turns that into a plain-text apology rather than calling the model with
+    an empty prompt (which the provider rejects).
+    """
+    text = _extract_text(context)
+    if text:
+        return text
+    action = _extract_action(context)
+    if action is not None:
+        return _frame_action_prompt(action)
     return ""
 
 
@@ -71,37 +133,66 @@ class LlmAgentExecutor(AgentExecutor):
         self._max_attempts = max_attempts
 
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
-        prompt = _extract_text(context)
+        prompt = _resolve_prompt(context)
 
         task = context.current_task
         if not task:
             task = new_task(context.message)
             await event_queue.enqueue_event(task)
         updater = TaskUpdater(event_queue, task.id, task.context_id)
+
+        if not prompt:
+            # Neither usable text nor an A2UI action: apologize in plain text instead
+            # of calling the model with an empty prompt (which the provider rejects).
+            logger.info(
+                "execute: empty message (no text or action) for task=%s; apologizing",
+                task.id,
+            )
+            await updater.update_status(
+                TaskState.completed,
+                new_agent_parts_message(
+                    [Part(root=TextPart(text=APOLOGY_TEXT))], task.context_id, task.id
+                ),
+                final=True,
+            )
+            return
+
         logger.info(
             "execute start: task=%s context=%s prompt=%r", task.id, task.context_id, prompt
         )
 
+        # One parser persisted across attempts. Its dedup caches make a retry patch the
+        # surface attempt 1 created — createSurface and unchanged components are
+        # suppressed, only changed/new components stream as updateComponents — instead of
+        # a deleteSurface + full re-stream, which reads as a wipe-and-redraw under token
+        # streaming. (Supersedes spec decision 6's teardown-and-restream.)
+        # Catalog-less v0.9 parser: incremental structural heal + yield only; validation
+        # is at-end (validate_surface), so the parser must not reject the id-bearing wire
+        # format the catalog does not model.
+        parser = A2uiStreamParserV09(catalog=None)
+        # Catalog-less construction leaves the parser's version unset, which arms its
+        # v0.8 compatibility shim: every relative binding path in streamed parts gets
+        # rewritten absolute ('title' -> '/title'), silently breaking template item
+        # bindings on the client. Pin the version to disarm it.
+        parser._version = VERSION_0_9
+        # It also leaves the ref-field map empty, so the parser's reachability yield
+        # cannot traverse the catalog's custom component-reference props (e.g.
+        # PageLayout's header/content/pane) and silently drops every component behind
+        # them. Hand it the map without the catalog itself.
+        parser._ref_fields_map = live_ref_fields()
+
         correction: str | None = None
         model_unavailable = False
+        created_surfaces: set[str] = set()
         for attempt in range(1, self._max_attempts + 1):
-            # Catalog-less v0.9 parser: incremental structural heal + yield only.
-            # Validation is at-end (validate_surface); the parser must not reject the
-            # id-bearing wire format the catalog does not model (spec decision 6).
-            parser = A2uiStreamParserV09(catalog=None)
-            # Catalog-less construction leaves the parser's version unset, which arms
-            # its v0.8 compatibility shim: every relative binding path in streamed
-            # parts gets rewritten absolute ('title' -> '/title'), silently breaking
-            # template item bindings on the client. Pin the version to disarm it.
-            parser._version = VERSION_0_9
-            # It also leaves the ref-field map empty, so the parser's reachability
-            # yield cannot traverse the catalog's custom component-reference props
-            # (e.g. PageLayout's header/content/pane) and silently drops every
-            # component behind them. Hand it the map without the catalog itself.
-            parser._ref_fields_map = live_ref_fields()
+            # Flush the partial-parse tail a prior failed attempt left in the parser (a
+            # mid-block ValueError aborts before the parser's own reset), keeping the
+            # dedup caches that drive in-place patching. A no-op on the first attempt.
+            parser._reset_json_state()
+            parser._found_delimiter = False
+            parser._buffer = ""
             accumulated = ""
             stream_error: ValueError | None = None
-            created_surfaces: set[str] = set()
             logger.info("attempt %d: calling model", attempt)
             first_token = True
             try:
@@ -132,7 +223,7 @@ class LlmAgentExecutor(AgentExecutor):
                 # provider error is not a correction-worthy model mistake.
                 logger.warning("attempt %d model stream failed: %s", attempt, err)
                 model_unavailable = True
-                await self._teardown(updater, task, created_surfaces)
+                # No teardown between attempts: the retry patches the partial in place.
                 continue
             model_unavailable = False
 
@@ -151,14 +242,16 @@ class LlmAgentExecutor(AgentExecutor):
                     "Your previous A2UI response failed validation with this error:\n"
                     f"{err}\nReturn a corrected, complete A2UI surface."
                 )
-                await self._teardown(updater, task, created_surfaces)
+                # No teardown between attempts: the retry patches the partial in place.
                 continue
 
             logger.info("attempt %d: surface valid, task %s completed", attempt, task.id)
             await updater.update_status(TaskState.completed, final=True)
             return
 
-        # Attempts exhausted -> plain-text apology, matched to the last failure kind.
+        # Attempts exhausted -> clean up the half-baked surface (so the client is not
+        # left with broken partial UI), then apologize, matched to the last failure kind.
+        await self._teardown(updater, task, created_surfaces)
         apology = UNAVAILABLE_TEXT if model_unavailable else APOLOGY_TEXT
         await updater.update_status(
             TaskState.completed,

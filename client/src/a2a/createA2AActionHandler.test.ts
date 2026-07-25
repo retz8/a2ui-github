@@ -78,6 +78,43 @@ describe('createA2AActionHandler', () => {
     consoleError.mockRestore();
   });
 
+  it('calls onActionStart before the send and onActionSettled after it', async () => {
+    const order: string[] = [];
+    const {sender} = fakeSender([completedTask([DATA_PART])]);
+    const handler = createA2AActionHandler({
+      apply: () => order.push('apply'),
+      client: sender,
+      onActionStart: a => order.push(`start:${a.name}`),
+      onActionSettled: () => order.push('settled'),
+    });
+
+    await handler(ACTION);
+
+    expect(order).toEqual(['start:click', 'apply', 'settled']);
+  });
+
+  it('calls onActionSettled even when the send fails', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const events: string[] = [];
+    const failing: A2AMessageSender = {
+      // eslint-disable-next-line require-yield
+      async *sendMessageStream() {
+        throw new Error('wire down');
+      },
+    };
+    const handler = createA2AActionHandler({
+      apply: () => {},
+      client: failing,
+      onActionStart: () => events.push('start'),
+      onActionSettled: () => events.push('settled'),
+    });
+
+    await handler(ACTION);
+
+    expect(events).toEqual(['start', 'settled']);
+    consoleError.mockRestore();
+  });
+
   it('rejects construction without a serverUrl or client at first use', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const handler = createA2AActionHandler({apply: () => {}});

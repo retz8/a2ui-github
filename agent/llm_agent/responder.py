@@ -26,6 +26,30 @@ class LlmResponder(Protocol):
         ...
 
 
+async def _stream_agent_text(events: AsyncIterator) -> AsyncIterator[str]:
+    """Yields model text from an ADK event stream once, whatever the streaming mode.
+
+    In SSE mode ADK emits `partial=True` chunk events and then a final aggregated
+    event (`partial` falsy) repeating the full text; yielding both would double the
+    response. Emit text from partial chunks; once any partial has been seen, skip the
+    trailing aggregate. When no partial is ever seen (a non-streaming single final
+    event), emit it — so the helper is correct in both modes.
+    """
+    saw_partial = False
+    async for event in events:
+        partial = getattr(event, "partial", None)
+        if not partial and saw_partial:
+            continue  # the aggregated final event duplicates the streamed chunks
+        if partial:
+            saw_partial = True
+        content = getattr(event, "content", None)
+        if content and getattr(content, "parts", None):
+            for part in content.parts:
+                chunk = getattr(part, "text", None)
+                if chunk:
+                    yield chunk
+
+
 class AdkLlmResponder:
     """Runs the live LlmAgent through an ADK Runner with in-memory services."""
 
@@ -53,6 +77,7 @@ class AdkLlmResponder:
     async def stream(
         self, prompt: str, correction: Optional[str] = None
     ) -> AsyncIterator[str]:
+        from google.adk.agents.run_config import RunConfig, StreamingMode
         from google.genai import types as genai_types
 
         # A None correction marks a fresh request (the executor's first attempt); start a
@@ -72,15 +97,15 @@ class AdkLlmResponder:
             role="user", parts=[genai_types.Part(text=text)]
         )
         logger.info("run_async begin: session=%s text=%r", self._session_id, text[:80])
-        async for event in self._runner.run_async(
+        # SSE streaming mode makes the Gemini call stream tokens (stream: True), so the
+        # parts flow through the incremental parser / per-part executor events as they
+        # arrive; _stream_agent_text drops the trailing aggregated duplicate SSE emits.
+        events = self._runner.run_async(
             user_id=self._user_id,
             session_id=self._session_id,
             new_message=message,
-        ):
-            content = getattr(event, "content", None)
-            if content and getattr(content, "parts", None):
-                for part in content.parts:
-                    chunk = getattr(part, "text", None)
-                    if chunk:
-                        yield chunk
+            run_config=RunConfig(streaming_mode=StreamingMode.SSE),
+        )
+        async for chunk in _stream_agent_text(events):
+            yield chunk
         logger.info("run_async end: session=%s", self._session_id)

@@ -50,6 +50,62 @@ function fakeSender() {
   return {sender, sent, release};
 }
 
+const ACTIONABLE_MESSAGES = [
+  {version: 'v0.9', createSurface: {surfaceId: 'list', catalogId: CATALOG_ID}},
+  {
+    version: 'v0.9',
+    updateComponents: {
+      surfaceId: 'list',
+      components: [
+        {
+          id: 'root',
+          component: 'Button',
+          child: 'label',
+          action: {event: {name: 'open-issue', context: {number: {path: '/number'}}}},
+        },
+        {id: 'label', component: 'Text', text: 'Open issue'},
+      ],
+    },
+  },
+  {version: 'v0.9', updateDataModel: {surfaceId: 'list', path: '/', value: {number: 117}}},
+];
+
+function eventOf(messages: Record<string, unknown>[], contextId = 'ctx-1'): TaskStatusUpdateEvent {
+  const parts: Part[] = messages.map(data => ({kind: 'data', data}));
+  return {
+    kind: 'status-update',
+    taskId: 't1',
+    contextId,
+    final: true,
+    status: {
+      state: 'completed',
+      message: {kind: 'message', role: 'agent', messageId: 'm1', parts},
+    },
+  };
+}
+
+/** First send (the prompt) resolves immediately with an actionable surface; the second
+ * send (the click's action) stays open until released, so its pending is observable. */
+function sequencedSender() {
+  const sent: MessageSendParams[] = [];
+  let release: () => void = () => {};
+  const gate = new Promise<void>(resolve => {
+    release = resolve;
+  });
+  const sender: A2AMessageSender = {
+    async *sendMessageStream(params) {
+      sent.push(params);
+      if (sent.length === 1) {
+        yield eventOf(ACTIONABLE_MESSAGES);
+        return;
+      }
+      await gate;
+      yield surfaceEvent();
+    },
+  };
+  return {sender, sent, release};
+}
+
 function renderChat(sender: A2AMessageSender) {
   return render(
     <Providers>
@@ -105,6 +161,25 @@ describe('ChatView', () => {
 
     expect(sent[0].message.contextId).toBeUndefined();
     expect(sent[1].message.contextId).toBe('ctx-1');
+  });
+
+  it('shows an informational pending label while a clicked action is generating', async () => {
+    const {sender, sent, release} = sequencedSender();
+    renderChat(sender);
+
+    await sendPrompt('show me open issues');
+    const button = await screen.findByRole('button', {name: 'Open issue'});
+    await waitFor(() => expect(screen.queryByTestId('chat-pending')).not.toBeInTheDocument());
+
+    await userEvent.setup().click(button);
+
+    // The action send is in flight (gated): the indicator names what was activated.
+    const pending = await screen.findByTestId('chat-pending');
+    expect(pending).toHaveTextContent('open issue #117');
+    expect(sent).toHaveLength(2); // prompt + the click's action
+
+    release();
+    await waitFor(() => expect(screen.queryByTestId('chat-pending')).not.toBeInTheDocument());
   });
 
   it('does not send an empty prompt', async () => {

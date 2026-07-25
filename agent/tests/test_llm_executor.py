@@ -3,7 +3,7 @@
 import json
 
 import pytest
-from a2a.types import Message, Part, Role, TextPart
+from a2a.types import DataPart, Message, Part, Role, TextPart
 
 from llm_agent.catalog import EXAMPLES_DIR
 from llm_agent.executor import APOLOGY_TEXT, MAX_ATTEMPTS, LlmAgentExecutor
@@ -15,6 +15,31 @@ def _valid_surface_text() -> str:
     return "Here is your surface:\n<a2ui-json>\n" + json.dumps(messages) + "\n</a2ui-json>"
 
 
+def _valid_surface_text_with_id(surface_id: str) -> str:
+    """A valid example surface, re-addressed to `surface_id` on every message.
+
+    Lets a retry target the same surface an earlier attempt created, so the in-place
+    patch path (createSurface deduped, components streamed as updates) is exercised.
+    """
+    first = sorted(EXAMPLES_DIR.glob("*.json"))[0]
+    messages = json.loads(first.read_text(encoding="utf-8"))["messages"]
+    for msg in messages:
+        for key in ("createSurface", "updateComponents", "updateDataModel", "deleteSurface"):
+            block = msg.get(key)
+            if isinstance(block, dict) and "surfaceId" in block:
+                block["surfaceId"] = surface_id
+    return "Here is your surface:\n<a2ui-json>\n" + json.dumps(messages) + "\n</a2ui-json>"
+
+
+# An attempt that creates surface s1 but fails validation (component "Nope" is not in
+# the catalog): it streams createSurface(s1) + updateComponents before validate rejects.
+_BAD_SURFACE_S1 = (
+    'oops<a2ui-json>[{"version":"v0.9","createSurface":{"surfaceId":"s1",'
+    '"catalogId":"x"}},{"version":"v0.9","updateComponents":{"surfaceId":"s1",'
+    '"components":[{"id":"root","component":"Nope"}]}}]</a2ui-json>'
+)
+
+
 class _FakeResponder:
     """Yields a scripted response per attempt (indexed by number of stream() calls)."""
 
@@ -22,9 +47,11 @@ class _FakeResponder:
         self._scripts = scripts
         self.calls = 0
         self.corrections = []
+        self.prompts = []
 
     async def stream(self, prompt, correction=None):
         self.corrections.append(correction)
+        self.prompts.append(prompt)
         text = self._scripts[min(self.calls, len(self._scripts) - 1)]
         self.calls += 1
         # yield in two chunks to exercise incremental parsing
@@ -37,6 +64,34 @@ class _Ctx:
     def __init__(self, prompt):
         self.message = Message(
             message_id="m1", role=Role.user, parts=[Part(root=TextPart(text=prompt))]
+        )
+        self.current_task = None
+
+
+class _ActionCtx:
+    """A message carrying one v0.9 A2UI action DataPart (the client's action wire form)."""
+
+    def __init__(self, action):
+        self.message = Message(
+            message_id="m1",
+            role=Role.user,
+            parts=[Part(root=DataPart(data={"version": "v0.9", "action": action}))],
+        )
+        self.current_task = None
+
+
+class _EmptyCtx:
+    """A message carrying a part that is neither usable text nor an A2UI action.
+
+    (A2A rejects a truly empty parts list, so this uses a v0.9 DataPart with no
+    `action` key — which the executor must still treat as "nothing to compose".)
+    """
+
+    def __init__(self):
+        self.message = Message(
+            message_id="m1",
+            role=Role.user,
+            parts=[Part(root=DataPart(data={"version": "v0.9"}))],
         )
         self.current_task = None
 
@@ -188,10 +243,10 @@ async def test_streaming_traverses_custom_component_reference_props():
 
 
 @pytest.mark.asyncio
-async def test_failed_attempt_tears_down_its_partial_surface():
-    # A failed attempt must deleteSurface what it half-streamed: the client would
-    # otherwise keep a zombie placeholder surface, and a retry re-creating the same
-    # surface id would hit "Surface already exists".
+async def test_exhausted_infra_failure_tears_down_partial_surface():
+    # Retries no longer tear down between attempts (they patch in place), but once
+    # every attempt has failed the half-streamed surface must be cleaned up before the
+    # apology — the client is not left with a zombie placeholder.
     responder = _FailingResponder(failures=MAX_ATTEMPTS)
     executor = LlmAgentExecutor(responder)
     queue = _FakeQueue()
@@ -203,8 +258,58 @@ async def test_failed_attempt_tears_down_its_partial_surface():
     responder.stream = failing_stream
     await executor.execute(_Ctx("show me open PRs"), queue)
     deletes = [d for d in _data_parts(queue) if "deleteSurface" in d]
-    assert deletes, "expected a deleteSurface teardown for the failed attempt"
+    assert deletes, "expected a deleteSurface teardown once attempts are exhausted"
     assert deletes[0]["deleteSurface"]["surfaceId"] == "zomb"
+
+
+@pytest.mark.asyncio
+async def test_invalid_retry_patches_surface_in_place():
+    # Attempt 1 creates surface s1 but fails validation; the retry must PATCH s1 in
+    # place (updateComponents deltas) rather than deleteSurface + re-create it — no
+    # wipe-and-redraw. So createSurface(s1) streams exactly once, no deleteSurface is
+    # ever emitted, and the task completes.
+    responder = _FakeResponder([_BAD_SURFACE_S1, _valid_surface_text_with_id("s1")])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    assert responder.calls == 2
+    data = _data_parts(queue)
+    creates = [
+        d for d in data
+        if "createSurface" in d and d["createSurface"].get("surfaceId") == "s1"
+    ]
+    assert len(creates) == 1  # created once; the retry did not re-create it
+    assert not [d for d in data if "deleteSurface" in d]  # never torn down
+    assert APOLOGY_TEXT not in _all_text(queue)  # completed successfully
+    assert [  # the retry streamed corrected components as in-place updates
+        d for d in data
+        if "updateComponents" in d and d["updateComponents"].get("surfaceId") == "s1"
+    ]
+
+
+@pytest.mark.asyncio
+async def test_invalid_exhaustion_tears_down_then_apologizes():
+    # Every attempt fails validation: the surface is created once (the retry dedups
+    # its createSurface), then cleaned up once on exhaustion, then the apology.
+    responder = _FakeResponder([_BAD_SURFACE_S1])  # repeated for every attempt
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    assert responder.calls == MAX_ATTEMPTS
+    data = _data_parts(queue)
+    creates = [
+        d for d in data
+        if "createSurface" in d and d["createSurface"].get("surfaceId") == "s1"
+    ]
+    assert len(creates) == 1  # created once even across retries
+    deletes = [
+        d for d in data
+        if "deleteSurface" in d and d["deleteSurface"].get("surfaceId") == "s1"
+    ]
+    assert len(deletes) == 1  # cleaned up once, on exhaustion
+    assert APOLOGY_TEXT in _all_text(queue)
 
 
 @pytest.mark.asyncio
@@ -300,4 +405,41 @@ async def test_exhaustion_emits_plain_text_apology():
     queue = _FakeQueue()
     await executor.execute(_Ctx("show me open PRs"), queue)
     assert responder.calls == MAX_ATTEMPTS  # retried up to the cap
+    assert APOLOGY_TEXT in _all_text(queue)
+
+
+@pytest.mark.asyncio
+async def test_action_event_is_framed_into_the_model_prompt():
+    # An incoming A2UI action DataPart (no TextPart) must resolve to a model turn that
+    # names the action and carries its resolved context, not an empty prompt.
+    action = {
+        "name": "approve",
+        "surfaceId": "s1",
+        "sourceComponentId": "approve-btn",
+        "context": {"prNumber": 42, "assignee": "octocat"},
+    }
+    responder = _FakeResponder([_valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_ActionCtx(action), queue)
+
+    assert responder.calls == 1  # the action was turned into a real model call
+    prompt = responder.prompts[0]
+    assert prompt  # not empty
+    assert "approve" in prompt  # the action name is framed in
+    assert "prNumber" in prompt and "42" in prompt  # resolved context values carried
+    assert "assignee" in prompt and "octocat" in prompt
+    assert "action" in prompt.lower()  # framed as an activated action
+
+
+@pytest.mark.asyncio
+async def test_empty_message_apologizes_without_calling_the_model():
+    # A message with neither text nor an action part must not reach the model (an empty
+    # prompt is rejected by the provider); it gets the plain-text apology directly.
+    responder = _FakeResponder([_valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_EmptyCtx(), queue)
+
+    assert responder.calls == 0  # no model call at all
     assert APOLOGY_TEXT in _all_text(queue)
