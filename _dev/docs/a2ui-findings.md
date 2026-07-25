@@ -152,3 +152,10 @@ only recourse is to **patch the package** (done here via `yarn patch`).
 render-prop on `A2uiSurface` (covering the sibling gray `[Loading id…]` deferred-child
 state too), or default the unknown-component case to `null` so a partial-type flash during
 streaming renders nothing rather than error text.
+
+**Upstream fix in flight:** [a2ui-project/a2ui#2088](https://github.com/a2ui-project/a2ui/pull/2088)
+(fixes #2013) adds a shared renderer fallback mechanism — a types-only contract in `web_core`
+plus a React implementation — covering both the red `Unknown component` text and the gray
+`[Loading …]` placeholder. Open as of 2026-07-25. Once it ships in an official `@a2ui/react`
+release, replace our local `yarn patch` (`.yarn/patches/@a2ui-react-npm-0.10.1-*.patch`) with
+the upstream mechanism and drop the patch.
