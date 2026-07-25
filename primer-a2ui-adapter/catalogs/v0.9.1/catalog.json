@@ -6432,14 +6432,14 @@
     },
     "DialogCloseButton": {
       "type": "object",
-      "description": "An icon button that closes the dialog, rendered inside a custom dialog header.",
+      "description": "A dismissal icon button rendered inside a custom dialog header. It performs the action you give it and nothing else — it does not close the dialog on its own. To make it close, bind the dialog's `open` to a data-model path and give this button an action that sets that path `false`.",
       "properties": {
         "component": {
           "const": "DialogCloseButton"
         },
         "closeAction": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "Performed when the close button is clicked."
+          "description": "Performed when the button is clicked. This is the button's entire behaviour, so it must carry out the dismissal itself — typically by setting the data-model path the dialog's `open` is bound to."
         }
       },
       "required": ["component", "closeAction"],
@@ -7789,6 +7789,35 @@
       },
       "required": ["call", "args"],
       "unevaluatedProperties": false
+    },
+    "setBoolean": {
+      "type": "object",
+      "description": "Writes a boolean to a data-model path. A local client-side effect for changing what is already on screen without involving the agent — most often a surface's own visibility: bind a component's `open` to a data-model path, then set that path `false` to close it or `true` to reopen it.",
+      "properties": {
+        "call": {
+          "const": "setBoolean"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The data-model path to write."
+            },
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+              "description": "The boolean to write to that path."
+            }
+          },
+          "required": ["path", "value"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "void"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
     }
   },
   "$defs": {
@@ -8247,6 +8276,9 @@
         },
         {
           "$ref": "#/functions/countSelected"
+        },
+        {
+          "$ref": "#/functions/setBoolean"
         }
       ]
     }

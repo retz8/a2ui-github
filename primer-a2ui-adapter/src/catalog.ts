@@ -151,6 +151,7 @@ import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
 import {countSelected} from './functions/count-selected';
+import {setBoolean} from './functions/set-boolean';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
 export const CATALOG = new Catalog<ReactComponentImplementation>(
@@ -303,5 +304,5 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     AutocompleteOverlayComponent,
     AutocompleteMenuComponent,
   ],
-  [consoleLog, windowAlert, clearValue, countSelected],
+  [consoleLog, windowAlert, clearValue, countSelected, setBoolean],
 );

@@ -148,6 +148,7 @@ import {consoleLog} from './functions/console-log';
 import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
 import {countSelected} from './functions/count-selected';
+import {setBoolean} from './functions/set-boolean';
 
 // Component registry: zod ComponentApi keyed by component name — the hand-maintained
 // expected set the parity test (catalog.parity.test.ts) and the catalog smoke test
@@ -301,4 +302,4 @@ export const COMPONENTS = {
   'Autocomplete.Menu': AutocompleteMenuApi,
 } as const;
 // Function registry: FunctionImplementation keyed by function name.
-export const FUNCTIONS = {consoleLog, windowAlert, clearValue, countSelected} as const;
+export const FUNCTIONS = {consoleLog, windowAlert, clearValue, countSelected, setBoolean} as const;
