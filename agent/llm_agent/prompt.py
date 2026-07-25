@@ -8,12 +8,13 @@ from llm_agent.catalog import live_schema_manager
 from llm_agent.knowledge import load_brand_guidance
 
 ROLE_DESCRIPTION = (
-    "You are the GitHub maintainer's-morning agent. You turn a maintainer's natural-language "
-    "request about the a2ui-project/a2ui repository into a single rich A2UI surface rendered in "
-    "GitHub's Primer design language. You never answer in prose when a surface would serve the "
-    "user better: you compose a screen from the catalog's components and bind it to real data. "
-    "You read repository data through the provided tools; you never invent PR numbers, titles, "
-    "authors, or counts — every value shown on a surface comes from a tool result."
+    "You are a GitHub agent. You turn a natural-language request about GitHub — any public "
+    "repository, or the authenticated user's own pull requests, issues, and notifications — "
+    "into a single rich A2UI surface rendered in GitHub's Primer design language. You never "
+    "answer in prose when a surface would serve the user better: you compose a screen from "
+    "the catalog's components and bind it to real data. You read GitHub data through the "
+    "provided tools; you never invent PR numbers, titles, authors, or counts — every value "
+    "shown on a surface comes from a tool result."
 )
 
 # The array-wrapping rule exists because the SDK's streaming parser only reads a
@@ -41,6 +42,23 @@ WORKFLOW_DESCRIPTION = (
     "{\"path\": \"/title\"}; a leading slash resolves from the surface root, not the item."
 )
 
+# Subject resolution (there is no configured default repository) plus tool-call
+# economy: a filtered list is one search call, not a list call followed by a
+# per-item fan-out that burns the rate limit.
+SCOPE_DESCRIPTION = (
+    "Resolve the subject of a request before fetching any data. If the request names a "
+    "repository, use that repository. If it is about the authenticated user — 'my PRs', "
+    "'waiting on my review', 'my notifications' — resolve the viewer's identity through the "
+    "tools and scope to them. If it names neither a repository nor the viewer, scope it to "
+    "the authenticated user. Ask which repository is meant only when the request is "
+    "ambiguous in a way viewer scope cannot resolve. "
+    "For a filtered list, prefer a single search call using GitHub search qualifiers — for "
+    "example 'is:pr is:open review-requested:@me', 'is:pr is:open status:failure', "
+    "'-author:app/dependabot' — over listing everything and then reading each item in turn. "
+    "Drilling into one specific pull request is different: fetching its detail, reviews, "
+    "comments, status checks, and changed files takes several calls, and that is expected."
+)
+
 
 # The SDK renders the examples under a bare "### Examples:" header at the end of the
 # prompt, where each example — a request-shaped `intent` plus a complete surface with
@@ -59,14 +77,14 @@ _EXAMPLES_HEADER = "### Examples:\n"
 def build_system_prompt(schema_manager: A2uiSchemaManager | None = None) -> str:
     """Assembles the full system instruction via the SDK's generate_system_prompt.
 
-    Authored content is only ROLE/WORKFLOW; the brand doc feeds ui_description, and the
+    Authored content is only ROLE/WORKFLOW/SCOPE; the brand doc feeds ui_description, and the
     full catalog schema and the 7.1 examples are injected by the SDK (with the examples
     framing spliced under the SDK's header — it offers no slot for it).
     """
     sm = schema_manager or live_schema_manager()
     prompt = sm.generate_system_prompt(
         role_description=ROLE_DESCRIPTION,
-        workflow_description=WORKFLOW_DESCRIPTION,
+        workflow_description="\n\n".join([WORKFLOW_DESCRIPTION, SCOPE_DESCRIPTION]),
         ui_description=load_brand_guidance(),
         include_schema=True,
         include_examples=True,
