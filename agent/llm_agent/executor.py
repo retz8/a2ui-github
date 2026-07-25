@@ -218,19 +218,29 @@ def _resolve_prompt(context: RequestContext) -> str:
     return prompt
 
 
+def _reset_failed_stream_dump() -> None:
+    """Clears the dump at the start of a request, so it only ever holds the latest one."""
+    with contextlib.suppress(OSError):
+        FAILED_STREAM_DUMP.unlink(missing_ok=True)
+
+
 def _dump_failed_stream(accumulated: str, attempt: int, err: Exception) -> None:
-    """Writes the model text an unexpected failure died on, for post-hoc diagnosis.
+    """Appends the model text a failed attempt produced, for post-hoc diagnosis.
+
+    Appends rather than overwrites so a request whose attempts all fail keeps every
+    attempt's response side by side — the sequence is what shows whether the model is
+    repeating one mistake or drifting between several.
 
     Best-effort: a dump that cannot be written must never take down the attempt's
     error handling, which is already running on a failure path.
     """
     try:
-        FAILED_STREAM_DUMP.write_text(
-            f"attempt {attempt} failed with {type(err).__name__}: {err}\n"
-            f"--- accumulated model text ({len(accumulated)} chars) ---\n"
-            f"{accumulated}\n",
-            encoding="utf-8",
-        )
+        with FAILED_STREAM_DUMP.open("a", encoding="utf-8") as fh:
+            fh.write(
+                f"=== attempt {attempt} failed with {type(err).__name__}: {err}\n"
+                f"--- raw model response ({len(accumulated)} chars) ---\n"
+                f"{accumulated}\n\n"
+            )
     except OSError:  # read-only fs, missing dir — diagnosis is not worth a crash
         logger.debug("could not write %s", FAILED_STREAM_DUMP, exc_info=True)
 
@@ -294,6 +304,7 @@ class LlmAgentExecutor(AgentExecutor):
         logger.info(
             "execute start: task=%s context=%s prompt=%r", task.id, task.context_id, prompt
         )
+        _reset_failed_stream_dump()
 
         # One parser persisted across attempts. Its dedup caches make a retry patch the
         # surface attempt 1 created — createSurface and unchanged components are
@@ -409,6 +420,16 @@ class LlmAgentExecutor(AgentExecutor):
                 logger.warning(
                     "attempt %d produced an invalid surface: %s", attempt, err
                 )
+                # The verdict alone cannot explain a failure that repeats: only the
+                # response itself shows what the model actually emitted, and it is
+                # about to be discarded with the attempt.
+                logger.warning(
+                    "attempt %d raw model response (%d chars):\n%s",
+                    attempt,
+                    len(accumulated),
+                    accumulated,
+                )
+                _dump_failed_stream(accumulated, attempt, err)
                 correction = (
                     "Your previous A2UI response failed validation with this error:\n"
                     f"{err}\nReturn a corrected, complete A2UI surface."

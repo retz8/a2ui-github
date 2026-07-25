@@ -844,3 +844,31 @@ def test_non_string_id_guard_survives_the_between_attempt_reset():
     parser._seen_components[{"componentId": "x"}] = {"id": "x"}
 
     assert all(isinstance(key, str) for key in parser._seen_components)
+
+
+@pytest.mark.asyncio
+async def test_invalid_surface_logs_the_raw_model_response(caplog):
+    # A validation failure says what was wrong with the surface but never showed what
+    # the model actually emitted, so a repeating failure could not be diagnosed.
+    responder = _FakeResponder([_BAD_SURFACE_S1, _valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+
+    with caplog.at_level("WARNING", logger="llm_agent.executor"):
+        await executor.execute(_Ctx("show me open PRs"), queue)
+
+    # "oops" is the model's prose preface: it appears in the raw response and nowhere
+    # in the validation verdict, so it can only come from the response being logged.
+    assert "oops" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_invalid_surface_dumps_the_raw_model_response(failed_stream_dump):
+    responder = _FakeResponder([_BAD_SURFACE_S1, _valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    assert failed_stream_dump.exists()
+    assert "Nope" in failed_stream_dump.read_text(encoding="utf-8")
