@@ -12,6 +12,16 @@ const adapterSrc = fileURLToPath(new URL('../primer-a2ui-adapter/src/index.ts', 
 
 export default defineConfig(({command}) => ({
   plugins: [react()],
+  // `@primer/react`'s AnchoredOverlay CSS uses `@position-try` (CSS anchor positioning), which
+  // the lightningcss version Vite bundles does not recognise — it throws "Unknown at rule"
+  // rather than warning, failing the production build outright. Vite's default cssMinify
+  // resolves to the lightningcss branch, and these options are forwarded into the minifier, so
+  // error recovery is what keeps the build alive. Verified to warn-and-pass-through, not drop:
+  // all six @position-try rules survive into the bundle, still minified. Dev and Vitest never
+  // minify, which is why only `yarn build` ever saw this.
+  // Remove once lightningcss understands the at-rule; note the recovery is global, so a genuine
+  // syntax error in our own CSS is recovered too rather than failing the build.
+  css: {lightningcss: {errorRecovery: true}},
   build: {
     rollupOptions: {
       // Three pages: the chat client (default), the fixture dev page, and the examples showcase.
