@@ -139,6 +139,8 @@ Order: 7.1 ∥ 7.4 from the start · 7.2 after 7.1 · 7.3 after 7.2 · 7.5 ∥ 7
 ## Phase 8 — Demo integration
 The full maintainer-triage arc running end-to-end on the live a2ui repo.
 
+**UI/UX re-frame** — replace the phase-7 chat transcript with a persistent canvas + conversation palette: the transcript carries the dialogue only; the current surface lives in one canvas that navigates in place. Covers: repaint-on-navigation semantics (previous surface stays visible until the replacement validates), surface history/back on the client, and surface lifecycle keyed by `surfaceId` (the shell is a view over a surface registry, not the owner of surface state).
+
 ## Post-Phase 8 — Template finalization
 Additively fold the catalog-authoring skill (Phase 4) and the agent scaffold (Phase 7) into the template repo; finalize as the adoptable A2UI template — its first real use. Plan: `_dev/docs/templatization-plan.md`.
 
