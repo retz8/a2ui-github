@@ -1,7 +1,7 @@
 # Phase 7 — Agent
 
 The phase that ships the live LLM agent generating A2UI surfaces from the Primer catalog against
-the real `a2ui-project/a2ui` repository. Parent: `_dev/TODO.md` Phase 7; SPEC.md §§1–5 (thesis,
+live GitHub, demoed on `a2ui-project/a2ui`. Parent: `_dev/TODO.md` Phase 7; SPEC.md §§1–5 (thesis,
 interaction architecture, demo, catalog, transport & topology).
 
 ## Scope
@@ -9,6 +9,9 @@ interaction architecture, demo, catalog, transport & topology).
 - A live agent — real LLM, the full Phase-6 catalog, real GitHub data via MCP — that takes a
   natural-language prompt and streams back a valid, rendered surface through the existing client,
   with the event round-trip working (click → agent → new surface).
+  The agent's reach is general GitHub — any public repository plus the authenticated user's own
+  pull requests, issues, and notifications — with `a2ui-project/a2ui` as the demo subject rather
+  than a boundary (task 7.3).
 - **Definition of done: "the machine works."** Each of the five demo beats (SPEC §3.1) is driven
   individually through the live stack. The *arc* — the five beats holding together as one session,
   cross-turn context, demo polish — is Phase 8 ("the story works").
@@ -120,10 +123,15 @@ and the idiom examples are produced by **one combined research/curation sub-task
 ### 7. GitHub MCP — official remote server, read-only enforced below the prompt
 
 The official `github/github-mcp-server`, remote hosted variant, plugged into the `LlmAgent` as an
-ADK MCP toolset. Auth: a **fine-grained PAT with read-only permissions only**; toolsets restricted
-to the read surface the demo needs. Read-only is thereby structural — the agent possesses no write
-tools, so a write intent (beat 5's compose-and-confirm) can only ever produce another rendered
-surface. Exact toolset names and env wiring are task-level.
+ADK MCP toolset over streamable HTTP. Read-only is enforced twice and independently: the server's
+read-only endpoint, so write tools never enter the tool inventory, and a fine-grained PAT carrying
+no write permission. Both are required — the `pull_requests` toolset ships write tools in its
+unrestricted form, including a review-write tool, which is exactly the capability beat 5 must
+structurally lack. Toolsets are pinned explicitly rather than inherited from the server default or
+requested as "all", keeping the tool surface reviewable and diffable instead of drifting with the
+server's release schedule. The stub toolset is retained behind an environment switch that defaults
+to MCP; a missing token fails fast rather than falling back silently. Full wiring is settled in
+`_dev/docs/spec/task-7.3-github-mcp-wiring.md`.
 
 ### 8. Local functions — lazy, demand-driven growth
 
@@ -198,7 +206,6 @@ Order: 7.1 ∥ 7.4 from the start · 7.2 after 7.1 · 7.3 after 7.2 · 7.5 ∥ 7
 ## Open items
 
 Deferred to their own task-level grills: agent/deterministic-executor cohabitation layout in
-`agent/` (7.2), exact MCP toolset names and env wiring (7.3), the concrete local-function list
-(7.7), examples count and contents (7.1), and explicit provider-side context caching as an
-optimization. A text-only fallback runner is future-if-needed. Template memory remains deferred
-per SPEC §8.
+`agent/` (7.2), the concrete local-function list (7.7), examples count and contents (7.1), and
+explicit provider-side context caching as an optimization. A text-only fallback runner is
+future-if-needed. Template memory remains deferred per SPEC §8.

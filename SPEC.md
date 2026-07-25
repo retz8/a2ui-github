@@ -18,18 +18,20 @@
 
 ## 3. Demo
 
+- **Agent reach:** the agent is a **general GitHub agent** — any public repository, plus the authenticated user's own pull requests, issues, and notifications. **`a2ui-project/a2ui` is the demo subject, not the agent's boundary.**
 - **Anchor flow:** "the maintainer's morning" — PR triage on the real **`a2ui-project/a2ui`** repository.
-- **Persona framing:** repo-level **maintainer triage**, **viewer-agnostic** prompts. Not "PRs waiting on my review".
-- **Action scope:** **read-only** against the real repo. Write-actions (approve / comment / label) are rendered as **compose-and-confirm** UI that stops short of the real POST — no mutation of the live community repo. (A full read+write loop on a seeded sandbox repo is a possible future upgrade.)
+- **Persona framing:** **maintainer triage**, supporting both **repo-level** prompts (which name their repository) and **viewer-centric** prompts ("PRs waiting on my review", "my notifications"), resolved through the authenticated user's identity. A request naming neither a repository nor the viewer scopes to the authenticated user.
+- **Action scope:** **read-only** against live GitHub, enforced structurally at both the MCP endpoint and the token. Write-actions (approve / comment / label) are rendered as **compose-and-confirm** UI that stops short of the real POST — no mutation of any live repository. (A full read+write loop on a seeded sandbox repo is a possible future upgrade.)
+- **Repository confinement is prompt-level only.** A fine-grained PAT that can read repositories the user does not own must use public-repository read access, which cannot be narrowed to a single repository. The token also grants no access to the user's own private repositories. Read-only makes the blast radius nil.
 
 ### 3.1 Demo prompt arc (5 beats)
 
 A single coherent story (broad → narrow → drill → act):
 
-1. "Show me the open PRs that need review." → triage **list**.
+1. "Show me the open PRs on a2ui-project/a2ui that need review." → triage **list**.
 2. "Which of these are failing CI?" → list with **check-status emphasis** (re-composed, not re-skinned).
 3. "Ignore the dependabot bumps — what human PRs are waiting?" → **headline fuzzy-intent** moment.
-4. "Open #1668." → PR **detail** view (see §3.2).
+4. "Open a2ui-project/a2ui#1668." → PR **detail** view (see §3.2).
 5. "Draft an approving review saying the heading cleanup looks reasonable." → **compose-and-confirm** action (no POST).
 
 ### 3.2 PR-detail view depth (v1)
