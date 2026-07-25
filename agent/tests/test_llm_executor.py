@@ -48,10 +48,12 @@ class _FakeResponder:
         self.calls = 0
         self.corrections = []
         self.prompts = []
+        self.context_ids = []
 
-    async def stream(self, prompt, correction=None):
+    async def stream(self, prompt, correction=None, context_id=None):
         self.corrections.append(correction)
         self.prompts.append(prompt)
+        self.context_ids.append(context_id)
         text = self._scripts[min(self.calls, len(self._scripts) - 1)]
         self.calls += 1
         # yield in two chunks to exercise incremental parsing
@@ -173,7 +175,7 @@ class _FailingResponder:
         self._failures = failures
         self.calls = 0
 
-    async def stream(self, prompt, correction=None):
+    async def stream(self, prompt, correction=None, context_id=None):
         self.calls += 1
         if self.calls <= self._failures:
             yield "partial "
@@ -251,7 +253,7 @@ async def test_exhausted_infra_failure_tears_down_partial_surface():
     executor = LlmAgentExecutor(responder)
     queue = _FakeQueue()
 
-    async def failing_stream(prompt, correction=None):
+    async def failing_stream(prompt, correction=None, context_id=None):
         yield '<a2ui-json>[{"version": "v0.9", "createSurface": {"surfaceId": "zomb", "catalogId": "c"}}'
         raise RuntimeError("503 UNAVAILABLE")
 
@@ -406,6 +408,51 @@ async def test_exhaustion_emits_plain_text_apology():
     await executor.execute(_Ctx("show me open PRs"), queue)
     assert responder.calls == MAX_ATTEMPTS  # retried up to the cap
     assert APOLOGY_TEXT in _all_text(queue)
+
+
+@pytest.mark.asyncio
+async def test_mid_stream_parse_error_closes_the_responder_stream():
+    # A parser error breaks out of the token loop with the model stream suspended.
+    # The executor must close it in-task before the next attempt — left to GC, the
+    # ADK run unwinds in a foreign context (late cancellation, otel detach noise).
+    class _TrackingResponder:
+        def __init__(self):
+            self.calls = 0
+            self.closed = 0
+
+        async def stream(self, prompt, correction=None, context_id=None):
+            self.calls += 1
+            try:
+                if self.calls == 1:
+                    yield "<a2ui-json>not json at all</a2ui-json>"
+                    yield "never consumed"
+                else:
+                    yield _valid_surface_text()
+            finally:
+                self.closed += 1
+
+    responder = _TrackingResponder()
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    assert responder.calls == 2  # the parse error fed the retry loop
+    assert responder.closed == 2  # every attempt's stream closed before returning
+
+
+@pytest.mark.asyncio
+async def test_responder_receives_the_task_context_id_on_every_attempt():
+    # Session continuity: the responder keys its model session on the A2A context id,
+    # so the executor must thread task.context_id into every stream() call — the first
+    # attempt and correction retries alike.
+    responder = _FakeResponder([_BAD_SURFACE_S1, _valid_surface_text_with_id("s1")])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    task = queue.events[0]  # the new_task event the executor enqueues first
+    assert task.context_id
+    assert responder.context_ids == [task.context_id] * 2
 
 
 @pytest.mark.asyncio

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import contextlib
 import logging
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
@@ -195,8 +196,11 @@ class LlmAgentExecutor(AgentExecutor):
             stream_error: ValueError | None = None
             logger.info("attempt %d: calling model", attempt)
             first_token = True
+            stream = self._responder.stream(
+                prompt, correction, context_id=task.context_id
+            )
             try:
-                async for token in self._responder.stream(prompt, correction):
+                async for token in stream:
                     if first_token:
                         logger.info("attempt %d: first model token received", attempt)
                         first_token = False
@@ -225,6 +229,13 @@ class LlmAgentExecutor(AgentExecutor):
                 model_unavailable = True
                 # No teardown between attempts: the retry patches the partial in place.
                 continue
+            finally:
+                # Close the stream in-task: a mid-stream parser error breaks out with
+                # the generator suspended, and left to GC finalization the ADK run
+                # unwinds in a foreign context (late cancellation, otel detach noise).
+                # A no-op when the stream was consumed to the end.
+                with contextlib.suppress(Exception):
+                    await stream.aclose()
             model_unavailable = False
 
             payload = _collect_payload(accumulated)
