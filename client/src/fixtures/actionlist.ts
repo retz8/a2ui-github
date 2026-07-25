@@ -44,7 +44,7 @@ export const actionlistFixture: Fixture = {
       variant: 'inline',
     },
     {id: 'it1-tv', component: 'ActionList.TrailingVisual', children: ['it1-counter']},
-    {id: 'it1-counter', component: 'CounterLabel', count: '3'},
+    {id: 'it1-counter', component: 'CounterLabel', count: 3},
 
     {id: 'it2', component: 'ActionList.Item', children: ['it2-label', 'it2-ta']},
     {id: 'it2-label', component: 'Text', text: 'Merge pull request'},

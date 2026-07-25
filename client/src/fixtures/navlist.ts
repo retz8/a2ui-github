@@ -40,7 +40,7 @@ export const navlistFixture: Fixture = {
           {id: 'it1-icon', component: 'Icon', name: 'home'},
           {id: 'it1-label', component: 'Text', text: 'Dashboard'},
           {id: 'it1-tv', component: 'NavList.TrailingVisual', children: ['it1-counter']},
-          {id: 'it1-counter', component: 'CounterLabel', count: '8'},
+          {id: 'it1-counter', component: 'CounterLabel', count: 8},
           {
             id: 'it1-ta',
             component: 'NavList.TrailingAction',

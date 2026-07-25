@@ -17,7 +17,7 @@ export const counterlabelBoundFixture: Fixture = {
       updateDataModel: {
         surfaceId: 'counterlabel-bound',
         path: '/',
-        value: {notifications: '42'},
+        value: {notifications: 42},
       },
     },
   ],

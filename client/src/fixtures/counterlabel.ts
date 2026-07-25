@@ -9,7 +9,7 @@ export const counterlabelFixture: Fixture = {
       version: 'v0.9',
       updateComponents: {
         surfaceId: 'counterlabel',
-        components: [{id: 'root', component: 'CounterLabel', count: '12'}],
+        components: [{id: 'root', component: 'CounterLabel', count: 12}],
       },
     },
   ],

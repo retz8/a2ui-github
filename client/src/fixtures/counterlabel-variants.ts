@@ -14,7 +14,7 @@ function variantSurface(variant: (typeof VARIANTS)[number]): A2uiMessage[] {
       version: 'v0.9',
       updateComponents: {
         surfaceId,
-        components: [{id: 'root', component: 'CounterLabel', count: '12', variant}],
+        components: [{id: 'root', component: 'CounterLabel', count: 12, variant}],
       },
     },
   ];

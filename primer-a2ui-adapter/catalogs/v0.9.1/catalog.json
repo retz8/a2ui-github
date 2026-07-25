@@ -1475,7 +1475,7 @@
           "const": "CounterLabel"
         },
         "count": {
-          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+          "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
           "description": "The count value to display."
         },
         "variant": {
@@ -7764,6 +7764,31 @@
       },
       "required": ["call", "args"],
       "unevaluatedProperties": false
+    },
+    "countSelected": {
+      "type": "object",
+      "description": "Counts the items of a list whose `selected` field is true. A local client-side computation for use as a bound numeric value (e.g. a counter beside a multi-select list); it re-evaluates automatically whenever an item's selection changes, with no agent involvement.",
+      "properties": {
+        "call": {
+          "const": "countSelected"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "items": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicValue",
+              "description": "The list to count over; bind it to the data-model path of the list whose items carry a `selected` field."
+            }
+          },
+          "required": ["items"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "number"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
     }
   },
   "$defs": {
@@ -8219,6 +8244,9 @@
         },
         {
           "$ref": "#/functions/clearValue"
+        },
+        {
+          "$ref": "#/functions/countSelected"
         }
       ]
     }
