@@ -127,3 +127,17 @@ body,
   font-size: 13px;
   color: var(--fgColor-danger);
 }
+
+/* A failed turn, in the transcript alongside prompts and surfaces. Stretches like a
+   surface rather than hugging like a user bubble — it reports on the agent's side. */
+.chat-error-turn {
+  align-self: stretch;
+  padding: 8px 12px;
+  border: 1px solid var(--borderColor-danger-emphasis);
+  border-radius: 8px;
+  background: var(--bgColor-danger-muted);
+  color: var(--fgColor-danger);
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}

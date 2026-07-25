@@ -8,13 +8,19 @@ import type {A2ASenderOptions} from '../a2a/client';
 import {createSenderResolver} from '../a2a/client';
 import {createA2AActionHandler} from '../a2a/createA2AActionHandler';
 import {describeAction} from './describeAction';
+import {describeError} from './describeError';
 import {createA2ASession} from '../a2a/session';
 import {streamUserMessage} from '../a2a/streamUserMessage';
+import {applyA2uiMessages} from '../a2ui/applyMessages';
+import type {A2uiMessageTarget} from '../a2ui/applyMessages';
 import {SurfaceErrorBoundary} from './SurfaceErrorBoundary';
 import './ChatView.css';
 
-/** One transcript entry: a typed user prompt, or an agent surface keyed by its id. */
-type Turn = {kind: 'user'; key: number; text: string} | {kind: 'surface'; id: string};
+/** One transcript entry: a typed user prompt, an agent surface keyed by its id, or a failure. */
+type Turn =
+  | {kind: 'user'; key: number; text: string}
+  | {kind: 'surface'; id: string}
+  | {kind: 'error'; key: number; text: string};
 
 /**
  * The chat shell: header, scrollable transcript (user bubbles interleaved with agent
@@ -23,9 +29,12 @@ type Turn = {kind: 'user'; key: number; text: string} | {kind: 'surface'; id: st
  * (prompts and component actions) share one session and one lazily resolved A2A client.
  */
 export function ChatView({serverUrl, client}: A2ASenderOptions) {
-  // Declared before `wiring` so the action handler can capture the (stable) setters.
+  // Declared before `wiring` so the action handler, the applier, and the send paths can
+  // capture the (stable) setters.
   const [pending, setPending] = useState(false);
   const [pendingLabel, setPendingLabel] = useState('Generating…');
+  const [turns, setTurns] = useState<Turn[]>([]);
+  const turnKey = useRef(0);
 
   const [wiring] = useState(() => {
     const session = createA2ASession();
@@ -35,18 +44,33 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     // temporal cycle is harmless.
     // eslint-disable-next-line prefer-const
     let target:
-      | {
-          processMessages: (m: A2uiMessage[]) => void;
-          getClientDataModel: () => A2uiClientDataModel | undefined;
-        }
+      | (A2uiMessageTarget & {getClientDataModel: () => A2uiClientDataModel | undefined})
       | undefined;
-    const apply = (messages: A2uiMessage[]) => target?.processMessages(messages);
+
+    // Consecutive identical failures collapse into one entry: a rejected createSurface makes
+    // every later message for that id fail with the same text, which would otherwise fill the
+    // transcript with copies of one problem.
+    const reportFailure = (text: string) =>
+      setTurns(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.kind === 'error' && last.text === text) return prev;
+        return [...prev, {kind: 'error', key: turnKey.current++, text}];
+      });
+
+    const apply = (messages: A2uiMessage[]) => {
+      if (!target) return;
+      applyA2uiMessages(target, messages, {
+        onMessageError: err =>
+          reportFailure(`Part of this response could not be displayed. ${describeError(err)}`),
+      });
+    };
     const getClientDataModel = () => target?.getClientDataModel();
     const actionHandler = createA2AActionHandler({
       apply,
       getSender,
       session,
       getClientDataModel,
+      onError: err => reportFailure(`That action failed. ${describeError(err)}`),
       // Mirror the text path: a clicked action drives the same loading indicator, with
       // an informational label derived from the action (falls back to the generic one).
       onActionStart: action => {
@@ -58,12 +82,10 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     });
     const processor = new MessageProcessor([CATALOG], actionHandler);
     target = processor;
-    return {processor, getSender, session, apply, getClientDataModel};
+    return {processor, getSender, session, apply, getClientDataModel, reportFailure};
   });
 
-  const [turns, setTurns] = useState<Turn[]>([]);
   const [text, setText] = useState('');
-  const userTurnKey = useRef(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Keep the transcript in step with the processor: append newly created surfaces in
@@ -104,7 +126,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     const prompt = text.trim();
     if (!prompt || pending) return;
     setText('');
-    setTurns(prev => [...prev, {kind: 'user', key: userTurnKey.current++, text: prompt}]);
+    setTurns(prev => [...prev, {kind: 'user', key: turnKey.current++, text: prompt}]);
     setPendingLabel('Generating…');
     setPending(true);
     try {
@@ -113,6 +135,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
         apply: wiring.apply,
         session: wiring.session,
         getClientDataModel: wiring.getClientDataModel,
+        onError: err => wiring.reportFailure(`The agent request failed. ${describeError(err)}`),
       });
     } finally {
       setPending(false);
@@ -134,6 +157,15 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
           {turns.map(turn =>
             turn.kind === 'user' ? (
               <div key={`user-${turn.key}`} className="chat-user-turn">
+                {turn.text}
+              </div>
+            ) : turn.kind === 'error' ? (
+              <div
+                key={`error-${turn.key}`}
+                className="chat-error-turn"
+                data-testid="chat-error-turn"
+                role="alert"
+              >
                 {turn.text}
               </div>
             ) : (

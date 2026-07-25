@@ -112,4 +112,27 @@ describe('streamUserMessage', () => {
     expect(consoleError).toHaveBeenCalled();
     consoleError.mockRestore();
   });
+
+  it('reports the failure through onError', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const onError = vi.fn();
+    const apply = vi.fn();
+    const failing: A2AMessageSender = {
+      // eslint-disable-next-line require-yield
+      async *sendMessageStream() {
+        throw new Error('wire down');
+      },
+    };
+
+    await streamUserMessage('hi', {
+      getSender: () => Promise.resolve(failing),
+      apply,
+      onError,
+    });
+
+    expect(onError).toHaveBeenCalledTimes(1);
+    expect(onError.mock.calls[0][0]).toBeInstanceOf(Error);
+    expect(apply).not.toHaveBeenCalled();
+    consoleError.mockRestore();
+  });
 });

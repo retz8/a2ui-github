@@ -25,6 +25,11 @@ export interface A2AActionHandlerOptions {
   /** Called when the action send settles (success or caught failure); pairs with onActionStart. */
   onActionSettled?: () => void;
   /**
+   * Called when the action send fails, before `onActionSettled`. Without it a failed action
+   * is indistinguishable from one that produced nothing — the spinner simply clears.
+   */
+  onError?: (error: unknown) => void;
+  /**
    * Supplies the current client data model of `sendDataModel`-flagged surfaces
    * (processor.getClientDataModel); attached as message metadata when it reports one.
    */
@@ -34,12 +39,20 @@ export interface A2AActionHandlerOptions {
 /**
  * Builds an ActionListener that ships an `event` action to an A2A agent over the event stream and
  * feeds the streamed A2UI back through `apply`. Transport-only: no React or fixture knowledge.
- * The returned listener never throws — wire/extract failures are caught and logged, and `apply`
- * is skipped.
+ * The returned listener never throws — wire/extract failures are caught, logged, and reported
+ * through `onError`, and `apply` is skipped.
  */
 export function createA2AActionHandler(opts: A2AActionHandlerOptions): ActionListener {
-  const {apply, serverUrl, client, session, onActionStart, onActionSettled, getClientDataModel} =
-    opts;
+  const {
+    apply,
+    serverUrl,
+    client,
+    session,
+    onActionStart,
+    onActionSettled,
+    onError,
+    getClientDataModel,
+  } = opts;
   const getSender = opts.getSender ?? createSenderResolver({serverUrl, client});
 
   return async action => {
@@ -54,6 +67,7 @@ export function createA2AActionHandler(opts: A2AActionHandlerOptions): ActionLis
       );
     } catch (err) {
       console.error('[A2UI:a2a]', err);
+      onError?.(err);
     } finally {
       onActionSettled?.();
     }

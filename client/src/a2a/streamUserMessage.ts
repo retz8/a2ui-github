@@ -15,18 +15,23 @@ export interface StreamUserMessageOptions {
    * (processor.getClientDataModel); attached as message metadata when it reports one.
    */
   getClientDataModel?: () => A2uiClientDataModel | undefined;
+  /**
+   * Called when the send fails. Without it a failure is invisible outside the console —
+   * the host needs this to tell the user the turn was lost.
+   */
+  onError?: (error: unknown) => void;
 }
 
 /**
  * Ship one user prompt to the agent and feed the streamed A2UI back through `apply`. Resolves
  * when the stream closes — awaiting this is the pending state. Never throws: wire/extract
- * failures are caught and logged, and `apply` is skipped.
+ * failures are caught, logged, reported through `onError`, and `apply` is skipped.
  */
 export async function streamUserMessage(
   text: string,
   opts: StreamUserMessageOptions,
 ): Promise<void> {
-  const {getSender, apply, session, getClientDataModel} = opts;
+  const {getSender, apply, session, getClientDataModel, onError} = opts;
   try {
     const sender = await getSender();
     await sendAndApply(
@@ -37,5 +42,6 @@ export async function streamUserMessage(
     );
   } catch (err) {
     console.error('[A2UI:a2a]', err);
+    onError?.(err);
   }
 }

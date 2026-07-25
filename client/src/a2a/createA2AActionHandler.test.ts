@@ -132,6 +132,29 @@ describe('createA2AActionHandler', () => {
     consoleError.mockRestore();
   });
 
+  it('reports the failure through onError, between start and settled', async () => {
+    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const events: string[] = [];
+    const failing: A2AMessageSender = {
+      // eslint-disable-next-line require-yield
+      async *sendMessageStream() {
+        throw new Error('wire down');
+      },
+    };
+    const handler = createA2AActionHandler({
+      apply: () => {},
+      client: failing,
+      onActionStart: () => events.push('start'),
+      onError: () => events.push('error'),
+      onActionSettled: () => events.push('settled'),
+    });
+
+    await handler(ACTION);
+
+    expect(events).toEqual(['start', 'error', 'settled']);
+    consoleError.mockRestore();
+  });
+
   it('rejects construction without a serverUrl or client at first use', async () => {
     const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
     const handler = createA2AActionHandler({apply: () => {}});
