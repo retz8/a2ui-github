@@ -37,7 +37,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@a2ui/react@npm:^0.10.1":
+"@a2ui/react@npm:0.10.1":
   version: 0.10.1
   resolution: "@a2ui/react@npm:0.10.1"
   dependencies:
@@ -51,6 +51,23 @@ __metadata:
     react-dom: ^19.2.7
     zod: ^3.25.76
   checksum: 10c0/742d7e8ebc3982837736bde2143515f489b13af8f780ed9d903599d979e1cc41ba26f71126213f0b84c86316adcd31649294df988915c694f174a78ba890a8a9
+  languageName: node
+  linkType: hard
+
+"@a2ui/react@patch:@a2ui/react@npm%3A0.10.1#~/.yarn/patches/@a2ui-react-npm-0.10.1-40cea46d68.patch":
+  version: 0.10.1
+  resolution: "@a2ui/react@patch:@a2ui/react@npm%3A0.10.1#~/.yarn/patches/@a2ui-react-npm-0.10.1-40cea46d68.patch::version=0.10.1&hash=3107b6"
+  dependencies:
+    "@a2ui/markdown-it": "npm:^0.0.4"
+    "@a2ui/web_core": "npm:^0.10.1"
+    clsx: "npm:^2.1.1"
+    markdown-it: "npm:^14.2.0"
+    zod: "npm:^3.25.76"
+  peerDependencies:
+    react: ^19.2.7
+    react-dom: ^19.2.7
+    zod: ^3.25.76
+  checksum: 10c0/98ee8160df7f619673c92abcbdf4ffb6923f9cdfc5b5779677962a0acbed450dad931035fbb226523dd09b3020be8fc81669c40769aad3e2d2eff6b7e65f5635
   languageName: node
   linkType: hard
 
@@ -1470,7 +1487,7 @@ __metadata:
   resolution: "client@workspace:client"
   dependencies:
     "@a2a-js/sdk": "npm:^0.3.13"
-    "@a2ui/react": "npm:^0.10.1"
+    "@a2ui/react": "patch:@a2ui/react@npm%3A0.10.1#~/.yarn/patches/@a2ui-react-npm-0.10.1-40cea46d68.patch"
     "@a2ui/web_core": "npm:^0.10.1"
     "@playwright/test": "npm:^1.61.0"
     "@primer/react": "npm:^38.28.0"
@@ -2749,7 +2766,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "primer-a2ui-adapter@workspace:primer-a2ui-adapter"
   dependencies:
-    "@a2ui/react": "npm:^0.10.1"
+    "@a2ui/react": "patch:@a2ui/react@npm%3A0.10.1#~/.yarn/patches/@a2ui-react-npm-0.10.1-40cea46d68.patch"
     "@a2ui/web_core": "npm:^0.10.1"
     "@primer/octicons-react": "npm:19.28.1"
     "@primer/react": "npm:^38.28.0"

@@ -1,0 +1,32 @@
+diff --git a/v0_9/index.cjs b/v0_9/index.cjs
+index e90aaf97172e1cf202ee4f7412e6a79cf83b7dac..79afebba3881360a7c8b1f36e74568630bcea559 100644
+--- a/v0_9/index.cjs
++++ b/v0_9/index.cjs
+@@ -83,10 +83,7 @@ var DeferredChild = React3.memo(({ surface, id, basePath }) => {
+   }
+   const compImpl = surface.catalog.components.get(componentModel.type);
+   if (!compImpl) {
+-    return /* @__PURE__ */ jsxRuntime.jsxs("div", { style: { color: "red" }, children: [
+-      "Unknown component: ",
+-      componentModel.type
+-    ] });
++    return null;
+   }
+   return /* @__PURE__ */ jsxRuntime.jsx(
+     ResolvedChild,
+diff --git a/v0_9/index.js b/v0_9/index.js
+index f95dda5ce3cda1b830e9c70a21c425bc6aa8ccfa..2d7a08917de3050899890cea65090a0b38215f76 100644
+--- a/v0_9/index.js
++++ b/v0_9/index.js
+@@ -77,10 +77,7 @@ var DeferredChild = memo(({ surface, id, basePath }) => {
+   }
+   const compImpl = surface.catalog.components.get(componentModel.type);
+   if (!compImpl) {
+-    return /* @__PURE__ */ jsxs("div", { style: { color: "red" }, children: [
+-      "Unknown component: ",
+-      componentModel.type
+-    ] });
++    return null;
+   }
+   return /* @__PURE__ */ jsx(
+     ResolvedChild,

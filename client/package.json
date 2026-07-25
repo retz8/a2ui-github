@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@a2a-js/sdk": "^0.3.13",
-    "@a2ui/react": "^0.10.1",
+    "@a2ui/react": "patch:@a2ui/react@npm%3A0.10.1#~/.yarn/patches/@a2ui-react-npm-0.10.1-40cea46d68.patch",
     "@a2ui/web_core": "^0.10.1",
     "@primer/react": "^38.28.0",
     "primer-a2ui-adapter": "workspace:^",

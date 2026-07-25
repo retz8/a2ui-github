@@ -33,7 +33,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@a2ui/react": "^0.10.1",
+    "@a2ui/react": "patch:@a2ui/react@npm%3A0.10.1#~/.yarn/patches/@a2ui-react-npm-0.10.1-40cea46d68.patch",
     "@a2ui/web_core": "^0.10.1",
     "@primer/octicons-react": "19.28.1",
     "@primer/react": "^38.28.0",
