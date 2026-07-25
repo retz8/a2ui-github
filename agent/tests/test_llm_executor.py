@@ -15,6 +15,31 @@ def _valid_surface_text() -> str:
     return "Here is your surface:\n<a2ui-json>\n" + json.dumps(messages) + "\n</a2ui-json>"
 
 
+def _valid_surface_text_with_id(surface_id: str) -> str:
+    """A valid example surface, re-addressed to `surface_id` on every message.
+
+    Lets a retry target the same surface an earlier attempt created, so the in-place
+    patch path (createSurface deduped, components streamed as updates) is exercised.
+    """
+    first = sorted(EXAMPLES_DIR.glob("*.json"))[0]
+    messages = json.loads(first.read_text(encoding="utf-8"))["messages"]
+    for msg in messages:
+        for key in ("createSurface", "updateComponents", "updateDataModel", "deleteSurface"):
+            block = msg.get(key)
+            if isinstance(block, dict) and "surfaceId" in block:
+                block["surfaceId"] = surface_id
+    return "Here is your surface:\n<a2ui-json>\n" + json.dumps(messages) + "\n</a2ui-json>"
+
+
+# An attempt that creates surface s1 but fails validation (component "Nope" is not in
+# the catalog): it streams createSurface(s1) + updateComponents before validate rejects.
+_BAD_SURFACE_S1 = (
+    'oops<a2ui-json>[{"version":"v0.9","createSurface":{"surfaceId":"s1",'
+    '"catalogId":"x"}},{"version":"v0.9","updateComponents":{"surfaceId":"s1",'
+    '"components":[{"id":"root","component":"Nope"}]}}]</a2ui-json>'
+)
+
+
 class _FakeResponder:
     """Yields a scripted response per attempt (indexed by number of stream() calls)."""
 
@@ -218,10 +243,10 @@ async def test_streaming_traverses_custom_component_reference_props():
 
 
 @pytest.mark.asyncio
-async def test_failed_attempt_tears_down_its_partial_surface():
-    # A failed attempt must deleteSurface what it half-streamed: the client would
-    # otherwise keep a zombie placeholder surface, and a retry re-creating the same
-    # surface id would hit "Surface already exists".
+async def test_exhausted_infra_failure_tears_down_partial_surface():
+    # Retries no longer tear down between attempts (they patch in place), but once
+    # every attempt has failed the half-streamed surface must be cleaned up before the
+    # apology — the client is not left with a zombie placeholder.
     responder = _FailingResponder(failures=MAX_ATTEMPTS)
     executor = LlmAgentExecutor(responder)
     queue = _FakeQueue()
@@ -233,8 +258,58 @@ async def test_failed_attempt_tears_down_its_partial_surface():
     responder.stream = failing_stream
     await executor.execute(_Ctx("show me open PRs"), queue)
     deletes = [d for d in _data_parts(queue) if "deleteSurface" in d]
-    assert deletes, "expected a deleteSurface teardown for the failed attempt"
+    assert deletes, "expected a deleteSurface teardown once attempts are exhausted"
     assert deletes[0]["deleteSurface"]["surfaceId"] == "zomb"
+
+
+@pytest.mark.asyncio
+async def test_invalid_retry_patches_surface_in_place():
+    # Attempt 1 creates surface s1 but fails validation; the retry must PATCH s1 in
+    # place (updateComponents deltas) rather than deleteSurface + re-create it — no
+    # wipe-and-redraw. So createSurface(s1) streams exactly once, no deleteSurface is
+    # ever emitted, and the task completes.
+    responder = _FakeResponder([_BAD_SURFACE_S1, _valid_surface_text_with_id("s1")])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    assert responder.calls == 2
+    data = _data_parts(queue)
+    creates = [
+        d for d in data
+        if "createSurface" in d and d["createSurface"].get("surfaceId") == "s1"
+    ]
+    assert len(creates) == 1  # created once; the retry did not re-create it
+    assert not [d for d in data if "deleteSurface" in d]  # never torn down
+    assert APOLOGY_TEXT not in _all_text(queue)  # completed successfully
+    assert [  # the retry streamed corrected components as in-place updates
+        d for d in data
+        if "updateComponents" in d and d["updateComponents"].get("surfaceId") == "s1"
+    ]
+
+
+@pytest.mark.asyncio
+async def test_invalid_exhaustion_tears_down_then_apologizes():
+    # Every attempt fails validation: the surface is created once (the retry dedups
+    # its createSurface), then cleaned up once on exhaustion, then the apology.
+    responder = _FakeResponder([_BAD_SURFACE_S1])  # repeated for every attempt
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    assert responder.calls == MAX_ATTEMPTS
+    data = _data_parts(queue)
+    creates = [
+        d for d in data
+        if "createSurface" in d and d["createSurface"].get("surfaceId") == "s1"
+    ]
+    assert len(creates) == 1  # created once even across retries
+    deletes = [
+        d for d in data
+        if "deleteSurface" in d and d["deleteSurface"].get("surfaceId") == "s1"
+    ]
+    assert len(deletes) == 1  # cleaned up once, on exhaustion
+    assert APOLOGY_TEXT in _all_text(queue)
 
 
 @pytest.mark.asyncio

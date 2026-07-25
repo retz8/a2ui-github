@@ -161,26 +161,38 @@ class LlmAgentExecutor(AgentExecutor):
             "execute start: task=%s context=%s prompt=%r", task.id, task.context_id, prompt
         )
 
+        # One parser persisted across attempts. Its dedup caches make a retry patch the
+        # surface attempt 1 created — createSurface and unchanged components are
+        # suppressed, only changed/new components stream as updateComponents — instead of
+        # a deleteSurface + full re-stream, which reads as a wipe-and-redraw under token
+        # streaming. (Supersedes spec decision 6's teardown-and-restream.)
+        # Catalog-less v0.9 parser: incremental structural heal + yield only; validation
+        # is at-end (validate_surface), so the parser must not reject the id-bearing wire
+        # format the catalog does not model.
+        parser = A2uiStreamParserV09(catalog=None)
+        # Catalog-less construction leaves the parser's version unset, which arms its
+        # v0.8 compatibility shim: every relative binding path in streamed parts gets
+        # rewritten absolute ('title' -> '/title'), silently breaking template item
+        # bindings on the client. Pin the version to disarm it.
+        parser._version = VERSION_0_9
+        # It also leaves the ref-field map empty, so the parser's reachability yield
+        # cannot traverse the catalog's custom component-reference props (e.g.
+        # PageLayout's header/content/pane) and silently drops every component behind
+        # them. Hand it the map without the catalog itself.
+        parser._ref_fields_map = live_ref_fields()
+
         correction: str | None = None
         model_unavailable = False
+        created_surfaces: set[str] = set()
         for attempt in range(1, self._max_attempts + 1):
-            # Catalog-less v0.9 parser: incremental structural heal + yield only.
-            # Validation is at-end (validate_surface); the parser must not reject the
-            # id-bearing wire format the catalog does not model (spec decision 6).
-            parser = A2uiStreamParserV09(catalog=None)
-            # Catalog-less construction leaves the parser's version unset, which arms
-            # its v0.8 compatibility shim: every relative binding path in streamed
-            # parts gets rewritten absolute ('title' -> '/title'), silently breaking
-            # template item bindings on the client. Pin the version to disarm it.
-            parser._version = VERSION_0_9
-            # It also leaves the ref-field map empty, so the parser's reachability
-            # yield cannot traverse the catalog's custom component-reference props
-            # (e.g. PageLayout's header/content/pane) and silently drops every
-            # component behind them. Hand it the map without the catalog itself.
-            parser._ref_fields_map = live_ref_fields()
+            # Flush the partial-parse tail a prior failed attempt left in the parser (a
+            # mid-block ValueError aborts before the parser's own reset), keeping the
+            # dedup caches that drive in-place patching. A no-op on the first attempt.
+            parser._reset_json_state()
+            parser._found_delimiter = False
+            parser._buffer = ""
             accumulated = ""
             stream_error: ValueError | None = None
-            created_surfaces: set[str] = set()
             logger.info("attempt %d: calling model", attempt)
             first_token = True
             try:
@@ -211,7 +223,7 @@ class LlmAgentExecutor(AgentExecutor):
                 # provider error is not a correction-worthy model mistake.
                 logger.warning("attempt %d model stream failed: %s", attempt, err)
                 model_unavailable = True
-                await self._teardown(updater, task, created_surfaces)
+                # No teardown between attempts: the retry patches the partial in place.
                 continue
             model_unavailable = False
 
@@ -230,14 +242,16 @@ class LlmAgentExecutor(AgentExecutor):
                     "Your previous A2UI response failed validation with this error:\n"
                     f"{err}\nReturn a corrected, complete A2UI surface."
                 )
-                await self._teardown(updater, task, created_surfaces)
+                # No teardown between attempts: the retry patches the partial in place.
                 continue
 
             logger.info("attempt %d: surface valid, task %s completed", attempt, task.id)
             await updater.update_status(TaskState.completed, final=True)
             return
 
-        # Attempts exhausted -> plain-text apology, matched to the last failure kind.
+        # Attempts exhausted -> clean up the half-baked surface (so the client is not
+        # left with broken partial UI), then apologize, matched to the last failure kind.
+        await self._teardown(updater, task, created_surfaces)
         apology = UNAVAILABLE_TEXT if model_unavailable else APOLOGY_TEXT
         await updater.update_status(
             TaskState.completed,
