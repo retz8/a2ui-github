@@ -7,8 +7,8 @@
 html,
 body,
 #root {
-  height: 100%;
   margin: 0;
+  overflow: hidden;
 }
 
 .chat-app {
@@ -18,7 +18,7 @@ body,
   /* Clip rather than grow: the shell is exactly viewport-height, so no child
      may spill below it and accumulate a page-level bottom gap. */
   overflow: hidden;
-  background: var(--bgColor-inset);
+  background: var(--bgColor-inset);/
 }
 
 .chat-header {
