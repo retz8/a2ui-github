@@ -66,15 +66,24 @@ def mcp_headers(pat: str) -> dict[str, str]:
     }
 
 
+def github_connection_params() -> StreamableHTTPConnectionParams:
+    """Builds the connection parameters passed straight through to McpToolset.
+
+    Pulled out of build_github_toolset so the read-only endpoint and the
+    toolset pin — this branch's two load-bearing guarantees — can be asserted
+    directly in tests, at the point where they are actually applied, rather
+    than trusted by proxy through the constants alone.
+    """
+    return StreamableHTTPConnectionParams(
+        url=GITHUB_MCP_URL,
+        headers=mcp_headers(github_pat()),
+    )
+
+
 def build_github_toolset() -> McpToolset:
     """Constructs the read-only GitHub MCP toolset.
 
     Construction is offline: McpToolset stores its connection parameters and
     builds a session manager, connecting only when its tools are first listed.
     """
-    return McpToolset(
-        connection_params=StreamableHTTPConnectionParams(
-            url=GITHUB_MCP_URL,
-            headers=mcp_headers(github_pat()),
-        )
-    )
+    return McpToolset(connection_params=github_connection_params())

@@ -13,6 +13,7 @@ from llm_agent.mcp import (
     PAT_ENV_VAR,
     MissingGitHubPatError,
     build_github_toolset,
+    github_connection_params,
     github_pat,
     mcp_headers,
 )
@@ -69,6 +70,16 @@ def test_headers_carry_bearer_and_pinned_toolsets():
     assert headers["X-MCP-Toolsets"] == (
         "context,repos,issues,pull_requests,users,notifications"
     )
+
+
+def test_connection_params_use_the_readonly_url_and_pinned_headers(monkeypatch):
+    # This is the point where the constants are actually applied: pinning
+    # GITHUB_MCP_URL/GITHUB_MCP_TOOLSETS alone proves nothing if
+    # build_github_toolset can construct its params some other way.
+    monkeypatch.setenv(PAT_ENV_VAR, "ghp_example")
+    params = github_connection_params()
+    assert params.url == GITHUB_MCP_URL
+    assert params.headers == mcp_headers("ghp_example")
 
 
 def test_build_toolset_constructs_offline(monkeypatch):
