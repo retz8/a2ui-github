@@ -136,6 +136,38 @@ def _offline_responder() -> AdkLlmResponder:
 
 
 @pytest.mark.asyncio
+async def test_aborting_the_stream_closes_the_adk_event_generator():
+    # `async for` never closes its iterator: when the executor aborts the responder
+    # stream mid-flight (parser error), the ADK run_async generator must be closed
+    # in-task by the responder's own finally — left to GC finalization it unwinds in
+    # a foreign context (late "root node cancelled", otel detach noise).
+    responder = _offline_responder()
+    closed = []
+
+    def fake_run_async(**_kwargs):
+        async def _events():
+            try:
+                yield SimpleNamespace(
+                    content=SimpleNamespace(parts=[SimpleNamespace(text="a")]),
+                    partial=True,
+                )
+                yield SimpleNamespace(
+                    content=SimpleNamespace(parts=[SimpleNamespace(text="b")]),
+                    partial=True,
+                )
+            finally:
+                closed.append(True)
+
+        return _events()
+
+    responder._runner = SimpleNamespace(run_async=fake_run_async)
+    stream = responder.stream("hi", context_id="ctx-abort")
+    assert await stream.__anext__() == "a"
+    await stream.aclose()
+    assert closed == [True]
+
+
+@pytest.mark.asyncio
 async def test_same_context_id_reuses_the_adk_session():
     # Session continuity: every message of one A2A conversation (same context_id)
     # continues one ADK session, so the model sees the prior turns.

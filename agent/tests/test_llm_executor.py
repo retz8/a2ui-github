@@ -411,6 +411,69 @@ async def test_exhaustion_emits_plain_text_apology():
 
 
 @pytest.mark.asyncio
+async def test_chunk_split_inside_a_prefixed_child_id_does_not_fail_the_attempt():
+    # A chunk boundary inside "row-0-lv", right after the parent id "row-0", heals into
+    # a momentary self-reference (children ["row-0"] on 'row-0'); the incremental
+    # parser must skip that yield and let the next chunk complete the id, instead of
+    # failing the attempt. Genuine cycles are still rejected at end-of-stream by
+    # validate_surface's topology pass. (Live regression: 'body', then 'row-0'.)
+    surface = json.dumps(
+        [
+            {"version": "v0.9", "createSurface": {"surfaceId": "s", "catalogId": "c"}},
+            {
+                "version": "v0.9",
+                "updateComponents": {
+                    "surfaceId": "s",
+                    "components": [
+                        {
+                            "id": "root",
+                            "component": "Stack",
+                            "direction": "vertical",
+                            "gap": "normal",
+                            "children": ["row-0"],
+                        },
+                        {
+                            "id": "row-0",
+                            "component": "Stack",
+                            "direction": "horizontal",
+                            "gap": "condensed",
+                            "children": ["row-0-lv", "row-0-title"],
+                        },
+                        {"id": "row-0-lv", "component": "Text", "text": "x"},
+                        {"id": "row-0-title", "component": "Text", "text": "y"},
+                    ],
+                },
+            },
+        ]
+    )
+    text = "<a2ui-json>" + surface + "</a2ui-json>"
+    cut = text.index('"row-0-lv"') + len('"row-0')
+
+    class _ChunkedResponder:
+        def __init__(self, chunks):
+            self._chunks = chunks
+            self.calls = 0
+
+        async def stream(self, prompt, correction=None, context_id=None):
+            self.calls += 1
+            for chunk in self._chunks:
+                yield chunk
+
+    responder = _ChunkedResponder([text[:cut], text[cut:]])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show the queue"), queue)
+
+    assert responder.calls == 1  # no retry: the split was healed, not failed
+    assert APOLOGY_TEXT not in _all_text(queue)
+    streamed_ids = set()
+    for d in _data_parts(queue):
+        for c in (d.get("updateComponents") or {}).get("components", []):
+            streamed_ids.add(c.get("id"))
+    assert "row-0-lv" in streamed_ids  # the completed id made it to the client
+
+
+@pytest.mark.asyncio
 async def test_mid_stream_parse_error_closes_the_responder_stream():
     # A parser error breaks out of the token loop with the model stream suspended.
     # The executor must close it in-task before the next attempt — left to GC, the

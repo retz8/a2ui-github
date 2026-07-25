@@ -21,6 +21,32 @@ from llm_agent.responder import LlmResponder
 
 logger = logging.getLogger(__name__)
 
+
+class LenientA2uiStreamParser(A2uiStreamParserV09):
+    """A2uiStreamParserV09 whose incremental yield tolerates transient cycles.
+
+    The SDK's incremental yield re-raises Self-reference/Circular topology errors on
+    the assumption that more data cannot resolve them — false under partial-JSON
+    healing: a chunk boundary that splits a child id right after a parent-id prefix
+    (e.g. "row-0-lv" cut at "row-0") heals into a momentary self-loop that the next
+    chunk resolves. Skip that yield instead of failing the attempt; genuine cycles
+    are still rejected at end-of-stream by validate_surface's topology pass.
+    """
+
+    def yield_reachable(self, messages, check_root=False, raise_on_orphans=False):
+        try:
+            super().yield_reachable(
+                messages, check_root=check_root, raise_on_orphans=raise_on_orphans
+            )
+        except ValueError as err:
+            if check_root or raise_on_orphans:
+                raise
+            message = str(err)
+            if "Self-reference" in message or "Circular" in message:
+                logger.debug("incremental yield skipped a transient cycle: %s", message)
+                return
+            raise
+
 # The A2UI DataPart version tag as it rides the A2A wire ("v0.9"), which is the
 # client's inline `version` field — distinct from the SDK's internal VERSION_0_9
 # ("0.9") used to pin the stream parser below.
@@ -170,7 +196,7 @@ class LlmAgentExecutor(AgentExecutor):
         # Catalog-less v0.9 parser: incremental structural heal + yield only; validation
         # is at-end (validate_surface), so the parser must not reject the id-bearing wire
         # format the catalog does not model.
-        parser = A2uiStreamParserV09(catalog=None)
+        parser = LenientA2uiStreamParser(catalog=None)
         # Catalog-less construction leaves the parser's version unset, which arms its
         # v0.8 compatibility shim: every relative binding path in streamed parts gets
         # rewritten absolute ('title' -> '/title'), silently breaking template item

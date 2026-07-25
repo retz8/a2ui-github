@@ -150,6 +150,16 @@ class AdkLlmResponder:
             new_message=message,
             run_config=RunConfig(streaming_mode=StreamingMode.SSE),
         )
-        async for chunk in _stream_agent_text(events):
-            yield chunk
-        logger.info("run_async end: session=%s", session_id)
+        text_stream = _stream_agent_text(events)
+        try:
+            async for chunk in text_stream:
+                yield chunk
+            logger.info("run_async end: session=%s", session_id)
+        finally:
+            # `async for` never closes its iterator: when the executor aborts this
+            # generator mid-stream, the inner generators would be left suspended for
+            # GC finalization in a foreign context (late cancellation, otel detach
+            # noise). Close the chain innermost-last, in-task; a no-op when the
+            # stream was consumed to the end.
+            await text_stream.aclose()
+            await events.aclose()
