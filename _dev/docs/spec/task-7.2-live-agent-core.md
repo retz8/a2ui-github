@@ -57,6 +57,15 @@ exhaustion yields a plain-text apology. The brief possibility of invalid partial
 client before the retry overwrites it is the accepted tradeoff; revisited only if 7.7 shows it
 biting.
 
+**Revised — retry-in-place (supersedes teardown-and-restream).** Once the model call streams
+tokens, teardown-and-restream reads as a visible wipe-and-redraw: attempt 1's surface draws, is
+deleted, and the retry redraws from scratch. The retry now patches the existing surface in place.
+One parser is persisted across attempts; its dedup caches suppress `createSurface` and unchanged
+components on the retry, so only changed/new components stream as `updateComponents` deltas over the
+surface attempt 1 created. No `deleteSurface` runs between attempts; teardown runs only on final
+exhaustion, before the apology. This matches upstream A2UI's reference agents. Tradeoff: a retry that
+changes component ids can leave orphan components on the surface.
+
 ### 7. Env knobs — `MODEL_NAME` + `GOOGLE_API_KEY`
 
 A single `MODEL_NAME` env var (no LiteLLM fallback) selects the Gemini model, defaulting to a
