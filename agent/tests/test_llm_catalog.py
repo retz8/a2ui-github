@@ -130,14 +130,14 @@ def test_validate_surface_accepts_a_template_with_relative_bindings():
 
 
 def test_validate_surface_rejects_a_binding_on_a_literal_prop():
-    # Icon.name is enum-typed — pass 1's strict type check rejects a binding there
-    # (regression for the live run that streamed {"path": "/iconName"} to the client).
+    # Icon.name is enum-typed — the pre-pass rejects a binding there with a targeted
+    # message (regression for the live run that streamed {"path": "/iconName"}).
     payload = _good_surface()
     payload[1]["updateComponents"]["components"][0]["children"] = ["greeting", "ic"]
     payload[1]["updateComponents"]["components"].append(
         {"id": "ic", "component": "Icon", "name": {"path": "/iconName"}}
     )
-    with pytest.raises(ValueError, match="not of type 'string'"):
+    with pytest.raises(ValueError, match="data-bound"):
         validate_surface(payload)
 
 
@@ -158,8 +158,70 @@ def test_binding_on_literal_prop_is_rejected_even_when_later_overwritten():
             },
         }
     )
-    with pytest.raises(ValueError, match="not of type 'string'"):
+    with pytest.raises(ValueError, match="data-bound"):
         validate_surface(payload)
+
+
+def test_enum_binding_gets_a_targeted_message_with_allowed_values():
+    # The correction the retry receives must say WHAT to do — never bind this prop,
+    # pick a literal — and list the legal enum values (the live failure bound
+    # StateLabel.status to {"path": "/pr/state"}).
+    payload = _good_surface()
+    payload[1]["updateComponents"]["components"][0]["children"] = ["greeting", "st"]
+    payload[1]["updateComponents"]["components"].append(
+        {
+            "id": "st",
+            "component": "StateLabel",
+            "text": "Open",
+            "status": {"path": "/pr/state"},
+        }
+    )
+    with pytest.raises(ValueError, match="never be data-bound") as excinfo:
+        validate_surface(payload)
+    message = str(excinfo.value)
+    assert "'status'" in message and "StateLabel" in message
+    assert "pullMerged" in message  # allowed enum values are listed
+    assert "literal" in message
+
+
+def test_enum_binding_in_a_template_gets_the_unroll_or_fold_hint():
+    # Per-row varying enum props are inexpressible in a template; the message must
+    # name the two valid moves (the live failure bound Icon.fill to a row field).
+    payload = _templated_surface()
+    payload[1]["updateComponents"]["components"][2]["children"] = ["title", "ic"]
+    payload[1]["updateComponents"]["components"].append(
+        {"id": "ic", "component": "Icon", "name": "check", "fill": {"path": "iconFill"}}
+    )
+    with pytest.raises(ValueError, match="never be data-bound") as excinfo:
+        validate_surface(payload)
+    message = str(excinfo.value)
+    assert "'fill'" in message and "unroll" in message and "fold" in message
+
+
+def test_dynamic_props_still_accept_bindings_alongside_literal_enums():
+    # StateLabel.text is Dynamic (bindable); status is enum (literal). The pre-pass
+    # must only reject the enum side.
+    payload = _good_surface()
+    payload[1]["updateComponents"]["components"][0]["children"] = ["greeting", "st"]
+    payload[1]["updateComponents"]["components"].append(
+        {
+            "id": "st",
+            "component": "StateLabel",
+            "text": {"path": "/stateText"},
+            "status": "pullOpened",
+        }
+    )
+    payload.append(
+        {
+            "version": "v0.9",
+            "updateDataModel": {
+                "surfaceId": "s1",
+                "path": "/",
+                "value": {"stateText": "Open"},
+            },
+        }
+    )
+    validate_surface(payload)  # must not raise
 
 
 def test_validate_surface_rejects_an_absolute_item_path_with_relative_hint():

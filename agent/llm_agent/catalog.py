@@ -53,6 +53,67 @@ def _strip_framework_ids(messages: list[dict]) -> list[dict]:
 _MISSING = object()
 
 
+@functools.lru_cache(maxsize=1)
+def _component_prop_schemas() -> dict[str, dict[str, dict]]:
+    """Per-component property schemas of the live catalog: name -> {prop: schema}."""
+    components = live_catalog().catalog_schema.get("components", {})
+    return {
+        name: dict(schema.get("properties") or {})
+        for name, schema in components.items()
+        if isinstance(schema, dict)
+    }
+
+
+def _is_dynamic_schema(prop_schema: dict) -> bool:
+    """Whether a prop schema is a Dynamic* common type (bindable), directly or
+    through a combinator."""
+    ref = prop_schema.get("$ref", "")
+    if isinstance(ref, str) and "/$defs/Dynamic" in ref:
+        return True
+    for key in ("anyOf", "oneOf", "allOf"):
+        for sub in prop_schema.get(key) or []:
+            if isinstance(sub, dict) and _is_dynamic_schema(sub):
+                return True
+    return False
+
+
+def _check_no_bindings_on_literal_props(components: list[dict]) -> None:
+    """Rejects a `{path}` binding on any prop whose schema is not a Dynamic* type.
+
+    Enum/literal props (StateLabel.status, Icon.fill/name, ...) can never carry a
+    binding — the protocol has no DynamicEnum — and the generic schema error the
+    catalog validator raises ("{'path': ...} is not of type 'string'") tells the
+    retrying model that it is wrong but not what the valid move is. This pre-pass
+    names the move. Unknown components and undeclared props stay with pass 1.
+    """
+    prop_schemas = _component_prop_schemas()
+    for component in components:
+        schemas = prop_schemas.get(component.get("component"))
+        if not schemas:
+            continue
+        for key, value in component.items():
+            if key in ("id", "component", "children"):
+                continue
+            schema = schemas.get(key)
+            if schema is None or _is_dynamic_schema(schema) or not _is_binding(value):
+                continue
+            message = (
+                f"property {key!r} of component '{component.get('id')}' "
+                f"({component.get('component')}) is enum/literal-typed and can "
+                "never be data-bound; write a literal value chosen from the tool "
+                "result"
+            )
+            allowed = schema.get("enum")
+            if allowed:
+                message += f". Allowed values: {', '.join(map(str, allowed))}"
+            message += (
+                ". If the value varies per template row, unroll the rows as "
+                "individually authored components, or fold the state into a bound "
+                "text field."
+            )
+            raise ValueError(message)
+
+
 def _is_binding(value: object) -> bool:
     """A `{path: ...}` data-binding reference (a template children decl is not one)."""
     return (
@@ -167,8 +228,11 @@ def validate_surface(payload: list[dict] | dict) -> None:
     """Validates a *complete* A2UI surface against the Primer catalog, on the live
     agent's own terms.
 
-    Three passes, because the catalog does not model the framework-owned `id` field:
+    Four passes, because the catalog does not model the framework-owned `id` field:
 
+    0. Binding-on-literal-prop pre-pass: a `{path}` binding on a non-Dynamic prop
+       (StateLabel.status, Icon.fill/name, ...) is rejected with a targeted message
+       naming the fix — before pass 1's generic type error can bury it.
     1. Component conformance — id-stripped, non-strict: every component matches its
        catalog schema (no undeclared properties, known component types, correct types).
     2. Completeness/topology — on the id-retained tree: the payload declares a
@@ -188,6 +252,17 @@ def validate_surface(payload: list[dict] | dict) -> None:
     messages = payload if isinstance(payload, list) else [payload]
     catalog = live_catalog()
 
+    components: list[dict] = []
+    for message in messages:
+        update = message.get("updateComponents") if isinstance(message, dict) else None
+        if isinstance(update, dict):
+            components.extend(
+                c for c in update.get("components", []) if isinstance(c, dict)
+            )
+
+    # Pass 0: bindings on non-Dynamic props, with the actionable message.
+    _check_no_bindings_on_literal_props(components)
+
     # Pass 1: component-schema conformance.
     catalog.validator.validate(_strip_framework_ids(messages), strict_integrity=False)
 
@@ -198,13 +273,6 @@ def validate_surface(payload: list[dict] | dict) -> None:
     if not has_create:
         raise ValueError("incomplete surface: no createSurface message")
 
-    components: list[dict] = []
-    for message in messages:
-        update = message.get("updateComponents") if isinstance(message, dict) else None
-        if isinstance(update, dict):
-            components.extend(
-                c for c in update.get("components", []) if isinstance(c, dict)
-            )
     if not components:
         raise ValueError("incomplete surface: no components in updateComponents")
 

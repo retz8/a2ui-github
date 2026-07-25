@@ -34,46 +34,157 @@
             "role": "listbox",
             "selectionVariant": "multiple",
             "showDividers": true,
-            "children": {
-              "componentId": "pr-row",
-              "path": "/prs"
-            }
+            "children": ["row-0", "row-1", "row-2", "row-3"]
           },
           {
-            "id": "pr-row",
+            "id": "row-0",
             "component": "ActionList.Item",
             "selected": {
-              "path": "selected"
+              "path": "/prs/0/selected"
             },
-            "children": ["pr-lv", "pr-title", "pr-desc"]
+            "children": ["row-0-lv", "row-0-title", "row-0-desc"]
           },
           {
-            "id": "pr-lv",
+            "id": "row-0-lv",
             "component": "ActionList.LeadingVisual",
-            "children": ["pr-icon"]
+            "children": ["row-0-icon"]
           },
           {
-            "id": "pr-icon",
+            "id": "row-0-icon",
             "component": "Icon",
             "name": "git-pull-request",
-            "fill": "muted",
+            "fill": "open",
             "accessibility": {
-              "label": "Pull request"
+              "label": "Open pull request"
             }
           },
           {
-            "id": "pr-title",
+            "id": "row-0-title",
             "component": "Text",
             "text": {
-              "path": "title"
+              "path": "/prs/0/title"
             },
             "weight": "semibold"
           },
           {
-            "id": "pr-desc",
+            "id": "row-0-desc",
             "component": "ActionList.Description",
             "text": {
-              "path": "meta"
+              "path": "/prs/0/meta"
+            },
+            "variant": "block"
+          },
+          {
+            "id": "row-1",
+            "component": "ActionList.Item",
+            "selected": {
+              "path": "/prs/1/selected"
+            },
+            "children": ["row-1-lv", "row-1-title", "row-1-desc"]
+          },
+          {
+            "id": "row-1-lv",
+            "component": "ActionList.LeadingVisual",
+            "children": ["row-1-icon"]
+          },
+          {
+            "id": "row-1-icon",
+            "component": "Icon",
+            "name": "git-pull-request-draft",
+            "fill": "muted",
+            "accessibility": {
+              "label": "Draft pull request"
+            }
+          },
+          {
+            "id": "row-1-title",
+            "component": "Text",
+            "text": {
+              "path": "/prs/1/title"
+            },
+            "weight": "semibold"
+          },
+          {
+            "id": "row-1-desc",
+            "component": "ActionList.Description",
+            "text": {
+              "path": "/prs/1/meta"
+            },
+            "variant": "block"
+          },
+          {
+            "id": "row-2",
+            "component": "ActionList.Item",
+            "selected": {
+              "path": "/prs/2/selected"
+            },
+            "children": ["row-2-lv", "row-2-title", "row-2-desc"]
+          },
+          {
+            "id": "row-2-lv",
+            "component": "ActionList.LeadingVisual",
+            "children": ["row-2-icon"]
+          },
+          {
+            "id": "row-2-icon",
+            "component": "Icon",
+            "name": "git-merge",
+            "fill": "done",
+            "accessibility": {
+              "label": "Merged pull request"
+            }
+          },
+          {
+            "id": "row-2-title",
+            "component": "Text",
+            "text": {
+              "path": "/prs/2/title"
+            },
+            "weight": "semibold"
+          },
+          {
+            "id": "row-2-desc",
+            "component": "ActionList.Description",
+            "text": {
+              "path": "/prs/2/meta"
+            },
+            "variant": "block"
+          },
+          {
+            "id": "row-3",
+            "component": "ActionList.Item",
+            "selected": {
+              "path": "/prs/3/selected"
+            },
+            "children": ["row-3-lv", "row-3-title", "row-3-desc"]
+          },
+          {
+            "id": "row-3-lv",
+            "component": "ActionList.LeadingVisual",
+            "children": ["row-3-icon"]
+          },
+          {
+            "id": "row-3-icon",
+            "component": "Icon",
+            "name": "git-pull-request-closed",
+            "fill": "closed",
+            "accessibility": {
+              "label": "Closed pull request"
+            }
+          },
+          {
+            "id": "row-3-title",
+            "component": "Text",
+            "text": {
+              "path": "/prs/3/title"
+            },
+            "weight": "semibold"
+          },
+          {
+            "id": "row-3-desc",
+            "component": "ActionList.Description",
+            "text": {
+              "path": "/prs/3/meta"
             },
             "variant": "block"
           },
@@ -95,7 +206,13 @@
             "id": "footer-count",
             "component": "CounterLabel",
             "count": {
-              "path": "/selectedCount"
+              "call": "countSelected",
+              "args": {
+                "items": {
+                  "path": "/prs"
+                }
+              },
+              "returnType": "number"
             },
             "variant": "primary"
           }
@@ -108,7 +225,6 @@
         "surfaceId": "review-queue-status-list",
         "path": "/",
         "value": {
-          "selectedCount": 0,
           "prs": [
             {
               "title": "Add incremental heal to stream parser",

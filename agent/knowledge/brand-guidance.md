@@ -52,6 +52,10 @@ visual language.
 - Show the open/closed/merged/draft state of an issue or PR with `StateLabel`, and match its
   `status` to the real state (`issueOpened`, `pullMerged`, `draft`, …). This is the one badge that
   carries GitHub's state color-and-icon treatment; do not approximate it with a plain `Label`.
+- `StateLabel`'s `status` and `Icon`'s `fill`/`name` are enum-typed and never data-bound: always
+  write the literal, mapped from the fetched state at composition time — a pull request with
+  `state: "closed"` and a `merged_at` timestamp is `"pullMerged"`, `"closed"` without one is
+  `"pullClosed"`, `draft: true` is `"draft"`.
 - Represent a repository label (the colored issue tags) with `IssueLabelToken`, and set `fillColor`
   to the label's own color so the token reads as that label. A generic `Label` is not a repo label.
 - Group multiple repo labels in a `LabelGroup` so they wrap and truncate as a set, rather than
@@ -83,7 +87,9 @@ visual language.
 
 - Render a list whose length is data-driven as a template: set the container's `children` to
   `{componentId, path}` and author one template component. Do not unroll a known-length list into
-  hand-written items when the data comes from a tool.
+  hand-written items when the data comes from a tool — unless per-row enum-typed treatment (a
+  `StateLabel`, an `Icon` fill) must differ per row: enum props cannot be bound, so a
+  state-emphasized list is authored as unrolled rows carrying literal state values.
 - Reference item fields from inside a template with **relative** JSON pointers — `{"path": "title"}`,
   no leading slash. Reserve absolute paths (leading slash) for the surface-level data model outside
   a template.
