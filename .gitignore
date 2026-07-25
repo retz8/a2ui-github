@@ -27,3 +27,4 @@ playwright-report/
 !.yarn/sdks
 .yarn/cache
 system_prompt.dump.txt
+failed_stream.dump.txt

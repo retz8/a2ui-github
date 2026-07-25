@@ -5,8 +5,16 @@ import json
 import pytest
 from a2a.types import DataPart, Message, Part, Role, TextPart
 
-from llm_agent.catalog import EXAMPLES_DIR
-from llm_agent.executor import APOLOGY_TEXT, MAX_ATTEMPTS, LlmAgentExecutor
+from a2ui.schema.constants import VERSION_0_9
+
+from llm_agent.catalog import EXAMPLES_DIR, live_ref_fields
+from llm_agent.executor import (
+    APOLOGY_TEXT,
+    MAX_ATTEMPTS,
+    UNAVAILABLE_TEXT,
+    LenientA2uiStreamParser,
+    LlmAgentExecutor,
+)
 from llm_agent.responder import ModelTurnError
 
 
@@ -171,6 +179,14 @@ async def test_unparseable_block_mid_stream_retries_then_succeeds():
     await executor.execute(_Ctx("show me open PRs"), queue)
     assert responder.calls == 2
     assert responder.corrections[1] is not None
+
+
+@pytest.fixture(autouse=True)
+def failed_stream_dump(tmp_path, monkeypatch):
+    """Redirects the failure dump per-test, so runs leave nothing in the source tree."""
+    path = tmp_path / "failed_stream.dump.txt"
+    monkeypatch.setattr("llm_agent.executor.FAILED_STREAM_DUMP", path)
+    return path
 
 
 class _FailingResponder:
@@ -703,3 +719,128 @@ async def test_empty_message_apologizes_without_calling_the_model():
 
     assert responder.calls == 0  # no model call at all
     assert APOLOGY_TEXT in _all_text(queue)
+
+
+# --- Non-string component ids (the "cannot use 'dict' as a dict key" TypeError) ---
+
+# A component whose `id` is an object rather than a string. The SDK caches components
+# by id with no type guard (a2ui/parser/streaming_v09.py, a2ui/parser/streaming.py),
+# so the id reaches a dict subscript and raises TypeError mid-stream — a different
+# exception class from the ValueError the malformed-block path is built around.
+_DICT_ID_SURFACE = (
+    '<a2ui-json>[{"version":"v0.9","createSurface":{"surfaceId":"s1","catalogId":"x"}},'
+    '{"version":"v0.9","updateComponents":{"surfaceId":"s1","root":"root",'
+    '"components":[{"id":{"componentId":"root"},"component":"Text","text":"hi"}]}}]'
+    "</a2ui-json>"
+)
+
+
+def _lenient_parser() -> LenientA2uiStreamParser:
+    """A parser wired exactly as the executor wires it."""
+    parser = LenientA2uiStreamParser(catalog=None)
+    parser._version = VERSION_0_9
+    parser._ref_fields_map = live_ref_fields()
+    return parser
+
+
+def test_parser_never_caches_a_component_whose_id_is_not_a_string():
+    parser = _lenient_parser()
+
+    # Dropping the malformed root leaves the surface rootless, which the SDK reports
+    # as ValueError. That class is the point: ValueError is a correctable malformed
+    # block, whereas the unguarded TypeError bypassed the correction loop entirely.
+    with pytest.raises(ValueError):
+        parser.process_chunk(_DICT_ID_SURFACE)
+
+    assert all(isinstance(key, str) for key in parser._seen_components)
+
+
+def test_parser_keeps_streaming_when_only_a_leaf_id_is_malformed():
+    parser = _lenient_parser()
+
+    parser.process_chunk(
+        '<a2ui-json>[{"version":"v0.9","createSurface":{"surfaceId":"s1",'
+        '"catalogId":"x"}},{"version":"v0.9","updateComponents":{"surfaceId":"s1",'
+        '"root":"root","components":[{"id":"root","component":"Text","text":"hi"},'
+        '{"id":{"componentId":"leaf"},"component":"Text","text":"bad"}]}}]</a2ui-json>'
+    )
+
+    assert set(parser._seen_components) == {"root"}
+
+
+@pytest.mark.asyncio
+async def test_non_string_id_feeds_the_correction_retry_loop():
+    # The TypeError must be treated as a malformed block, not as a provider outage:
+    # the retry carries a correction, and a recoverable second attempt succeeds.
+    responder = _FakeResponder([_DICT_ID_SURFACE, _valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+
+    await executor.execute(_Ctx("list my public repos"), queue)
+
+    assert responder.calls == 2
+    assert responder.corrections[1] is not None  # attempt 2 was told what went wrong
+    assert APOLOGY_TEXT not in _all_text(queue)
+
+
+@pytest.mark.asyncio
+async def test_non_string_id_exhaustion_apologizes_without_blaming_the_provider():
+    # Exhausting attempts on a malformed surface is a model failure, not an outage;
+    # UNAVAILABLE_TEXT would send debugging after a provider that is working fine.
+    responder = _FakeResponder([_DICT_ID_SURFACE])  # repeated for every attempt
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+
+    await executor.execute(_Ctx("list my public repos"), queue)
+
+    text = _all_text(queue)
+    assert APOLOGY_TEXT in text
+    assert UNAVAILABLE_TEXT not in text
+
+
+@pytest.mark.asyncio
+async def test_unexpected_stream_failure_is_logged_with_a_traceback(caplog):
+    # Without exc_info the log names the exception but not where it came from, which
+    # is what made the non-string-id crash unattributable in production.
+    responder = _FailingResponder(failures=1)
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+
+    with caplog.at_level("WARNING", logger="llm_agent.executor"):
+        await executor.execute(_Ctx("list my public repos"), queue)
+
+    failures = [r for r in caplog.records if "model stream failed" in r.getMessage()]
+    assert failures
+    assert failures[0].exc_info is not None
+
+
+@pytest.mark.asyncio
+async def test_unexpected_stream_failure_dumps_the_accumulated_model_text(
+    failed_stream_dump,
+):
+    # The model text is the evidence for diagnosing what shape provoked the failure;
+    # it is lost entirely once the attempt is abandoned.
+    dump = failed_stream_dump
+    responder = _FailingResponder(failures=1)
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+
+    await executor.execute(_Ctx("list my public repos"), queue)
+
+    assert dump.exists()
+    assert "partial " in dump.read_text(encoding="utf-8")
+
+
+def test_non_string_id_guard_survives_the_between_attempt_reset():
+    # The executor resets parser JSON state between attempts while deliberately
+    # keeping the component cache (it drives in-place patching). If a future SDK
+    # version rebuilt that cache, the guard would vanish silently and the crash
+    # would return on the retry path only.
+    parser = _lenient_parser()
+    parser.process_chunk('<a2ui-json>[{"version":"v0.9","createSurface":'
+                         '{"surfaceId":"s1","catalogId":"x"}}]</a2ui-json>')
+
+    parser._reset_json_state()
+    parser._seen_components[{"componentId": "x"}] = {"id": "x"}
+
+    assert all(isinstance(key, str) for key in parser._seen_components)

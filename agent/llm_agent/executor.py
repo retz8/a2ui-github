@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import json
 import logging
+from pathlib import Path
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
 from a2a.server.events import EventQueue
@@ -23,6 +24,28 @@ from llm_agent.responder import LlmResponder, ModelTurnError
 logger = logging.getLogger(__name__)
 
 
+class _StrKeyedComponents(dict):
+    """Component cache that drops any component whose id is not a string.
+
+    The SDK indexes seen components by `comp["id"]` with no type guard (two sites:
+    A2uiStreamParserV09._handle_complete_object and the base parser's
+    _handle_partial_component). A model that emits an object for `id` therefore
+    reaches a dict subscript and raises TypeError — `cannot use 'dict' as a dict
+    key` — aborting the attempt mid-stream. Guarding the cache itself covers both
+    sites at once, rather than re-implementing two large SDK methods.
+
+    Dropping the component is safe: it simply does not stream incrementally. A
+    genuinely malformed surface is still rejected at end-of-stream by
+    validate_surface, which is where the id's type gets a real verdict.
+    """
+
+    def __setitem__(self, key, value) -> None:
+        if not isinstance(key, str):
+            logger.debug("skipped a component whose id is not a string: %r", key)
+            return
+        super().__setitem__(key, value)
+
+
 class LenientA2uiStreamParser(A2uiStreamParserV09):
     """A2uiStreamParserV09 whose incremental yield tolerates transient cycles.
 
@@ -32,13 +55,31 @@ class LenientA2uiStreamParser(A2uiStreamParserV09):
     (e.g. "row-0-lv" cut at "row-0") heals into a momentary self-loop that the next
     chunk resolves. Skip that yield instead of failing the attempt; genuine cycles
     are still rejected at end-of-stream by validate_surface's topology pass.
+
+    It also guards the component cache against non-string ids (see
+    _StrKeyedComponents) and tolerates the TypeError a non-string *reference* id
+    provokes inside topology analysis — get_component_references yields
+    `componentId` values without checking they are strings, so a malformed
+    reference reaches a set/dict operation the same way an id does.
     """
+
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+        self._seen_components = _StrKeyedComponents(self._seen_components)
 
     def yield_reachable(self, messages, check_root=False, raise_on_orphans=False):
         try:
             super().yield_reachable(
                 messages, check_root=check_root, raise_on_orphans=raise_on_orphans
             )
+        except TypeError as err:
+            # A non-string reference id inside the topology walk. Same disposition as
+            # a transient cycle: skip the incremental yield, let validate_surface rule
+            # on the finished payload.
+            if check_root or raise_on_orphans:
+                raise
+            logger.debug("incremental yield skipped a non-string reference: %s", err)
+            return
         except ValueError as err:
             if check_root or raise_on_orphans:
                 raise
@@ -56,6 +97,11 @@ WIRE_VERSION = "v0.9"
 # its sendDataModel-flagged surfaces (the spec's A2A binding; no upstream constant).
 CLIENT_DATA_MODEL_KEY = "a2uiClientDataModel"
 MAX_ATTEMPTS = 2  # one initial + one retry; tunable (spec decision 6)
+# Where an unexpected mid-stream failure dumps the model text it died on. Without it
+# the response is discarded with the attempt, leaving the exception message as the only
+# evidence — which is not enough to tell which shape the model emitted. Gitignored,
+# alongside system_prompt.dump.txt.
+FAILED_STREAM_DUMP = Path(__file__).resolve().parent.parent / "failed_stream.dump.txt"
 APOLOGY_TEXT = (
     "Sorry — I couldn't compose a valid interface for that request. Please try rephrasing."
 )
@@ -172,6 +218,23 @@ def _resolve_prompt(context: RequestContext) -> str:
     return prompt
 
 
+def _dump_failed_stream(accumulated: str, attempt: int, err: Exception) -> None:
+    """Writes the model text an unexpected failure died on, for post-hoc diagnosis.
+
+    Best-effort: a dump that cannot be written must never take down the attempt's
+    error handling, which is already running on a failure path.
+    """
+    try:
+        FAILED_STREAM_DUMP.write_text(
+            f"attempt {attempt} failed with {type(err).__name__}: {err}\n"
+            f"--- accumulated model text ({len(accumulated)} chars) ---\n"
+            f"{accumulated}\n",
+            encoding="utf-8",
+        )
+    except OSError:  # read-only fs, missing dir — diagnosis is not worth a crash
+        logger.debug("could not write %s", FAILED_STREAM_DUMP, exc_info=True)
+
+
 def _collect_payload(accumulated: str) -> list[dict]:
     """Extracts the full A2UI message list from the accumulated model text.
 
@@ -263,7 +326,7 @@ class LlmAgentExecutor(AgentExecutor):
             parser._found_delimiter = False
             parser._buffer = ""
             accumulated = ""
-            stream_error: ValueError | None = None
+            stream_error: Exception | None = None
             logger.info("attempt %d: calling model", attempt)
             first_token = True
             stream = self._responder.stream(
@@ -280,7 +343,15 @@ class LlmAgentExecutor(AgentExecutor):
                     # correction/retry loop instead of escaping as a server error.
                     try:
                         response_parts = parser.process_chunk(token)
-                    except ValueError as err:
+                    except (ValueError, TypeError) as err:
+                        # TypeError joins ValueError here because a malformed value
+                        # where the SDK expects a string (an object component id, an
+                        # object componentId reference) surfaces as TypeError, not
+                        # ValueError. It is the same failure class — a bad block the
+                        # model can be told to correct — so it must feed the same
+                        # correction/retry loop instead of falling through to the
+                        # generic handler, which would retry with an unchanged prompt
+                        # and then blame the provider for an outage that never happened.
                         stream_error = err
                         break
                     for response_part in response_parts:
@@ -307,7 +378,14 @@ class LlmAgentExecutor(AgentExecutor):
                 # Must not abort the SSE stream raw — the client would see a bare
                 # network error. Retry with the prompt unchanged; a transient
                 # provider error is not a correction-worthy model mistake.
-                logger.warning("attempt %d model stream failed: %s", attempt, err)
+                #
+                # exc_info because anything reaching here is by definition unclassified:
+                # the message alone cannot say which frame raised, and the attempt is
+                # about to discard the evidence.
+                logger.warning(
+                    "attempt %d model stream failed: %s", attempt, err, exc_info=True
+                )
+                _dump_failed_stream(accumulated, attempt, err)
                 model_unavailable = True
                 # No teardown between attempts: the retry patches the partial in place.
                 continue
@@ -327,7 +405,7 @@ class LlmAgentExecutor(AgentExecutor):
                 if not payload:
                     raise ValueError("no A2UI surface found in the model response")
                 validate_surface(payload)
-            except ValueError as err:
+            except (ValueError, TypeError) as err:
                 logger.warning(
                     "attempt %d produced an invalid surface: %s", attempt, err
                 )
