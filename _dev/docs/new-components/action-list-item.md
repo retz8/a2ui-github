@@ -32,7 +32,7 @@ single-select exclusivity is owned by the data model / agent, not the schema.
 |---|---|---|---|---|
 | `children` | carry (optional) | yes | `ChildList` | The item's label plus its leading/trailing visuals, description, and trailing action. |
 | `selected` | carry | no | `DynamicBoolean` | Whether the item is selected; two-way bound — a click writes the new state back. Meaningful only when the list or group sets a `selectionVariant`. |
-| `action` | carry (optional) | yes (← `onSelect`) | `Action` | An effect performed when the item is selected — a local function or a server event. |
+| `action` | carry (optional) | yes (← `onSelect`) | `Action` | An effect performed when the item is activated — a local function or a server event. Omit it on selection rows: with a bound `selected`, the toggle itself is the interaction, tracked in the data model. |
 | `active` | carry | no | `DynamicBoolean (default: false)` | Whether the item is the currently-active one (e.g. the current page); at most one item should be active. |
 | `variant` | carry | no | `z.enum(['default','danger']) (default: "default")` | The item's style; `danger` marks a destructive action. |
 | `size` | carry | no | `z.enum(['medium','large']) (default: "medium")` | The item's block size. |

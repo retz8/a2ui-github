@@ -1,4 +1,4 @@
-import type {A2uiMessage} from '@a2ui/web_core/v0_9';
+import type {A2uiClientDataModel, A2uiMessage} from '@a2ui/web_core/v0_9';
 import type {GetSender} from './client';
 import {sendAndApply} from './client';
 import {buildTextMessageParams} from './messages';
@@ -10,6 +10,11 @@ export interface StreamUserMessageOptions {
   apply: (messages: A2uiMessage[]) => void;
   /** Conversation session; threads the contextId across turns when given. */
   session?: A2ASession;
+  /**
+   * Supplies the current client data model of `sendDataModel`-flagged surfaces
+   * (processor.getClientDataModel); attached as message metadata when it reports one.
+   */
+  getClientDataModel?: () => A2uiClientDataModel | undefined;
 }
 
 /**
@@ -21,10 +26,15 @@ export async function streamUserMessage(
   text: string,
   opts: StreamUserMessageOptions,
 ): Promise<void> {
-  const {getSender, apply, session} = opts;
+  const {getSender, apply, session, getClientDataModel} = opts;
   try {
     const sender = await getSender();
-    await sendAndApply(sender, buildTextMessageParams(text, session?.get()), apply, session);
+    await sendAndApply(
+      sender,
+      buildTextMessageParams(text, session?.get(), getClientDataModel?.()),
+      apply,
+      session,
+    );
   } catch (err) {
     console.error('[A2UI:a2a]', err);
   }

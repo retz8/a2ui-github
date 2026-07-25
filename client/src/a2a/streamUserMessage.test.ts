@@ -1,6 +1,6 @@
 import {describe, it, expect, vi} from 'vitest';
 import type {MessageSendParams, Part, TaskStatusUpdateEvent} from '@a2a-js/sdk';
-import type {A2uiMessage} from '@a2ui/web_core/v0_9';
+import type {A2uiClientDataModel, A2uiMessage} from '@a2ui/web_core/v0_9';
 import type {A2AStreamEventData} from './messages';
 import type {A2AMessageSender} from './client';
 import {createA2ASession} from './session';
@@ -68,6 +68,30 @@ describe('streamUserMessage', () => {
     await streamUserMessage('second', {getSender, apply: () => {}, session});
     expect(sent[0].message.contextId).toBeUndefined();
     expect(sent[1].message.contextId).toBe('ctx-42');
+  });
+
+  it('sends the current client data model as message metadata when a supplier is given', async () => {
+    const clientDataModel = {
+      version: 'v0.9',
+      surfaces: {s: {prs: [{selected: true}]}},
+    } as unknown as A2uiClientDataModel;
+    const {getSender, sent} = fakeSender([statusUpdate([DATA_PART], 'ctx-1', true)]);
+
+    await streamUserMessage('show selected', {
+      getSender,
+      apply: () => {},
+      getClientDataModel: () => clientDataModel,
+    });
+
+    expect(sent[0].message.metadata).toEqual({a2uiClientDataModel: clientDataModel});
+  });
+
+  it('sends no metadata when the supplier reports no data model', async () => {
+    const {getSender, sent} = fakeSender([statusUpdate([DATA_PART], 'ctx-1', true)]);
+
+    await streamUserMessage('hi', {getSender, apply: () => {}, getClientDataModel: () => undefined});
+
+    expect(sent[0].message.metadata).toBeUndefined();
   });
 
   it('never throws: stream errors are logged and apply is skipped', async () => {

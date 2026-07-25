@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
 import {Button, Spinner, Textarea} from '@primer/react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
-import type {A2uiMessage} from '@a2ui/web_core/v0_9';
+import type {A2uiClientDataModel, A2uiMessage} from '@a2ui/web_core/v0_9';
 import {A2uiSurface} from '@a2ui/react/v0_9';
 import {CATALOG} from 'primer-a2ui-adapter';
 import type {A2ASenderOptions} from '../a2a/client';
@@ -34,12 +34,19 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     // The handler only fires on a response, long after construction, so the
     // temporal cycle is harmless.
     // eslint-disable-next-line prefer-const
-    let target: {processMessages: (m: A2uiMessage[]) => void} | undefined;
+    let target:
+      | {
+          processMessages: (m: A2uiMessage[]) => void;
+          getClientDataModel: () => A2uiClientDataModel | undefined;
+        }
+      | undefined;
     const apply = (messages: A2uiMessage[]) => target?.processMessages(messages);
+    const getClientDataModel = () => target?.getClientDataModel();
     const actionHandler = createA2AActionHandler({
       apply,
       getSender,
       session,
+      getClientDataModel,
       // Mirror the text path: a clicked action drives the same loading indicator, with
       // an informational label derived from the action (falls back to the generic one).
       onActionStart: action => {
@@ -51,7 +58,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     });
     const processor = new MessageProcessor([CATALOG], actionHandler);
     target = processor;
-    return {processor, getSender, session, apply};
+    return {processor, getSender, session, apply, getClientDataModel};
   });
 
   const [turns, setTurns] = useState<Turn[]>([]);
@@ -105,6 +112,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
         getSender: wiring.getSender,
         apply: wiring.apply,
         session: wiring.session,
+        getClientDataModel: wiring.getClientDataModel,
       });
     } finally {
       setPending(false);

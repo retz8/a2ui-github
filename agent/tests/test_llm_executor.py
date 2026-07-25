@@ -7,6 +7,7 @@ from a2a.types import DataPart, Message, Part, Role, TextPart
 
 from llm_agent.catalog import EXAMPLES_DIR
 from llm_agent.executor import APOLOGY_TEXT, MAX_ATTEMPTS, LlmAgentExecutor
+from llm_agent.responder import ModelTurnError
 
 
 def _valid_surface_text() -> str:
@@ -63,9 +64,12 @@ class _FakeResponder:
 
 
 class _Ctx:
-    def __init__(self, prompt):
+    def __init__(self, prompt, metadata=None):
         self.message = Message(
-            message_id="m1", role=Role.user, parts=[Part(root=TextPart(text=prompt))]
+            message_id="m1",
+            role=Role.user,
+            parts=[Part(root=TextPart(text=prompt))],
+            metadata=metadata,
         )
         self.current_task = None
 
@@ -73,11 +77,12 @@ class _Ctx:
 class _ActionCtx:
     """A message carrying one v0.9 A2UI action DataPart (the client's action wire form)."""
 
-    def __init__(self, action):
+    def __init__(self, action, metadata=None):
         self.message = Message(
             message_id="m1",
             role=Role.user,
             parts=[Part(root=DataPart(data={"version": "v0.9", "action": action}))],
+            metadata=metadata,
         )
         self.current_task = None
 
@@ -338,6 +343,76 @@ async def test_model_failure_exhaustion_emits_unavailable_text():
     assert UNAVAILABLE_TEXT in _all_text(queue)
 
 
+class _ModelTurnErrorResponder:
+    """Raises ModelTurnError(code) for the first `failures` calls, then succeeds.
+
+    Mirrors a Gemini turn aborted before any token (e.g. MALFORMED_FUNCTION_CALL):
+    the responder stream raises with nothing yielded.
+    """
+
+    def __init__(self, code, failures=1):
+        self._code = code
+        self._failures = failures
+        self.calls = 0
+        self.corrections = []
+
+    async def stream(self, prompt, correction=None, context_id=None):
+        self.calls += 1
+        self.corrections.append(correction)
+        if self.calls <= self._failures:
+            raise ModelTurnError(self._code)
+            yield  # pragma: no cover — marks this as a generator
+        yield _valid_surface_text()
+
+
+@pytest.mark.asyncio
+async def test_malformed_function_call_retries_with_a_targeted_correction():
+    # A MALFORMED_FUNCTION_CALL turn produced no output at all; the retry must name
+    # that failure — not claim a phantom A2UI response "failed validation".
+    responder = _ModelTurnErrorResponder("MALFORMED_FUNCTION_CALL", failures=1)
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me the first and second PRs"), queue)
+
+    assert responder.calls == 2
+    correction = responder.corrections[1]
+    assert correction is not None
+    assert "malformed function call" in correction.lower()
+    assert "validation" not in correction.lower()
+    assert APOLOGY_TEXT not in _all_text(queue)  # the retry recovered
+
+
+@pytest.mark.asyncio
+async def test_malformed_function_call_exhaustion_emits_the_compose_apology():
+    from llm_agent.executor import UNAVAILABLE_TEXT
+
+    responder = _ModelTurnErrorResponder(
+        "MALFORMED_FUNCTION_CALL", failures=MAX_ATTEMPTS
+    )
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me the first and second PRs"), queue)
+
+    assert responder.calls == MAX_ATTEMPTS
+    # A composition failure, not a provider outage.
+    assert APOLOGY_TEXT in _all_text(queue)
+    assert UNAVAILABLE_TEXT not in _all_text(queue)
+
+
+@pytest.mark.asyncio
+async def test_other_empty_turn_errors_retry_unchanged_then_report_unavailable():
+    from llm_agent.executor import UNAVAILABLE_TEXT
+
+    responder = _ModelTurnErrorResponder("MAX_TOKENS", failures=MAX_ATTEMPTS)
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    assert responder.calls == MAX_ATTEMPTS
+    assert responder.corrections == [None] * MAX_ATTEMPTS  # prompt retried unchanged
+    assert UNAVAILABLE_TEXT in _all_text(queue)
+
+
 @pytest.mark.asyncio
 async def test_streamed_parts_preserve_relative_template_bindings():
     # The SDK's catalog-less stream parser arms a v0.8 shim that rewrites relative
@@ -540,6 +615,81 @@ async def test_action_event_is_framed_into_the_model_prompt():
     assert "prNumber" in prompt and "42" in prompt  # resolved context values carried
     assert "assignee" in prompt and "octocat" in prompt
     assert "action" in prompt.lower()  # framed as an activated action
+
+
+# The client data model as it rides the A2A wire: surfaces created with
+# sendDataModel:true make the client attach metadata["a2uiClientDataModel"] =
+# {version, surfaces: {surfaceId: dataModel}} to every message it sends.
+_CLIENT_DM_METADATA = {
+    "a2uiClientDataModel": {
+        "version": "v0.9",
+        "surfaces": {
+            "review-queue": {
+                "prs": [
+                    {"title": "Add incremental heal", "selected": True},
+                    {"title": "Spike pruning", "selected": False},
+                ]
+            }
+        },
+    }
+}
+
+
+@pytest.mark.asyncio
+async def test_client_data_model_metadata_is_framed_into_the_text_prompt():
+    # The user's local edits (checkbox selections) live only in the client-side data
+    # model; the client reports them via message metadata, and the executor must put
+    # them in front of the model or "show me the selected PRs" cannot be answered.
+    responder = _FakeResponder([_valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(
+        _Ctx("show me the selected PRs", metadata=_CLIENT_DM_METADATA), queue
+    )
+
+    prompt = responder.prompts[0]
+    assert prompt.startswith("show me the selected PRs")
+    assert "review-queue" in prompt  # the surface's reported state is framed in
+    assert "Add incremental heal" in prompt
+    assert "true" in prompt  # the selected flags survive as JSON values
+
+
+@pytest.mark.asyncio
+async def test_client_data_model_metadata_is_framed_into_the_action_prompt():
+    action = {
+        "name": "openSelected",
+        "surfaceId": "review-queue",
+        "sourceComponentId": "open-btn",
+        "context": {},
+    }
+    responder = _FakeResponder([_valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_ActionCtx(action, metadata=_CLIENT_DM_METADATA), queue)
+
+    prompt = responder.prompts[0]
+    assert "openSelected" in prompt  # the action framing is still there
+    assert "Add incremental heal" in prompt  # and the client state rides along
+
+
+@pytest.mark.asyncio
+async def test_absent_metadata_leaves_the_prompt_untouched():
+    responder = _FakeResponder([_valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+    assert responder.prompts[0] == "show me open PRs"
+
+
+@pytest.mark.asyncio
+async def test_malformed_client_data_model_metadata_is_ignored():
+    responder = _FakeResponder([_valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(
+        _Ctx("show me open PRs", metadata={"a2uiClientDataModel": "garbage"}), queue
+    )
+    assert responder.prompts[0] == "show me open PRs"
 
 
 @pytest.mark.asyncio

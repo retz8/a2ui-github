@@ -12,7 +12,7 @@ from types import SimpleNamespace
 
 import pytest
 
-from llm_agent.responder import AdkLlmResponder, _stream_agent_text
+from llm_agent.responder import AdkLlmResponder, ModelTurnError, _stream_agent_text
 
 
 def _event(text, partial):
@@ -111,7 +111,8 @@ async def test_model_error_events_are_logged(caplog):
         content=None, partial=None, error_code="BLOCKED", error_message="safety"
     )
     with caplog.at_level(logging.WARNING, logger="llm_agent.responder"):
-        await _collect([err_event])
+        with pytest.raises(ModelTurnError):  # error-only stream also raises
+            await _collect([err_event])
     logged = "\n".join(r.getMessage() for r in caplog.records)
     assert "BLOCKED" in logged and "safety" in logged
 
@@ -126,6 +127,41 @@ async def test_stream_with_no_text_logs_the_finish_reason(caplog):
     assert chunks == []
     logged = "\n".join(r.getMessage() for r in caplog.records)
     assert "no text" in logged and "MAX_TOKENS" in logged
+
+
+@pytest.mark.asyncio
+async def test_erroring_empty_stream_raises_a_model_turn_error():
+    # A turn Gemini aborts (e.g. finish_reason=MALFORMED_FUNCTION_CALL) yields error
+    # events and no text; silently ending the stream lets the executor misread it as
+    # "no A2UI surface found" and burn the retry on a phantom-validation correction.
+    err_event = SimpleNamespace(
+        content=None,
+        partial=None,
+        error_code="MALFORMED_FUNCTION_CALL",
+        error_message=None,
+        finish_reason="MALFORMED_FUNCTION_CALL",
+    )
+    with pytest.raises(ModelTurnError) as excinfo:
+        await _collect([err_event])
+    assert "MALFORMED_FUNCTION_CALL" in excinfo.value.error_code
+
+
+@pytest.mark.asyncio
+async def test_a_stream_that_produced_text_never_raises_on_error_events():
+    # Once text streamed, end-of-stream validation owns the outcome; a stray error
+    # event must not discard tokens the client already saw.
+    err_event = SimpleNamespace(
+        content=None, partial=None, error_code="BLOCKED", error_message="safety"
+    )
+    chunks = await _collect([_event("Hello", partial=None), err_event])
+    assert chunks == ["Hello"]
+
+
+@pytest.mark.asyncio
+async def test_empty_stream_without_error_code_does_not_raise():
+    # No text and no error (e.g. thinking ate the budget): keep the warning-only path.
+    events = [SimpleNamespace(content=None, partial=None, finish_reason="MAX_TOKENS")]
+    assert await _collect(events) == []
 
 
 def _offline_responder() -> AdkLlmResponder:

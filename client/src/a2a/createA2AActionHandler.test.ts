@@ -1,6 +1,6 @@
 import {describe, it, expect, vi} from 'vitest';
 import type {MessageSendParams, Part, Task} from '@a2a-js/sdk';
-import type {A2uiClientAction, A2uiMessage} from '@a2ui/web_core/v0_9';
+import type {A2uiClientAction, A2uiClientDataModel, A2uiMessage} from '@a2ui/web_core/v0_9';
 import type {A2AStreamEventData} from './messages';
 import type {A2AMessageSender} from './client';
 import {createA2AActionHandler} from './createA2AActionHandler';
@@ -58,6 +58,23 @@ describe('createA2AActionHandler', () => {
 
     expect(sent[0].message.contextId).toBeUndefined();
     expect(sent[1].message.contextId).toBe('ctx-42');
+  });
+
+  it('sends the current client data model as message metadata when a supplier is given', async () => {
+    const clientDataModel = {
+      version: 'v0.9',
+      surfaces: {s: {prs: [{selected: true}]}},
+    } as unknown as A2uiClientDataModel;
+    const {sender, sent} = fakeSender([completedTask([DATA_PART])]);
+    const handler = createA2AActionHandler({
+      apply: () => {},
+      client: sender,
+      getClientDataModel: () => clientDataModel,
+    });
+
+    await handler(ACTION);
+
+    expect(sent[0].message.metadata).toEqual({a2uiClientDataModel: clientDataModel});
   });
 
   it('never throws: wire failures are logged and apply is skipped', async () => {

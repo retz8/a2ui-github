@@ -75,11 +75,15 @@ visual language.
   actions (Cancel) as `invisible`.
 - Group related buttons in a `ButtonGroup` so they read as one control cluster, with the primary
   action last (trailing), matching GitHub's dialog and form footers.
-- Attach a server `event` action for anything that must reach the agent (opening an item, posting a
-  comment, applying a label). Reserve local `functionCall` actions for purely client-side effects
-  — clearing a draft field, logging — never for an operation the agent must observe.
+- Decide per interaction what it is before wiring an action. Committing intent or asking for
+  something the surface does not hold (opening an item, posting a comment, applying a label) is a
+  server `event`. A purely client-side effect (clearing a draft field, logging) is a local
+  `functionCall`. Changing state the surface already holds (toggling a selection, editing a field)
+  is no action at all — the bound path carries it, and the client reports the data model with the
+  user's next message.
 - Put the row-level open/navigate action on the `ActionList.Item` (or `NavList.Item`) itself, not
-  on a nested button, so the whole row is the target.
+  on a nested button, so the whole row is the target. In a multi-select list the row's click
+  toggles its bound `selected` instead — rows carry no action; the batch commit lives on a button.
 - Carry per-item identity in an action's `context` (the issue `number`, the item id). Keep static
   identifiers as literal values; use a `{path}` only when the value must come from the data model.
 

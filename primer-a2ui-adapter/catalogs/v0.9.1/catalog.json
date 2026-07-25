@@ -285,7 +285,7 @@
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "An effect performed when the item is selected — a local function or a server event."
+          "description": "An effect performed when the item is activated — a local function or a server event. Omit it on selection rows: with a bound `selected`, the toggle itself is the interaction, tracked in the data model."
         },
         "active": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
@@ -7338,7 +7338,7 @@
         },
         "action": {
           "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/Action",
-          "description": "An effect performed when the item is selected — a local function or a server event."
+          "description": "An effect performed when the item is activated — a local function or a server event. Omit it on selection rows: with a bound `selected`, the toggle itself is the interaction, tracked in the data model."
         }
       },
       "required": ["component", "text"],

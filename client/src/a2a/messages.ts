@@ -6,7 +6,7 @@ import type {
   Message,
   Part,
 } from '@a2a-js/sdk';
-import type {A2uiClientAction, A2uiMessage} from '@a2ui/web_core/v0_9';
+import type {A2uiClientAction, A2uiClientDataModel, A2uiMessage} from '@a2ui/web_core/v0_9';
 
 /**
  * What `sendMessageStream` yields. The SDK declares this union on its client but does not export
@@ -16,10 +16,23 @@ export type A2AStreamEventData = Message | Task | TaskStatusUpdateEvent | TaskAr
 
 const A2UI_VERSION = 'v0.9' as const;
 
+/**
+ * A2A message-metadata key under which the client's current data model rides
+ * (surfaces created with `sendDataModel: true`), per the spec's A2A binding.
+ */
+export const A2UI_CLIENT_DATA_MODEL_KEY = 'a2uiClientDataModel';
+
+function clientDataModelMetadata(
+  clientDataModel?: A2uiClientDataModel,
+): {[k: string]: unknown} | undefined {
+  return clientDataModel ? {[A2UI_CLIENT_DATA_MODEL_KEY]: clientDataModel} : undefined;
+}
+
 /** Wrap an A2UI client action as A2A send params carrying one v0.9 A2UI DataPart. */
 export function buildActionMessageParams(
   action: A2uiClientAction,
   contextId?: string,
+  clientDataModel?: A2uiClientDataModel,
 ): MessageSendParams {
   return {
     message: {
@@ -28,12 +41,17 @@ export function buildActionMessageParams(
       messageId: crypto.randomUUID(),
       contextId,
       parts: [{kind: 'data', data: {version: A2UI_VERSION, action}}],
+      metadata: clientDataModelMetadata(clientDataModel),
     },
   };
 }
 
 /** Wrap user prompt text as A2A send params carrying one TextPart. */
-export function buildTextMessageParams(text: string, contextId?: string): MessageSendParams {
+export function buildTextMessageParams(
+  text: string,
+  contextId?: string,
+  clientDataModel?: A2uiClientDataModel,
+): MessageSendParams {
   return {
     message: {
       kind: 'message',
@@ -41,6 +59,7 @@ export function buildTextMessageParams(text: string, contextId?: string): Messag
       messageId: crypto.randomUUID(),
       contextId,
       parts: [{kind: 'text', text}],
+      metadata: clientDataModelMetadata(clientDataModel),
     },
   };
 }

@@ -38,10 +38,11 @@ def _skeletonize(prompt: str) -> str:
         prompt,
         flags=re.DOTALL,
     )
-    # 3. Examples body -> marker.
+    # 3. Examples body -> marker, from the first example block on — the authored
+    #    framing between the header and the blocks stays pinned in the skeleton.
     prompt = re.sub(
-        r"### Examples:\n.*\Z",
-        "### Examples:\n" + _EXAMPLES_MARKER,
+        r"---BEGIN .*\Z",
+        _EXAMPLES_MARKER,
         prompt,
         flags=re.DOTALL,
     )
@@ -64,6 +65,23 @@ def test_skeleton_elided_all_three_bulks():
     # the volatile bulk itself must be gone from the skeleton
     assert "Primer brand guidance" not in skeleton
     assert "Catalog Schema:" not in skeleton
+
+
+def test_examples_section_frames_the_examples_as_idioms():
+    # Unframed examples read as an answer bank: a user prompt matching an example's
+    # intent gets the example parroted verbatim, canned data and all, with no tool
+    # call. The framing between the header and the first block names what they are.
+    prompt = build_system_prompt()
+    start = prompt.index("### Examples:")
+    framing = prompt[start : prompt.index("---BEGIN ", start)]
+    assert "illustrative" in framing
+    assert "tool" in framing
+
+
+def test_workflow_instructs_send_data_model():
+    # sendDataModel:true on every createSurface is what makes the client report the
+    # surface's current data model (selections, form input) back with each message.
+    assert '"sendDataModel": true' in build_system_prompt()
 
 
 def test_elided_bulk_is_actually_present():

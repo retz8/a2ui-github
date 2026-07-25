@@ -13,6 +13,20 @@ from typing import AsyncIterator, Optional, Protocol, runtime_checkable
 logger = logging.getLogger(__name__)
 
 
+class ModelTurnError(RuntimeError):
+    """A model turn ended in an error with no text produced.
+
+    E.g. Gemini aborting generation with finish_reason=MALFORMED_FUNCTION_CALL: the
+    turn yields error events and zero output. Raised by the responder stream so the
+    executor can react to the actual failure instead of misreading the empty stream
+    as "no A2UI surface found".
+    """
+
+    def __init__(self, error_code):
+        self.error_code = str(error_code)
+        super().__init__(f"model turn failed with no text: {self.error_code}")
+
+
 @runtime_checkable
 class LlmResponder(Protocol):
     def stream(
@@ -45,12 +59,15 @@ async def _stream_agent_text(events: AsyncIterator) -> AsyncIterator[str]:
     saw_partial = False
     saw_text = False
     last_finish = None
+    last_error_code = None
     async for event in events:
         # A blocked or failed generation surfaces only here — never drop it silently.
         error_code = getattr(event, "error_code", None)
         error_message = getattr(event, "error_message", None)
         if error_code or error_message:
             logger.warning("model event error: %s %s", error_code, error_message)
+        if error_code is not None:
+            last_error_code = error_code
         finish = getattr(event, "finish_reason", None)
         if finish is not None:
             last_finish = finish
@@ -84,6 +101,12 @@ async def _stream_agent_text(events: AsyncIterator) -> AsyncIterator[str]:
         logger.warning(
             "model stream ended with no text (finish_reason=%s)", last_finish
         )
+        if last_error_code is not None:
+            # The turn errored out before any token (e.g. MALFORMED_FUNCTION_CALL):
+            # raise the failure class so the executor's retry can address it. A
+            # stream that produced text never raises — end-of-stream validation
+            # owns that outcome.
+            raise ModelTurnError(last_error_code)
 
 
 class AdkLlmResponder:

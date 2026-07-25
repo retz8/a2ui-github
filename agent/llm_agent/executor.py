@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import contextlib
+import json
 import logging
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
@@ -17,7 +18,7 @@ from a2ui.parser.streaming_v09 import A2uiStreamParserV09
 from a2ui.schema.constants import VERSION_0_9
 
 from llm_agent.catalog import live_ref_fields, validate_surface
-from llm_agent.responder import LlmResponder
+from llm_agent.responder import LlmResponder, ModelTurnError
 
 logger = logging.getLogger(__name__)
 
@@ -51,12 +52,23 @@ class LenientA2uiStreamParser(A2uiStreamParserV09):
 # client's inline `version` field — distinct from the SDK's internal VERSION_0_9
 # ("0.9") used to pin the stream parser below.
 WIRE_VERSION = "v0.9"
+# A2A message-metadata key under which the client reports the current data model of
+# its sendDataModel-flagged surfaces (the spec's A2A binding; no upstream constant).
+CLIENT_DATA_MODEL_KEY = "a2uiClientDataModel"
 MAX_ATTEMPTS = 2  # one initial + one retry; tunable (spec decision 6)
 APOLOGY_TEXT = (
     "Sorry — I couldn't compose a valid interface for that request. Please try rephrasing."
 )
 UNAVAILABLE_TEXT = (
     "Sorry — the language model is temporarily unavailable. Please try again in a moment."
+)
+# Retry correction for a Gemini turn aborted with finish_reason=MALFORMED_FUNCTION_CALL
+# (the model emitted tool-call syntax the API could not parse; zero output). An
+# unchanged retry fails identically — this names the actual failure and the way out.
+MALFORMED_CALL_CORRECTION = (
+    "Your previous turn ended in a malformed function call and produced no output. "
+    "Call exactly one tool per turn, passing arguments as plain JSON values; once "
+    "the tool results are in, compose the A2UI surface."
 )
 
 
@@ -112,20 +124,52 @@ def _frame_action_prompt(action: dict) -> str:
     return "\n".join(lines)
 
 
+def _extract_client_data_model(context: RequestContext) -> dict | None:
+    """Returns the client-reported surfaces map ({surfaceId: dataModel}), or None.
+
+    Surfaces created with sendDataModel: true make the client attach its current data
+    model — including local edits the agent never saw, like checkbox selections — to
+    every message it sends, as metadata["a2uiClientDataModel"] = {version, surfaces}.
+    """
+    message = context.message
+    metadata = getattr(message, "metadata", None) if message else None
+    if not isinstance(metadata, dict):
+        return None
+    payload = metadata.get(CLIENT_DATA_MODEL_KEY)
+    surfaces = payload.get("surfaces") if isinstance(payload, dict) else None
+    if isinstance(surfaces, dict) and surfaces:
+        return surfaces
+    return None
+
+
+def _frame_client_data_model(surfaces: dict) -> str:
+    return (
+        "\n\nCurrent data model of the surface(s) the user is looking at, as "
+        "reported by the client (reflects the user's local edits, e.g. "
+        "selections):\n" + json.dumps(surfaces)
+    )
+
+
 def _resolve_prompt(context: RequestContext) -> str:
     """Resolves the incoming message to a model prompt: text first, then an action.
 
     Returns "" when the message carries neither usable text nor an A2UI action; the
     executor turns that into a plain-text apology rather than calling the model with
-    an empty prompt (which the provider rejects).
+    an empty prompt (which the provider rejects). A client-reported data model riding
+    the message metadata is framed onto the prompt, so the model sees the UI state
+    the user is acting on.
     """
-    text = _extract_text(context)
-    if text:
-        return text
-    action = _extract_action(context)
-    if action is not None:
-        return _frame_action_prompt(action)
-    return ""
+    prompt = _extract_text(context)
+    if not prompt:
+        action = _extract_action(context)
+        if action is not None:
+            prompt = _frame_action_prompt(action)
+    if not prompt:
+        return ""
+    surfaces = _extract_client_data_model(context)
+    if surfaces:
+        prompt += _frame_client_data_model(surfaces)
+    return prompt
 
 
 def _collect_payload(accumulated: str) -> list[dict]:
@@ -247,6 +291,18 @@ class LlmAgentExecutor(AgentExecutor):
                                 TaskState.working,
                                 new_agent_parts_message(parts, task.context_id, task.id),
                             )
+            except ModelTurnError as err:  # the turn errored out with zero output
+                logger.warning("attempt %d model turn failed: %s", attempt, err)
+                if "MALFORMED_FUNCTION_CALL" in err.error_code:
+                    # A model mistake, not an outage: retry with a correction that
+                    # names it — an unchanged retry fails identically, and the
+                    # generic "failed validation" correction describes a response
+                    # that never existed.
+                    model_unavailable = False
+                    correction = MALFORMED_CALL_CORRECTION
+                else:
+                    model_unavailable = True
+                continue
             except Exception as err:  # model/infra failure (quota, 5xx, network)
                 # Must not abort the SSE stream raw — the client would see a bare
                 # network error. Retry with the prompt unchanged; a transient

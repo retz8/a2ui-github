@@ -40,7 +40,7 @@ per-item bindings and is not carried at the root.
 | `variant` | carry | no | `z.enum(['default','danger']) (default: "default")` | The item's style; `danger` marks a destructive choice. |
 | `selected` | carry | no | `DynamicBoolean` | Whether the item is selected; two-way bound — a click writes the new state back. Meaningful only when the panel sets a `selectionVariant`. |
 | `disabled` | carry | no | `DynamicBoolean` | Whether the item is disabled and cannot be selected. |
-| `action` | carry (optional) | yes (← `onAction`) | `Action` | An effect performed when the item is selected — a local function or a server event. |
+| `action` | carry (optional) | yes (← `onAction`) | `Action` | An effect performed when the item is activated — a local function or a server event. Omit it on selection rows: with a bound `selected`, the toggle itself is the interaction, tracked in the data model. |
 | `id` | carry | no | `z.string()` | An id identifying the item, used for selection identity and for ARIA references. |
 
 ### Functions

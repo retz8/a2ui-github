@@ -6,7 +6,7 @@ import type {
   TaskArtifactUpdateEvent,
   TaskStatusUpdateEvent,
 } from '@a2a-js/sdk';
-import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
+import type {A2uiClientAction, A2uiClientDataModel} from '@a2ui/web_core/v0_9';
 import {
   buildActionMessageParams,
   buildTextMessageParams,
@@ -21,6 +21,11 @@ const TEXT_PART: Part = {kind: 'text', text: 'hello'};
 const FOREIGN_PART: Part = {kind: 'data', data: {version: 'v0.8', foo: 1}};
 
 const ACTION = {name: 'click', surfaceId: 's'} as unknown as A2uiClientAction;
+
+const CLIENT_DM = {
+  version: 'v0.9',
+  surfaces: {s: {prs: [{title: 'one', selected: true}]}},
+} as unknown as A2uiClientDataModel;
 
 function agentMessage(parts: Part[], contextId?: string): Message {
   return {kind: 'message', role: 'agent', messageId: 'm1', parts, contextId};
@@ -68,6 +73,15 @@ describe('buildTextMessageParams', () => {
     const params = buildTextMessageParams('again', 'ctx-9');
     expect(params.message.contextId).toBe('ctx-9');
   });
+
+  it('attaches the client data model as message metadata when given', () => {
+    const params = buildTextMessageParams('show', 'ctx-9', CLIENT_DM);
+    expect(params.message.metadata).toEqual({a2uiClientDataModel: CLIENT_DM});
+  });
+
+  it('omits metadata when no client data model is given', () => {
+    expect(buildTextMessageParams('show').message.metadata).toBeUndefined();
+  });
 });
 
 describe('buildActionMessageParams', () => {
@@ -80,6 +94,15 @@ describe('buildActionMessageParams', () => {
   it('threads a contextId when given', () => {
     const params = buildActionMessageParams(ACTION, 'ctx-9');
     expect(params.message.contextId).toBe('ctx-9');
+  });
+
+  it('attaches the client data model as message metadata when given', () => {
+    const params = buildActionMessageParams(ACTION, 'ctx-9', CLIENT_DM);
+    expect(params.message.metadata).toEqual({a2uiClientDataModel: CLIENT_DM});
+  });
+
+  it('omits metadata when no client data model is given', () => {
+    expect(buildActionMessageParams(ACTION).message.metadata).toBeUndefined();
   });
 });
 

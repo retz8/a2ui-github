@@ -1,4 +1,9 @@
-import type {ActionListener, A2uiMessage, A2uiClientAction} from '@a2ui/web_core/v0_9';
+import type {
+  ActionListener,
+  A2uiClientAction,
+  A2uiClientDataModel,
+  A2uiMessage,
+} from '@a2ui/web_core/v0_9';
 import type {A2AMessageSender, GetSender} from './client';
 import {createSenderResolver, sendAndApply} from './client';
 import {buildActionMessageParams} from './messages';
@@ -19,6 +24,11 @@ export interface A2AActionHandlerOptions {
   onActionStart?: (action: A2uiClientAction) => void;
   /** Called when the action send settles (success or caught failure); pairs with onActionStart. */
   onActionSettled?: () => void;
+  /**
+   * Supplies the current client data model of `sendDataModel`-flagged surfaces
+   * (processor.getClientDataModel); attached as message metadata when it reports one.
+   */
+  getClientDataModel?: () => A2uiClientDataModel | undefined;
 }
 
 /**
@@ -28,14 +38,20 @@ export interface A2AActionHandlerOptions {
  * is skipped.
  */
 export function createA2AActionHandler(opts: A2AActionHandlerOptions): ActionListener {
-  const {apply, serverUrl, client, session, onActionStart, onActionSettled} = opts;
+  const {apply, serverUrl, client, session, onActionStart, onActionSettled, getClientDataModel} =
+    opts;
   const getSender = opts.getSender ?? createSenderResolver({serverUrl, client});
 
   return async action => {
     onActionStart?.(action);
     try {
       const sender = await getSender();
-      await sendAndApply(sender, buildActionMessageParams(action, session?.get()), apply, session);
+      await sendAndApply(
+        sender,
+        buildActionMessageParams(action, session?.get(), getClientDataModel?.()),
+        apply,
+        session,
+      );
     } catch (err) {
       console.error('[A2UI:a2a]', err);
     } finally {
