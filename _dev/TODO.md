@@ -127,7 +127,7 @@ The live LLM agent that generates A2UI surfaces from the catalog, against the li
 
 - [x] **7.1** Agent knowledge curation — the combined research task: Primer-guidance brand doc + curated GitHub-domain idiom examples (catalog-validated); living artifacts, refined in 7.7. (#109)
 - [x] **7.2** Live agent core — the LLM agent alongside the deterministic one: schema manager over the catalog, prompt assembly wired to 7.1, ADK `LlmAgent` (model env knob), stream parser, validator + retry, single-version card; L0 tests; stub data tool (canned real-shaped PR fixtures) so DoD is "prompt → tool call → data-bound valid surface" before MCP. (#112)
-- [WIP] **7.3** GitHub MCP wiring — re-point the proven tool→surface path from the stub to the official remote read-only MCP toolset (fine-grained read-only PAT, scoped toolsets); proven by a live-data surface.
+- [x] **7.3** GitHub MCP wiring — re-point the proven tool→surface path from the stub to the official remote read-only MCP toolset (fine-grained read-only PAT, scoped toolsets); proven by a live-data surface. Spec: `_dev/docs/spec/task-7.3-github-mcp-wiring.md`. Plan: `_dev/docs/plan/task-7.3-github-mcp-wiring.md`. Expanded the agent's reach to all of GitHub (SPEC §3 rewritten).
 - [x] **7.4** Client chat shell — minimal prompt box + surface area over the existing A2A middleware; verifiable against the deterministic agent.
 - [x] **7.5** Record/replay harness (L1) — capture real sessions into replayable canned streams; zero-LLM client/integration work. [DROPPED, already covered during 7.3]
 - [x] **7.6** Scenario runner (L2) — the five beats as on-demand scenarios: structural validation + per-beat semantic assertions, cheap-model default. [DROPPED, already covered during 7.3]
@@ -147,6 +147,8 @@ Additively fold the catalog-authoring skill (Phase 4) and the agent scaffold (Ph
 ## Backlog
 - Registry-driven catalog smoke test (at Phase 6 start): replace the per-component `has()` assertions in `catalog.test.ts` with one exact-set assertion against the parity test's `COMPONENTS`/`FUNCTIONS` registry; update the Build skill's steps 5/7 to the single registry touch-point in the same change.
 - Client fixture backfill: the shipped `Text`/`Button` client fixtures + Playwright baselines lag the exhaustive per-prop standard the catalog-authoring skills now prescribe — `Button` ships 3 of 11 prop-walk fixtures, `Text` 2 of 6. Backfill the missing fixtures + baselines. Sets enumerated in `_dev/docs/new-components/{text,button}.md`.
+- Client data model grows unboundedly (revisit at 7.7): `getClientDataModel()` walks every live surface and ships each one's whole data tree as message metadata on every send; the prompt mandates `sendDataModel: true` on every surface and the client never deletes one, so the payload grows monotonically through a conversation. Suspected cause of a send that shows the pending spinner without a request reaching the agent. First step is logging the serialized size per send.
+- `FixtureView.tsx` still applies A2UI messages through a raw `processMessages` call, bypassing `applyA2uiMessages` (repeat-`createSurface` repaint + per-message failure isolation). It drives known-good local fixtures, so it is not broken today.
 - Diff viewer (stretch)
 - Agent template memory
 - Read + write loop on a seeded sandbox repo
