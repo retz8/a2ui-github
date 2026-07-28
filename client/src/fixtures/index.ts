@@ -1848,6 +1848,18 @@ export const FIXTURES: FixtureEntry[] = [
     name: 'autocomplete-item-variant',
     load: () => import('./autocomplete-item-variant').then(m => m.autocompleteItemVariantFixture),
   },
+  // Basic-catalog function adoption (task 7.9). One fixture per consumption path — bound value,
+  // validation, action effect — rather than one per function; functions carry no visual prop
+  // surface, so these are deliberately not baselined in e2e/visual.spec.ts.
+  {
+    name: 'format-string-fn',
+    load: () => import('./format-string-fn').then(m => m.formatStringFnFixture),
+  },
+  {
+    name: 'validation-gate-fn',
+    load: () => import('./validation-gate-fn').then(m => m.validationGateFnFixture),
+  },
+  {name: 'open-url-fn', load: () => import('./open-url-fn').then(m => m.openUrlFnFixture)},
 ];
 
 export function getFixture(name: string | null): FixtureEntry {
