@@ -7818,6 +7818,435 @@
       },
       "required": ["call", "args"],
       "unevaluatedProperties": false
+    },
+    "required": {
+      "type": "object",
+      "description": "Checks that a value is present — not undefined, null, an empty string, or an empty list. A local client-side validation returning a boolean, for binding to a component whose state depends on a field being filled; wrap it in `not` to drive a `disabled` prop, so a form gates itself with no agent round trip.",
+      "properties": {
+        "call": {
+          "const": "required"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicValue",
+              "description": "The value to check; usually a data-model path."
+            }
+          },
+          "required": ["value"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "boolean"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "regex": {
+      "type": "object",
+      "description": "Tests a string against a regular expression. A local client-side validation returning a boolean — reach for it only for format rules none of the dedicated checks (`required`, `length`, `numeric`, `email`) already cover.",
+      "properties": {
+        "call": {
+          "const": "regex"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The string to test; usually a data-model path."
+            },
+            "pattern": {
+              "type": "string",
+              "description": "The regular expression to match against. A literal pattern, not a binding."
+            }
+          },
+          "required": ["value", "pattern"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "boolean"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "length": {
+      "type": "object",
+      "description": "Checks that a string or list length falls within bounds. A local client-side validation returning a boolean. Supply at least one of `min` or `max` — given neither, it always returns true.",
+      "properties": {
+        "call": {
+          "const": "length"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicValue",
+              "description": "The string or list to measure; usually a data-model path."
+            },
+            "min": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "The smallest allowed length."
+            },
+            "max": {
+              "type": "integer",
+              "minimum": 0,
+              "description": "The largest allowed length."
+            }
+          },
+          "required": ["value"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "boolean"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "numeric": {
+      "type": "object",
+      "description": "Checks that a number falls within bounds. A local client-side validation returning a boolean. Supply at least one of `min` or `max` — given neither, it always returns true.",
+      "properties": {
+        "call": {
+          "const": "numeric"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+              "description": "The number to check; usually a data-model path."
+            },
+            "min": {
+              "type": "number",
+              "description": "The smallest allowed value."
+            },
+            "max": {
+              "type": "number",
+              "description": "The largest allowed value."
+            }
+          },
+          "required": ["value"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "boolean"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "email": {
+      "type": "object",
+      "description": "Checks that a string has the shape of an email address. A local client-side validation returning a boolean; it is a format check only and proves nothing about deliverability.",
+      "properties": {
+        "call": {
+          "const": "email"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The string to check; usually a data-model path."
+            }
+          },
+          "required": ["value"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "boolean"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "formatString": {
+      "type": "object",
+      "description": "The catalog's string-composition primitive: builds a string from a template, resolving every `${...}` block against the data model. `${/pr/title}` inserts a data-model value and `${name(arg: value)}` inserts another function's result, so formatting and pluralization compose inside one label. The result re-renders on its own whenever an interpolated dependency changes. Prefer it over assembling whole strings ahead of time — text built this way stays bound to live data.",
+      "properties": {
+        "call": {
+          "const": "formatString"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The template string, containing literal text and `${...}` blocks."
+            }
+          },
+          "required": ["value"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "string"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "formatNumber": {
+      "type": "object",
+      "description": "Formats a number for display, with locale-aware digit grouping. A local client-side computation returning a string — bind it wherever a raw number would read poorly, such as a large count.",
+      "properties": {
+        "call": {
+          "const": "formatNumber"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+              "description": "The number to format."
+            },
+            "decimals": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+              "description": "How many decimal places to show. Defaults to the locale convention."
+            },
+            "grouping": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+              "description": "Whether to insert grouping separators (`1,000` rather than `1000`). Defaults to true."
+            }
+          },
+          "required": ["value"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "string"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "formatCurrency": {
+      "type": "object",
+      "description": "Formats a number as a monetary amount in a given currency. A local client-side computation returning a string.",
+      "properties": {
+        "call": {
+          "const": "formatCurrency"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+              "description": "The amount to format."
+            },
+            "currency": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The ISO 4217 currency code, such as `'USD'`."
+            },
+            "decimals": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+              "description": "How many decimal places to show. Defaults to the currency convention."
+            },
+            "grouping": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+              "description": "Whether to insert grouping separators. Defaults to true."
+            }
+          },
+          "required": ["value", "currency"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "string"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "formatDate": {
+      "type": "object",
+      "description": "Formats a date or timestamp against a pattern. A local client-side computation returning a string. For a timestamp that should read as elapsed time and keep counting, prefer the `RelativeTime` component; use this when a fixed, explicitly formatted date is wanted.",
+      "properties": {
+        "call": {
+          "const": "formatDate"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicValue",
+              "description": "The date to format — an ISO-8601 string, a timestamp, or a date value."
+            },
+            "format": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The date pattern, in Unicode TR35 tokens. Year: `yy` (26), `yyyy` (2026). Month: `M` (1), `MM` (01), `MMM` (Jan), `MMMM` (January). Day: `d` (1), `dd` (01), `E` (Tue), `EEEE` (Tuesday). Hour: `h`/`hh` (12-hour, needs `a`), `H`/`HH` (24-hour). Minute: `mm`. Second: `ss`. Period: `a` (AM/PM). For example `'MMM dd, yyyy'` gives `Jan 16, 2026`, and `'h:mm a'` gives `2:30 PM`."
+            }
+          },
+          "required": ["value", "format"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "string"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "pluralize": {
+      "type": "object",
+      "description": "Selects the wording that agrees with a number. A local client-side computation returning a string — use it instead of hard-coding a plural, so `1 comment` and `2 comments` both read correctly. Commonly nested inside `formatString`.",
+      "properties": {
+        "call": {
+          "const": "pluralize"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicNumber",
+              "description": "The number the wording must agree with."
+            },
+            "zero": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "Wording for none."
+            },
+            "one": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "Wording for exactly one."
+            },
+            "two": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "Wording for exactly two, in locales that distinguish it."
+            },
+            "few": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "Wording for a small group, in locales that distinguish it."
+            },
+            "many": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "Wording for a large group, in locales that distinguish it."
+            },
+            "other": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicString",
+              "description": "The fallback wording, used whenever no other category applies."
+            }
+          },
+          "required": ["value", "other"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "string"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "openUrl": {
+      "type": "object",
+      "description": "Opens a URL in a new browser tab. A local client-side effect — bind it to a component’s action (never to a value) for navigation that leaves the app, so following a link to github.com costs no agent round trip. To move to another surface within the app, send an event to the agent instead.",
+      "properties": {
+        "call": {
+          "const": "openUrl"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "format": "uri",
+              "description": "The absolute URL to open."
+            }
+          },
+          "required": ["url"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "void"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "and": {
+      "type": "object",
+      "description": "True only when every supplied value is true. A local client-side computation returning a boolean — the way several validations combine into one bound condition, such as a submit control that stays inert until every field passes.",
+      "properties": {
+        "call": {
+          "const": "and"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "values": {
+              "type": "array",
+              "description": "The conditions to combine; each may itself be a function call.",
+              "items": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean"
+              },
+              "minItems": 2
+            }
+          },
+          "required": ["values"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "boolean"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "or": {
+      "type": "object",
+      "description": "True when at least one supplied value is true. A local client-side computation returning a boolean.",
+      "properties": {
+        "call": {
+          "const": "or"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "values": {
+              "type": "array",
+              "description": "The conditions to combine; each may itself be a function call.",
+              "items": {
+                "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean"
+              },
+              "minItems": 2
+            }
+          },
+          "required": ["values"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "boolean"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
+    },
+    "not": {
+      "type": "object",
+      "description": "Inverts a condition. A local client-side computation returning a boolean — the usual way a validation drives a negative state, as in a `disabled` bound to `not` over `required`.",
+      "properties": {
+        "call": {
+          "const": "not"
+        },
+        "args": {
+          "type": "object",
+          "properties": {
+            "value": {
+              "$ref": "https://a2ui.org/specification/v0_9/common_types.json#/$defs/DynamicBoolean",
+              "description": "The condition to invert; often another function call."
+            }
+          },
+          "required": ["value"],
+          "additionalProperties": false
+        },
+        "returnType": {
+          "const": "boolean"
+        }
+      },
+      "required": ["call", "args"],
+      "unevaluatedProperties": false
     }
   },
   "$defs": {
@@ -8279,6 +8708,48 @@
         },
         {
           "$ref": "#/functions/setBoolean"
+        },
+        {
+          "$ref": "#/functions/required"
+        },
+        {
+          "$ref": "#/functions/regex"
+        },
+        {
+          "$ref": "#/functions/length"
+        },
+        {
+          "$ref": "#/functions/numeric"
+        },
+        {
+          "$ref": "#/functions/email"
+        },
+        {
+          "$ref": "#/functions/formatString"
+        },
+        {
+          "$ref": "#/functions/formatNumber"
+        },
+        {
+          "$ref": "#/functions/formatCurrency"
+        },
+        {
+          "$ref": "#/functions/formatDate"
+        },
+        {
+          "$ref": "#/functions/pluralize"
+        },
+        {
+          "$ref": "#/functions/openUrl"
+        },
+        {
+          "$ref": "#/functions/and"
+        },
+        {
+          "$ref": "#/functions/or"
+        },
+        {
+          "$ref": "#/functions/not"
         }
       ]
     }

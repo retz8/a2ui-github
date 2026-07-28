@@ -152,6 +152,20 @@ import {windowAlert} from './functions/window-alert';
 import {clearValue} from './functions/clear-value';
 import {countSelected} from './functions/count-selected';
 import {setBoolean} from './functions/set-boolean';
+import {required} from './functions/required';
+import {regex} from './functions/regex';
+import {length} from './functions/length';
+import {numeric} from './functions/numeric';
+import {email} from './functions/email';
+import {formatString} from './functions/format-string';
+import {formatNumber} from './functions/format-number';
+import {formatCurrency} from './functions/format-currency';
+import {formatDate} from './functions/format-date';
+import {pluralize} from './functions/pluralize';
+import {openUrl} from './functions/open-url';
+import {and} from './functions/and';
+import {or} from './functions/or';
+import {not} from './functions/not';
 
 /** From-scratch catalog over CommonSchemas: id, component implementations, functions. */
 export const CATALOG = new Catalog<ReactComponentImplementation>(
@@ -304,5 +318,27 @@ export const CATALOG = new Catalog<ReactComponentImplementation>(
     AutocompleteOverlayComponent,
     AutocompleteMenuComponent,
   ],
-  [consoleLog, windowAlert, clearValue, countSelected, setBoolean],
+  [
+    // The adapter's own write/effect functions (Phase 6, demand-driven).
+    consoleLog,
+    windowAlert,
+    clearValue,
+    countSelected,
+    setBoolean,
+    // The A2UI basic catalog's 14 declared read/compute functions (task 7.9).
+    required,
+    regex,
+    length,
+    numeric,
+    email,
+    formatString,
+    formatNumber,
+    formatCurrency,
+    formatDate,
+    pluralize,
+    openUrl,
+    and,
+    or,
+    not,
+  ],
 );

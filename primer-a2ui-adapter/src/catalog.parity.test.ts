@@ -1,9 +1,11 @@
 import {describe, it, expect} from 'vitest';
 import {readFileSync} from 'node:fs';
+import {createRequire} from 'node:module';
 import {fileURLToPath} from 'node:url';
 import {resolve, dirname} from 'node:path';
 import {z} from 'zod';
-import {COMPONENTS, FUNCTIONS} from './catalog.registry';
+import {BASIC_FUNCTION_APIS} from '@a2ui/web_core/v0_9';
+import {BASIC_FUNCTION_NAMES, COMPONENTS, FUNCTIONS} from './catalog.registry';
 
 type JsonProp = {const?: string; enum?: string[]};
 type JsonComponent = {properties: Record<string, JsonProp>; required: string[]};
@@ -52,6 +54,15 @@ function refName(ref: string): string {
 function shapeOf(api: {schema: z.ZodTypeAny}): Record<string, z.ZodTypeAny> {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return (api.schema as z.ZodObject<any>).shape as Record<string, z.ZodTypeAny>;
+}
+
+// Whether an arg is DECLARED optional, read syntactically rather than probed semantically.
+// `.isOptional()` asks "does this accept undefined", which coercion silently defeats — notably
+// `z.coerce.string().isOptional()` is true, because String(undefined) parses fine. That would
+// misreport required args as optional across the adopted basic-catalog functions. The declaration
+// itself cannot be fooled: an arg is optional iff it was written `.optional()` or `.default(...)`.
+function isDeclaredOptional(field: z.ZodTypeAny): boolean {
+  return field instanceof z.ZodOptional || field instanceof z.ZodDefault;
 }
 
 describe.each(Object.entries(COMPONENTS))(
@@ -117,9 +128,9 @@ describe.each(Object.entries(FUNCTIONS))('function %s: zod ↔ catalog.json pari
     expect(jsonArgs).toEqual(zodArgs);
   });
 
-  it('args required-ness matches (all zod args are required)', () => {
+  it('args required-ness matches', () => {
     const zodRequired = Object.entries(shapeOf(fn))
-      .filter(([, v]) => !v.isOptional())
+      .filter(([, v]) => !isDeclaredOptional(v))
       .map(([k]) => k)
       .sort();
     const jsonRequired = [...(jsonFn.properties.args.required ?? [])].sort();
@@ -139,5 +150,45 @@ describe('anyFunction oneOf covers exactly the declared functions', () => {
   it('matches the functions map', () => {
     const refNames = catalog.$defs.anyFunction.oneOf.map(r => refName(r.$ref)).sort();
     expect(refNames).toEqual(Object.keys(catalog.functions).sort());
+  });
+});
+
+// Drift guard for the adopted basic-catalog functions (task 7.9). Their args schemas are authored
+// here rather than re-exported, which is what keeps the parity assertions above strict — but it
+// also means an upstream arg change would otherwise surface as a runtime arg mismatch instead of a
+// test failure. This pins our arg names against @a2ui/web_core's own declarations.
+describe('adopted basic-catalog functions track @a2ui/web_core', () => {
+  // Upstream wraps `length` and `numeric` in an object-level .refine(), making those schemas a
+  // ZodEffects rather than a ZodObject. Peel the effects off to reach the underlying shape.
+  function upstreamShape(schema: z.ZodTypeAny): Record<string, z.ZodTypeAny> {
+    let s = schema;
+    while (s instanceof z.ZodEffects) s = s.innerType();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (s as z.ZodObject<any>).shape as Record<string, z.ZodTypeAny>;
+  }
+
+  const upstream = new Map(BASIC_FUNCTION_APIS.map(api => [api.name, api]));
+
+  it.each(BASIC_FUNCTION_NAMES)('%s: arg names match the upstream api', name => {
+    const api = upstream.get(name);
+    expect(api, `@a2ui/web_core no longer declares ${name}`).toBeDefined();
+    const ours = Object.keys(shapeOf(FUNCTIONS[name])).sort();
+    const theirs = Object.keys(upstreamShape(api!.schema)).sort();
+    expect(ours).toEqual(theirs);
+  });
+
+  it('adopts every function the basic catalog declares', () => {
+    // BASIC_FUNCTION_APIS also carries the 11 operators the basic catalog does not declare as
+    // functions (add, equals, contains, …); those stay unadopted until a flow binds one, so the
+    // adopted set is compared against the published basic catalog.json, not the upstream module.
+    // A failure here means upstream changed its declared set — adopt the addition or record why not.
+    const basicCatalogPath = resolve(
+      dirname(createRequire(import.meta.url).resolve('@a2ui/web_core/v0_9')),
+      'schemas/catalogs/basic/catalog.json',
+    );
+    const declared = JSON.parse(readFileSync(basicCatalogPath, 'utf8')) as {
+      functions: Record<string, unknown>;
+    };
+    expect([...BASIC_FUNCTION_NAMES].sort()).toEqual(Object.keys(declared.functions).sort());
   });
 });
