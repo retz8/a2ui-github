@@ -82,6 +82,14 @@ body,
 
 .chat-surface-turn {
   align-self: stretch;
+  /* A generated surface is an application view, not a chat bubble: 768px squeezes a two-column
+     PageLayout into ~400px of content and wraps prose at a handful of words per line. Widened
+     past the transcript, centred, and still bounded by the viewport. Phase 8's canvas replaces
+     this with a real surface region; until then this is what makes dense surfaces legible. */
+  width: min(1200px, calc(100vw - 32px));
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
   padding: 16px;
   border: 1px solid var(--borderColor-default);
   border-radius: 12px;

@@ -183,6 +183,51 @@ idiom, not the volume, is the lesson). Retires `review-queue-status-list.json` p
   Expand/collapse and "show more" are **local**.
 - **Not required** — tabs, a diff view, syntax colouring, check annotations, sidebar ordering.
 
+### Rounds — IN PROGRESS, blocked at R4
+
+| R1 | R2 | R3 |
+|---|---|---|
+| ![](assets/beat-2-r1.jpg) | ![](assets/beat-2-r2-top.jpg) | ![](assets/beat-2-r3-top.jpg) |
+| | ![](assets/beat-2-r2-files.jpg) | ![](assets/beat-2-r3-files.jpg) |
+
+**R1 — 4 defects.** Valid on attempt 1 with 8 MCP calls (the sanctioned "drilling into one PR takes
+several calls" path). `PageLayout` + `Timeline` + `StateLabel` composed sensibly, but: the markdown
+body was one 2 KB `Text` blob; no changed-files list, only "+1,398 / -18 across 19 files"; **zero
+actions** anywhere; and the content column wrapped prose at ~8 words.
+
+The narrow column was **not** the agent's fault. `.chat-thread` caps every turn at 768 px, so a
+two-column `PageLayout` gets ~400 px of content and ~250 px of pane. That is right for a transcript
+and wrong for a generated application view — the constraint Phase 8's canvas exists to remove.
+**Levers:** brand-doc rule to decompose a markdown body into components (headings, paragraphs,
+lists, links) because there is no markdown component and the agent *is* its renderer; brand-doc rule
+that a detail surface offers its next step as an action; prompt rule requiring the changed-files
+list; and a client CSS stopgap widening surface turns past the transcript.
+
+**R2 — three fixed, two new.** Markdown decomposed, files list present, four wired actions
+(comment / approve / request-changes / close, each carrying `pr_number` and a bound body). But the
+branch direction was **inverted** — "into `webframe` from `main`", claiming the change flows the
+wrong way — and the file rows collided, "+422 lines" overprinting its `Added` chip.
+
+The width fix was a **no-op**: `width: min(1200px, 100%)` inside a 768 px parent resolves to 768 px.
+Replaced with `min(1200px, calc(100vw - 32px))` plus a centring transform, which escapes the parent.
+**Levers:** the corrected CSS, and a prompt rule stating a PR merges its HEAD into its BASE.
+
+**R3 — direction, markdown and layout all correct.** Full-width surface, full file paths with ±
+chips and no collisions, description decomposed under real headings, one `submit-pr-comment` action
+carrying `pr_number` and a bound draft. Five of `SPEC.md` §3.2's seven present.
+
+Two regressed *out*: **CI checks** and **review/merge state**. R3 called `get`, `get_comments`,
+`get_files`, `get_review_comments`, `get_reviews` — but not `get_status`/`get_check_runs`, which R2
+had called. The included subset oscillates between runs because nothing states what a PR detail must
+contain. **Lever:** a prompt rule enumerating all seven required elements explicitly.
+
+**R4 — could not run.** `429 RESOURCE_EXHAUSTED — prepayment credits are depleted`. The seven-element
+rule is in place and **unverified**. Beat 2 resumes here.
+
+The failure did confirm one thing: the client rendered *"the language model is temporarily
+unavailable"* rather than a blank turn — the round-0 fix working on a failure mode it was not
+written for.
+
 ## Beat 3 — compose-and-confirm review *(follows beat 2)*
 
 > "Draft an approving review saying the spec doc looks reasonable."

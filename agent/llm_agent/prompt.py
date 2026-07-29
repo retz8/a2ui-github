@@ -64,7 +64,18 @@ SCOPE_DESCRIPTION = (
     "example 'is:pr is:open review-requested:@me', 'is:pr is:open status:failure', "
     "'-author:app/dependabot' — over listing everything and then reading each item in turn. "
     "Drilling into one specific pull request is different: fetching its detail, reviews, "
-    "comments, status checks, and changed files takes several calls, and that is expected."
+    "comments, status checks, and changed files takes several calls, and that is expected. "
+    "State a pull request's direction the way GitHub does — it merges its HEAD branch INTO its "
+    "BASE branch, so 'author wants to merge N commits into <base> from <head>'. Reversing them "
+    "claims the change flows the wrong way, which any reader of the repository will catch. "
+    "A pull-request detail carries all seven of: its metadata (title, number, state, author, "
+    "branches); its description; its review state (who is requested, whether an approval is "
+    "still required, whether it merges cleanly); its CI checks with each check's outcome; its "
+    "reviewers; its comment and review timeline; and its changed files — the paths, each with "
+    "additions and deletions, as a list rather than only an aggregate line total. Fetch every one "
+    "of them, including the status and check runs. A reviewer decides where to look from the file "
+    "list, and '+1,398 / -18 across 19 files' says nothing about what was touched; a detail that "
+    "silently omits the checks or the merge state hides exactly what blocks the merge."
 )
 
 

@@ -44,6 +44,11 @@ visual language.
   the rows it introduces and pushes the actual content out of view. The content is the subject;
   the title only names it.
 - Render list-item primary labels as `Text`, not `Heading`. Reserve `Heading` for section titles.
+- **Decompose a markdown body into components — never emit it as one `Text`.** An issue or pull
+  request description arrives as markdown, and there is no markdown component: its headings become
+  `Heading`, its paragraphs separate `Text`, its bullets rows in a `Stack` or `ActionList`, its
+  links `Link`. Flattening it into a single string discards every bit of the author's structure and
+  produces a wall of prose no reader scans. You are the renderer for that markdown.
 - Use `weight: "semibold"` to mark a primary label within a row (an issue title). Do not bold whole
   paragraphs of body text.
 - Constrain any single line that can overflow — a branch ref, a long title in a narrow pane — with
@@ -94,6 +99,10 @@ visual language.
   action are not decoration; they read as working controls, and a click that does nothing is worse
   than the control's absence. If a filter is not backed by an action, leave it out and let the
   surface's own description say what is being shown.
+- A detail surface is a place to act, not only to read. Offer the plausible next step as a server
+  `event` carrying the subject's identity — reviewing or commenting on the item you are showing,
+  opening something it references. A read-only wall of facts is a dead end: the user's only move
+  is to type their next request from scratch.
 - Put the row-level open/navigate action on the `ActionList.Item` (or `NavList.Item`) itself, not
   on a nested button, so the whole row is the target. In a multi-select list the row's click
   toggles its bound `selected` instead — rows carry no action; the batch commit lives on a button.
