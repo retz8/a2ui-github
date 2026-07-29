@@ -89,7 +89,11 @@ describe('streamUserMessage', () => {
   it('sends no metadata when the supplier reports no data model', async () => {
     const {getSender, sent} = fakeSender([statusUpdate([DATA_PART], 'ctx-1', true)]);
 
-    await streamUserMessage('hi', {getSender, apply: () => {}, getClientDataModel: () => undefined});
+    await streamUserMessage('hi', {
+      getSender,
+      apply: () => {},
+      getClientDataModel: () => undefined,
+    });
 
     expect(sent[0].message.metadata).toBeUndefined();
   });

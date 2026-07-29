@@ -96,10 +96,7 @@ describe('ChatView failure reporting', () => {
     const user = userEvent.setup();
     // The regression for the original bug: a throw in event 1 used to abandon the
     // `for await`, so event 2 was never read.
-    const {sender} = senderOf([
-      eventOf([GHOST], false),
-      eventOf(good('second event survived')),
-    ]);
+    const {sender} = senderOf([eventOf([GHOST], false), eventOf(good('second event survived'))]);
     renderChat(sender);
 
     await sendPrompt(user, 'show me');

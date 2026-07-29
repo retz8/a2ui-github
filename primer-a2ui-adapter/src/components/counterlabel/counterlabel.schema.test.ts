@@ -24,9 +24,7 @@ describe('CounterLabelApi.schema', () => {
   });
 
   it('rejects out-of-enum variant values', () => {
-    expect(CounterLabelApi.schema.safeParse({count: 12, variant: 'tertiary'}).success).toBe(
-      false,
-    );
+    expect(CounterLabelApi.schema.safeParse({count: 12, variant: 'tertiary'}).success).toBe(false);
   });
 
   it('accepts a data-binding for count (DynamicNumber)', () => {

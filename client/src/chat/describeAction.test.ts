@@ -3,7 +3,7 @@ import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
 import {describeAction} from './describeAction';
 
 const action = (a: {name?: string; context?: Record<string, unknown>}) =>
-  ({surfaceId: 's', sourceComponentId: 'c', ...a} as unknown as A2uiClientAction);
+  ({surfaceId: 's', sourceComponentId: 'c', ...a}) as unknown as A2uiClientAction;
 
 describe('describeAction', () => {
   it('humanizes the action name and appends a numeric context value as an id', () => {
@@ -13,9 +13,7 @@ describe('describeAction', () => {
   });
 
   it('appends a string context value verbatim', () => {
-    expect(describeAction(action({name: 'submit', context: {label: 'bug'}}))).toBe(
-      'submit bug',
-    );
+    expect(describeAction(action({name: 'submit', context: {label: 'bug'}}))).toBe('submit bug');
   });
 
   it('uses just the humanized name when there is no scalar context', () => {
@@ -27,9 +25,7 @@ describe('describeAction', () => {
   });
 
   it('takes the first scalar and skips non-scalar context values', () => {
-    expect(
-      describeAction(action({name: 'go', context: {rows: [1, 2], number: 9}})),
-    ).toBe('go #9');
+    expect(describeAction(action({name: 'go', context: {rows: [1, 2], number: 9}}))).toBe('go #9');
   });
 
   it('returns empty when nothing is derivable', () => {

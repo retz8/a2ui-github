@@ -13,9 +13,12 @@ vi.mock('primer-a2ui-adapter', async importOriginal => {
   const {Catalog} = await import('@a2ui/web_core/v0_9');
   const {createComponentImplementation} = await import('@a2ui/react/v0_9');
   const {z} = await import('zod');
-  const BombText = createComponentImplementation({name: 'Text', schema: z.object({text: z.any()})}, () => {
-    throw new Error('surface render exploded');
-  });
+  const BombText = createComponentImplementation(
+    {name: 'Text', schema: z.object({text: z.any()})},
+    () => {
+      throw new Error('surface render exploded');
+    },
+  );
   return {...actual, CATALOG: new Catalog(actual.CATALOG_ID, [BombText])};
 });
 

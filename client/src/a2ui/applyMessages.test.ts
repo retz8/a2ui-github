@@ -55,10 +55,7 @@ describe('applyA2uiMessages — repaint on repeat createSurface', () => {
       p,
       [
         create('chat'),
-        components('chat', [
-          {id: 'root', component: 'Stack', children: ['a']},
-          text('a', 'gamma'),
-        ]),
+        components('chat', [{id: 'root', component: 'Stack', children: ['a']}, text('a', 'gamma')]),
         data('chat', '/x', 9),
       ],
       {onMessageError},
@@ -125,11 +122,9 @@ describe('applyA2uiMessages — per-message isolation', () => {
     const onMessageError = vi.fn();
     const ghost = components('ghost', [text('root', 'nope')]);
 
-    applyA2uiMessages(
-      p,
-      [ghost, create('chat'), components('chat', [text('root', 'survived')])],
-      {onMessageError},
-    );
+    applyA2uiMessages(p, [ghost, create('chat'), components('chat', [text('root', 'survived')])], {
+      onMessageError,
+    });
 
     expect(onMessageError).toHaveBeenCalledTimes(1);
     expect(onMessageError.mock.calls[0][1]).toBe(ghost); // the failing message
