@@ -7,6 +7,7 @@ import type {
   Part,
 } from '@a2a-js/sdk';
 import type {A2uiClientAction, A2uiClientDataModel, A2uiMessage} from '@a2ui/web_core/v0_9';
+import {logClientDataModelSize} from './dataModelSize';
 
 /**
  * What `sendMessageStream` yields. The SDK declares this union on its client but does not export
@@ -25,7 +26,10 @@ export const A2UI_CLIENT_DATA_MODEL_KEY = 'a2uiClientDataModel';
 function clientDataModelMetadata(
   clientDataModel?: A2uiClientDataModel,
 ): {[k: string]: unknown} | undefined {
-  return clientDataModel ? {[A2UI_CLIENT_DATA_MODEL_KEY]: clientDataModel} : undefined;
+  if (!clientDataModel) return undefined;
+  // Both send paths funnel through here, so this is the one place that sees every payload.
+  logClientDataModelSize(clientDataModel);
+  return {[A2UI_CLIENT_DATA_MODEL_KEY]: clientDataModel};
 }
 
 /** Wrap an A2UI client action as A2A send params carrying one v0.9 A2UI DataPart. */
