@@ -15,7 +15,7 @@ from pathlib import Path
 
 import pytest
 
-from deterministic_agent.catalog import validate_payload
+from llm_agent.catalog import validate_surface
 
 _EXAMPLES_DIR = Path(__file__).resolve().parents[1] / "knowledge" / "examples"
 _EXAMPLE_FILES = sorted(_EXAMPLES_DIR.glob("*.json"))
@@ -48,11 +48,10 @@ def test_example_envelope_shape(path: Path):
 @pytest.mark.parametrize("path", _EXAMPLE_FILES, ids=lambda p: p.stem)
 def test_example_messages_conform_to_catalog(path: Path):
     example = json.loads(path.read_text(encoding="utf-8"))
-    # `validate_payload` strips the framework-owned `id` envelope field and validates each
-    # component against the catalog with strict_integrity=False. The examples are complete
-    # surfaces (createSurface + a root component), but the catalog component schema does not
-    # model `id`; stripping it to satisfy the schema removes the very field the root/orphan
-    # topology check keys on, so strict_integrity would then report a spurious missing root.
-    # Non-strict validation is therefore the only self-consistent mode here — it is exactly
-    # what the deterministic agent's own emitted-payload conformance test relies on.
-    validate_payload(example["messages"])  # must not raise
+    # The live agent's `validate_surface`, not the deterministic agent's partial probe: every
+    # example is a *complete* surface, and it is the live agent these examples prompt. Its four
+    # passes run schema conformance on an id-stripped copy while keeping the id-retained tree for
+    # topology, so root/orphan and binding-resolvability are checked without the id-stripping
+    # conflict that forced the earlier non-strict probe. An example carrying an unresolvable
+    # binding or an orphaned component would otherwise teach the model exactly that defect.
+    validate_surface(example["messages"])  # must not raise
