@@ -1,12 +1,12 @@
 # Task 7.7 — Beat-by-beat verification and refinement
 
-Drives each of the five demo beats through the live stack and iterates on the agent's knowledge
-artifacts until they pass. Parent: `_dev/TODO.md` 7.7; `_dev/docs/spec/phase-7-agent.md` decisions
-1, 8, 9; SPEC.md §3.1. This task carries Phase 7's definition of done.
+Drives each beat of SPEC §3.1's capability matrix through the live stack and iterates on the agent's
+knowledge artifacts until they pass. Parent: `_dev/TODO.md` 7.7; `_dev/docs/spec/phase-7-agent.md`
+decisions 1, 8, 9; SPEC.md §3.1. This task carries Phase 7's definition of done.
 
 ## Scope
 
-- Driving the five beats of SPEC §3.1 through the live stack — real model, full catalog, live
+- Driving the eight beats of SPEC §3.1 through the live stack — real model, full catalog, live
   GitHub MCP, the client chat shell — and refining the 7.1 knowledge artifacts until each beat
   meets its rubric.
 - Verifying, per beat, that the rendered surface is genuinely interactive, with local function
@@ -20,11 +20,12 @@ artifacts until they pass. Parent: `_dev/TODO.md` 7.7; `_dev/docs/spec/phase-7-a
 
 ## Locked decisions
 
-### 1. Beats driven sequentially, judged individually
+### 1. Beats judged individually
 
-The five beats run in one conversation in their real SPEC §3.1 wording, since beats 2, 3, and 5 are
-written as follow-ups and are incoherent as standalone prompts. Isolation applies to the bar, not
-the driving: each beat is judged on its own surface. A beat fails this task only for a reason
+Beats are verified as capabilities, not as a narrative: SPEC §3.1 is a covering set spanning domain,
+screen archetype, scope resolution, and intent clarity, and sequencing them into a demo arc is Phase
+8's work. Seven of the eight are self-contained prompts run in their own conversation; only beat 3
+depends on a predecessor and runs as a follow-up to beat 2. A beat fails this task only for a reason
 internal to it — invalid or unrenderable surface, wrong or missing data, poor composition, missing
 interactivity. A failure caused by the agent losing the prior turn's context is an arc failure,
 recorded as a Phase-8 item, and does not block Phase 7.
@@ -34,7 +35,7 @@ recorded as a Phase-8 item, and does not block Phase 7.
 Each beat has a rubric stated as checkable claims rather than taste. Rubrics assert information
 architecture and interaction only — never visual fidelity to any reference. Iteration continues
 autonomously until a beat's rubric passes; anything that passes the rubric but still looks wrong is
-flagged rather than silently fixed. All five rubrics are written before any live run and approved by
+flagged rather than silently fixed. Every rubric is written before any live run and approved by
 the user in a single gate. If driving a beat reveals the rubric itself is wrong, work stops and the
 rubric is raised for revision rather than rewritten to match the output.
 
@@ -49,17 +50,16 @@ the reference material is the approved beat surfaces themselves, which become cu
 
 A beat's approved surface is folded into `agent/knowledge/examples/` as it is approved, so later
 beats run with it in the prompt. Only approved output is ever folded in — mid-iteration output never
-becomes an example. Folding is followed by one final confirmation pass running all five beats in
-order against the shipped prompt, since incremental folding means the prompt each beat was verified
+becomes an example. Folding is followed by one final confirmation pass running every beat once
+against the shipped prompt, since incremental folding means the prompt each beat was verified
 against is not the final one.
 
-### 5. Two dependency chains
+### 5. Mostly self-contained beats
 
-The beats form two independent chains — 1→2→3 and 4→5 — rather than one chain of five. Beat 4 names
-its repository and pull request explicitly and needs no predecessor; beat 3 needs only a list, so it
-replays beat 1 rather than 1→2. The full five-in-order sequence is exercised once, in the
-confirmation pass. Each iteration round starts a fresh conversation, because re-running a beat into
-a conversation already holding that beat's failed surface produces a contaminated verdict.
+Because the matrix replaced the narrative arc, seven beats stand alone and cost one turn per round;
+only beat 3 replays a predecessor (beat 2). Each iteration round starts a fresh conversation, because
+re-running a beat into a conversation already holding that beat's failed surface produces a
+contaminated verdict. The confirmation pass runs every beat once against the shipped prompt.
 
 ### 6. Managed turn budget with hard stops
 
@@ -74,14 +74,14 @@ re-running; fixes are never applied one at a time with a re-run between them.
 Every local function call on a beat's surface is actually clicked, since it costs no model turn and
 a function that is not registered fails only at runtime. Every server action is audited statically
 from the emitted A2UI: the action exists and carries context sufficient to identify its target. One
-live server-action click is spent across the whole task, on beat 1's row action. Beat 5's client-side
+live server-action click is spent across the whole task, on beat 1's row action. Beat 3's client-side
 validation is exercised for real, including misuse, and is never bypassed to make the beat pass.
 
 ### 8. Deliberate local-vs-server assignment in the rubrics
 
 Each rubric states, per interactive affordance, whether it should be a local function call or a
-server action, and client-side interactivity is placed deliberately across all five beats rather
-than only beat 5. Growing the local-function set is a purpose of this task, not a contingency. A
+server action, and client-side interactivity is placed deliberately across every beat rather
+than only the compose beat. Growing the local-function set is a purpose of this task, not a contingency. A
 function is added when a beat's rubric cannot be met without it, built as a full adapter change with
 its own tests and catalog parity, and recorded in the verification journal.
 
@@ -107,11 +107,13 @@ with.
 
 ### 11. Example set shape
 
-`review-queue-status-list` and `comment-compose-form` are retired as beats 1 and 5 supersede them.
-Both issue-domain examples are kept, since the agent's reach is general GitHub and the beats are all
-pull-request domain. A beat's surface is folded in only if it adds an idiom the set lacks — beats 2
-and 3 are filtered variants of beat 1's list, and shipping structurally duplicate examples teaches
-one idiom twice at the cost of prompt weight.
+All four 7.1 examples are superseded by beats and retired as their replacements are approved:
+`review-queue-status-list` by the PR-list beat, `comment-compose-form` by the compose beat,
+`issue-triage-list` by the issue-list beat, and `issue-detail` by the issue-detail beat. The shipped
+set is therefore derived entirely from approved beat surfaces. A beat's surface is folded in only if
+it adds an idiom the set lacks; shipping structurally duplicate examples teaches one idiom twice at
+the cost of prompt weight. Retirement is incremental — an example is removed only once its
+replacement is approved, so the prompt is never left without coverage of an idiom.
 
 ### 12. Client data-model growth is instrumented, not fixed
 
@@ -144,7 +146,7 @@ example together — exists intact only on a single branch.
 ### 16. Definition of done
 
 The task is done when every beat passes its approved rubric including the interactivity assignment;
-the confirmation pass reproduces all five against the shipped prompt; the example set holds the
+the confirmation pass reproduces every beat against the shipped prompt; the example set holds the
 distinct-idiom set with its conformance gate green; the repository's build, lint, typecheck, and
 test suites are green, with any new adapter function or client instrumentation carrying its own
 tests; the journal is complete across all beats and rounds including the recorded data-model sizes;

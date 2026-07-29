@@ -19,20 +19,40 @@
 ## 3. Demo
 
 - **Agent reach:** the agent is a **general GitHub agent** — any public repository, plus the authenticated user's own pull requests, issues, and notifications. **`a2ui-project/a2ui` is the demo subject, not the agent's boundary.**
-- **Anchor flow:** "the maintainer's morning" — PR triage on the real **`a2ui-project/a2ui`** repository.
+- **Anchor flow:** "the maintainer's morning" — PR triage on the real **`a2ui-project/a2ui`** repository. The arc is **selected and sequenced in Phase 8** from the verified capabilities of §3.1, and may include narrative-glue prompts that are not themselves beats.
 - **Persona framing:** **maintainer triage**, supporting both **repo-level** prompts (which name their repository) and **viewer-centric** prompts ("PRs waiting on my review", "my notifications"), resolved through the authenticated user's identity. A request naming neither a repository nor the viewer scopes to the authenticated user.
 - **Action scope:** **read-only** against live GitHub, enforced structurally at both the MCP endpoint and the token. Write-actions (approve / comment / label) are rendered as **compose-and-confirm** UI that stops short of the real POST — no mutation of any live repository. (A full read+write loop on a seeded sandbox repo is a possible future upgrade.)
 - **Repository confinement is prompt-level only.** A fine-grained PAT that can read repositories the user does not own must use public-repository read access, which cannot be narrowed to a single repository. The token also grants no access to the user's own private repositories. Read-only makes the blast radius nil.
 
-### 3.1 Demo prompt arc (5 beats)
+### 3.1 Capability matrix (8 beats)
 
-A single coherent story (broad → narrow → drill → act):
+A **covering set**, not a story — the beats span what the agent claims it can do, and are verified
+individually. Sequencing them into a demo narrative is Phase 8's work. Four axes are covered:
+**domain**, **screen archetype**, **scope resolution**, and **intent clarity**. Local-function vs
+server-action assignment is settled per beat during verification, not fixed here.
 
-1. "Show me the open PRs on a2ui-project/a2ui that need review." → triage **list**.
-2. "Which of these are failing CI?" → list with **check-status emphasis** (re-composed, not re-skinned).
-3. "Ignore the dependabot bumps — what human PRs are waiting?" → **headline fuzzy-intent** moment.
-4. "Open a2ui-project/a2ui#1668." → PR **detail** view (see §3.2).
-5. "Draft an approving review saying the heading cleanup looks reasonable." → **compose-and-confirm** action (no POST).
+| # | Prompt shape | Domain | Archetype | Scope | Intent |
+|---|---|---|---|---|---|
+| 1 | Open PRs on `a2ui-project/a2ui` that need review | pull request | list | repo-named | literal |
+| 2 | Open a specific PR | pull request | detail (§3.2) | repo-named | literal |
+| 3 | Draft an approving review *(follows 2)* | pull request | compose-and-confirm | — | literal |
+| 4 | Issues needing attention, under a fuzzy qualifier | issue | list | repo-named | **fuzzy** |
+| 5 | Open a specific issue | issue | detail | repo-named | literal |
+| 6 | Show me the repository | repository + content tree | overview | repo-named | literal |
+| 7 | Who is a named user, what do they work on | user | profile | third-party | literal |
+| 8 | What needs my attention today | notifications | inbox / empty state | viewer + ambiguous | literal |
+
+Seven beats are self-contained; only beat 3 depends on a predecessor.
+
+- **Beat 3 stops at the confirm boundary by design.** No write tool exists anywhere in the agent, so
+  the review is never posted. The beat verifies that the compose UI is generated and that its
+  client-side validation genuinely runs; "confirm" resolves to a locally-validated state or an
+  agent-composed confirmation surface, neither of which requires write access.
+- **Repository *content* is covered as a file tree only.** The catalog carries no code or markdown
+  component, so a source-file view has no honest rendering; a markdown body is rendered by the agent
+  **decomposing** it into catalog primitives, per §1.
+- **Follow-up re-composition** (answering "which of these…" by re-composing rather than re-skinning)
+  is arc behavior and belongs to Phase 8.
 
 ### 3.2 PR-detail view depth (v1)
 
