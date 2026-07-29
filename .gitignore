@@ -28,3 +28,4 @@ playwright-report/
 .yarn/cache
 system_prompt.dump.txt
 failed_stream.dump.txt
+surface.dump.json

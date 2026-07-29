@@ -141,3 +141,19 @@ body,
   line-height: 1.5;
   overflow-wrap: anywhere;
 }
+
+/* The agent's own prose — mirrors the user bubble on the opposite side, in muted chrome so it
+   reads as commentary rather than as generated UI. */
+.chat-agent-text-turn {
+  align-self: flex-start;
+  max-width: 85%;
+  padding: 8px 14px;
+  border: 1px solid var(--borderColor-default);
+  border-radius: 16px 16px 16px 4px;
+  background: var(--bgColor-muted);
+  color: var(--fgColor-default);
+  font-size: 14px;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

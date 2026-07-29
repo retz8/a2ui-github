@@ -12,6 +12,7 @@ import {
   buildTextMessageParams,
   extractA2uiMessages,
   extractA2uiMessagesFromEvent,
+  extractAgentTextFromEvent,
   extractContextId,
 } from './messages';
 
@@ -153,5 +154,37 @@ describe('extractContextId', () => {
 
   it('returns undefined for a Message without one', () => {
     expect(extractContextId(agentMessage([]))).toBeUndefined();
+  });
+});
+
+describe('extractAgentTextFromEvent', () => {
+  it('returns the text of an agent text part', () => {
+    expect(extractAgentTextFromEvent(agentMessage([TEXT_PART]))).toEqual(['hello']);
+  });
+
+  it('reads the agent text riding a task status message', () => {
+    expect(extractAgentTextFromEvent(task([TEXT_PART]))).toEqual(['hello']);
+  });
+
+  it('reads the agent text riding a status-update', () => {
+    expect(extractAgentTextFromEvent(statusUpdate([TEXT_PART]))).toEqual(['hello']);
+  });
+
+  it('ignores data parts, so a surface turn reports no text', () => {
+    expect(extractAgentTextFromEvent(agentMessage([DATA_PART]))).toEqual([]);
+  });
+
+  it('ignores a user-role message, so the prompt is never echoed into the transcript', () => {
+    const userEcho: Message = {kind: 'message', role: 'user', messageId: 'm0', parts: [TEXT_PART]};
+    expect(extractAgentTextFromEvent(userEcho)).toEqual([]);
+  });
+
+  it('returns text verbatim, so the spaces joining stream chunks survive', () => {
+    const chunked = agentMessage([{kind: 'text', text: 'requests on '}]);
+    expect(extractAgentTextFromEvent(chunked)).toEqual(['requests on ']);
+  });
+
+  it('drops empty parts, which carry nothing to join or render', () => {
+    expect(extractAgentTextFromEvent(agentMessage([{kind: 'text', text: ''}]))).toEqual([]);
   });
 });

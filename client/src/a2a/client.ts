@@ -2,7 +2,11 @@ import {A2AClient} from '@a2a-js/sdk/client';
 import type {MessageSendParams} from '@a2a-js/sdk';
 import type {A2uiMessage} from '@a2ui/web_core/v0_9';
 import type {A2AStreamEventData} from './messages';
-import {extractA2uiMessagesFromEvent, extractContextId} from './messages';
+import {
+  extractA2uiMessagesFromEvent,
+  extractAgentTextFromEvent,
+  extractContextId,
+} from './messages';
 import type {A2ASession} from './session';
 
 const AGENT_CARD_PATH = '/.well-known/agent-card.json';
@@ -59,11 +63,13 @@ export async function sendAndApply(
   params: MessageSendParams,
   apply: (messages: A2uiMessage[]) => void,
   session?: A2ASession,
+  onAgentText?: (text: string) => void,
 ): Promise<void> {
   for await (const event of sender.sendMessageStream(params)) {
     const contextId = extractContextId(event);
     if (contextId) session?.set(contextId);
     const messages = extractA2uiMessagesFromEvent(event);
     if (messages.length) apply(messages);
+    if (onAgentText) for (const text of extractAgentTextFromEvent(event)) onAgentText(text);
   }
 }

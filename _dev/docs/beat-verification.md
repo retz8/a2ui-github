@@ -95,14 +95,77 @@ round following an adapter change rebuilds before the run**, and `verify:all` is
 - **Data truth** — every row is a real open PR of that repository, fetched this turn. No invented
   numbers, titles, authors or counts.
 - **Sufficiency** — each row carries enough to decide whether to open it: identity (number and
-  title), who raised it, and at least one state signal (review state and/or CI). The size of the
-  result set is conveyed somehow.
+  title), who raised it, and recent activity. The size of the result set is conveyed somehow.
+- **State** — review/CI state is *conveyed*: per row when it varies, **at surface level when the
+  filter makes it uniform**. Fetching per-item detail for a list is explicitly not required.
+  *(Amended after round 4. The original line demanded per-row state, which conflicts with the
+  tool-economy rule: GitHub's search API returns no review decision or check status, so per-row
+  state costs two extra calls per row. It is also redundant when the list is already filtered to
+  `review:required` — every row shares one state, and the surface says it once.)*
 - **Composition** — an enumerable, scannable structure with a consistent per-row shape; not a prose
   paragraph and not one text blob. No empty sections.
 - **Interactivity** — a row resolves to a **server** action carrying its PR number. Reordering or
   narrowing rows already fetched is **local**.
+- **Reading of "need review"** — the item's actual review state (review requested, not yet
+  approved), not a repository label whose name happens to match. The broad reading is the one a
+  maintainer means; a label captures a fraction of it.
 - **Not required** — GitHub's row layout, labels, task-list progress, linked-issue counts, an exact
   field set, or a server-side "needs review" filter (per-row review state is sufficient).
+
+### Rounds — approved at R4
+
+| R1 (lite) | R1 (flash) | R2 | R3 | R4 ✓ |
+|---|---|---|---|---|
+| no surface | ![](assets/beat-1-r1.jpg) | ![](assets/beat-1-r2.jpg) | ![](assets/beat-1-r3.jpg) | ![](assets/beat-1-r4.jpg) |
+
+**R1 — `gemini-3.5-flash-lite`, no surface.** Both attempts emitted the same malformed JSON: the
+`updateDataModel` message object closed with `]` instead of `}`. Everything else was well-formed.
+The parser's incremental heal does not repair a wrong-*type* bracket. Two identical attempts
+triggered the model-ceiling diagnostic; `gemini-3.5-flash` produced a valid surface on attempt 1,
+same prompt. **Lever: model default → `gemini-3.5-flash`.** Lite cannot reliably close ~7 KB of
+nested JSON.
+
+Two client defects surfaced here, both fixed before continuing:
+
+| Observed | Cause |
+|---|---|
+| Turn vanished entirely — surface removed, nothing rendered, no console error | The agent tears down the half-built surface and apologises as a `TextPart`; the client read only A2UI DataParts, so the apology was dropped. `ChatView` had no transcript kind for agent text. |
+| (after the fix) prose split mid-word across bubbles | Prose streams in chunks; one bubble was appended per chunk. Chunks of one send now accumulate into a single entry. |
+
+**R1 (flash) — 2 rubric misses.** Rows inert (`ActionList` with no action); "need review" read as the
+repo's literal `status: needs review` label, 5 of 69. Title also oversized. **Levers:** prompt rule
+reading intent by state rather than by a same-named label; brand-doc line keeping the surface title
+at `small`/`medium` (*"a surface is a panel inside a conversation, not a standalone web page"*).
+
+**R2 — row action fixed and proven live.** Template over `/prs`, `event: open-pull-request` carrying
+`{"number": {"path": "number"}}`; clicking a row reached the agent with `number: 2093`. Counters
+verified against the search API: 56 `review:required`, 69 open — both exact. Remaining: no per-row
+state. New: an `UnderlineNav` rendered as an empty landmark (logged in `deferred-catalog-work.md`),
+and its tabs carried no action.
+
+**R3 — regression.** Fixing the *example* to show per-row state backfired: the model took the
+prompt's sanctioned escape hatch and unrolled the rows (97 components, no data binding), then
+switched the row action to `functionCall: openUrl` — navigating out to github.com, which defeats
+`SPEC.md:16` ("agent round-trip, generative on each navigation") and makes any follow-up beat
+impossible. The prompt beat the example.
+
+**R4 — approved.** **Levers:** brand-doc rule that navigating to anything the agent could compose is
+an `event`, never `openUrl` (reserved for genuinely external destinations); prompt rule making the
+bound template the default and unrolling the exception; brand-doc rule against emitting unwired
+navigation — which also removed the empty-nav gap. Result: 18 components, template over `/prs`,
+`event` action, no dead nav.
+
+The last open line — per-row state — was **not** an agent defect. It was a bad rubric line, amended
+above: the search API carries no review decision or check status, so per-row state costs two extra
+calls per row against an explicit tool-economy rule, and it is redundant when the whole list shares
+one state. The agent was right in all four rounds.
+
+**Client data model:** 2095 B, 1 surface (`prs-needing-review` 2042 B) on the action send.
+
+**Approved surface** → `agent/knowledge/examples/pr-review-queue.json` (data trimmed to 4 rows; the
+idiom, not the volume, is the lesson). Retires `review-queue-status-list.json` per spec decision 11.
+
+![action round-trip](assets/beat-1-action-roundtrip.jpg)
 
 ## Beat 2 — PR detail
 

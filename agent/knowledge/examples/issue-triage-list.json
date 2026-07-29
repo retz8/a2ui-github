@@ -102,7 +102,23 @@
           {
             "id": "row-tv",
             "component": "ActionList.TrailingVisual",
-            "children": ["row-time"]
+            "children": ["row-trailing"]
+          },
+          {
+            "id": "row-trailing",
+            "component": "Stack",
+            "direction": "horizontal",
+            "gap": "condensed",
+            "align": "center",
+            "children": ["row-state", "row-time"]
+          },
+          {
+            "id": "row-state",
+            "component": "Text",
+            "text": {
+              "path": "state"
+            },
+            "size": "small"
           },
           {
             "id": "row-time",
@@ -126,19 +142,22 @@
               "number": 512,
               "title": "Streaming heal drops trailing partial",
               "meta": "#512 opened by maintainer",
-              "updatedAt": "2026-07-19T14:02:00Z"
+              "updatedAt": "2026-07-19T14:02:00Z",
+              "state": "Unassigned \u00b7 no area label"
             },
             {
               "number": 508,
               "title": "Catalog validator rejects bound counter",
               "meta": "#508 opened by octocat \u00b7 4 comments",
-              "updatedAt": "2026-07-18T09:41:00Z"
+              "updatedAt": "2026-07-18T09:41:00Z",
+              "state": "Awaiting author reply"
             },
             {
               "number": 501,
               "title": "Docs: clarify relative template paths",
               "meta": "#501 opened by hubot \u00b7 good first issue",
-              "updatedAt": "2026-07-17T21:15:00Z"
+              "updatedAt": "2026-07-17T21:15:00Z",
+              "state": "Ready for triage review"
             }
           ]
         }

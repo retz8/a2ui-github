@@ -214,3 +214,26 @@ Deferred in the 6.51 design session (`_dev/docs/new-components/autocomplete*.md`
 - **`Autocomplete.Menu.onSelectedChange` optional selection `Action`** — dropped, represented by the
   two-way binding on `selectedItemIds` (the `Select`/`Checkbox` precedent). Backfill an optional
   selection `Action` only if a future flow needs selection-initiated agent round-trips.
+
+### UnderlineNav — items vanish in a real browser when nested
+
+Found live in task 7.7 (beat 1, round 3). The agent composed an `UnderlineNav` with two
+`UnderlineNav.Item` tabs inside a `Stack`. In Chrome the nav renders as an **empty landmark** —
+`<nav aria-label="…"><ul></ul></nav>` — with no items, leaving a blank band of vertical space
+between the header and the content below it.
+
+It is **not** an adapter wiring bug and no existing test catches it:
+
+- `underline-nav.test.tsx` renders a plain `<span>` child, never a real `Item`.
+- `client/tests/actions.test.tsx` renders the `underline-nav-item-fn` fixture and
+  `getByText('Run local')` passes — so items do render in jsdom, with `UnderlineNav` as the
+  surface **root**.
+
+The difference is the real browser plus nesting. Primer's `UnderlineNav` computes which items fit
+via resize observation and moves the rest into an overflow menu; jsdom has no layout, so every item
+renders there unconditionally. The working hypothesis is that nested in a `Stack` the nav measures
+zero available width, so every item is treated as overflow and nothing is drawn.
+
+Revisit with a Playwright test (real layout) rendering `UnderlineNav` **nested**, asserting the item
+labels are visible. Until then the component is unreliable for composed surfaces, and the agent is
+steered away from emitting unwired navigation at all.

@@ -30,6 +30,11 @@ export interface A2AActionHandlerOptions {
    */
   onError?: (error: unknown) => void;
   /**
+   * Called for each plain-text part the agent sends. An action can fail to produce a surface
+   * exactly as a prompt can, and the reply is prose; without this the click leaves nothing.
+   */
+  onAgentText?: (text: string) => void;
+  /**
    * Supplies the current client data model of `sendDataModel`-flagged surfaces
    * (processor.getClientDataModel); attached as message metadata when it reports one.
    */
@@ -51,6 +56,7 @@ export function createA2AActionHandler(opts: A2AActionHandlerOptions): ActionLis
     onActionStart,
     onActionSettled,
     onError,
+    onAgentText,
     getClientDataModel,
   } = opts;
   const getSender = opts.getSender ?? createSenderResolver({serverUrl, client});
@@ -64,6 +70,7 @@ export function createA2AActionHandler(opts: A2AActionHandlerOptions): ActionLis
         buildActionMessageParams(action, session?.get(), getClientDataModel?.()),
         apply,
         session,
+        onAgentText,
       );
     } catch (err) {
       console.error('[A2UI:a2a]', err);

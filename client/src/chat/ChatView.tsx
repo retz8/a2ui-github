@@ -16,10 +16,14 @@ import type {A2uiMessageTarget} from '../a2ui/applyMessages';
 import {SurfaceErrorBoundary} from './SurfaceErrorBoundary';
 import './ChatView.css';
 
-/** One transcript entry: a typed user prompt, an agent surface keyed by its id, or a failure. */
+/**
+ * One transcript entry: a typed user prompt, an agent surface keyed by its id, prose the agent
+ * sent instead of (or alongside) a surface, or a failure.
+ */
 type Turn =
   | {kind: 'user'; key: number; text: string}
   | {kind: 'surface'; id: string}
+  | {kind: 'agent-text'; key: number; seq: number; text: string}
   | {kind: 'error'; key: number; text: string};
 
 /**
@@ -37,6 +41,15 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
   const turnKey = useRef(0);
 
   const [wiring] = useState(() => {
+    // Identifies the current send, so streamed prose chunks group into one bubble per turn. A
+    // plain counter rather than a React ref: it is only ever touched from these callbacks, and a
+    // ref read inside this initializer reads as render-phase access.
+    let sendSeq = 0;
+    // Opens a new grouping window for agent prose. Exposed as a call rather than a counter so
+    // nothing outside this closure mutates wiring state.
+    const beginSend = () => {
+      sendSeq += 1;
+    };
     const session = createA2ASession();
     const getSender = createSenderResolver({serverUrl, client});
     // Late-binding: `apply` reaches the processor that is created right below.
@@ -57,6 +70,19 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
         return [...prev, {kind: 'error', key: turnKey.current++, text}];
       });
 
+    // The agent's own words. Prose streams in chunks, so chunks of the SAME send accumulate into
+    // one entry — appending per chunk split words in half ("…on **a2ui-project/a2" | "ui**…").
+    // A new send always starts a new bubble, and a leading blank chunk opens none.
+    const reportAgentText = (text: string) =>
+      setTurns(prev => {
+        const last = prev[prev.length - 1];
+        if (last?.kind === 'agent-text' && last.seq === sendSeq) {
+          return [...prev.slice(0, -1), {...last, text: last.text + text}];
+        }
+        if (!text.trim()) return prev;
+        return [...prev, {kind: 'agent-text', key: turnKey.current++, seq: sendSeq, text}];
+      });
+
     const apply = (messages: A2uiMessage[]) => {
       if (!target) return;
       applyA2uiMessages(target, messages, {
@@ -71,9 +97,11 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
       session,
       getClientDataModel,
       onError: err => reportFailure(`That action failed. ${describeError(err)}`),
+      onAgentText: reportAgentText,
       // Mirror the text path: a clicked action drives the same loading indicator, with
       // an informational label derived from the action (falls back to the generic one).
       onActionStart: action => {
+        beginSend();
         const subject = describeAction(action);
         setPendingLabel(subject ? `${subject} — generating…` : 'Generating…');
         setPending(true);
@@ -82,7 +110,16 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     });
     const processor = new MessageProcessor([CATALOG], actionHandler);
     target = processor;
-    return {processor, getSender, session, apply, getClientDataModel, reportFailure};
+    return {
+      processor,
+      beginSend,
+      getSender,
+      session,
+      apply,
+      getClientDataModel,
+      reportFailure,
+      reportAgentText,
+    };
   });
 
   const [text, setText] = useState('');
@@ -126,6 +163,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
     const prompt = text.trim();
     if (!prompt || pending) return;
     setText('');
+    wiring.beginSend();
     setTurns(prev => [...prev, {kind: 'user', key: turnKey.current++, text: prompt}]);
     setPendingLabel('Generating…');
     setPending(true);
@@ -136,6 +174,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
         session: wiring.session,
         getClientDataModel: wiring.getClientDataModel,
         onError: err => wiring.reportFailure(`The agent request failed. ${describeError(err)}`),
+        onAgentText: wiring.reportAgentText,
       });
     } finally {
       setPending(false);
@@ -157,6 +196,14 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
           {turns.map(turn =>
             turn.kind === 'user' ? (
               <div key={`user-${turn.key}`} className="chat-user-turn">
+                {turn.text}
+              </div>
+            ) : turn.kind === 'agent-text' ? (
+              <div
+                key={`agent-text-${turn.key}`}
+                className="chat-agent-text-turn"
+                data-testid="chat-agent-text"
+              >
                 {turn.text}
               </div>
             ) : turn.kind === 'error' ? (

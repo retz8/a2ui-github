@@ -20,6 +20,11 @@ export interface StreamUserMessageOptions {
    * the host needs this to tell the user the turn was lost.
    */
   onError?: (error: unknown) => void;
+  /**
+   * Called for each plain-text part the agent sends. The agent answers in prose when it could not
+   * build a surface; without this the turn leaves nothing on screen.
+   */
+  onAgentText?: (text: string) => void;
 }
 
 /**
@@ -31,7 +36,7 @@ export async function streamUserMessage(
   text: string,
   opts: StreamUserMessageOptions,
 ): Promise<void> {
-  const {getSender, apply, session, getClientDataModel, onError} = opts;
+  const {getSender, apply, session, getClientDataModel, onError, onAgentText} = opts;
   try {
     const sender = await getSender();
     await sendAndApply(
@@ -39,6 +44,7 @@ export async function streamUserMessage(
       buildTextMessageParams(text, session?.get(), getClientDataModel?.()),
       apply,
       session,
+      onAgentText,
     );
   } catch (err) {
     console.error('[A2UI:a2a]', err);

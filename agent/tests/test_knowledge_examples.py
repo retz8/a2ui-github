@@ -20,8 +20,9 @@ from llm_agent.catalog import validate_surface
 _EXAMPLES_DIR = Path(__file__).resolve().parents[1] / "knowledge" / "examples"
 _EXAMPLE_FILES = sorted(_EXAMPLES_DIR.glob("*.json"))
 
-# Decisions 5, 6, 8 fix the set at exactly four curated examples; guard the count so a
-# dropped or stray file fails loudly rather than silently shrinking the corpus.
+# The set is derived: task 7.7 retires each 7.1 example as an approved beat surface supersedes it
+# (spec decision 11). Guard the count so a fold or a retirement is a deliberate edit here rather
+# than a silent change in the corpus the model learns from.
 _EXPECTED_COUNT = 4
 
 

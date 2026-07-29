@@ -102,6 +102,11 @@ MAX_ATTEMPTS = 2  # one initial + one retry; tunable (spec decision 6)
 # evidence — which is not enough to tell which shape the model emitted. Gitignored,
 # alongside system_prompt.dump.txt.
 FAILED_STREAM_DUMP = Path(__file__).resolve().parent.parent / "failed_stream.dump.txt"
+# Where the surface of a SUCCESSFUL turn is written. A valid surface is discarded once
+# streamed, so the only record of what the agent actually composed is the rendered pixels
+# — which cannot say whether a row carries an action, what a binding resolves to, or which
+# heading level was chosen. Holds the latest successful turn only. Gitignored.
+SURFACE_DUMP = Path(__file__).resolve().parent.parent / "surface.dump.json"
 APOLOGY_TEXT = (
     "Sorry — I couldn't compose a valid interface for that request. Please try rephrasing."
 )
@@ -222,6 +227,15 @@ def _reset_failed_stream_dump() -> None:
     """Clears the dump at the start of a request, so it only ever holds the latest one."""
     with contextlib.suppress(OSError):
         FAILED_STREAM_DUMP.unlink(missing_ok=True)
+
+
+def _dump_surface(payload: list[dict]) -> None:
+    """Writes the surface a successful turn produced, for inspection between rounds.
+
+    Best-effort: a dump that cannot be written must never fail an otherwise good turn.
+    """
+    with contextlib.suppress(OSError, TypeError, ValueError):
+        SURFACE_DUMP.write_text(json.dumps(payload, indent=2), encoding="utf-8")
 
 
 def _dump_failed_stream(accumulated: str, attempt: int, err: Exception) -> None:
@@ -437,6 +451,7 @@ class LlmAgentExecutor(AgentExecutor):
                 # No teardown between attempts: the retry patches the partial in place.
                 continue
 
+            _dump_surface(payload)
             logger.info("attempt %d: surface valid, task %s completed", attempt, task.id)
             await updater.update_status(TaskState.completed, final=True)
             return

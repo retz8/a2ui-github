@@ -39,6 +39,10 @@ visual language.
 - Use exactly one `Heading` for the surface's primary title. Use additional headings only to label
   genuine subsections, and step their `as` level down (`h1` → `h2` → `h3`) rather than restyling
   size on the same level.
+- Keep that title's `variant` at `"small"` (or `"medium"` when the surface is unusually dense). A
+  surface is a panel inside a conversation, not a standalone web page: a `large` title outweighs
+  the rows it introduces and pushes the actual content out of view. The content is the subject;
+  the title only names it.
 - Render list-item primary labels as `Text`, not `Heading`. Reserve `Heading` for section titles.
 - Use `weight: "semibold"` to mark a primary label within a row (an issue title). Do not bold whole
   paragraphs of body text.
@@ -81,6 +85,15 @@ visual language.
   `functionCall`. Changing state the surface already holds (toggling a selection, editing a field)
   is no action at all — the bound path carries it, and the client reports the data model with the
   user's next message.
+- **Navigating to anything you could compose is an `event`, never `openUrl`** — a pull request, an
+  issue, a repository, a file, a user. A URL existing for it is not a reason to use one: you are
+  the interface, and handing the user to a browser tab ends the session instead of continuing it.
+  Reserve `openUrl` for destinations outside what the catalog can render — a CI log, an external
+  site, a download.
+- Never emit navigation you have not wired. Tabs, filters and segmented controls that carry no
+  action are not decoration; they read as working controls, and a click that does nothing is worse
+  than the control's absence. If a filter is not backed by an action, leave it out and let the
+  surface's own description say what is being shown.
 - Put the row-level open/navigate action on the `ActionList.Item` (or `NavList.Item`) itself, not
   on a nested button, so the whole row is the target. In a multi-select list the row's click
   toggles its bound `selected` instead — rows carry no action; the batch commit lives on a button.

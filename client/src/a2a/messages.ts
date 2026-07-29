@@ -98,6 +98,39 @@ export function extractA2uiMessagesFromEvent(event: A2AStreamEventData): A2uiMes
   );
 }
 
+/**
+ * Pull the agent's plain-text parts out of a single A2A stream event.
+ *
+ * The agent answers in prose when it cannot produce a surface — a validator-exhausted turn tears
+ * the half-built surface down and apologises as a TextPart. Without this the turn leaves nothing
+ * on screen at all: the surface is removed and the only other channel, `onError`, fires on wire
+ * failures, not on a successful response that happens to carry no A2UI.
+ *
+ * User-role messages are skipped so a server that echoes the prompt cannot replay it into the
+ * transcript. Text is returned verbatim — prose arrives in stream chunks, and trimming each one
+ * would delete the spaces that join them ("…requests on " + "a2ui-project"). Deciding a whole
+ * accumulated response is blank belongs to the consumer, which is what sees the chunks together.
+ */
+export function extractAgentTextFromEvent(event: A2AStreamEventData): string[] {
+  let message: Message | undefined;
+  switch (event.kind) {
+    case 'message':
+      message = event;
+      break;
+    case 'task':
+    case 'status-update':
+      message = event.status.message;
+      break;
+    default:
+      return [];
+  }
+  if (!message || message.role !== 'agent') return [];
+  return message.parts
+    .filter((p): p is Extract<Part, {kind: 'text'}> => p.kind === 'text')
+    .map(p => p.text)
+    .filter(text => text.length > 0);
+}
+
 /** Pull A2UI messages out of a non-streaming A2A send result. */
 export function extractA2uiMessages(result: Task | Message): A2uiMessage[] {
   return extractA2uiMessagesFromEvent(result);
