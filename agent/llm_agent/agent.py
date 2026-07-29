@@ -14,8 +14,8 @@ from llm_agent.tools import STUB_TOOLS
 
 logger = logging.getLogger(__name__)
 
-# Cheap Gemini tier by default (spec decision 7); overridable via MODEL_NAME.
-DEFAULT_MODEL = "gemini-2.5-flash"
+# Lite Gemini tier by default — the model the demo runs on; overridable via MODEL_NAME.
+DEFAULT_MODEL = "gemini-3.5-flash-lite"
 
 # Live GitHub by default. The stub exists so testing and manual client work need
 # not consume GitHub MCP call allowance, but it is always an explicit opt-in.
