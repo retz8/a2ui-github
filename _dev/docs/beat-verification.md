@@ -174,21 +174,32 @@ idiom, not the volume, is the lesson). Retires `review-queue-status-list.json` p
 **Intent:** enough depth to judge the PR without leaving the surface.
 
 - **Data truth** — title, number, state, author, branches, body, review and check state all fetched.
-- **Sufficiency** — the seven of `SPEC.md` §3.2 are each present in some form: metadata, description,
-  review state, CI checks, reviewers, comment timeline, files-changed summary.
+- **Sufficiency** — the seven of `SPEC.md` §3.2 are each **represented at summary depth**: the
+  changed files as a path list carrying per-file ±, the checks as a tally of outcomes, the timeline
+  as its content-bearing entries with the total volume stated. An element may be condensed; none may
+  be absent. Depth past the summary is offered through an affordance, not rendered up front.
+  *(Amended before round 5. The original line asked only that each element be "present in some
+  form", which a transcription of GitHub's page satisfies maximally — and that is the wrong target.
+  The static page stacks everything because one page must serve every visitor who ever loads it; a
+  generative surface composes for the request. Reproducing that architecture spends the user's
+  streaming time and the agent's tokens to arrive somewhere they could already have gone, which is
+  the whole argument for generating the UI at all. The seven stay a floor so grading stays
+  checkable — only depth is discretionary. `SPEC.md` §3.2 carries the same amendment. The reason is
+  independent of any round's result: it held before R4 ran and would hold had R4 passed.)*
 - **Composition** — the markdown body is **decomposed into catalog primitives** (headings, text,
-  lists, links), not dumped as one string. Sections are distinguishable. Long content is bounded
-  rather than allowed to run.
+  lists, links), not dumped as one string, and bounded to what conveys the change — a contributor
+  checklist and link definitions are not that. Sections are distinguishable. No wall of prose and no
+  unrendered markup or HTML entities.
 - **Interactivity** — at least one **server** action that advances the flow, carrying PR context.
   Expand/collapse and "show more" are **local**.
 - **Not required** — tabs, a diff view, syntax colouring, check annotations, sidebar ordering.
 
-### Rounds — IN PROGRESS, blocked at R4
+### Rounds — CLOSED at R8, accepted with known defects (not rubric-approved)
 
-| R1 | R2 | R3 |
-|---|---|---|
-| ![](assets/beat-2-r1.jpg) | ![](assets/beat-2-r2-top.jpg) | ![](assets/beat-2-r3-top.jpg) |
-| | ![](assets/beat-2-r2-files.jpg) | ![](assets/beat-2-r3-files.jpg) |
+| R1 | R2 | R3 | R4 (2.5-flash probe) | R5 | R6 | R7 | R8 |
+|---|---|---|---|---|---|---|---|
+| ![](assets/beat-2-r1.jpg) | ![](assets/beat-2-r2-top.jpg) | ![](assets/beat-2-r3-top.jpg) | ![](assets/beat-2-r4-25flash.jpg) | ![](assets/beat-2-r5-top.jpg) | ![](assets/beat-2-r6-top.jpg) | ![](assets/beat-2-r7-top.jpg) | ![](assets/beat-2-r8-top.jpg) |
+| | ![](assets/beat-2-r2-files.jpg) | ![](assets/beat-2-r3-files.jpg) | | ![](assets/beat-2-r5-bottom.jpg) | ![](assets/beat-2-r6-bottom.jpg) | ![](assets/beat-2-r7-bottom.jpg) | ![](assets/beat-2-r8-files.jpg) |
 
 **R1 — 4 defects.** Valid on attempt 1 with 8 MCP calls (the sanctioned "drilling into one PR takes
 several calls" path). `PageLayout` + `Timeline` + `StateLabel` composed sensibly, but: the markdown
@@ -221,12 +232,194 @@ Two regressed *out*: **CI checks** and **review/merge state**. R3 called `get`, 
 had called. The included subset oscillates between runs because nothing states what a PR detail must
 contain. **Lever:** a prompt rule enumerating all seven required elements explicitly.
 
-**R4 — could not run.** `429 RESOURCE_EXHAUSTED — prepayment credits are depleted`. The seven-element
-rule is in place and **unverified**. Beat 2 resumes here.
+**R4 — first attempt blocked, then run on `gemini-2.5-flash` as a downward-tier probe. Grades
+nothing.** The credit exhaustion (`429 RESOURCE_EXHAUSTED`) that first blocked it did confirm one
+thing: the client rendered *"the language model is temporarily unavailable"* rather than a blank
+turn — the round-0 fix working on a failure mode it was not written for.
 
-The failure did confirm one thing: the client rendered *"the language model is temporarily
-unavailable"* rather than a blank turn — the round-0 fix working on a failure mode it was not
-written for.
+Re-run after the top-up on `gemini-2.5-flash` rather than the committed `gemini-3.5-flash`, so its
+verdict is not a verdict on the seven-element rule — the model is the confound, and spec decision 9
+spends ladder turns going *up* a tier, not down. Recorded as a model finding.
+
+| Observed | Against |
+|---|---|
+| 3m24s to first token, then attempt 1 died on `MAX_TOKENS` at 43,728 chars with no complete surface | thinking tokens draw on the same output budget; attempt 2 recovered, ~6.5 min wall-clock for the turn |
+| description dumped as one raw blob — `##`, `**`, `- [ ]` unrendered, `&#34;`/`&amp;` entities leaking | Composition |
+| changed files as `+1938 / -31 across 22 files`, no path list — R1's defect verbatim | Sufficiency |
+| branches absent entirely; no mergeable/blocked state | Sufficiency (metadata, review state) |
+| zero actions — the interactive tree holds only the chat box and Send | Interactivity |
+| CI checks present (`16 successful, 3 cancelled, 9 skipped`), reviewers present, timeline rich | the one element R3 lost came back |
+
+Six MCP calls including `get_check_runs`. So the tier that recovered checks simultaneously lost three
+elements R3 had — slower, truncation-prone, and below the demo bar on this evidence. **The
+seven-element rule remains unverified.**
+
+The timeline it did render — 40+ rows, most of them content-free `sugoi-yuzuru commented on this
+pull request` with no body — is what prompted the rubric amendment above. "Timeline present" passed
+while "long content is bounded" was violated in spirit, which is the tell that the line was grading
+the wrong thing.
+
+### The frame was wrong, not just the rubric
+
+Between R4 and R5 the lever itself was re-examined and rejected. `SCOPE_DESCRIPTION` had accumulated
+a screen definition — *"a pull-request detail carries all seven of… the paths, each with additions
+and deletions, as a list rather than only an aggregate line total"* — added as R3's lever. That is an
+expert system: a hand-authored `if detail then render these seven`, which a static page serves faster
+and more reliably than a model can. It also contradicts `SPEC.md` §1, *"don't over-determine the
+agent… less dev-specified logic than today's apps, not more."*
+
+The structural cause was that **7.1 shipped no home for domain knowledge.** `brand-guidance.md`
+declares its own charter — Primer mechanics only, explicitly *"no domain/triage instructions (what a
+given screen should say)"* — and holds to it. So when a round exposed a missing element, the only
+reachable lever was to prescribe the screen, because there was nowhere to write what a pull request
+*is*.
+
+**Levers (all applied together, per decision 6):**
+
+- **New artifact `agent/knowledge/github-domain.md`** — a third 7.1 knowledge doc, declarative
+  register, carrying facts and the decisions that hinge on them and never what a screen contains:
+  head-into-base direction, mergeability as three independent gates, review verdicts vs comments and
+  latest-per-reviewer, the three comment kinds, bots outnumbering humans, commit statuses *and* check
+  runs both on the head SHA, `skipped`/`cancelled` not being failures, issues and PRs sharing one
+  number space, labels as local conventions, what stalling actually is, notification `reason`.
+  Loaded by `load_domain_knowledge()` and joined into the workflow slot.
+- **Deleted from `SCOPE_DESCRIPTION`:** the seven-element sentence, outright, with nothing replacing
+  it. Branch direction and the label-vs-state reading **moved** to the domain doc as facts. Tool
+  economy stayed — it is about using tools, not about screens.
+- The rubric amendment above, and the `SPEC.md` §3.2 depth principle.
+
+Cost noted honestly: removing the enumeration risks the R2/R3 oscillation returning. The discipline
+is that the answer is then better domain knowledge, not re-enumeration.
+
+**R5 — the reframe holds; four defects.** `gemini-3.5-flash`, valid on **attempt 1 in 1m48s** (vs
+6.5 min and a truncation on the 2.5 probe). Four calls: `get`, then `get_reviews` / `get_comments` /
+`get_check_runs`.
+
+What the domain doc produced with the prescriptive rules *deleted*:
+
+| Emitted | Traced to |
+|---|---|
+| "sugoi-yuzuru wants to merge 14 commits into `main` from `webframe`" | head-into-base fact — the instruction that used to say this was removed |
+| a **Merge Status** section synthesising conflicts + checks + reviews, unprompted | "three independent conditions gate a merge" |
+| reviewers split by state — approved carries a check, the other five a pending clock | "requested and reviewed are disjoint states" |
+| checks as a tally + a `Show check run details` disclosure rather than a dump | summary depth, unprescribed |
+| timeline condensed to the two content-bearing reviews; bot review labelled as a bot | "bots can outnumber the human conversation" |
+
+Defects:
+
+| Observed | Against |
+|---|---|
+| Pre-launch Checklist rendered `[✓]` on all four items; the source body has `- [ ]` on all four. A description paragraph ("Includes web frame sandboxing rules, bridge state synchronization scripts…") appears **nowhere** in the source | Data truth |
+| changed files still aggregate-only; `get_files` not called at all this round | Sufficiency |
+| "Merge pull request" as the primary button — implies a mutation the agent structurally cannot perform (`SPEC.md` §3 read-only) | Interactivity |
+| **zero wired actions**: "Merge pull request", "Comment" and "Show check run details" all inert; the only live control is an author `Link` out to github.com, which the brand doc's own `openUrl` rule forbids | Interactivity |
+| a prose preamble above the surface duplicating it and narrating its own composition, raw markdown unrendered in the bubble | ROLE ("never answer in prose when a surface would serve better") |
+
+The first is the **sharp edge of the summary-depth change**: sanctioning condensation invited the
+model to author text on the source's behalf, and it flipped a checklist's state. Worse than R4's wall
+of prose, which was at least true.
+
+**Levers for R6** — two, both in `ROLE_DESCRIPTION`, since data fidelity and write capability are
+facts about *this agent* rather than about GitHub, keeping the domain doc purely factual:
+
+1. **Condensing vs authoring** — shortening a description to its substance is fair; writing a
+   sentence its author did not write is not; the state of a thing (a checklist's boxes, a verdict, a
+   conclusion) is data reported, never prose smoothed over.
+2. **Read-only capability** — every tool is read-only, so an affordance claiming to merge, approve,
+   post or close is a promise that cannot be kept; where that is the real next step, compose it and
+   stop at the confirm boundary (`SPEC.md` §3).
+
+Deliberately **not** levered: the changed-files miss (the operational line already says drilling in
+costs several calls — adding a rule after one round is how the expert system grew last time), and
+the prose preamble (likely downstream of the same over-narration instinct as defect 1).
+
+**Flagged, not fixed** (decision 2 — rubrics grade information architecture and interaction, never
+visual fidelity): `TimelineAvatar` renders as half-circles clipped at the surface's left edge. Three
+compounding layers, only one of them the component, logged with the full diagnosis in
+`deferred-catalog-work.md`. Not an agent defect.
+
+**R6 — both levers landed.** Valid attempt 1, 1m29s, three calls. The fabricated checklist is gone;
+"Merge pull request" is replaced by a real **compose-and-confirm** — a `Draft your response`
+textarea bound to `/review/body` with Comment and Approve, both carrying a server `event`
+`submit-review` with `pullNumber`, `reviewType` and the bound body. Reviewers gained explicit
+verdicts (Approved / Commented / Pending ×4). New: **"28 checks completed successfully"** — false,
+the 28 are 16 successful + 3 cancelled + 9 skipped, and the merge state R5 synthesised disappeared.
+Changed files still absent; prose preamble still present.
+
+**R7 — one lever of three landed. Stopped here.** Valid attempt 1, four calls.
+
+| Lever | Result |
+|---|---|
+| ROLE: the surface is the answer, no preamble | **worked** — no text bubble at all, the surface is the whole response |
+| domain: a non-failure is not a success; a mix is `unstable` | **failed** — "All checks have passed (28 successful checks)", worse phrasing than R6 |
+| domain: files and commits are separate reads, not part of the PR object | **failed** — `get_files` still never called; "22 files changed" is the PR object's own aggregate |
+
+The checklist is now the round's best result: five `Checkbox` components, `checked: false` **and
+`disabled: true`** — faithful to the source *and* correctly non-interactive, the read-only fact
+generalising past actions into rendering. Reviewers split into verdicts plus an explicit "Awaiting
+Review" group. One server `event` (`post-comment`) carrying `pullNumber`/`owner`/`repo`.
+
+**Stop, per decision 6** — two consecutive rounds producing the same defect, and a lever that is not
+working is not repeated. Both surviving defects are Data truth / Sufficiency, and both resisted a
+direct prose lever:
+
+- **Checks misreported** (R6, R7). Note R5 got this *right* by reading the pull request's own
+  `mergeable_state: unstable`; R6 and R7 got it wrong by tallying the check runs themselves. That
+  makes it look less like missing knowledge than like a miscount over a large tool result — which
+  prose cannot fix. The remaining options are structural (shaping what the tool returns) or
+  accept-and-flag.
+- **Changed files absent** (R5, R6, R7). Levered once, in the terms the reframe allows; no effect.
+
+Merge state also absent in both R6 and R7.
+
+**R8 — the file list arrives; the merge state arrives wrong.** One lever: the domain fact that
+GitHub computes the merge verdict itself and the pull request carries it (`mergeable`,
+`mergeable_state`, with the five states named), and that re-deriving it by tallying check runs is
+where the answer goes wrong. Valid attempt 1; **five calls — `get_files` among them for the first
+time since R4**.
+
+| Emitted | Verdict |
+|---|---|
+| a **Changed Files** section: six paths, each with its status and additions, each row wired to a `view-file-diff` event carrying a bound `filename` | **fixed** — three rounds of absence ended |
+| a "Merge Eligibility & Status Checks" section | present, and **factually wrong** |
+| "Branch is currently out of date. Base branch 'main' has moved on." | `behind` — **false** |
+| "python / web tests — passed (30 check runs in total)" | **false** |
+| "Update branch" button wired to an `update-branch` event | **read-only violation, regressed** — R6/R7 had this right |
+| "jgindin completed final code review comments" | authored characterisation — "final" is the model's inference |
+
+Checked against the public API at the time of the round: `mergeable: true`, **`mergeable_state:
+unstable`**, `changed_files: 22`, `commits: 14`, head `93639e6d`. So the file counts are right and
+the merge state is not: `unstable` means mergeable-but-a-check-is-not-green, which is neither
+"out of date" nor "all passed".
+
+The failure mode is worth recording precisely, because it is the opposite of the one the lever was
+written for. **Enumerating the five `mergeable_state` values gave the model a menu to pick from
+rather than a field to read.** It produced a confident, well-composed sentence about `behind` — a
+state it was handed the vocabulary for — instead of reporting `unstable`. Naming the possible values
+of a field is not the same as making the model read it, and can actively license invention.
+
+**Beat 2 stands at:** composition, interactivity, the compose-and-confirm boundary and now the file
+list all good; **data truth about merge and check state unresolved after three rounds and two
+distinct levers** (R6/R7 semantics of conclusions; R8 authoritative field). Two prose levers have now
+failed on the same defect, so per decision 6 prose is not tried a third time. What remains is
+structural — shaping what the tool hands back (a resolved check tally and merge verdict, rather than
+raw runs the model re-derives from) — or accepting the defect and flagging it.
+
+### Closure
+
+Beat 2 is **closed at R8 as accepted-with-known-defects, not rubric-approved.** Its Data truth line
+is not met: the surface states a merge state and a check outcome that the API contradicts.
+
+Two consequences follow and are carried, not resolved here:
+
+1. **No example is folded in from this beat.** Decision 4 folds only *approved* surfaces into
+   `agent/knowledge/examples/`, and decision 11 retires an example only once its replacement is
+   approved. So `comment-compose-form.json` and the rest stay, and the shipped example set still
+   holds one beat-derived example (beat 1's) rather than two.
+2. **The structural fix is the open lever.** Shaping the tool result so the agent receives a
+   resolved merge verdict and check tally, instead of raw runs it re-derives from. Three rounds of
+   evidence point at it, and it plausibly serves beats 4–8 as well, since every list beat also
+   re-derives state from raw payloads.
 
 ## Beat 3 — compose-and-confirm review *(follows beat 2)*
 

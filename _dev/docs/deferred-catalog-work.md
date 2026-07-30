@@ -237,3 +237,29 @@ zero available width, so every item is treated as overflow and nothing is drawn.
 Revisit with a Playwright test (real layout) rendering `UnderlineNav` **nested**, asserting the item
 labels are visible. Until then the component is unreliable for composed surfaces, and the agent is
 steered away from emitting unwired navigation at all.
+
+### Timeline — avatars are clipped at the surface's left edge
+
+Found live in task 7.7 (beat 2, round 5). The agent composed `PageLayout` → `PageLayout.Content` →
+`Timeline` → `TimelineItem` → `TimelineAvatar`. In Chrome each avatar renders as a half-circle cut
+off at the surface's left border. Three layers compound, and only one of them is the component:
+
+1. Primer's `Timeline.Avatar` is **designed** to draw outside the timeline's left edge — it sits on
+   the rail, which is how GitHub's timeline looks. The component legitimately paints outside its own
+   box.
+2. `PageLayout.Content` gives it no left padding to occupy, so it overflows the content region.
+3. `.chat-surface-turn` (`client/src/chat/ChatView.css:83`) carries `overflow-x: auto` — part of the
+   round-2 surface-width stopgap — which makes that box a scroll container and clips the overflow.
+   The overflow is in the negative direction, so it cannot even be scrolled to.
+
+**Not an agent defect** — the composition is correct, and a brand-doc rule steering the agent away
+from timeline avatars would be prescribing screens to work around a component that is not
+self-contained. The fix belongs in the adapter: `Timeline` should reserve the space its avatars
+occupy, so it survives any container. Padding `.chat-surface-turn` instead would put the fix in the
+layer Phase 8's canvas deletes, and would make every surface pay for one component's overflow.
+
+Same detection blind spot as `UnderlineNav` above: jsdom has no layout, so no adapter test can see
+it. That is now **two instances of one class**, and the client's Playwright layer
+(`client/e2e/visual.spec.ts`) is where both become catchable — a better argument for building that
+check once than either instance made alone. Revisit as one scoped piece of work: the adapter fix
+plus a real-layout regression covering both.
