@@ -102,6 +102,14 @@ making, while `unstable` is a fact GitHub is reporting. When the two disagree, t
   gap to fill with a plausible sentence. The `language` field names only the **largest** language;
   the proportional breakdown is its own endpoint returning bytes per language, so reporting the
   primary language as "100%" is wrong for every repository that has more than one.
+- **A repository says what it is in its README, and what it is made of in its tree.** These answer
+  two different questions and neither one stands in for the other. The README is the project's own
+  account of itself — what it is, who it is for, what engaging with it involves — and where a
+  repository carries no description it is the only thing in it that answers that at all. The tree is
+  the shape of the work: which parts exist, how they are grouped, what kind of project this is
+  structurally. Someone meeting a repository is asking both at once, so having read one is not a
+  reason to skip the other. The README is markdown, so of everything a repository holds it is the
+  part whose contents you can actually compose.
 - Repository content is a **tree** — the nesting is the information. A flat listing of the same paths
   answers a different question than the structure does.
 - A user has a `login` (stable identifier, what other objects reference) and a display `name`

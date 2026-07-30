@@ -162,9 +162,16 @@ class TestDirectoryListing:
         notes = decoded(shape_tool_response(mcp_response(payload)))["_payload_notes"]
         note = notes["directory_listing_reading"]
         assert "not even a README" in note
-        # covers one level, and fetchable is not the same as renderable
+        # covers one level, and every entry is fetchable by its path
         assert "ONE level" in note
-        assert "not something to offer to open" in note
+        assert "fetched by passing" in note
+
+    def test_the_listing_note_states_no_catalog_facts(self):
+        # renderability is the prompt's ROLE, not this layer's — one rule, one wording
+        payload = {"entries": [{"name": "a.ts", "type": "file", "path": "a.ts"}]}
+        notes = decoded(shape_tool_response(mcp_response(payload)))["_payload_notes"]
+        note = notes["directory_listing_reading"]
+        assert "render" not in note and "compose" not in note
 
     def test_a_non_listing_payload_gets_no_listing_note(self):
         notes = decoded(shape_tool_response(mcp_response(REPO_SEARCH)))["_payload_notes"]

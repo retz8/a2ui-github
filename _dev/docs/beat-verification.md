@@ -677,11 +677,11 @@ keeping a workaround.
 - **Not required** — the contribution/deployment/custom-properties blocks, contributor avatars,
   releases, the exact sidebar composition.
 
-### Rounds — IN PROGRESS, five rounds spent, not approved
+### Rounds — R8 stopped under decision 6; R9 is the ladder probe
 
-| R1 | R2 | R3 | R4 | R5 |
-|---|---|---|---|---|
-| ![](assets/beat-6-r1.jpg) | ![](assets/beat-6-r2.jpg) | ![](assets/beat-6-r3.jpg) | ![](assets/beat-6-r4.jpg) | ![](assets/beat-6-r5.jpg) |
+| R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 |
+|---|---|---|---|---|---|---|---|
+| ![](assets/beat-6-r1.jpg) | ![](assets/beat-6-r2.jpg) | ![](assets/beat-6-r3.jpg) | ![](assets/beat-6-r4.jpg) | ![](assets/beat-6-r5.jpg) | ![](assets/beat-6-r6.jpg) | ![](assets/beat-6-r7.jpg) | ![](assets/beat-6-r8.jpg) |
 
 Every claim below was checked against `api.github.com` rather than read off the screen.
 
@@ -747,6 +747,227 @@ so one clean round after three dirty ones may be variance rather than a fix. Rep
 it. Remaining gaps: README **content** still never fetched (a Sufficiency line), `open-file` still
 offered on three source files (`Package.swift`, `package.json`, `pyproject.toml` — `README.md` is
 legitimate), and the tree is one level, now honestly so.
+
+**Levers (R6).** The two gaps were read as one root: everything the agent had been told about files
+was **prohibitive**, so it neither fetched the README nor fully stopped offering source. Three
+changes, one per artifact charter. ROLE: the renderability rule was stated **twice** — ROLE said "a
+JSON, TypeScript or YAML file", the listing note said "you cannot render source" — one rule with two
+wordings and two scopes, which is how it landed on some files and not others. Consolidated into a
+single closed statement: markdown is the only renderable kind, everything else (source,
+configuration, manifests, lockfiles, data, images) is a name, and neither being informative nor being
+fetchable moves a file out of that set. Domain doc: gained what a README **is** — the repository's
+own account of itself, and the only thing answering "what is this" where the description is absent.
+`tool_shaping.py`: the renderability sentence was a **catalog fact in the payload layer**, against its
+charter, so it was removed and replaced with the payload truth it lacked — every entry is fetchable
+by its `path`.
+
+**R6 — the README lever overshot and took the tree with it.** Two tool calls:
+`search_repositories`, then `get_file_contents('README.md')`. The root listing was **never fetched**.
+
+What landed, and convincingly. README content is fetched and genuinely **decomposed** for the first
+time in six rounds — headings, per-philosophy sections, use-case rows — not a dump and not a
+paraphrase of a tree. The four statistics are exact (15,951 / 1,247 / 290 / TypeScript), still
+labelled "Open Issues & PRs" and "Primary Language" rather than a bare count or a percentage. No
+`open-file` anywhere. The two README call-to-action buttons carry `openUrl` to
+`https://a2ui-composer.ag-ui.com/theater` and `https://a2ui.org/quickstart/` — both **verbatim from
+the README**, both with the README's own emoji, and `openUrl` is a registered 7.9 function, so this
+is an honest affordance rather than R1's `openUrl` defect returning. `Browse Issues` / `Browse Pull
+Requests` are server events carrying `owner` + `repo`.
+
+**But the file tree is gone entirely** — and with it three rubric lines that R5 passed: Sufficiency's
+file tree, Composition's hierarchical presentation, and Interactivity's directory entries. R5 had a
+tree and no README; R6 has a README and no tree. The beat is seesawing between the two content
+sources rather than converging.
+
+The cause looks self-inflicted. The new domain bullet closes with *"the file tree is not a
+substitute: a listing of paths says how the code is arranged, never what the project does."* That
+sentence is true, but it **ranks** the two, and the model acted on the ranking by dropping the lower
+one. It was written to say the tree does not answer "what is this"; it reads as "prefer the README
+over the tree." The R7 lever is to state what each of the two answers **without ranking them** —
+they are complementary reads, not competing ones.
+
+**Gap 2 cannot be called closed.** No `open-file` appeared, but with no tree there were no file
+entries at all, so the consolidated ROLE rule was never actually put to the test. It is untested,
+not proven.
+
+**Fabrication watch — much milder, not clean.** No invented fact anywhere: no invented description
+sentence, no invented statistic, no invented URL. But the lead line reads *"…updatable agent-generated
+UIs and **client-side renderers**"* where the README says *"…and **an initial set of renderers**, that
+allows agents to generate or populate rich user interfaces."* Truncating the trailing clause is fair
+condensation; substituting the phrase is not — ROLE's own line is that shortening to substance is
+fair and writing a sentence its author did not write is not. Two smaller drifts of the same kind:
+"rendered identically" (the README says only that payloads can be rendered on multiple clients) and
+"Lit" inserted into a framework list that does not contain it. Note the tell holds — "client-side
+renderers" is *our* stack's vocabulary, in the same slot the description fabrication has occupied
+five times. This is a paraphrase of a real sentence rather than an invention, which is a real
+improvement on R1–R4, but it is the same failure kind and should not be recorded as clean.
+
+**Data model: 159 B** — far below the 3825 B of the beat-5 chain, because only the five statistics
+are bound (`repoName`, `starsCount`, `forksCount`, `issuesCount`, `primaryLanguage`); the entire
+decomposed README is literal text carrying no data model. Surface `repo-overview-a2ui`, valid on
+attempt 1.
+
+**Levers (R7).** Two, applied together. The domain bullet was rewritten to stop **ranking** the two
+reads: a repository says what it is in its README and what it is made of in its tree, these answer
+two different questions, neither stands in for the other, and having read one is not a reason to skip
+the other. ROLE's condensation sentence gained the phrase-level case: decomposing a document is
+re-presenting its own words, dropping a clause or a section is condensing but swapping a term for a
+near-synonym is rewriting, because in a technical document the term IS the claim — **keep the
+author's nouns**.
+
+**R7 — the best surface of the beat, and interactivity collapsed.** Three tool calls issued in
+parallel: `search_repositories(minimal_output: False)`, `get_file_contents('README.md')` and
+`get_file_contents('/')`. Both levers landed cleanly.
+
+- **The seesaw is resolved.** README *and* tree, together, for the first time. The tree renders
+  through `TreeView` — hierarchical, as the rubric anticipated — and carries **all 15 real
+  directories**, complete and correct against the API, plus nine notable files.
+- **Gap 2 is now genuinely closed, and this time it was tested.** R6 could not test it (no tree, so
+  no file entries). R7 lists `Package.swift`, `package.json`, `pyproject.toml`, `pubspec.yaml`,
+  `yarn.lock` and `LICENSE` — *the exact files that defeated R5* — and **not one carries an action**.
+  The consolidated ROLE rule held where the two-wording version did not.
+- **The "keep the author's nouns" lever landed.** Every R6 drift is gone: the lead sentence is now
+  verbatim including "an initial set of renderers"; "rendered on multiple different clients" replaces
+  "rendered identically"; "Flutter, Angular, Lit, etc." and "safe like data, but expressive like
+  code" are both verbatim (checked, not assumed).
+- Facts exact: 15,951 / 1,247 / 290, "TypeScript (Primary)", Apache-2.0, default branch `main`.
+  `UnderlineNav` rendered its three tabs correctly this round — intermittent, as recorded below.
+
+**But almost nothing on the surface is wired.** 148 components; **exactly one carries an action**:
+
+| Defect | Rubric line |
+|---|---|
+| All 24 `TreeViewItem`s inert — no path-carrying action, no local expand | Interactivity |
+| `Star` (count 15.9k) wired to `event: {name: "noop"}` | Interactivity / ROLE read-only |
+| The three `UnderlineNav` tabs (Code, Issues, Pull Requests) inert | Interactivity |
+
+The Star result is the R2 finding repeating in a third form: R1 wired it to a `windowAlert` lie, R2
+moved it to a `star-repo` server event, R5 correctly gave it **no action at all**, and R7 gives it a
+`noop` event. The button claims starring is on offer; the claim is what the rule is about, so a
+no-op event is not an improvement on no button.
+
+**The data model is empty — 43 B, `{"data":{},"signals":{},"subscriptions":{}}`** (R6: 159 B; the
+beat-5 chain: 3825 B). Nothing on this surface is bound; all 148 components are hand-authored
+literals, including 24 individually written tree rows. That is a direct violation of two standing
+WORKFLOW rules — bind dynamic values through the data model, and render a collection as ONE list
+template — and it is very likely the **same defect** as the inert rows rather than a second one:
+hand-authoring 24 rows one at a time is exactly the mode in which the per-row action gets dropped.
+The prompt already warns that unrolled rows carry no data model; the warning is not landing on this
+beat. Treat "unrolled instead of templated" as the single root to lever next, not the three rows of
+the table separately.
+
+**The wall, sixth occurrence — record, do not lever.** The header renders the description slot as
+*"An open standard for updatable agent-generated UIs"*, and `description` is `null`. The sentence is
+not in the README. It is materially milder than R1–R4 — it is assembled from real README phrases
+("an open standard", "updatable agent-generated UIs") and says nothing false about a2ui, where the
+earlier four invented claims describing *our* stack — but it is still a sentence its author did not
+write, in the slot that has now drawn a fabrication in six of seven rounds. Per the standing decision
+this is a Phase-8 model finding, not another prose lever.
+
+**Levers (R8).** Aimed at the "unrolled instead of templated" root, after checking the catalog rather
+than guessing. Two findings shaped them. First, `Icon.name` **is** a genuine enum (the kebab-case
+form of every octicon), so the prompt's claim that it can never be data-bound is correct — a single
+template genuinely cannot vary its icon per row, and the model unrolling a mixed dir/file tree was
+following the rules as written. Second, the approved `pr-review-queue` example already demonstrates
+the mechanism the prompt never names: a template's row carries
+`"action": {"event": {…, "context": {"number": {"path": "number"}}}}` — the **event context is
+data-bindable by relative path** — while the row's icon stays a literal. So WORKFLOW gained both:
+the bindable event context, and "emit ONE TEMPLATE PER ROW SHAPE" replacing the all-or-nothing
+escape hatch. ROLE gained the dead-affordance half of the read-only rule: an affordance fails in both
+directions, every control must carry an action that leads somewhere, a no-op event does not rescue
+one, and where there is nothing to do the value is shown as a fact rather than offered as a control.
+
+**R8 — the ROLE lever landed, the WORKFLOW lever did not move at all.** Same three parallel fetches.
+
+What improved: the `noop` Star is **gone**, and so are the inert `UnderlineNav` tabs — no dead
+control anywhere on the surface. Four `openUrl` actions on `ActionList.Item`s, all four URLs
+**verbatim from the README's Getting-started table**. Every fact exact, re-checked live: 15,951 /
+1,247 / **291** (the count genuinely moved from 290 between R7 and R8 — checked rather than assumed),
+`TypeScript`, and "Updated 30 minutes ago" against a `pushed_at` 30.0 minutes old, rendered through
+`RelativeTime`. Text fidelity holds from R7: lead sentence, "Flutter, Angular, Lit, etc." and "safe
+like data, but expressive like code" all verbatim. **No description fabrication** — the header
+carries only real fields and no description slot at all. As with R5, nothing this round targeted it,
+so it is again unearned.
+
+But the ROLE lever was satisfied the cheap way: the model **removed** the controls rather than wiring
+them. And the WORKFLOW lever produced no effect whatsoever —
+
+| | R7 | R8 |
+|---|---|---|
+| Data model | 43 B, empty | **43 B, empty** |
+| `TreeViewItem`s | 24, **all inert** | 11, **all inert** |
+| Directories listed | 15 of 15 | **7 of 15**, silently |
+
+The tree is still hand-authored, still carries `children` and nothing else, and the surface still
+binds nothing. Coverage went *down*: seven of fifteen directories, with no indication the listing is
+partial.
+
+**Stop — decision 6.** Two consecutive rounds have produced the same defect on the same rubric line
+(Interactivity: directory entries carry no path-bearing action), and the lever written specifically
+against it moved neither the data model nor the rows. Per the task spec a lever that is not working
+is not repeated, so beat 6 returns to the user here rather than spending a ninth round.
+
+What is now known, and should shape whatever comes next rather than another prose lever: the
+mechanism is present and proven in the shipped example, the prompt now states it explicitly with a
+literal JSON fragment, and the model still does not apply it to a tree. Across R6–R8 the beat has
+traded one rubric line for another every round — README vs tree, wired vs present, coverage vs
+correctness — without ever holding two at once. That pattern, not any single defect, is the finding.
+
+### R9 — the diagnostic ladder, rung two: `gemini-3.1-pro-preview`
+
+![](assets/beat-6-r9-pro.jpg)
+
+Run under decision 9 after the R8 stop. **Tier was the only variable**: same working tree as R8, same
+prompt, same three knowledge artifacts, fresh conversation, only `MODEL_NAME` changed (in the
+untracked `.env`, so the committed default is unaffected — this is a probe, not a new default).
+
+**First, a discrepancy this probe surfaced.** Decision 9 names `gemini-3.5-flash-lite` as the default
+and *the model the demo runs on*, with `gemini-3.5-flash` as rung one of the ladder. But `c7c1d30`
+set the default to `-lite` and `0b654bd` ("beat 1 verified") changed it to `gemini-3.5-flash` **and
+deleted the ladder comment**. So every beat since has been verified at rung one, permanently, rather
+than at the baseline the spec names — and decision 9 explicitly frames a tier change as one
+diagnostic turn, never a switch. The env drifted from the spec; which of the two is now correct is a
+question for the user, and it bears on decision 16's definition of done.
+
+**The result: the defect that stopped R7 and R8 is gone, from the tier alone.**
+
+| | R7 (flash) | R8 (flash) | **R9 (pro)** |
+|---|---|---|---|
+| Data model | 43 B, empty | 43 B, empty | **453 B, bound** |
+| Tree rows | 24, hand-authored, inert | 11, hand-authored, inert | **1 template over a bound `dirs[]`** |
+| Per-row action | none | none | **`open-directory`, context `{"path": {"path": "path"}}`** |
+| Components | 148 | 104 | **61** |
+| Directory coverage | 15 of 15 | 7 of 15, silently | **11 of 11 non-dot dirs** |
+
+The R8 WORKFLOW lever — bindable event context, one template per row shape — was applied **exactly as
+written**, having produced no effect whatsoever across two rounds on flash. The surface is also less
+than half the component count, because templating replaces unrolled rows. Directory omission became
+principled (the four dot-folders) rather than arbitrary.
+
+Gap 2 holds at this tier: `open-file` appears on **`AGENTS.md` and `README.md` only** — both markdown,
+both genuinely renderable — and on no source or manifest file. `package.json` is listed and carries
+nothing. Text fidelity holds verbatim; homepage `a2ui.org`, Apache License 2.0, stars and forks all
+correct.
+
+**Two defects remain, and neither is the one that caused the stop:**
+
+1. **"15,951 watching" is false — the real figure is 92.** The model read `watchers_count`, which is
+   a legacy GitHub alias that mirrors `stargazers_count`; the true watcher count is
+   `subscribers_count`. Data truth. This is a clean **domain-fact gap** — the agent had no way to know
+   the alias — and so is fixable by the domain doc, unlike the wall.
+2. **A prose preamble returned** ("Here is the `a2ui-project/a2ui` repository. It is a TypeScript
+   project defining…"), which ROLE forbids outright, and it carries an authored description-style
+   sentence. The wall has moved channels: not the description slot this time, but the prose beside
+   the surface. Same recurrence as beat 4's preamble flag.
+
+Also worth flagging, not failing: the tree is composed as `ActionList` with two groups rather than
+`TreeView`, so it is grouped-flat rather than hierarchical. With a one-level payload there is nothing
+to nest, but R7 did reach for `TreeView`.
+
+**Recorded as a model finding, per decision 9.** A pass at a higher tier ends prose tuning on this
+defect. Templated, path-carrying interactivity on a mixed-shape collection is above
+`gemini-3.5-flash`'s ceiling for this beat and within `gemini-3.1-pro-preview`'s, with the prompt
+already stating the mechanism explicitly and the shipped example already demonstrating it.
 
 **Correction to the R1 note:** `UnderlineNav` rendered its tabs correctly in R1, which appeared to
 contradict the `deferred-catalog-work.md` entry. In R5 it rendered as an **empty band** with three

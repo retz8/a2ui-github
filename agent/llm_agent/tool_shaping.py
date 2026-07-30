@@ -59,17 +59,18 @@ EMPTY_FIELDS_NOTE = (
 )
 
 # A directory listing names its entries; it does not carry what is inside them, and it
-# reaches exactly one level down.
+# reaches exactly one level down. What may be RENDERED from a fetched file is a catalog
+# fact and lives in the prompt's ROLE — stating it here too gave one rule two wordings
+# and two scopes, which is how it landed on some files and not others.
 DIRECTORY_LISTING_NOTE = (
     "This is a directory listing: every entry is a NAME only. No file's contents are "
     "included here, not even a README — until you fetch a path specifically, you do not "
-    "know what it says, so do not describe it. "
+    "know what it says, so do not describe it. Any entry here can be fetched by passing "
+    "its 'path' back to this same tool, and that fetch is the only way to learn what it "
+    "contains. "
     "The listing also covers exactly ONE level: an entry of type 'dir' is a name with "
     "nothing under it. What that directory contains is its own fetch, and a tree drawn "
-    "from this payload alone is one level deep however it is presented. "
-    "Fetching a path is not the same as being able to show it: you can render a markdown "
-    "file by decomposing it, and you cannot render source — so an entry you could fetch "
-    "but not compose is a name to display, not something to offer to open."
+    "from this payload alone is one level deep however it is presented."
 )
 
 _EMPTY_VALUES = (None, "", [], {})
