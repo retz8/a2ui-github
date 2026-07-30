@@ -116,6 +116,12 @@ visual language.
   hand-written items when the data comes from a tool — unless per-row enum-typed treatment (a
   `StateLabel`, an `Icon` fill) must differ per row: enum props cannot be bound, so a
   state-emphasized list is authored as unrolled rows carrying literal state values.
+- **A dynamic-typed property takes one of three forms**: a literal, a `{path}` binding, or a
+  **function call returning that type** (`{"call": …, "args": …, "returnType": …}`). The third form
+  is how a component's own state derives from data the user is editing — the call re-evaluates as
+  the bound path changes, entirely on the client, with no agent round-trip. A property whose schema
+  names `DynamicString`, `DynamicBoolean` or `DynamicNumber` accepts all three; an enum- or
+  literal-typed property accepts none of them.
 - Reference item fields from inside a template with **relative** JSON pointers — `{"path": "title"}`,
   no leading slash. Reserve absolute paths (leading slash) for the surface-level data model outside
   a template.
@@ -137,9 +143,13 @@ visual language.
   required indicator and the input's own requirement stay consistent.
 - State a field's constraints in a `FormControlCaption`, not in placeholder text — the placeholder
   disappears once the user types.
-- Do not attach a `checks` validation rule unless the referenced function exists in the catalog's
-  function set. Client-side validation functions are added on demand as flows need them, not
-  assumed.
+- **Gate a submit control on its input's validity** by binding the control's `disabled` to a
+  function call over the input's bound path — `not(required(...))` for a field that must be
+  non-empty, `not(length(...))` for a minimum. The catalog ships `required`, `length`, `regex`,
+  `numeric` and `email` as boolean validators, and `and` / `or` / `not` to compose them. This
+  catalog expresses validation through those dynamic properties; it declares no `checks` list.
+- A `required` marker on a `FormControl` labels the field, it does not enforce anything. A form
+  whose submit stays enabled over an empty required field will send that empty value.
 
 ## When to use X vs Y
 

@@ -441,6 +441,78 @@ Two consequences follow and are carried, not resolved here:
 - **Never acceptable** — omitting validation to make the beat pass. Proving the local-function
   mechanism end to end is why this beat exists.
 
+*(The task spec's invariant names "beat 5" as the load-bearing one. That is stale numbering — beat 5
+is issue-detail and the compose beat is 3, per `SPEC.md` §3.1. Read it as "the compose beat".)*
+
+### Rounds — approved at R2
+
+| R1 | R2 (drafted) | R2 (blocked after Clear) ✓ |
+|---|---|---|
+| ![](assets/beat-3-r1.jpg) | ![](assets/beat-3-r2-drafted.jpg) | ![](assets/beat-3-r2-blocked.jpg) |
+
+Each round is two live turns: a fresh conversation, beat 2's prompt, then this beat's as a follow-up.
+No adapter change was needed — task 7.9 had already adopted `required`, `length`, `regex`, `numeric`,
+`email` and `and`/`or`/`not`.
+
+**R1 — form composed, validation absent.** The surface drafted for real: a `Textarea` bound to
+`/review_body` pre-filled with "The specification document looks reasonable.", a three-way review-type
+radio with Approve preselected, `clearValue` wired as a local call, and a server `event`
+(`submit-pr-review`) carrying the PR context. But **zero validation**: clicking Clear emptied the body
+and `Submit review` stayed enabled, so an empty submit would have reached the agent. Submit was never
+clicked — the emitted surface proves the absence statically, and a click would have cost a turn.
+
+The cause was **our own documentation, not the model.** `brand-guidance.md` pointed the agent at a
+`checks` rule — the mechanism `docs/concepts/actions.md` describes upstream, which **this catalog does
+not declare** (`"checks"` appears zero times in `catalog.json`) — and then told it client-side
+validators "are added on demand as flows need them, not assumed", which stopped being true when 7.9
+shipped fourteen of them. Meanwhile nothing said that a dynamic-typed property accepts a function
+call. The agent was told the wrong door existed and the right one was never mentioned.
+
+`Button.disabled` is a `DynamicBoolean`, which the protocol defines as *"a boolean value that can be a
+literal, a path, or a function call returning a boolean"* — and every adopted validator declares
+`returnType: 'boolean'`. The capability was there the whole time.
+
+**Levers:** brand-doc only, both catalog mechanics rather than screen prescription — a rule that a
+`Dynamic*` property takes a literal, a `{path}`, or a function call returning that type (the third
+form being how a control's state derives from data the user is editing, client-side, with no
+round-trip); and a forms rule to gate a submit control by binding `disabled` to a function call over
+the input's path, naming the validators that ship and stating that a `required` marker on a
+`FormControl` labels but does not enforce.
+
+**R2 — approved.** First try after the fix, valid on attempt 1. The submit button carries:
+
+```json
+"disabled": { "call": "not",
+  "args": { "value": { "call": "required",
+    "args": { "value": { "path": "/reviewBody" } }, "returnType": "boolean" } },
+  "returnType": "boolean" }
+```
+
+Exercised live rather than inferred — Clear clicked for real, then the field driven:
+
+| Body state | `Submit Review` |
+|---|---|
+| emptied via `clearValue` | **disabled** |
+| "Looks good." typed | enabled |
+| cleared again | **disabled** |
+
+Re-evaluates in both directions, on the client, with no agent turn. Stance is a `SegmentedControl`
+with Approve preselected; submit is a server `event` carrying `prNumber: 2123` and the bound body;
+nothing posts.
+
+**Flagged, not failed** (decision 2):
+
+- The caption *"Your feedback is sent directly to the author"* promises a send the agent structurally
+  cannot perform. Nothing claims anything *was* submitted, so Data truth holds — but it is the same
+  family as beat 2 R8's "Update branch".
+- `required` accepts **whitespace-only** input: `"   "` re-enables submit. That is the upstream
+  basic-catalog implementation 7.9 wrapped, and the rubric asks for non-empty rather than
+  trimmed-non-empty. Worth knowing before leaning on `required` for a stricter field.
+
+**Approved surface** → `agent/knowledge/examples/pr-review-compose.json`. Retires
+`comment-compose-form.json` per decision 11; it adds the compose-and-confirm-with-client-validation
+idiom the set lacked. Strict example gate green (186), client suite green (541).
+
 ## Beat 4 — issue list, fuzzy intent
 
 > "Which issues on a2ui-project/a2ui look like they're stalled waiting on someone?"
