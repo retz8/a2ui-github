@@ -677,7 +677,7 @@ keeping a workaround.
 - **Not required** — the contribution/deployment/custom-properties blocks, contributor avatars,
   releases, the exact sidebar composition.
 
-### Rounds — R8 stopped under decision 6; R9 is the ladder probe
+### Rounds — CLOSED at R8, accepted with known defects (not rubric-approved)
 
 | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 |
 |---|---|---|---|---|---|---|---|
@@ -1017,6 +1017,33 @@ the default and the model the demo runs on, leaving `gemini-3.1-pro-preview` as 
 remaining rung. Every beat verified so far was verified on that model, so the amendment costs no
 re-verification. R9 stands as the recorded model finding. R10 is retained as the evidence for the
 amendment, not as a beat-6 round — the beat's live state remains the R8 stop.
+
+### Closure
+
+Beat 6 is **closed at R8 as accepted-with-known-defects, not rubric-approved.** Its Interactivity
+line is not met on the demo model: directory entries neither expand locally nor carry a
+path-bearing server action. R7 is the beat's best surface on `gemini-3.5-flash` — README and tree
+together, all fifteen directories, no false affordance, and the renderability rule holding on exactly
+the manifest files that defeated R5 — but 148 components carried one action between them, and the
+data model was empty.
+
+Three consequences, carried rather than resolved:
+
+1. **No example is folded in from this beat.** Decision 4 folds only *approved* surfaces, so the
+   shipped set stays at four and gains no repository-overview idiom.
+2. **The blocking defect is recorded as a model finding, not an open lever.** R9 established that
+   `gemini-3.1-pro-preview` applies the templating rule exactly as written — one template over a
+   bound `dirs[]`, per-row `open-directory` carrying `{"path": {"path": "path"}}` — while
+   `gemini-3.5-flash` does not, with the prompt already stating the mechanism and the shipped
+   `pr-review-queue` example already demonstrating it. Two rounds of prose levers moved it not at
+   all. This is Phase 8's input, alongside the fabrication wall.
+3. **Two smaller defects stay open.** The watcher-count fact landed after the last live run and is
+   therefore untested against one, and the forbidden prose preamble recurred at the pro tier — the
+   same flag beat 4 raised.
+
+The fabrication wall's sixth occurrence is recorded here too: R7 filled the description slot with a
+sentence assembled from real README phrases while `description` was `null`. Milder than R1–R4, and
+still not the author's sentence.
 
 **Correction to the R1 note:** `UnderlineNav` rendered its tabs correctly in R1, which appeared to
 contradict the `deferred-catalog-work.md` entry. In R5 it rendered as an **empty band** with three
