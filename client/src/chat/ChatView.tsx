@@ -39,6 +39,9 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
   const [pendingLabel, setPendingLabel] = useState('Generating…');
   const [turns, setTurns] = useState<Turn[]>([]);
   const turnKey = useRef(0);
+  // Bumped on every applied batch of A2UI messages. Feeds SurfaceErrorBoundary's resetKey so a
+  // surface that threw while mid-parse gets one retry per message rather than staying dead.
+  const [appliedSeq, setAppliedSeq] = useState(0);
 
   const [wiring] = useState(() => {
     // Identifies the current send, so streamed prose chunks group into one bubble per turn. A
@@ -89,6 +92,8 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
         onMessageError: err =>
           reportFailure(`Part of this response could not be displayed. ${describeError(err)}`),
       });
+      // New content landed — let any surface that failed on a half-parsed component try again.
+      setAppliedSeq(n => n + 1);
     };
     const getClientDataModel = () => target?.getClientDataModel();
     const actionHandler = createA2AActionHandler({
@@ -223,7 +228,7 @@ export function ChatView({serverUrl, client}: A2ASenderOptions) {
                     className="chat-surface-turn"
                     data-testid={`surface-${turn.id}`}
                   >
-                    <SurfaceErrorBoundary surfaceId={turn.id}>
+                    <SurfaceErrorBoundary surfaceId={turn.id} resetKey={appliedSeq}>
                       <A2uiSurface surface={surface} />
                     </SurfaceErrorBoundary>
                   </div>

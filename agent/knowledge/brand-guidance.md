@@ -49,6 +49,13 @@ visual language.
   `Heading`, its paragraphs separate `Text`, its bullets rows in a `Stack` or `ActionList`, its
   links `Link`. Flattening it into a single string discards every bit of the author's structure and
   produces a wall of prose no reader scans. You are the renderer for that markdown.
+- **A body link to something in this domain is not a `Link`.** `Link` carries an `href` and nothing
+  else, so it can only hand the user to a browser tab — correct for a screencast, a spec site, an
+  external doc. A reference to an issue, a pull request, a user, a repository or a file is
+  something you can compose, so render it as a `Button` with `variant: "link"` (it reads as a link)
+  carrying an `event` with the target's identity. This applies inside decomposed markdown exactly
+  as it does to a row or a tab: `#2058` in a comment body is the same navigation as a row labelled
+  `#2058`.
 - Use `weight: "semibold"` to mark a primary label within a row (an issue title). Do not bold whole
   paragraphs of body text.
 - Constrain any single line that can overflow — a branch ref, a long title in a narrow pane — with

@@ -51,3 +51,59 @@ describe('SurfaceErrorBoundary', () => {
     expect(screen.getByText('still alive')).toBeInTheDocument();
   });
 });
+
+describe('SurfaceErrorBoundary — recovery on new content', () => {
+  // A streamed surface renders mid-parse: a component can carry `call` before its `args` have
+  // arrived, which throws in the renderer's binder. That window is milliseconds long, but a
+  // boundary that latched turned it into a surface that stayed dead for the session.
+  function Flaky({explode}: {explode: boolean}) {
+    if (explode) throw new Error('half-parsed component');
+    return <div>recovered surface</div>;
+  }
+
+  it('retries once the next message arrives', () => {
+    const {rerender} = render(
+      <SurfaceErrorBoundary surfaceId="s1" resetKey={0}>
+        <Flaky explode />
+      </SurfaceErrorBoundary>,
+    );
+    expect(screen.getByTestId('surface-error-s1')).toBeInTheDocument();
+
+    // Next applied message: same surface, now complete.
+    rerender(
+      <SurfaceErrorBoundary surfaceId="s1" resetKey={1}>
+        <Flaky explode={false} />
+      </SurfaceErrorBoundary>,
+    );
+    expect(screen.getByText('recovered surface')).toBeInTheDocument();
+    expect(screen.queryByTestId('surface-error-s1')).not.toBeInTheDocument();
+  });
+
+  it('settles into the fallback when the content stays broken', () => {
+    const {rerender} = render(
+      <SurfaceErrorBoundary surfaceId="s1" resetKey={0}>
+        <Flaky explode />
+      </SurfaceErrorBoundary>,
+    );
+    rerender(
+      <SurfaceErrorBoundary surfaceId="s1" resetKey={1}>
+        <Flaky explode />
+      </SurfaceErrorBoundary>,
+    );
+    expect(screen.getByTestId('surface-error-s1')).toBeInTheDocument();
+  });
+
+  it('stays failed while no new content arrives', () => {
+    const {rerender} = render(
+      <SurfaceErrorBoundary surfaceId="s1" resetKey={7}>
+        <Flaky explode />
+      </SurfaceErrorBoundary>,
+    );
+    rerender(
+      <SurfaceErrorBoundary surfaceId="s1" resetKey={7}>
+        <div>would render</div>
+      </SurfaceErrorBoundary>,
+    );
+    expect(screen.getByTestId('surface-error-s1')).toBeInTheDocument();
+  });
+});
