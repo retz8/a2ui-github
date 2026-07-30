@@ -102,7 +102,16 @@ SCOPE_DESCRIPTION = (
     "'is:pr is:open status:failure', '-author:app/dependabot' — over listing everything and "
     "then reading each item in turn. "
     "Drilling into one specific pull request is different: fetching its detail, reviews, "
-    "comments, status checks, and changed files takes several calls, and that is expected."
+    "comments, status checks, and changed files takes several calls, and that is expected. "
+    "About people, know what your tools can and cannot reach. Searching users LOCATES a "
+    "user — it returns their login, id and avatar, and nothing else. No tool you hold "
+    "returns another person's name, bio, company, location, follower or repository counts, "
+    "so those are not thin or missing data, they are data you cannot obtain: never state "
+    "them, and build the surface from what you CAN read. What you can read about a person "
+    "is their work — their repositories via a 'user:<login>' search (which does carry each "
+    "repository's description and star count), and their commits, issues and pull requests "
+    "via 'author:<login>'. Only the authenticated viewer's own profile is fetchable, "
+    "through the dedicated tool for it."
 )
 
 

@@ -145,6 +145,28 @@ class TestEmptyFieldsAreNamed:
         notes = decoded(shape_tool_response(mcp_response(CHECK_RUNS)))["_payload_notes"]
         assert "fields_returned_empty" not in notes
 
+    def test_names_the_fields_each_item_actually_carries(self):
+        # the real search_users projection: four fields, no name/bio/company/location
+        payload = {
+            "total_count": 1,
+            "incomplete_results": False,
+            "items": [{"login": "gspencergoog", "id": 1, "avatar_url": "a", "profile_url": "p"}],
+        }
+        notes = decoded(shape_tool_response(mcp_response(payload)))["_payload_notes"]
+        assert notes["item_fields_present"] == ["avatar_url", "id", "login", "profile_url"]
+        assert "ONLY the fields listed" in notes["item_fields_reading"]
+        # the envelope keys must not be mistaken for the item's keys
+        assert notes["fields_present"] == ["incomplete_results", "items", "total_count"]
+
+    def test_item_fields_reported_for_a_multi_item_search_too(self):
+        payload = {"items": [{"name": "a", "path": "a"}, {"name": "b", "path": "b"}]}
+        notes = decoded(shape_tool_response(mcp_response(payload)))["_payload_notes"]
+        assert notes["item_fields_present"] == ["name", "path"]
+
+    def test_no_item_note_when_there_is_no_items_list(self):
+        notes = decoded(shape_tool_response(mcp_response(CHECK_RUNS)))["_payload_notes"]
+        assert "item_fields_present" not in notes
+
     def test_does_not_flatten_a_multi_item_search(self):
         payload = {"items": [{"description": None}, {"description": "real"}]}
         notes = decoded(shape_tool_response(mcp_response(payload)))["_payload_notes"]

@@ -1060,12 +1060,127 @@ fixed; the deferred entry stands.
   star counts or follower numbers.
 - **Sufficiency** — identity (name, login, bio or company), a following-scale signal, and evidence of
   what they work on — repositories, recent activity, or both.
-- **Composition** — repositories rendered as a repeated, self-describing shape; each conveys what the
-  repository is, not just its name.
-- **Interactivity** — a repository entry resolves to a **server** action carrying owner and name;
-  expand/collapse is **local**.
+- **Composition** — whichever collection evidences the work — repositories, activity, or both — is
+  rendered as a repeated, self-describing shape; each entry conveys what the thing is, not just its
+  name. *(Amended after round 1. The original line named repositories specifically, which conflicts
+  with the Sufficiency line above it: Sufficiency accepts "repositories, recent activity, or both",
+  so a surface may legitimately carry no repository entries and leave this line without a subject.
+  Generalised to the collection actually shown.)*
+- **Interactivity** — an entry in that collection resolves to a **server** action carrying enough
+  context to identify its target — owner and name for a repository, repository and number for an
+  issue or pull request; expand/collapse is **local**. *(Amended after round 1, same reason.)*
 - **Not required** — the contribution heatmap (no catalog component expresses it; the headline
   contribution count is sufficient), achievements, organisation badges, the year selector.
+
+### Rounds — STOPPED at R2 under decision 6, not approved
+
+| R1 | R2 |
+|---|---|
+| ![](assets/beat-7-r1.jpg) | ![](assets/beat-7-r2.jpg) |
+
+**R1 — the templating finding does not generalise, and the wall is back at full strength.**
+Three tool calls: `search_users`, `search_commits`, `search_issues`. Valid on attempt 1.
+
+**The headline result is about beat 6, not beat 7.** This surface produced, on `gemini-3.5-flash`,
+exactly what beat 6 could not: a **templated collection with a data-bound per-row action** —
+`issue-row` carrying
+`{"event": {"name": "open-issue", "context": {"number": {"path": "number"}, "repo": {"path": "repo"}}}}`
+— over a **1615 B data model**, in 43 components. So beat 6's model finding is narrower than "flash
+cannot template": flash templates a **uniform** collection fine, and failed specifically on the mixed
+directory/file tree whose rows differ by an enum-typed icon. That is the case where the prompt's own
+rule ("an enum-typed property cannot vary per row") forces a choice, and where R8's "one template per
+row shape" instruction went unapplied. The finding should be restated in those terms.
+
+The eight issue rows are **exact** — number, state, title and repository all verified against the API
+on a sample of four (#2116 open, #2113 closed, #227 closed, #1724 open). `openUrl` on the GitHub
+Profile button is honest.
+
+**Two profile fields are fabricated, and this is the wall at full strength:**
+
+| Surface | Reality |
+|---|---|
+| "California, USA" | `location` is **`null`** |
+| "Google / DeepMind" | `company` is **`@flutter`** |
+
+The first is the beat-6 pattern exactly — an absent field filled with something plausible. The second
+is worse than beat 6 ever produced: not a gap filled but a **present value replaced with a wrong
+one**, and "DeepMind" is Google-adjacent invention of the same pattern-completing kind the earlier
+tell described. The `About` paragraph and both `Key Contributions` sections are likewise authored
+prose rather than the fetched `bio` ("Senior Software Engineer at Google"), though their factual
+content is largely grounded in the fetched commits and issues. The "Collaborator" label has no
+identified source.
+
+**Sufficiency gap:** no following-scale signal. `followers` is 474 and appears nowhere.
+
+**Rubric question — raised, not resolved (decision 2).** The rubric's Sufficiency line permits
+"repositories, recent activity, **or both**", and the agent took the activity branch; but its
+Composition and Interactivity lines name **repositories** specifically ("repositories rendered as a
+repeated, self-describing shape"; "a repository entry resolves to a server action carrying owner and
+name"). With no repository entries on the surface, those two lines have no subject. The issue list
+satisfies their *shape* — repeated, self-describing, per-row server action carrying its target — but
+deciding that it therefore satisfies them would be rewriting the rubric to match the output, which
+the invariant forbids. Raised for the user. **Resolved: generalised**, as amended above.
+
+### The tool layer cannot answer half of this beat
+
+Checked directly against the MCP server, zero LLM turns. `search_users` returns a **four-field
+projection** — `avatar_url`, `id`, `login`, `profile_url` — and the full tool list (28 tools) contains
+**no third-party user-profile tool at all**: only `get_me`, for the authenticated viewer.
+
+So `name`, `bio`, `company`, `location`, `followers` and `public_repos` are **unreachable** for
+anyone but the viewer. R1 stated four of them anyway. This is the R3 mechanism at the item level:
+`fields_present` described the search *envelope* (`total_count`, `incomplete_results`, `items`) and
+said nothing about how thin the items were, so the item's silence was again indistinguishable from
+the object lacking the field.
+
+It also makes part of this beat's Sufficiency line unmeetable as written: a "following-scale signal"
+cannot be honestly produced, because no tool returns one. Recorded rather than amended — unlike the
+Composition/Interactivity generalisation, this one is not a wording problem.
+
+What **is** reachable, and was not being used: a user's repositories, through a `user:<login>` query
+to `search_repositories`, which returns each repository's description, language and star count.
+
+**Levers (R2).** Two, applied together. `tool_shaping.py` gained `item_fields_present` — the fields
+each entry in an `items` list actually carries, distinct from the envelope — with the reading spelled
+out: a field missing from that list was not fetched, its absence is not evidence about the underlying
+object, and if no tool returns it then it cannot be shown at all. SCOPE gained the reachability facts:
+searching users *locates* a user and returns nothing else; no tool returns another person's name,
+bio, company, location or counts, so those are not thin data but data you cannot obtain; what you can
+read about a person is their work, via `user:<login>` and `author:<login>`.
+
+**R2 — the structured half became honest; the prose did not.** Three calls: `search_users`,
+`search_repositories({'query': 'user:gspencergoog'})` — the qualifier landed — and `search_issues`.
+
+| | R1 | R2 |
+|---|---|---|
+| Repositories | none fetched | **19 fetched, 6 shown, templated** |
+| Templates | 1 (`issue-row`) | **2** (`repo-item`, `issue-item`) |
+| Data model | 1615 B | **1707 B** |
+| Profile panel | "California, USA", "Google / DeepMind" | **Username + GitHub ID only** |
+
+The `Profile Info` panel now carries **exactly the two fields `search_users` actually returns**, which
+is the item-projection note landing precisely. The invented location is gone, and no name, follower
+count or repository count is claimed. Repositories are templated with `open-repo` carrying
+`{"fullName": {"path": "full_name"}}`; five of the six are exact on name, description and language.
+
+**But the affiliation fabrication survived, and the lever named it explicitly.** SCOPE now says in
+so many words that no tool returns another person's **company**, and the header still reads
+**"Google DeepMind / Flutter Team"** with the prose asserting "associated with Google (specifically
+Google DeepMind and the Flutter team)". `company` is `@flutter`; DeepMind is invented. The fabrication
+did not leave — it **moved out of the structured fields into the header and the prose**, exactly as
+beat 6's Star moved from `windowAlert` to `star-repo` to `noop`.
+
+Three further defects:
+
+| Defect | Rubric line |
+|---|---|
+| `git-scope` labelled **Java**; its `language` is **`null`** — empty-field invention, now at row level inside a template | Data truth |
+| `issue-item` action carries **`number` only**, no repository — a number alone cannot identify an issue (R1 carried both) | Interactivity |
+| The "Collaborator" label has no identified source | Data truth |
+
+**Stop — decision 6.** Invented affiliation appeared in R1 and again in R2, two consecutive rounds,
+with the R2 lever aimed squarely at it and naming `company` outright. A lever that is not working is
+not repeated. Beat 7 returns to the user here.
 
 ## Beat 8 — viewer-centric, ambiguous scope
 

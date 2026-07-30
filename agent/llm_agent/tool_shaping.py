@@ -48,6 +48,21 @@ PROJECTION_NOTE = (
 
 _ANNOTATION_KEY = "_payload_notes"
 
+# `fields_present` describes the ENVELOPE. For a search result the envelope is
+# {total_count, incomplete_results, items} — which says nothing about how thin the
+# items themselves are. search_users returns four fields per user (avatar_url, id,
+# login, profile_url), and beat 7 stated a name, company, location and follower
+# scale off that payload. Same mechanism as the search_repositories projection: the
+# item's silence was indistinguishable from the object lacking the field.
+ITEM_PROJECTION_NOTE = (
+    "Every entry in this result carries ONLY the fields listed in "
+    "`item_fields_present`. A field missing from that list was NOT fetched for these "
+    "entries — its absence here is not evidence about the underlying object, which may "
+    "well have a value for it. Never state or infer such a field from this payload. If "
+    "no tool available to you returns it, then it is not something you can show at all, "
+    "and the honest surface omits it rather than supplying a plausible value."
+)
+
 # Named, not generic. The generic projection note did not stop the model writing a
 # description for a repository whose payload carried `"description": null` — so the
 # empty fields are listed by name, with the reading spelled out for them.
@@ -151,10 +166,15 @@ def annotate(payload: Any) -> Any | None:
         return None
     notes: dict[str, Any] = {"fields_present": sorted(payload.keys()), "reading": PROJECTION_NOTE}
 
+    # What the ITEMS carry, as distinct from what the envelope carries.
+    items = payload.get("items")
+    if isinstance(items, list) and items and isinstance(items[0], dict):
+        notes["item_fields_present"] = sorted(items[0].keys())
+        notes["item_fields_reading"] = ITEM_PROJECTION_NOTE
+
     # Empty fields, named — on the payload itself and on the single item of a
     # one-result search, which is where a repository's own fields actually live.
     subject = payload
-    items = payload.get("items")
     if isinstance(items, list) and len(items) == 1 and isinstance(items[0], dict):
         subject = items[0]
     empty = _empty_fields(subject)
