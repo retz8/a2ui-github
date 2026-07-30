@@ -87,12 +87,20 @@ its own tests and catalog parity, and recorded in the verification journal.
 
 ### 9. Model and diagnostic ladder
 
-`gemini-3.5-flash-lite` is the default and the model the demo runs on; beats are verified on it. The
+`gemini-3.5-flash` is the default and the model the demo runs on; beats are verified on it. The
 model is never switched mid-loop, since tuning does not transfer across models. When a defect
 survives iteration and looks like a model ceiling rather than a prompt problem, one turn is spent
-re-running that round on `gemini-3.5-flash` — same generation, tier as the only variable — and then
-on `gemini-3.1-pro-preview` if needed. A pass at a higher tier ends prose tuning and is recorded as
-a model finding; an identical failure eliminates the hypothesis and iteration continues.
+re-running that round on `gemini-3.1-pro-preview` — the ladder's remaining rung. A pass at a higher
+tier ends prose tuning and is recorded as a model finding; an identical failure eliminates the
+hypothesis and iteration continues.
+
+*Amended during beat 6. This decision originally named `gemini-3.5-flash-lite` as the default with
+`gemini-3.5-flash` as the ladder's first rung. Lite is below this task's floor on two independent
+observations — beat 1 produced no surface at all on it, both attempts dying on the same malformed
+bracket, and beat 6 on lite regressed past its own first round: one tool call, no README, no tree,
+zero affordances, and an outright-invented description. The default moved to `gemini-3.5-flash` at
+beat 1 and every beat has been verified there since; this amendment brings the decision into line
+with that, leaving `gemini-3.1-pro-preview` as the sole remaining rung.*
 
 ### 10. The verification journal
 

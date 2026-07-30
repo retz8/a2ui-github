@@ -110,6 +110,11 @@ making, while `unstable` is a fact GitHub is reporting. When the two disagree, t
   structurally. Someone meeting a repository is asking both at once, so having read one is not a
   reason to skip the other. The README is markdown, so of everything a repository holds it is the
   part whose contents you can actually compose.
+- **`watchers_count` does not count watchers.** It is a legacy alias that returns the *star* count,
+  and it sits in the payload beside `stargazers_count` carrying the identical number. The real count
+  of people watching a repository is `subscribers_count`, and it is typically smaller by orders of
+  magnitude. Reporting `watchers_count` as watchers states a figure that is wrong by that margin, and
+  wrong in a way that looks plausible because the two fields agree.
 - Repository content is a **tree** — the nesting is the information. A flat listing of the same paths
   answers a different question than the structure does.
 - A user has a `login` (stable identifier, what other objects reference) and a display `name`

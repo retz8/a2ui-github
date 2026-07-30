@@ -969,6 +969,55 @@ defect. Templated, path-carrying interactivity on a mixed-shape collection is ab
 `gemini-3.5-flash`'s ceiling for this beat and within `gemini-3.1-pro-preview`'s, with the prompt
 already stating the mechanism explicitly and the shipped example already demonstrating it.
 
+### R10 — `gemini-3.5-flash-lite` adopted as the default, and beat 6 collapses
+
+![](assets/beat-6-r10-lite.jpg)
+
+Run after the default was moved to `gemini-3.5-flash-lite` to bring the env back in line with decision
+9. The watcher domain fact was in place; artifacts otherwise unchanged from R9.
+
+**Correction to the R9 note above:** the switch away from lite was *not* env drift. `.env.example`
+carried the rationale explicitly — lite "could not reliably close a ~7KB nested-JSON surface, failing
+both attempts on the same malformed bracket where flash succeeded first try." The change was
+deliberate and documented; the stale artifact is decision 9 in the spec, not the env.
+
+Lite did produce a valid surface on attempt 1 this time — the malformed-bracket failure did not
+recur. Everything else regressed past R1, the beat's worst round.
+
+**One tool call for the whole turn:** `search_repositories({'query': 'a2ui-project/a2ui'})`, without
+`minimal_output`. The README was never fetched. The root listing was never fetched.
+
+| | R7 (flash) | R9 (pro) | **R10 (lite)** |
+|---|---|---|---|
+| Tool calls | 3 | 3 | **1** |
+| Components | 148 | 61 | **33** |
+| Data model | 43 B | 453 B | **43 B** |
+| Actions on surface | 1 | 3 | **0** |
+| README / tree | both | both | **neither** |
+
+- **The description is invented outright** — "A2UI is a declarative Agent-to-UI protocol and
+  generative UI specification designed to replace plain text assistant responses with rich,
+  interactive, native component interfaces." `description` is `null`, the README was never read, and
+  no part of that sentence appears in it. This is the wall in its original R1–R4 form, not R9's
+  assembled-from-real-phrases variant.
+- **The surface describes affordances that do not exist**: "Explore pull requests, issues, and
+  component specs across the repository using the navigation links." There are **zero actions on the
+  entire surface**. A false statement about the surface itself, made to the person reading it.
+- Every rubric line for this beat fails except the statistics, which are exact and correctly labelled
+  (15,951 / 1,247 / 291 "open issues & PRs", TypeScript, Public, and a `RelativeTime` reading
+  47 minutes).
+
+**What this settles.** Two independent observations now say lite is below this task's floor: beat 1's
+recorded double bracket failure, and beat 6 regressing past its own first round on every axis that
+matters. Beats 1 and 3–5 were verified on `gemini-3.5-flash`, so under a lite default **no beat in
+this task is verified on the model the demo runs on**, which is decision 16's definition of done.
+
+**Resolved:** the default returns to `gemini-3.5-flash` and **decision 9 is amended** to name it as
+the default and the model the demo runs on, leaving `gemini-3.1-pro-preview` as the ladder's sole
+remaining rung. Every beat verified so far was verified on that model, so the amendment costs no
+re-verification. R9 stands as the recorded model finding. R10 is retained as the evidence for the
+amendment, not as a beat-6 round — the beat's live state remains the R8 stop.
+
 **Correction to the R1 note:** `UnderlineNav` rendered its tabs correctly in R1, which appeared to
 contradict the `deferred-catalog-work.md` entry. In R5 it rendered as an **empty band** with three
 `UnderlineNav.Item`s in the payload and nothing on screen. The component is **intermittent**, not
