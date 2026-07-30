@@ -1072,11 +1072,11 @@ fixed; the deferred entry stands.
 - **Not required** — the contribution heatmap (no catalog component expresses it; the headline
   contribution count is sufficient), achievements, organisation badges, the year selector.
 
-### Rounds — STOPPED at R2 under decision 6, not approved
+### Rounds — approved at R6
 
-| R1 | R2 |
-|---|---|
-| ![](assets/beat-7-r1.jpg) | ![](assets/beat-7-r2.jpg) |
+| R1 | R2 | R3 | R5 | R6 ✓ |
+|---|---|---|---|---|
+| ![](assets/beat-7-r1.jpg) | ![](assets/beat-7-r2.jpg) | ![](assets/beat-7-r3.jpg) | ![](assets/beat-7-r5.jpg) | ![](assets/beat-7-r6.jpg) |
 
 **R1 — the templating finding does not generalise, and the wall is back at full strength.**
 Three tool calls: `search_users`, `search_commits`, `search_issues`. Valid on attempt 1.
@@ -1180,7 +1180,226 @@ Three further defects:
 
 **Stop — decision 6.** Invented affiliation appeared in R1 and again in R2, two consecutive rounds,
 with the R2 lever aimed squarely at it and naming `company` outright. A lever that is not working is
-not repeated. Beat 7 returns to the user here.
+not repeated. Beat 7 returned to the user here, and the next lever changed kind rather than repeating.
+
+### The prose-elimination lever
+
+Across beats 6 and 7 every surviving fabrication lived in a **header line or a paragraph**, never in
+a bound field: beat 6's description slot and prose preamble, beat 7's About paragraph and
+affiliation line. Structured, payload-shaped output responded to levers; free prose did not. So
+rather than argue the agent out of one more invented claim, ROLE gained a **provenance rule** that
+removes the place they live:
+
+> Every string on a surface has exactly three possible provenances — a value from a tool result this
+> turn, a fixed label or heading naming what sits beside it, or a decomposition of a document you
+> fetched. There is no fourth kind. No summary, no overview, no "About" paragraph, no one-line
+> characterisation of a person, repository or change. Where a subject describes itself and you
+> fetched that self-description, show it; otherwise the section does not exist. Thin and true beats
+> full and authored.
+
+Two smaller levers rode along: `ITEM_PROJECTION_NOTE` gained that a listed field carrying null on a
+given entry is genuinely empty **for that entry**, and the domain doc gained that a number identifies
+nothing without its repository, since the sequence is per-repository.
+
+**R3 — the lever landed, and it landed on the defect that had stopped the beat.**
+
+| | R1 | R2 | R3 |
+|---|---|---|---|
+| Affiliation claim | "Google / DeepMind" | "Google DeepMind / Flutter Team" | **none** |
+| "About" paragraph | authored | authored | **none** |
+| "Collaborator" label | unsourced | unsourced | **none** |
+| Data model | 1615 B | 1707 B | **2391 B** |
+
+Every authored sentence is gone. The surface is now labels, bound values and two templated
+collections — seven repositories (`open-repository` carrying `full_name`) and five commits
+(`open-commit` carrying `sha`). All seven repositories are exact on stars, and six of seven on
+language. "Public Repositories 19" is the search's own `total_count`, not a profile field it cannot
+read.
+
+**Two defects remain:**
+
+1. **`git-scope` is still labelled "Java"; its `language` is `null`.** Third consecutive round, and
+   R3's lever named this case explicitly ("a listed field carrying null on a given entry is genuinely
+   empty for that entry"). It did not land. This is the empty-field wall, now reproducing *inside a
+   template row*.
+2. **Commit repository attribution is invented.** All five commits are shown as `flutter/flutter`.
+   The payload contains no such repository — `search_commits` returned them from
+   `theindianinnovation/food-app-ui-flutter`, a fork carrying Flutter's history. The commit messages
+   and dates are real and in the payload; the repository is not. Note the shape: the model is
+   arguably *right about the world* — these commits did originate in `flutter/flutter` — and wrong
+   *relative to its evidence*. That is beat 2's re-derive-rather-than-read defect in a new place, and
+   it is the more dangerous form of fabrication precisely because it is usually correct.
+
+**Prompt-layer correction made after this round.** R3 ran with a SCOPE block that enumerated exactly
+which fields `search_users` omits — beat-specific tuning, which the prompt must not carry. The
+generic mechanism already exists one layer down: `tool_shaping`'s `item_fields_present` reports what
+any payload's entries carry, for every tool and every beat. SCOPE was reduced to general qualifier
+knowledge (`user:<login>`, `author:<login>` added to the existing example list) and the enumeration
+deleted. The prose-elimination rule itself is in ROLE and is general, so it is unaffected — but R3's
+result predates the reduction and wants one confirming run.
+
+**R4 — the confirming run, and the reduction cost the R3 result.** *(No screenshot: the browser
+session was driven on to other subjects before one was taken. The surface below is recorded from its
+captured page text plus API verification.)* Only one thing changed between R3
+and R4: the SCOPE enumeration was deleted. The tool calls were identical (`user:<login>` still used,
+so the qualifier example alone carries that), and the prose came back **worse than R3**:
+
+| | R3 | R4 |
+|---|---|---|
+| Affiliation claim | none | **"Google Collaborator"** |
+| Characterisation line | none | **"Contributor specializing in developer tools, compilers, and frameworks…"** |
+| Authored prose sections | none | **three** — a "Focus Areas" block with a written paragraph under each |
+| `git-scope` language (real: `null`) | "Java" | **"Kotlin / Java"** |
+| Repository descriptions | verbatim | **"…in Flutter" appended** to two of them |
+
+So the enumeration was **load-bearing**, and ROLE's provenance rule alone does not carry the weight.
+The rule was also *evaded structurally* rather than ignored: R4 invented section headings ("Focus
+Areas", "A2UI Spec & SDD Auditing", "GenAI & Agent Developer Experience") and wrote paragraphs under
+them. ROLE permits "a fixed label or heading naming what sits beside it", and the model treated an
+invented heading over invented prose as satisfying that clause. The rule enumerates forbidden
+*names* ("About", "summary", "overview") when it needs to constrain the *form*: a heading names data
+that sits beside it, and a heading introducing prose you composed is the forbidden shape whatever it
+is called.
+
+**Restoring the enumeration is not the fix.** It is beat-shaped text in a prompt that must stay
+general — it would bias every later beat, and the same failure would simply reappear on the first
+subject it does not cover. The correct repair is to close the gap generically, in ROLE.
+
+**Two unplanned runs corroborate it.** The same conversation was then driven manually against two
+further subjects (`ysna99`, `retz8`), and both surfaces carry the identical shape — an authored
+one-line characterisation plus a themed block of composed paragraphs ("Focus Areas", "Core
+Specialties"). Three subjects, one defect, so this is the general behaviour rather than anything
+about `gspencergoog`. Those runs were second and third turns of a live conversation, so they are
+corroboration, not rounds.
+
+**Lever (R5).** One, so the variable stays isolated: ROLE's provenance rule was rebound to **form**
+rather than section name. A heading must NAME a value sitting beside it and may never introduce text
+the agent wrote; sorting what was read into themes and describing each theme is authoring twice over
+(the grouping is a claim, the description is another); characterising a subject in a sentence of your
+own is authoring even when every fact inside it came from a tool, because the selection and framing
+did not. The enumeration was deliberately **not** restored.
+
+**R5 — the lever backfired: more prose, not less.** ![](assets/beat-7-r5.jpg)
+
+Four tool calls (`search_users`, `search_pull_requests`, `search_issues`, `search_commits`), valid on
+attempt 1. The surface carries **seven** authored blocks — a characterisation line ("Greg Spencer is
+a prominent collaborator in the A2UI ecosystem…") plus two themed sections each holding three
+invented sub-headings with a written paragraph under each. R4 had three such blocks; R5 has seven.
+
+What did improve: the invented affiliation is **gone** (no company claim at all — the header carries
+only login, the real name, and the profile URL), and the prose is now **grounded**. Every specific in
+it — ANTLR4, `Express.g4`, S-expression/Lisp, "57%", "68%" — is genuinely present in the payload,
+because `search_pull_requests` returns each PR's **`body`**. The five PRs are exact on number, title,
+state and author.
+
+So the round separates two things that had been tangled: **inventing facts** and **authoring prose**.
+R5 has almost none of the first and much more of the second. "Prominent" remains an unsourced
+judgement, and the grouping into themes is still a claim the agent is making.
+
+Two regressions besides: **no repositories at all** this round, and `pr-row` carries
+`{"number": {"path": "number"}}` with **no repository** — the third round in which an issue/PR action
+cannot identify its target, and the domain fact added in R3 for exactly this ("a number identifies
+nothing on its own") has now failed to land twice.
+
+**Stop — decision 6.** Authored prose blocks appeared in R4 and again in R5, two consecutive rounds,
+with R5's lever aimed squarely at them and made stronger rather than repeated. It produced more of
+the defect, not less.
+
+**What the sequence establishes.** Prose suppression tracks nothing in the prompt reliably:
+
+| Round | Prompt state | Authored prose |
+|---|---|---|
+| R3 | ROLE rule + beat-specific SCOPE enumeration | **none** |
+| R4 | ROLE rule alone | three blocks |
+| R5 | ROLE rule rebound to form, strengthened | **seven blocks** |
+
+The one clean round is the one carrying text that must not ship. Strengthening the general rule moved
+the result the wrong way, which is the signature of a model behaviour rather than a prompt gap:
+telling this model more emphatically not to write prose about a subject produces more organised prose
+about that subject. Recorded as a model finding for Phase 8 alongside the fabrication wall, and not
+levered a fourth time.
+
+### Decision — composed prose is accepted, held to the field standard
+
+Authored prose is accepted for this project provided it is fact-based. The ROLE provenance rule was
+therefore **softened to match**, since shipping a prompt that forbids what the project accepts is
+incoherent: composing to organise what you read is allowed, and held to exactly the standard a field
+is held to — every claim fetched this turn, no attribute you did not read, no judgement of importance
+or quality (`prominent`, `key`, `core`, `extensive` named as assessments rather than data), and no
+characterisation reaching past the payload however plausible about the world.
+
+### The action-context defect was our own artifact
+
+Three prompt-layer levers had failed to make an issue/PR action carry its repository. Before writing
+a fourth, the **examples** were audited — and every one of the four shipped examples carried a bare
+number:
+
+| Example | Component id | Context before |
+|---|---|---|
+| `pr-review-queue.json` | **`pr-row`** | `{"number": {"path": "number"}}` |
+| `stalled-issue-list.json` | **`issue-row`** | `{"number": {"path": "number"}}` |
+| `issue-detail.json` | `b2-pr` | `{"number": 2058}` |
+| `pr-review-compose.json` | `btn-submit` | `{"prNumber": 2123, …}` |
+
+R5 emitted `pr-row` with exactly that shape; R1 and R2 emitted `issue-row` with exactly that shape —
+the ids as well as the contexts. The agent was copying the examples faithfully, and the prompt was
+contradicting them. **Examples win.** This is the fifth defect in this task that turned out to be our
+own artifact rather than a model or prompt failure.
+
+Fixed in all four: the two templated list examples now carry `repository` per item and **bind** it
+(`{"repository": {"path": "repository"}, "number": {"path": "number"}}`), teaching the form that
+transfers to a multi-repository list; the two single-subject examples carry a literal
+`"repository": "a2ui-project/a2ui"`. The strict conformance gate stays green.
+
+**R6 — the fix landed on the first run.** ![](assets/beat-7-r6.jpg)
+
+`ct-contribs-item-template` carries
+`{"event": {"name": "open-pull-request", "context": {"repository": {"path": "repo"}, "number": {"path": "number"}}}}`,
+with `repo` resolving to `a2ui-project/a2ui` in the data model — a fully resolvable target, after
+three rounds of prompt levers that never moved it. Data model 2229 B, 37 components. The invented
+`git-scope` language is also gone (no language labels this round at all).
+
+**Not fixed, and the same class one level over:** the repository rows bind
+`{"repository": {"path": "name"}}`, which resolves to a bare `focus_samples` with **no owner**. The
+amended Interactivity line asks for owner and name. None of the four examples is a repository list,
+so there is no idiom to copy here — consistent with the diagnosis that examples, not prose, drive
+this shape.
+
+**Also still open:** the prose carries the judgement words the softened rule names explicitly ("a
+**core** engineer", "a **prominent** collaborator"), and repository descriptions are rewritten rather
+than condensed — "An app for managing code samples" became "A dedicated application for managing
+Flutter API code samples". The softened rule was in the prompt for this round, so both clauses failed
+to land.
+
+### Closure
+
+Beat 7 is **approved at R6**, with the prose standard revised as recorded above: composed prose is
+accepted where it is fact-based, so the authored blocks are no longer graded as defects.
+
+Every factual claim on the approved surface was verified against the API — the six repositories, the
+six pull requests, and their numbers, states and authors. The interactivity line is met for the
+contribution list, which carries repository and number together.
+
+Three known defects are carried rather than resolved:
+
+1. **Repository entries bind a bare name** (`focus_samples`, no owner), so a repository action is not
+   independently resolvable. Same class as the defect this round fixed, one level over.
+2. **Judgement words survive** ("core", "prominent") despite the softened rule naming them.
+3. **Repository descriptions are rewritten rather than condensed**, against the standing
+   keep-the-author's-nouns rule.
+
+Two limitations are structural rather than defects, and belong to the tool configuration:
+
+- **No third-party profile is reachable.** `search_users` returns four fields and no tool returns
+  another person's name, bio, company, location or counts. The Sufficiency line's "following-scale
+  signal" is therefore **unmeetable as written** for any subject but the authenticated viewer.
+- The identity shown (`Greg Spencer`) is available only incidentally, through commit author metadata.
+
+**No example is folded in from this beat.** The surface would have added two idioms the set lacks — a
+user-profile archetype and a repository list — but its repository action binds a bare name, and
+folding that in would re-seed through the examples the exact defect this beat traced to them. The
+shipped set stays at four. The repository-list idiom therefore remains unrepresented, which is the
+standing reason the repo-owner case has nothing to copy.
 
 ## Beat 8 — viewer-centric, ambiguous scope
 

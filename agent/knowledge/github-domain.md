@@ -83,6 +83,10 @@ making, while `unstable` is a fact GitHub is reporting. When the two disagree, t
 - Issues and pull requests share **one number sequence per repository**: every pull request is also
   an issue, but not the reverse. Issue-level endpoints therefore return pull requests too unless
   filtered, and a list that silently mixes them misrepresents what it is showing.
+- **A number identifies nothing on its own.** Because the sequence is per repository, `#2116` is
+  meaningful only paired with the repository it belongs to — every repository has its own `#2116`.
+  A reference carrying a number without its repository cannot be resolved back to anything, and that
+  applies as much to what a surface hands back when someone acts on it as to what it displays.
 - **Labels are per-repository conventions** with their own colors and meanings. They do not transfer
   between repositories, and their names cannot be assumed to mean what the same word means elsewhere.
 - An issue is **stalled** when activity stopped while something was still expected of someone — an

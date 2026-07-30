@@ -21,7 +21,12 @@
             "direction": "vertical",
             "gap": "normal",
             "padding": "normal",
-            "children": ["header-stack", "fc-verdict", "fc-body", "actions"]
+            "children": [
+              "header-stack",
+              "fc-verdict",
+              "fc-body",
+              "actions"
+            ]
           },
           {
             "id": "header-stack",
@@ -29,7 +34,10 @@
             "direction": "horizontal",
             "align": "center",
             "gap": "condensed",
-            "children": ["title-icon", "title-heading"]
+            "children": [
+              "title-icon",
+              "title-heading"
+            ]
           },
           {
             "id": "title-icon",
@@ -50,7 +58,10 @@
           {
             "id": "fc-verdict",
             "component": "FormControl",
-            "children": ["verdict-label", "verdict-select"]
+            "children": [
+              "verdict-label",
+              "verdict-select"
+            ]
           },
           {
             "id": "verdict-label",
@@ -63,7 +74,11 @@
             "selectedIndex": {
               "path": "/verdictIndex"
             },
-            "children": ["seg-approve", "seg-comment", "seg-changes"]
+            "children": [
+              "seg-approve",
+              "seg-comment",
+              "seg-changes"
+            ]
           },
           {
             "id": "seg-approve",
@@ -104,7 +119,11 @@
             "id": "fc-body",
             "component": "FormControl",
             "required": true,
-            "children": ["body-label", "body-caption", "body-textarea"]
+            "children": [
+              "body-label",
+              "body-caption",
+              "body-textarea"
+            ]
           },
           {
             "id": "body-label",
@@ -129,7 +148,10 @@
           {
             "id": "actions",
             "component": "ButtonGroup",
-            "children": ["btn-cancel", "btn-submit"]
+            "children": [
+              "btn-cancel",
+              "btn-submit"
+            ]
           },
           {
             "id": "btn-cancel",
@@ -175,6 +197,7 @@
               "event": {
                 "name": "submit-pr-review",
                 "context": {
+                  "repository": "a2ui-project/a2ui",
                   "prNumber": 2123,
                   "body": {
                     "path": "/reviewBody"

@@ -21,7 +21,11 @@
             "direction": "vertical",
             "gap": "normal",
             "padding": "normal",
-            "children": ["header-stack", "description", "list"]
+            "children": [
+              "header-stack",
+              "description",
+              "list"
+            ]
           },
           {
             "id": "header-stack",
@@ -29,7 +33,10 @@
             "direction": "horizontal",
             "justify": "space-between",
             "align": "center",
-            "children": ["header-left", "header-right"]
+            "children": [
+              "header-left",
+              "header-right"
+            ]
           },
           {
             "id": "header-left",
@@ -37,7 +44,13 @@
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["repo-icon", "repo-link", "slash-text", "title", "count-label"]
+            "children": [
+              "repo-icon",
+              "repo-link",
+              "slash-text",
+              "title",
+              "count-label"
+            ]
           },
           {
             "id": "repo-icon",
@@ -98,11 +111,19 @@
           {
             "id": "pr-row",
             "component": "ActionList.Item",
-            "children": ["row-lv", "row-title", "row-desc", "row-tv"],
+            "children": [
+              "row-lv",
+              "row-title",
+              "row-desc",
+              "row-tv"
+            ],
             "action": {
               "event": {
                 "name": "open-pull-request",
                 "context": {
+                  "repository": {
+                    "path": "repository"
+                  },
                   "number": {
                     "path": "number"
                   }
@@ -113,7 +134,9 @@
           {
             "id": "row-lv",
             "component": "ActionList.LeadingVisual",
-            "children": ["row-icon"]
+            "children": [
+              "row-icon"
+            ]
           },
           {
             "id": "row-icon",
@@ -143,7 +166,9 @@
           {
             "id": "row-tv",
             "component": "ActionList.TrailingVisual",
-            "children": ["row-time"]
+            "children": [
+              "row-time"
+            ]
           },
           {
             "id": "row-time",
@@ -166,26 +191,30 @@
             {
               "number": 2123,
               "title": "docs: add specification for A2UI web app iframe component (v0.9)",
-              "meta": "#2123 opened by sugoi-yuzuru \u00b7 0 comments",
-              "updatedAt": "2026-07-28T21:19:35Z"
+              "meta": "#2123 opened by sugoi-yuzuru · 0 comments",
+              "updatedAt": "2026-07-28T21:19:35Z",
+              "repository": "a2ui-project/a2ui"
             },
             {
               "number": 2120,
               "title": "feat(v1.0): Add rootOnly catalog metadata for structural component validation",
-              "meta": "#2120 opened by wrenj \u00b7 0 comments",
-              "updatedAt": "2026-07-28T19:54:33Z"
+              "meta": "#2120 opened by wrenj · 0 comments",
+              "updatedAt": "2026-07-28T19:54:33Z",
+              "repository": "a2ui-project/a2ui"
             },
             {
               "number": 2119,
               "title": "chore(deps): bump the npm_and_yarn group across 2 directories with 5 updates",
-              "meta": "#2119 opened by dependabot[bot] \u00b7 0 comments",
-              "updatedAt": "2026-07-28T19:01:17Z"
+              "meta": "#2119 opened by dependabot[bot] · 0 comments",
+              "updatedAt": "2026-07-28T19:01:17Z",
+              "repository": "a2ui-project/a2ui"
             },
             {
               "number": 2118,
               "title": "docs: update Component Gallery quickstart instructions",
-              "meta": "#2118 opened by Om22210564 \u00b7 1 comment",
-              "updatedAt": "2026-07-28T15:26:39Z"
+              "meta": "#2118 opened by Om22210564 · 1 comment",
+              "updatedAt": "2026-07-28T15:26:39Z",
+              "repository": "a2ui-project/a2ui"
             }
           ]
         }

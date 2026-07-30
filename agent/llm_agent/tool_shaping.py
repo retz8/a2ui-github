@@ -60,7 +60,10 @@ ITEM_PROJECTION_NOTE = (
     "entries — its absence here is not evidence about the underlying object, which may "
     "well have a value for it. Never state or infer such a field from this payload. If "
     "no tool available to you returns it, then it is not something you can show at all, "
-    "and the honest surface omits it rather than supplying a plausible value."
+    "and the honest surface omits it rather than supplying a plausible value. "
+    "A field that IS listed but carries null or an empty value on a given entry is "
+    "genuinely empty FOR THAT ENTRY — that emptiness is the answer for it. Entries in one "
+    "list differ this way, and a value another entry carries says nothing about this one."
 )
 
 # Named, not generic. The generic projection note did not stop the model writing a

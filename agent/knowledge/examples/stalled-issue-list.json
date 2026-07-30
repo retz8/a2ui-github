@@ -21,24 +21,36 @@
             "direction": "vertical",
             "gap": "normal",
             "padding": "normal",
-            "children": ["ph", "list"]
+            "children": [
+              "ph",
+              "list"
+            ]
           },
           {
             "id": "ph",
             "component": "PageHeader",
             "aria-label": "Stalled issues header",
-            "children": ["ph-ta", "ph-desc"]
+            "children": [
+              "ph-ta",
+              "ph-desc"
+            ]
           },
           {
             "id": "ph-ta",
             "component": "PageHeader.TitleArea",
             "variant": "medium",
-            "children": ["ph-lv", "ph-title", "ph-tv"]
+            "children": [
+              "ph-lv",
+              "ph-title",
+              "ph-tv"
+            ]
           },
           {
             "id": "ph-lv",
             "component": "PageHeader.LeadingVisual",
-            "children": ["ph-icon"]
+            "children": [
+              "ph-icon"
+            ]
           },
           {
             "id": "ph-icon",
@@ -58,7 +70,9 @@
           {
             "id": "ph-tv",
             "component": "PageHeader.TrailingVisual",
-            "children": ["ph-counter"]
+            "children": [
+              "ph-counter"
+            ]
           },
           {
             "id": "ph-counter",
@@ -71,7 +85,9 @@
           {
             "id": "ph-desc",
             "component": "PageHeader.Description",
-            "children": ["ph-desc-text"]
+            "children": [
+              "ph-desc-text"
+            ]
           },
           {
             "id": "ph-desc-text",
@@ -92,11 +108,17 @@
           {
             "id": "issue-row",
             "component": "ActionList.Item",
-            "children": ["row-lv", "row-content-wrapper"],
+            "children": [
+              "row-lv",
+              "row-content-wrapper"
+            ],
             "action": {
               "event": {
                 "name": "open-issue",
                 "context": {
+                  "repository": {
+                    "path": "repository"
+                  },
                   "number": {
                     "path": "number"
                   }
@@ -107,7 +129,9 @@
           {
             "id": "row-lv",
             "component": "ActionList.LeadingVisual",
-            "children": ["row-icon"]
+            "children": [
+              "row-icon"
+            ]
           },
           {
             "id": "row-icon",
@@ -120,7 +144,10 @@
             "component": "Stack",
             "direction": "vertical",
             "gap": "none",
-            "children": ["row-top-line", "row-bottom-line"]
+            "children": [
+              "row-top-line",
+              "row-bottom-line"
+            ]
           },
           {
             "id": "row-top-line",
@@ -128,7 +155,10 @@
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["row-title", "row-labels"]
+            "children": [
+              "row-title",
+              "row-labels"
+            ]
           },
           {
             "id": "row-title",
@@ -162,7 +192,11 @@
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["row-meta", "row-bullet", "row-time"]
+            "children": [
+              "row-meta",
+              "row-bullet",
+              "row-time"
+            ]
           },
           {
             "id": "row-meta",
@@ -175,7 +209,7 @@
           {
             "id": "row-bullet",
             "component": "Text",
-            "text": "\u2022",
+            "text": "•",
             "size": "small"
           },
           {
@@ -200,7 +234,7 @@
             {
               "number": 2115,
               "title": "[BUG]: TransportFormat inlineCatalogs merge does not rebuild $defs.anyComponent",
-              "meta": "#2115 \u2022 opened by likebean \u2022 assigned to Varun-S10 \u2022 updated",
+              "meta": "#2115 • opened by likebean • assigned to Varun-S10 • updated",
               "updatedAt": "2026-07-28T10:56:26Z",
               "labels": [
                 {
@@ -215,12 +249,13 @@
                   "name": "status: waiting-for-author-response",
                   "color": "#000000"
                 }
-              ]
+              ],
+              "repository": "a2ui-project/a2ui"
             },
             {
               "number": 1929,
               "title": "add feature to download catalog JSON from the agent or client",
-              "meta": "#1929 \u2022 opened by wrenj \u2022 assigned to jacobsimionato, wrenj \u2022 updated",
+              "meta": "#1929 • opened by wrenj • assigned to jacobsimionato, wrenj • updated",
               "updatedAt": "2026-07-07T14:40:31Z",
               "labels": [
                 {
@@ -239,12 +274,13 @@
                   "name": "status: first-line-handled",
                   "color": "#9af797"
                 }
-              ]
+              ],
+              "repository": "a2ui-project/a2ui"
             },
             {
               "number": 1901,
               "title": "examples/simple_chat is buggy",
-              "meta": "#1901 \u2022 opened by polina-c \u2022 assigned to polina-c \u2022 updated",
+              "meta": "#1901 • opened by polina-c • assigned to polina-c • updated",
               "updatedAt": "2026-07-07T14:39:57Z",
               "labels": [
                 {
@@ -267,12 +303,13 @@
                   "name": "component: genui",
                   "color": "#6d18a0"
                 }
-              ]
+              ],
+              "repository": "a2ui-project/a2ui"
             },
             {
               "number": 1897,
               "title": "It seems gemini review of PR does not read instructions.",
-              "meta": "#1897 \u2022 opened by polina-c \u2022 assigned to polina-c \u2022 updated",
+              "meta": "#1897 • opened by polina-c • assigned to polina-c • updated",
               "updatedAt": "2026-07-07T15:40:38Z",
               "labels": [
                 {
@@ -295,7 +332,8 @@
                   "name": "component: genui",
                   "color": "#6d18a0"
                 }
-              ]
+              ],
+              "repository": "a2ui-project/a2ui"
             }
           ]
         }

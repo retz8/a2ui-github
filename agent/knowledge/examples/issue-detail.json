@@ -28,24 +28,34 @@
             "id": "hd",
             "component": "PageLayout.Header",
             "divider": "line",
-            "children": ["ph"]
+            "children": [
+              "ph"
+            ]
           },
           {
             "id": "ph",
             "component": "PageHeader",
             "aria-label": "Issue header",
-            "children": ["ph-ta", "ph-desc"]
+            "children": [
+              "ph-ta",
+              "ph-desc"
+            ]
           },
           {
             "id": "ph-ta",
             "component": "PageHeader.TitleArea",
             "variant": "large",
-            "children": ["ph-lv", "ph-title"]
+            "children": [
+              "ph-lv",
+              "ph-title"
+            ]
           },
           {
             "id": "ph-lv",
             "component": "PageHeader.LeadingVisual",
-            "children": ["ph-icon"]
+            "children": [
+              "ph-icon"
+            ]
           },
           {
             "id": "ph-icon",
@@ -65,7 +75,9 @@
           {
             "id": "ph-desc",
             "component": "PageHeader.Description",
-            "children": ["ph-state"]
+            "children": [
+              "ph-state"
+            ]
           },
           {
             "id": "ph-state",
@@ -77,24 +89,36 @@
             "id": "ct",
             "component": "PageLayout.Content",
             "padding": "normal",
-            "children": ["ct-stack"]
+            "children": [
+              "ct-stack"
+            ]
           },
           {
             "id": "ct-stack",
             "component": "Stack",
             "direction": "vertical",
             "gap": "normal",
-            "children": ["tl", "fc-comment", "comment-actions"]
+            "children": [
+              "tl",
+              "fc-comment",
+              "comment-actions"
+            ]
           },
           {
             "id": "tl",
             "component": "Timeline",
-            "children": ["body"]
+            "children": [
+              "body"
+            ]
           },
           {
             "id": "body",
             "component": "TimelineItem",
-            "children": ["body-av", "body-badge", "body-content"]
+            "children": [
+              "body-av",
+              "body-badge",
+              "body-content"
+            ]
           },
           {
             "id": "body-av",
@@ -121,7 +145,11 @@
           {
             "id": "body-content",
             "component": "TimelineBody",
-            "children": ["body-head", "body-p1", "body-p2-stack"]
+            "children": [
+              "body-head",
+              "body-p1",
+              "body-p2-stack"
+            ]
           },
           {
             "id": "body-head",
@@ -129,7 +157,11 @@
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["body-author", "body-verb", "body-time"]
+            "children": [
+              "body-author",
+              "body-verb",
+              "body-time"
+            ]
           },
           {
             "id": "body-author",
@@ -161,7 +193,12 @@
             "gap": "condensed",
             "align": "center",
             "wrap": "wrap",
-            "children": ["b2-t1", "b2-user", "b2-t2", "b2-pr"]
+            "children": [
+              "b2-t1",
+              "b2-user",
+              "b2-t2",
+              "b2-pr"
+            ]
           },
           {
             "id": "b2-t1",
@@ -202,6 +239,7 @@
               "event": {
                 "name": "open-pull-request",
                 "context": {
+                  "repository": "a2ui-project/a2ui",
                   "number": 2058
                 }
               }
@@ -216,7 +254,10 @@
           {
             "id": "fc-comment",
             "component": "FormControl",
-            "children": ["comment-label", "comment-textarea"]
+            "children": [
+              "comment-label",
+              "comment-textarea"
+            ]
           },
           {
             "id": "comment-label",
@@ -236,7 +277,9 @@
           {
             "id": "comment-actions",
             "component": "ButtonGroup",
-            "children": ["btn-submit-comment"]
+            "children": [
+              "btn-submit-comment"
+            ]
           },
           {
             "id": "btn-submit-comment",
@@ -262,6 +305,7 @@
               "event": {
                 "name": "add-comment",
                 "context": {
+                  "repository": "a2ui-project/a2ui",
                   "issueNumber": 2124,
                   "body": {
                     "path": "/newCommentBody"
@@ -281,14 +325,21 @@
             "position": "end",
             "width": "small",
             "divider": "line",
-            "children": ["meta"]
+            "children": [
+              "meta"
+            ]
           },
           {
             "id": "meta",
             "component": "Stack",
             "direction": "vertical",
             "gap": "normal",
-            "children": ["asg-head", "asg-row", "lbl-head", "lbl-group"]
+            "children": [
+              "asg-head",
+              "asg-row",
+              "lbl-head",
+              "lbl-group"
+            ]
           },
           {
             "id": "asg-head",
@@ -303,7 +354,10 @@
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["asg-av", "asg-name"]
+            "children": [
+              "asg-av",
+              "asg-name"
+            ]
           },
           {
             "id": "asg-av",
@@ -328,7 +382,11 @@
           {
             "id": "lbl-group",
             "component": "LabelGroup",
-            "children": ["lbl-p2", "lbl-enh", "lbl-renderers"]
+            "children": [
+              "lbl-p2",
+              "lbl-enh",
+              "lbl-renderers"
+            ]
           },
           {
             "id": "lbl-p2",
