@@ -8,105 +8,106 @@ Spec: `_dev/docs/spec/task-7.7-beat-verification.md`. Full round-by-round record
 | Beat | State |
 |---|---|
 | 1 — PR review queue | **approved** (R4) |
-| 2 — PR detail | **closed, accepted with known defects** — not rubric-approved |
+| 2 — PR detail | **closed, accepted with known defects** |
 | 3 — compose-and-confirm review | **approved** (R2) |
 | 4 — issue list, fuzzy intent | **approved** (R1), two flags |
 | 5 — issue detail | **approved** (R3) |
-| 6 — repository landing | **IN PROGRESS — 5 rounds spent, not approved** |
-| 7–8 | not started |
+| 6 — repository landing | **closed, accepted with known defects** (R8 stop) |
+| 7 — user profile | **approved** (R6) |
+| 8 — viewer-centric, ambiguous scope | **not started** |
 
-All four shipped examples are beat-derived; the original 7.1 set is fully retired (decision 11's
-endpoint). Everything committed on `main`; tree clean. `yarn verify:all` green (adapter 2475, client
-549); `uv run pytest` green (**204** — 18 of them the new tool-shaping tests). The turn budget was
-explicitly lifted by the user.
+On `main`, tree clean, no worktree (decision 15). `uv run pytest` green (**208**). Example set stays
+at **four** — nothing folded in from beats 6 or 7.
 
-## Resume here — beat 6, round 6
+## Resume here — beat 8
 
-R5 is the best surface of the beat: no fabrication anywhere, `openUrl` gone, all eight directories
-wired to `open-directory` events carrying their paths, Star/Fork carrying no action rather than a
-false one. **Two gaps block approval:**
+The last beat: *"What needs my attention today?"* Its rubric is already written and approved. It is
+the only beat that is **viewer-scoped** — the scope rule must resolve it to the authenticated user
+without asking which repository is meant, and `get_me` is the one profile tool that actually works
+(see the tool-layer limit below). A thin result is a true result; padding it is the failure.
 
-1. **README content is never fetched** — `get_file_contents` is only ever called on `/`. Sufficiency
-   requires README content, and the tree listing it is not that.
-2. **`open-file` is still offered on three source files** (`Package.swift`, `package.json`,
-   `pyproject.toml`). `README.md` is legitimate — markdown is renderable by decomposition; source is
-   not. The "fetchable is not the same as renderable" clause in the directory-listing note landed
-   only partially.
+After beat 8, decision 4 still owes a **confirmation pass**: every beat run once against the shipped
+prompt, since folding was incremental and the prompt each beat was verified against is not the final
+one. Decision 16's remaining items are that pass, the local-function open item answered in writing,
+and repo-wide green.
 
-Both are ordinary composition problems, unlike the wall below.
+## The two walls — record, do not lever again
 
-## The wall — do not spend more rounds on this
+Both are decision-6 stops with levers already spent, and both are Phase-8 model findings.
 
-**The model invents a repository description.** Four rounds, four different fabrications, across
-three independent mechanisms: a domain-doc fact, a generic payload note, and a named-empty-field
-note — **including a round where `"description": null` was present in the payload it had just
-requested**. R5 produced no fabrication, but nothing that round targeted it, so treat that as
-unearned until repeat runs say otherwise.
+1. **Fabrication into a gap.** Seven rounds across beats 6 and 7. An absent or unreachable field gets
+   filled with something plausible; the tell is that it pattern-completes toward context (our stack,
+   Google-adjacent employers). Survived a lever that named the field outright.
+2. **Prose responds backwards.** Beat 7 R3/R4/R5: no rule → prose; general rule → more prose;
+   *stronger* general rule → most prose (three blocks became seven). The only clean round carried a
+   beat-specific enumeration that must not ship.
 
-The tell: every fabrication describes *our* project's stack ("using Primer", "adaptive UI screens
-inside the chat conversation"). That reads as pattern-completion from prompt context, not a gap in
-what the agent was told. Record it as a **model finding for Phase 8** rather than levering it again.
+**Resolved by decision, not by fixing:** composed prose is now **accepted where fact-based**, and
+ROLE's provenance rule was softened to match. Judgement words ("core", "prominent") and rewritten
+descriptions still slip through that softened rule.
 
-Beat 2's merge/check-state defect is the same shape (re-deriving rather than reading) and is likewise
-unresolved after two prose levers.
+## The lesson that keeps paying — check our own artifacts first
 
-## The frame — read this before writing any lever
+**Five of this task's defects were ours, not the model's.** Beat 2 a screen definition in the prompt;
+beat 3 a brand doc pointing at an absent component; beat 5 a decomposition rule mandating `Link`,
+which has no action; beat 5 R2 a client crash; and beat 7's action context — **all four shipped
+examples carried a bare `{"number": ...}`**, and the agent copied them verbatim, component ids
+included, while three prompt levers argued with them. Examples beat prose. When a lever fails twice,
+audit the artifact before writing a third.
 
-The prompt once carried a **screen definition**; it was deleted and replaced by
-`agent/knowledge/github-domain.md`. **A defect is not fixed by telling the agent what to render.** It
-is fixed by supplying the missing domain fact, by naming a catalog mechanism it had no way to know,
-or it is not a prompt problem at all. Four of this task's defects turned out to be **our own
-artifacts, our own client, or our own tool layer**:
+Artifact charters, which must not bleed: `brand-guidance.md` imperative, Primer/catalog mechanics ·
+`github-domain.md` declarative, domain facts · `examples/` composition idioms, approved surfaces only
+· `tool_shaping.py` **payload truth only** · ROLE/WORKFLOW how to draw with A2UI. **The prompt stays
+general** — it must never enumerate what one tool returns for one beat; that belongs in the tool
+layer, which serves every beat at once.
 
-- beat 2 — a screen definition in the prompt.
-- beat 3 — the brand doc pointed at `checks` (absent from this catalog) while denying the validators
-  7.9 had shipped. `Button.disabled` is a `DynamicBoolean`, which accepts a function call.
-- beat 5 — the decomposition rule mandated `Link` for body references, and `Link` has no action. The
-  fix was naming `Button variant="link"`.
-- beat 5 R2 — a client crash, not an agent defect (fixed in `b26f8fe`).
+## Tool-layer limits found by direct probe (zero LLM turns)
 
-Artifact charters, which must not bleed into each other: `brand-guidance.md` imperative,
-Primer/catalog mechanics only · `github-domain.md` declarative, domain facts only · `examples/`
-composition idioms, only **approved** beat surfaces · `tool_shaping.py` payload truth only — it adds
-no GitHub facts and prescribes no screen.
+Capture payloads by POSTing JSON-RPC `tools/call` at `https://api.githubcopilot.com/mcp/readonly`
+with the PAT and `X-MCP-Toolsets` headers — this is how both findings below were made.
 
-## The tool-shaping layer (new this session)
+- **28 tools, and no third-party user-profile tool** — only `get_me`. `search_users` returns four
+  fields (`avatar_url`, `id`, `login`, `profile_url`). A person's name, bio, company, location and
+  counts are **unreachable**, which makes beat 7's "following-scale signal" unmeetable as written.
+- `search_repositories` and `search_pull_requests` return full items including `description` and
+  `body`; a user's repositories are reachable via a `user:<login>` query.
+- `tool_shaping.py` now reports `item_fields_present` — what a payload's *entries* carry, distinct
+  from the envelope. The **check-run tally has still never run live** (no beat since involved a pull
+  request); its unit tests pass against a real 23-run payload.
 
-`agent/llm_agent/tool_shaping.py`, wired through ADK's `after_tool_callback` in `agent.py`. It
-annotates MCP payloads with: the fields actually present, the fields returned **empty** named
-individually, a directory-listing note (names only, one level deep, fetchable ≠ renderable), and a
-**check-run tally** counted from the payload.
+## Model
 
-- It demonstrably changed tool-calling behaviour: `minimal_output: False`, and splitting
-  `is:issue`/`is:pr` into two searches.
-- **The check-run tally has never run live** — beat 6 involves no pull request. Its unit tests pass
-  against the real 23-run payload (15 success, 8 skipped, zero failing). Exercising it is the natural
-  first move when beat 2 is revisited.
-- `record_shape()` is env-gated instrumentation (`TOOL_SHAPE_DUMP=1`), off by default, kept because
-  the next shaping rule will need the same look at real payloads.
-- Payloads can be captured **without spending a turn** by POSTing JSON-RPC `tools/call` straight at
-  `https://api.githubcopilot.com/mcp/readonly` with the PAT and `X-MCP-Toolsets` headers.
+`gemini-3.5-flash`, and **decision 9 was amended this session** to name it as the default and the
+model the demo runs on. Adopting `-lite` to test the other direction collapsed beat 6 — one tool
+call, no README, no tree, zero affordances, an invented description — so it is below this task's
+floor and `.env.example` now warns against it. `gemini-3.1-pro-preview` is the ladder's **sole
+remaining rung**, and R9 of beat 6 already spent it once.
 
 ## Operational notes
 
-- **Model:** `gemini-3.5-flash` (committed default). A downward probe on `gemini-2.5-flash` was far
-  worse — 3m24s to first token, `MAX_TOKENS` on attempt 1. Decision 9's ladder goes *up*, never down.
 - **Restart the agent after any prompt, knowledge-doc, example or shaping change** — the prompt is
-  assembled at startup, and the tool callback is bound then too.
-- **Verify factual claims against `api.github.com`.** It caught beat 2 R8's false merge state, beat
-  4's rows, and all four of beat 6's fabrications.
-- **Driving the composer:** set the value via the native setter + `input` event, then **read it back
-  before sending**. Clicking by coordinate is unreliable; a lost send looks exactly like a silent
-  agent.
+  assembled at startup and the tool callback bound then.
+- **Verify every factual claim against `api.github.com`.** It caught the fabricated location and
+  company, the `flutter/flutter` commit misattribution, the null-language inventions, and a
+  live-changing issue count (290 → 291 mid-session) that would otherwise have read as a defect.
+- **Driving the composer:** set the value via the native setter + `input` event, then read it back
+  before sending. Clicking by coordinate is unreliable.
 - Localhost throughout (decision 14): agent `:10003`, client `VITE_A2A_SERVER_URL` pointed at it.
+- Audit a surface's actions off the React fiber: walk **up** from DOM nodes (depth ~25) collecting
+  `componentModel`; walking down from the root returns nothing.
 
 ## Open threads
 
-- **Real-browser test capability** is the recurring gap — three defects invisible to jsdom
-  (`UnderlineNav`, `TimelineAvatar`, the mid-parse render crash). `UnderlineNav` is now confirmed
-  **intermittent**, so any Playwright test must assert across repeated mounts, not once. Note
-  `client/e2e/` runs against a preview build on `:4173`, not the dev server.
-- **Client data-model growth**: 2095 B → 3825 B. Monotonic, as predicted. Keep recording per beat.
+- **Beat 6's model finding, corrected by beat 7:** flash templates a *uniform* collection fine (beat
+  7 did it on the first round). It failed specifically on the mixed directory/file tree whose rows
+  differ by an **enum-typed icon** — the case where "an enum property cannot vary per row" forces
+  unrolling. Pro applies "one template per row shape"; flash does not.
+- **Repository actions bind a bare name, no owner.** The examples carry no repository-list idiom, so
+  there is nothing to copy — the same mechanism as the number/repository fix, still open.
+- Real-browser test capability remains the recurring gap; `UnderlineNav` is confirmed intermittent,
+  so any Playwright test must assert across repeated mounts.
+- Client data-model sizes this session: beat 6 ranged 43 B (unrolled, unbound) to 453 B (pro,
+  templated); beat 7 reached 2391 B. Binding raises it; unrolling drives it to nothing.
 - Beat 4 flags: inference narrowed to one label; the prose preamble recurred once.
 - `required` accepts whitespace-only input (upstream basic-catalog semantics).
 - The task spec's invariant naming "beat 5" is stale numbering for the compose beat (3) — corrected
