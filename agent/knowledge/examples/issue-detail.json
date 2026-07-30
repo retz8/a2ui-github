@@ -1,11 +1,11 @@
 {
   "name": "issue-detail",
-  "intent": "Open issue #482 in full detail, with its conversation timeline and the assignees and labels alongside.",
+  "intent": "Open a2ui-project/a2ui issue #2124.",
   "messages": [
     {
       "version": "v0.9",
       "createSurface": {
-        "surfaceId": "issue-detail",
+        "surfaceId": "issue-detail-2124",
         "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
         "sendDataModel": true
       }
@@ -13,7 +13,7 @@
     {
       "version": "v0.9",
       "updateComponents": {
-        "surfaceId": "issue-detail",
+        "surfaceId": "issue-detail-2124",
         "components": [
           {
             "id": "root",
@@ -53,13 +53,13 @@
             "name": "issue-opened",
             "fill": "open",
             "accessibility": {
-              "label": "Open issue"
+              "label": "Open Issue"
             }
           },
           {
             "id": "ph-title",
             "component": "PageHeader.Title",
-            "text": "Docs: clarify streaming heal order #482",
+            "text": "Swift: Simplify or remove queue hopping logic #2124",
             "as": "h1"
           },
           {
@@ -77,12 +77,19 @@
             "id": "ct",
             "component": "PageLayout.Content",
             "padding": "normal",
-            "children": ["tl"]
+            "children": ["ct-stack"]
+          },
+          {
+            "id": "ct-stack",
+            "component": "Stack",
+            "direction": "vertical",
+            "gap": "normal",
+            "children": ["tl", "fc-comment", "comment-actions"]
           },
           {
             "id": "tl",
             "component": "Timeline",
-            "children": ["body", "ev1", "cm1"]
+            "children": ["body"]
           },
           {
             "id": "body",
@@ -97,8 +104,8 @@
           {
             "id": "body-avatar",
             "component": "Avatar",
-            "src": "https://avatars.githubusercontent.com/u/583231?v=4",
-            "alt": "octocat",
+            "src": "https://avatars.githubusercontent.com/u/4238299?v=4",
+            "alt": "pinieb",
             "size": 24
           },
           {
@@ -114,7 +121,7 @@
           {
             "id": "body-content",
             "component": "TimelineBody",
-            "children": ["body-head", "body-p1", "body-p2"]
+            "children": ["body-head", "body-p1", "body-p2-stack"]
           },
           {
             "id": "body-head",
@@ -127,7 +134,7 @@
           {
             "id": "body-author",
             "component": "Text",
-            "text": "octocat",
+            "text": "pinieb",
             "weight": "semibold"
           },
           {
@@ -138,123 +145,135 @@
           {
             "id": "body-time",
             "component": "RelativeTime",
-            "datetime": "2026-07-20T09:12:00Z",
+            "datetime": "2026-07-29T14:45:57Z",
             "format": "relative"
           },
           {
             "id": "body-p1",
             "component": "Text",
-            "text": "The streaming docs never say what order a partial surface heals in when updateComponents and updateDataModel land in the same frame. Today the parser flushes components first, so a data-bound child can paint once with a stale value before its model arrives.",
+            "text": "BTW is it necessary to support updates triggered from background queues here and throughout the SDK? It makes the logic throughout the SDK harder to reason about, because writes are only actioned after an async gap.",
             "as": "p"
           },
           {
-            "id": "body-p2",
-            "component": "Text",
-            "text": "Either the docs should state the guaranteed order, or the parser should flush trailing partials before it closes the surface. Right now an integrator has to read the parser to find out.",
-            "as": "p"
-          },
-          {
-            "id": "ev1",
-            "component": "TimelineItem",
-            "condensed": true,
-            "children": ["ev1-badge", "ev1-body"]
-          },
-          {
-            "id": "ev1-badge",
-            "component": "TimelineBadge",
-            "child": "ev1-icon"
-          },
-          {
-            "id": "ev1-icon",
-            "component": "Icon",
-            "name": "git-commit"
-          },
-          {
-            "id": "ev1-body",
-            "component": "TimelineBody",
-            "children": ["ev1-row"]
-          },
-          {
-            "id": "ev1-row",
+            "id": "body-p2-stack",
             "component": "Stack",
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["ev1-text", "ev1-time"]
+            "wrap": "wrap",
+            "children": ["b2-t1", "b2-user", "b2-t2", "b2-pr"]
           },
           {
-            "id": "ev1-text",
+            "id": "b2-t1",
             "component": "Text",
-            "text": "hubot referenced this issue in commit a1b2c3d"
+            "text": "Originally posted by"
           },
           {
-            "id": "ev1-time",
-            "component": "RelativeTime",
-            "datetime": "2026-07-21T16:40:00Z",
-            "format": "relative"
+            "id": "b2-user",
+            "component": "Button",
+            "variant": "link",
+            "child": "b2-user-text",
+            "action": {
+              "event": {
+                "name": "open-user",
+                "context": {
+                  "username": "jacobsimionato"
+                }
+              }
+            }
           },
           {
-            "id": "cm1",
-            "component": "TimelineItem",
-            "children": ["cm1-av", "cm1-badge", "cm1-content"]
-          },
-          {
-            "id": "cm1-av",
-            "component": "TimelineAvatar",
-            "child": "cm1-avatar"
-          },
-          {
-            "id": "cm1-avatar",
-            "component": "Avatar",
-            "src": "https://avatars.githubusercontent.com/u/9919?v=4",
-            "alt": "hubot",
-            "size": 24
-          },
-          {
-            "id": "cm1-badge",
-            "component": "TimelineBadge",
-            "child": "cm1-icon"
-          },
-          {
-            "id": "cm1-icon",
-            "component": "Icon",
-            "name": "comment"
-          },
-          {
-            "id": "cm1-content",
-            "component": "TimelineBody",
-            "children": ["cm1-head", "cm1-text"]
-          },
-          {
-            "id": "cm1-head",
-            "component": "Stack",
-            "direction": "horizontal",
-            "gap": "condensed",
-            "align": "center",
-            "children": ["cm1-author", "cm1-verb", "cm1-time"]
-          },
-          {
-            "id": "cm1-author",
+            "id": "b2-user-text",
             "component": "Text",
-            "text": "hubot",
+            "text": "@jacobsimionato",
             "weight": "semibold"
           },
           {
-            "id": "cm1-verb",
+            "id": "b2-t2",
             "component": "Text",
-            "text": "commented"
+            "text": "in"
           },
           {
-            "id": "cm1-time",
-            "component": "RelativeTime",
-            "datetime": "2026-07-22T11:05:00Z",
-            "format": "relative"
+            "id": "b2-pr",
+            "component": "Button",
+            "variant": "link",
+            "child": "b2-pr-text",
+            "action": {
+              "event": {
+                "name": "open-pull-request",
+                "context": {
+                  "number": 2058
+                }
+              }
+            }
           },
           {
-            "id": "cm1-text",
+            "id": "b2-pr-text",
             "component": "Text",
-            "text": "Confirmed — the parser heals in order as of a1b2c3d, so this is docs-only now. I'll write the ordering guarantee into the streaming page unless someone has already started.",
-            "as": "p"
+            "text": "a2ui-project/a2ui#2058",
+            "weight": "semibold"
+          },
+          {
+            "id": "fc-comment",
+            "component": "FormControl",
+            "children": ["comment-label", "comment-textarea"]
+          },
+          {
+            "id": "comment-label",
+            "component": "FormControlLabel",
+            "text": "Add a comment"
+          },
+          {
+            "id": "comment-textarea",
+            "component": "Textarea",
+            "value": {
+              "path": "/newCommentBody"
+            },
+            "placeholder": "Leave a comment",
+            "resize": "vertical",
+            "rows": 4
+          },
+          {
+            "id": "comment-actions",
+            "component": "ButtonGroup",
+            "children": ["btn-submit-comment"]
+          },
+          {
+            "id": "btn-submit-comment",
+            "component": "Button",
+            "variant": "primary",
+            "child": "btn-submit-txt",
+            "disabled": {
+              "call": "not",
+              "args": {
+                "value": {
+                  "call": "required",
+                  "args": {
+                    "value": {
+                      "path": "/newCommentBody"
+                    }
+                  },
+                  "returnType": "boolean"
+                }
+              },
+              "returnType": "boolean"
+            },
+            "action": {
+              "event": {
+                "name": "add-comment",
+                "context": {
+                  "issueNumber": 2124,
+                  "body": {
+                    "path": "/newCommentBody"
+                  }
+                }
+              }
+            }
+          },
+          {
+            "id": "btn-submit-txt",
+            "component": "Text",
+            "text": "Comment"
           },
           {
             "id": "pn",
@@ -269,7 +288,7 @@
             "component": "Stack",
             "direction": "vertical",
             "gap": "normal",
-            "children": ["asg-head", "asg1-row", "asg2-row", "lbl-head", "lbl-group"]
+            "children": ["asg-head", "asg-row", "lbl-head", "lbl-group"]
           },
           {
             "id": "asg-head",
@@ -279,44 +298,23 @@
             "variant": "small"
           },
           {
-            "id": "asg1-row",
+            "id": "asg-row",
             "component": "Stack",
             "direction": "horizontal",
             "gap": "condensed",
             "align": "center",
-            "children": ["asg1", "asg1-name"]
+            "children": ["asg-av", "asg-name"]
           },
           {
-            "id": "asg1",
+            "id": "asg-av",
             "component": "Avatar",
-            "src": "https://avatars.githubusercontent.com/u/583231?v=4",
-            "alt": "octocat"
+            "src": "https://avatars.githubusercontent.com/u/4238299?v=4",
+            "alt": "pinieb"
           },
           {
-            "id": "asg1-name",
+            "id": "asg-name",
             "component": "Text",
-            "text": "octocat",
-            "size": "small",
-            "weight": "semibold"
-          },
-          {
-            "id": "asg2-row",
-            "component": "Stack",
-            "direction": "horizontal",
-            "gap": "condensed",
-            "align": "center",
-            "children": ["asg2", "asg2-name"]
-          },
-          {
-            "id": "asg2",
-            "component": "Avatar",
-            "src": "https://avatars.githubusercontent.com/u/9919?v=4",
-            "alt": "hubot"
-          },
-          {
-            "id": "asg2-name",
-            "component": "Text",
-            "text": "hubot",
+            "text": "pinieb",
             "size": "small",
             "weight": "semibold"
           },
@@ -330,21 +328,37 @@
           {
             "id": "lbl-group",
             "component": "LabelGroup",
-            "children": ["lbl1", "lbl2"]
+            "children": ["lbl-p2", "lbl-enh", "lbl-renderers"]
           },
           {
-            "id": "lbl1",
+            "id": "lbl-p2",
             "component": "IssueLabelToken",
-            "text": "documentation",
-            "fillColor": "#0969da"
+            "text": "P2",
+            "fillColor": "#d40aea"
           },
           {
-            "id": "lbl2",
+            "id": "lbl-enh",
             "component": "IssueLabelToken",
-            "text": "good first issue",
-            "fillColor": "#7057ff"
+            "text": "type: feature/enhancement",
+            "fillColor": "#c2e0c6"
+          },
+          {
+            "id": "lbl-renderers",
+            "component": "IssueLabelToken",
+            "text": "other renderers",
+            "fillColor": "#28048c"
           }
         ]
+      }
+    },
+    {
+      "version": "v0.9",
+      "updateDataModel": {
+        "surfaceId": "issue-detail-2124",
+        "path": "/",
+        "value": {
+          "newCommentBody": ""
+        }
       }
     }
   ]

@@ -531,6 +531,38 @@ idiom the set lacked. Strict example gate green (186), client suite green (541).
 - **Not required** — matching GitHub's label density, sub-issue badges, milestone chips.
 - **Fails if** — it answers with a clarifying question instead of an attempt.
 
+### Rounds — approved at R1
+
+| R1 ✓ |
+|---|
+| ![](assets/beat-4-r1.jpg) |
+
+Valid on attempt 1. Three searches: all open issues, then
+`label:"status: waiting-for-author-response"`, then `no:assignee`. Data truth checked against the
+API rather than read off the screen — `#2115` is open, opened by `likebean`, updated
+`2026-07-28T10:56:26Z`, labels and assignee exact, `is_pr: False`. It queried `is:issue`, so the
+shared number space is handled.
+
+One bound template over `/issues` with a **nested** `LabelGroup` template over relative `labels`,
+dividers, a `CounterLabel` of 9, and each row resolving to a server `event` `open-issue` carrying
+`{"number": {"path": "number"}}`.
+
+**Flagged, not failed** (decision 2):
+
+- **The prose preamble returned** — "Here are the open issues … with the
+  `status: waiting-for-author-response` label:", backticks unrendered. The ROLE rule held in beat 2
+  R7/R8 and beat 3 R2. First recurrence, so not a two-round pattern.
+- **The inference narrowed to one label.** It fetched `no:assignee` and discarded it; the shipped
+  set is the label query alone. The Inference line requires the basis be *evident*, not that it be
+  any particular basis, and the surface says plainly what it selected on — so it passes as written.
+  But "stalled waiting on someone" is broader than "waiting on the author": an unanswered question
+  or an untriaged unassigned bug waits on a *maintainer*, and those were fetched and dropped. The
+  domain doc's own words are that a label "covers a fraction of what the user means".
+
+**Approved surface** → `agent/knowledge/examples/stalled-issue-list.json` (trimmed to 4 rows; the
+idiom, not the volume). Retires `issue-triage-list.json` per decision 11. It earns its place over
+`pr-review-queue` by adding the **nested template** — that example has one template, this has two.
+
 ## Beat 5 — issue detail
 
 > "Open a2ui-project/a2ui issue #2124."
@@ -546,6 +578,86 @@ idiom the set lacked. Strict example gate green (186), client suite green (541).
   PR); expand/collapse is **local**.
 - **Not required** — the projects/milestone/relationships/notifications sidebar blocks, reactions,
   participant avatars.
+
+### Rounds — approved at R3
+
+| R1 | R2 (crashed) | R3 ✓ |
+|---|---|---|
+| ![](assets/beat-5-r1.jpg) | ![](assets/beat-5-r2-render-failure.jpg) | ![](assets/beat-5-r3.jpg) |
+
+`#2124` was checked against the API first: open, not a PR, opened by `pinieb`, **0 comments**,
+labels and assignee as shown. The prompt was run as written rather than swapped for a richer issue —
+the prompt is part of the beat definition. The thin timeline turned out not to matter: the
+cross-reference lives in the **body**, so the Sufficiency line was genuinely exercised.
+
+**R1 — run chained after beat 4** (same conversation, at the user's direction; beat 5 is otherwise
+self-contained). Valid attempt 1. Everything matched the API. Two things arrived unbidden: the
+**validation idiom generalized** — the Comment button carried `not(required(/commentDraft))` though
+this beat's rubric only asks for expand/collapse to be local, verified live empty → disabled → typed
+→ enabled — and it was **arc-aware**, wiring a back arrow to `back-to-stalled-issues` because it knew
+it came from beat 4's list. That is Phase 8 behaviour appearing early.
+
+**Defect:** the `#2058` cross-reference was an `openUrl` anchor to github.com. The brand doc's
+standing rule is that navigating to anything you could compose is an `event`, and it names a pull
+request first.
+
+**Lever.** The rule existed and did not fire, so the interesting question was why. Two rules
+collided: the markdown-decomposition rule says a body's "links `Link`" unconditionally, and `Link`
+carries an `href` and nothing else — **no action**. The agent followed the rule it was given and had
+no expressible way to make a body reference an event; `Button` with `variant: "link"` was never
+named. Added to the decomposition section: a body link to something in this domain is not a `Link`;
+render it as a `Button variant="link"` carrying an `event` with the target's identity, and reserve
+`Link` for genuinely external destinations.
+
+**R2 — could not be graded.** The lever worked at the A2UI level (zero `Link` components, the
+cross-reference a `Button variant="link"` carrying `open-pull-request`), but the client rendered
+*"This view failed to render."* Diagnosed rather than guessed — see below. Not an agent defect.
+
+**R3 — approved.** Same prompt, same agent process, same assembled prompt as R2; the only difference
+was the client fix. R2 died, R3 rendered — about as direct a confirmation as the fix could get.
+Zero `Link` components and zero anchors in the DOM, and the rule generalized past the round it was
+written for:
+
+| Reference | R1 | R3 |
+|---|---|---|
+| `a2ui-project/a2ui#2058` | `<a href="…/pull/2058">` | `Button variant="link"` → `open-pull-request {number: 2058}` |
+| `@jacobsimionato` | plain text | `Button variant="link"` → `open-user {username: "jacobsimionato"}` |
+
+Plus `add-comment` carrying `issueNumber: 2124` and the bound draft, validation re-verified live in
+both directions, and no console errors.
+
+**Client data model:** 3825 B on the chained R1 send — beat 4's entire nine-issue model riding along
+with an issue-detail request, against 2095 B for beat 1's single surface. Second data point for the
+monotonic growth Phase 8 inherits.
+
+**Approved surface** → `agent/knowledge/examples/issue-detail.json`, replacing the 7.1 example of the
+same name per decision 11. It adds in-session navigation for references **inside decomposed
+markdown**. With this, all four shipped examples are beat-derived and the original 7.1 set is fully
+retired — decision 11's endpoint.
+
+### The render crash behind R2 — a client bug, not an agent one
+
+The agent streams a surface, so the SDK's incremental parser emits `updateComponents` carrying a
+component whose function-call-valued prop has `call` but not yet `args`. The binder resolves it
+eagerly — `DataContext.resolveSignal` → `Object.entries(undefined)` →
+`TypeError: Cannot convert undefined or null to object` — and `SurfaceErrorBoundary` **latched
+`failed` permanently**, so a milliseconds-long parse window became a surface that stayed dead for the
+session.
+
+It is a race on chunk boundaries, not a property of any surface: beats 3, 4 and 5 R1 survived by
+luck. It reads as an agent defect at a glance, so it has plausibly been costing rounds unnoticed.
+
+Everything was eliminated by reproduction, not inspection — `formatString` as a property value, the
+render-before-data-model window, and the captured surface's content all render fine in every
+application order, batched or streamed, and the identical captured surface replays flawlessly through
+the dev page in the same browser and Vite bundle. That is what forced attention onto the application
+path.
+
+Fixed in `b26f8fe`: the boundary takes a `resetKey` that `ChatView` bumps per applied message, so
+each message buys exactly one retry and a genuinely broken component still settles into the fallback.
+`client/tests/streamed-partial-components.test.tsx` pins both halves — complete function-call props
+render, half-parsed ones throw — so if the renderer stops throwing we find out rather than silently
+keeping a workaround.
 
 ## Beat 6 — repository landing
 
