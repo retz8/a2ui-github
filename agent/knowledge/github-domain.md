@@ -95,6 +95,13 @@ making, while `unstable` is a fact GitHub is reporting. When the two disagree, t
 
 - A repository's **default branch** is the base most pull requests target. Its open-issue count, as
   GitHub reports it, includes open pull requests.
+- **The description, the language breakdown and the README are separate reads.** Fetching the
+  repository returns its metadata — name, default branch, counts, and a single `language` field —
+  and neither the README's contents nor the proportions of the languages inside it. A repository
+  may carry no description at all, and an absent description is a fact to render as absent, not a
+  gap to fill with a plausible sentence. The `language` field names only the **largest** language;
+  the proportional breakdown is its own endpoint returning bytes per language, so reporting the
+  primary language as "100%" is wrong for every repository that has more than one.
 - Repository content is a **tree** — the nesting is the information. A flat listing of the same paths
   answers a different question than the structure does.
 - A user has a `login` (stable identifier, what other objects reference) and a display `name`

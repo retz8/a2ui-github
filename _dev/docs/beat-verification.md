@@ -677,6 +677,82 @@ keeping a workaround.
 - **Not required** — the contribution/deployment/custom-properties blocks, contributor avatars,
   releases, the exact sidebar composition.
 
+### Rounds — IN PROGRESS, five rounds spent, not approved
+
+| R1 | R2 | R3 | R4 | R5 |
+|---|---|---|---|---|
+| ![](assets/beat-6-r1.jpg) | ![](assets/beat-6-r2.jpg) | ![](assets/beat-6-r3.jpg) | ![](assets/beat-6-r4.jpg) | ![](assets/beat-6-r5.jpg) |
+
+Every claim below was checked against `api.github.com` rather than read off the screen.
+
+**R1 — fabrication and dead affordances.** Two tool calls only. Stars/forks/open-issues exact, but
+the About text was **invented** (`description` is `null`) and "Languages: TypeScript 100%" was
+invented *and wrong* (the real split is TypeScript ~57%, then Python, Kotlin, Swift, …; the endpoint
+was never called). Star and Fork were wired to `windowAlert` — one of them announcing *"You starred
+the repository"*, a fabricated mutation. Directories were inert, `README.md` and `package.json`
+carried `open-file` events, and the header rendered `a2ui-projecta2ui`.
+
+**Levers (R2):** ROLE gains that the read-only rule is about what an affordance CLAIMS, not which
+side it runs on — a local function can no more star or fork than a server action can; ROLE gains
+that a source file's contents cannot be shown at all (no code component), so offering to open one
+promises what the catalog cannot deliver; the domain doc gains that a repository's description,
+language breakdown and README are separate reads, that an absent description is a fact to render as
+absent, and that the `language` field names only the largest.
+
+**R2 — three landed, three repeated.** The `windowAlert` lies, the `open-file` promises and the
+"100%" all went. Header fixed. But the description was invented **again** (differently worded, and
+now claiming the repository is built "using Primer" — our stack), README content was still absent,
+and the tree was still one level and inert. Star/Fork became server `star-repo`/`fork-repo` events —
+the lie moved rather than left.
+
+### The structural lever — and what it did and did not reach
+
+Two beats were now stuck on the same shape: the model **fills a gap with something plausible**
+rather than reporting absence (beat 6's description) or re-derives a fact it should read (beat 2's
+check state). Prose had failed on both, so the lever moved to the tool layer:
+`llm_agent/tool_shaping.py`, applied through ADK's `after_tool_callback`. It adds no GitHub facts and
+removes nothing — it states what a payload does and does not cover, and counts what is already there.
+
+Written against **real** payloads captured from the MCP server directly (zero LLM turns), which is
+also how the mechanism was found: `search_repositories` returns a *projection* that omits
+`description` entirely, so silence was indistinguishable from absence.
+
+**R3 — the lever changed behaviour, and falsified its own hypothesis.** Told the payload was a
+projection, the model called `search_repositories` with `minimal_output: False` **on its own**, and
+that fuller payload gave it real fields it had been missing: homepage `a2ui.org` ✓ and the Apache-2.0
+licence ✓. It then split `is:issue` from `is:pr` in two searches — **226 + 64 = 290**, exactly the
+total, the "open-issue count includes PRs" fact acted on rather than recited. "TypeScript (Primary)"
+replaced the fabricated percentage.
+
+And it invented the description anyway — **with `"description": null` present in the payload it had
+just requested**. That is the hypothesis falsified: the invention is not caused by silence.
+
+**R4 — directory rule lands, invention holds.** New rules: empty fields named individually rather
+than covered by a generic note, and a directory listing labelled as names-only. Every directory
+became a wired `open-directory` event carrying its path (seven dead rows fixed), and the **invented
+README paragraph stopped**. The description was invented a fourth time — *"Run rich Primer-based
+adaptive UI screens inside the chat conversation"*, describing our client, not a2ui. Note the tell:
+every fabrication describes the project the model is running inside, which reads as
+pattern-completion from prompt context rather than a gap in what it was told. `open-file` regressed,
+plausibly caused by the new note itself — it said files can be fetched without carrying the
+renderability constraint.
+
+**R5 — the best surface of the beat.** The listing note was corrected: a listing covers exactly one
+level, and fetchable is not the same as renderable. Result: `openUrl` gone, all eight directories
+wired, Star/Fork carrying no action at all rather than a false one, and an About block containing
+**only real fields** — no fabrication anywhere on the surface for the first time in five rounds.
+
+Not yet approvable, and the description result is **not yet earned**: nothing this round targeted it,
+so one clean round after three dirty ones may be variance rather than a fix. Repeat runs would settle
+it. Remaining gaps: README **content** still never fetched (a Sufficiency line), `open-file` still
+offered on three source files (`Package.swift`, `package.json`, `pyproject.toml` — `README.md` is
+legitimate), and the tree is one level, now honestly so.
+
+**Correction to the R1 note:** `UnderlineNav` rendered its tabs correctly in R1, which appeared to
+contradict the `deferred-catalog-work.md` entry. In R5 it rendered as an **empty band** with three
+`UnderlineNav.Item`s in the payload and nothing on screen. The component is **intermittent**, not
+fixed; the deferred entry stands.
+
 ## Beat 7 — user profile
 
 > "Who is gspencergoog and what do they work on?"

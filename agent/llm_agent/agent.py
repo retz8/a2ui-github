@@ -10,6 +10,7 @@ from google.adk.agents import LlmAgent
 
 from llm_agent.mcp import GITHUB_MCP_TOOLSETS, GITHUB_MCP_URL, build_github_toolset
 from llm_agent.prompt import build_system_prompt
+from llm_agent.tool_shaping import record_shape, shape_tool_response
 from llm_agent.tools import STUB_TOOLS
 
 logger = logging.getLogger(__name__)
@@ -58,6 +59,16 @@ def build_tools() -> list:
     )
 
 
+def _after_tool(*, tool, args, tool_context, tool_response, **_extra):  # noqa: ANN001, ARG001
+    """Shapes a tool response before the model reads it. Returns None to pass through.
+
+    ADK invokes this by keyword, and has grown parameters across versions — hence the
+    keyword-only signature plus `**_extra`, so a new one cannot break a live turn.
+    """
+    record_shape(getattr(tool, "name", str(tool)), args, tool_response)
+    return shape_tool_response(tool_response)
+
+
 def build_llm_agent(model: str | None = None) -> LlmAgent:
     """Constructs the ADK LlmAgent with the assembled system prompt and tools."""
     prompt = build_system_prompt()
@@ -72,4 +83,5 @@ def build_llm_agent(model: str | None = None) -> LlmAgent:
         # (e.g. `{path}`) would be read as state variables and raise KeyError.
         instruction=lambda _ctx: prompt,
         tools=build_tools(),
+        after_tool_callback=_after_tool,
     )

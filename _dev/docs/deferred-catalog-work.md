@@ -238,6 +238,14 @@ Revisit with a Playwright test (real layout) rendering `UnderlineNav` **nested**
 labels are visible. Until then the component is unreliable for composed surfaces, and the agent is
 steered away from emitting unwired navigation at all.
 
+**Confirmed intermittent (task 7.7, beat 6).** Round 1 rendered its tabs correctly nested inside a
+`PageLayout`, which looked like a refutation of this entry. Round 5 rendered an **empty band** from
+the same nesting — three `UnderlineNav.Item`s in the payload, nothing on screen. So the failure is
+not deterministic, which fits the resize-observation hypothesis above: whether any width is measured
+depends on when the observer fires relative to layout. A single passing render is therefore not
+evidence the component is safe, and the Playwright test must assert across repeated mounts rather
+than once.
+
 ### Timeline — avatars are clipped at the surface's left edge
 
 Found live in task 7.7 (beat 2, round 5). The agent composed `PageLayout` → `PageLayout.Content` →

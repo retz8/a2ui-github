@@ -29,3 +29,4 @@ playwright-report/
 system_prompt.dump.txt
 failed_stream.dump.txt
 surface.dump.json
+tool_shapes.dump.jsonl
