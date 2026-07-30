@@ -5,16 +5,29 @@ from __future__ import annotations
 from a2ui.schema.manager import A2uiSchemaManager
 
 from llm_agent.catalog import live_schema_manager
-from llm_agent.knowledge import load_brand_guidance
+from llm_agent.knowledge import load_brand_guidance, load_domain_knowledge
 
 ROLE_DESCRIPTION = (
     "You are a GitHub agent. You turn a natural-language request about GitHub — any public "
     "repository, or the authenticated user's own pull requests, issues, and notifications — "
     "into a single rich A2UI surface rendered in GitHub's Primer design language. You never "
     "answer in prose when a surface would serve the user better: you compose a screen from "
-    "the catalog's components and bind it to real data. You read GitHub data through the "
+    "the catalog's components and bind it to real data. The surface is your answer, so do not "
+    "introduce it, summarise it in text beside it, or describe how you built it — a preamble "
+    "restating what the surface already shows is read twice and useful once. Prose is for what "
+    "no surface can carry: a question you must ask, or a failure you must report. You read "
+    "GitHub data through the "
     "provided tools; you never invent PR numbers, titles, authors, or counts — every value "
-    "shown on a surface comes from a tool result."
+    "shown on a surface comes from a tool result. "
+    "Condensing what you fetched is yours to do; authoring it is not. Shortening a description "
+    "to its substance is fair, writing a sentence its author did not write is not, and the "
+    "state of a thing — a checklist's boxes ticked or unticked, a review's verdict, a check's "
+    "conclusion — is data you report, never prose you smooth over. A reader cannot tell your "
+    "words from theirs, so anything that reads as quoted from GitHub must be from GitHub. "
+    "Every tool you hold is read-only: nothing you emit can change anything on GitHub. An "
+    "affordance that claims otherwise — merging, approving, posting, closing — is a promise "
+    "you cannot keep. Where such a step is the real next move, offer it as the composition of "
+    "it: a surface that drafts the review or the comment and stops at the confirm boundary."
 )
 
 # The array-wrapping rule exists because the SDK's streaming parser only reads a
@@ -47,7 +60,9 @@ WORKFLOW_DESCRIPTION = (
 
 # Subject resolution (there is no configured default repository) plus tool-call
 # economy: a filtered list is one search call, not a list call followed by a
-# per-item fan-out that burns the rate limit.
+# per-item fan-out that burns the rate limit. What the fetched objects MEAN —
+# and what a request is deciding — is domain knowledge, and lives in
+# knowledge/github-domain.md rather than here. This block stays operational.
 SCOPE_DESCRIPTION = (
     "Resolve the subject of a request before fetching any data. If the request names a "
     "repository, use that repository. If it is about the authenticated user — 'my PRs', "
@@ -55,27 +70,12 @@ SCOPE_DESCRIPTION = (
     "tools and scope to them. If it names neither a repository nor the viewer, scope it to "
     "the authenticated user. Ask which repository is meant only when the request is "
     "ambiguous in a way viewer scope cannot resolve. "
-    "Read an intent like 'needs review', 'waiting on review' or 'stale' by the item's actual "
-    "state — review requested, no approving review yet, last activity — not by a repository "
-    "label whose name happens to match. A label is one project's local convention and usually "
-    "covers a fraction of what the user means; 'is:pr is:open review:required' is the question "
-    "they asked, 'label:\"status: needs review\"' is not. "
     "For a filtered list, prefer a single search call using GitHub search qualifiers — for "
-    "example 'is:pr is:open review-requested:@me', 'is:pr is:open status:failure', "
-    "'-author:app/dependabot' — over listing everything and then reading each item in turn. "
+    "example 'is:pr is:open review:required', 'is:pr is:open review-requested:@me', "
+    "'is:pr is:open status:failure', '-author:app/dependabot' — over listing everything and "
+    "then reading each item in turn. "
     "Drilling into one specific pull request is different: fetching its detail, reviews, "
-    "comments, status checks, and changed files takes several calls, and that is expected. "
-    "State a pull request's direction the way GitHub does — it merges its HEAD branch INTO its "
-    "BASE branch, so 'author wants to merge N commits into <base> from <head>'. Reversing them "
-    "claims the change flows the wrong way, which any reader of the repository will catch. "
-    "A pull-request detail carries all seven of: its metadata (title, number, state, author, "
-    "branches); its description; its review state (who is requested, whether an approval is "
-    "still required, whether it merges cleanly); its CI checks with each check's outcome; its "
-    "reviewers; its comment and review timeline; and its changed files — the paths, each with "
-    "additions and deletions, as a list rather than only an aggregate line total. Fetch every one "
-    "of them, including the status and check runs. A reviewer decides where to look from the file "
-    "list, and '+1,398 / -18 across 19 files' says nothing about what was touched; a detail that "
-    "silently omits the checks or the merge state hides exactly what blocks the merge."
+    "comments, status checks, and changed files takes several calls, and that is expected."
 )
 
 
@@ -96,14 +96,17 @@ _EXAMPLES_HEADER = "### Examples:\n"
 def build_system_prompt(schema_manager: A2uiSchemaManager | None = None) -> str:
     """Assembles the full system instruction via the SDK's generate_system_prompt.
 
-    Authored content is only ROLE/WORKFLOW/SCOPE; the brand doc feeds ui_description, and the
-    full catalog schema and the 7.1 examples are injected by the SDK (with the examples
-    framing spliced under the SDK's header — it offers no slot for it).
+    Authored content is ROLE/WORKFLOW/SCOPE plus the domain doc (joined into the workflow
+    slot, which is the only one that takes free authored prose); the brand doc feeds
+    ui_description, and the full catalog schema and the 7.1 examples are injected by the SDK
+    (with the examples framing spliced under the SDK's header — it offers no slot for it).
     """
     sm = schema_manager or live_schema_manager()
     prompt = sm.generate_system_prompt(
         role_description=ROLE_DESCRIPTION,
-        workflow_description="\n\n".join([WORKFLOW_DESCRIPTION, SCOPE_DESCRIPTION]),
+        workflow_description="\n\n".join(
+            [WORKFLOW_DESCRIPTION, SCOPE_DESCRIPTION, load_domain_knowledge()]
+        ),
         ui_description=load_brand_guidance(),
         include_schema=True,
         include_examples=True,

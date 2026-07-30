@@ -1,11 +1,11 @@
 """Hybrid snapshot for the assembled system prompt (spec decision 9).
 
 Byte-pins the stable framing (authored role, default workflow rules, authored workflow
-description, section headers, schema-block markers) while eliding the three volatile
-bulks to markers: the UI Description (brand doc), the catalog schema render, and the
-examples. Presence assertions prove each elided bulk is actually there. This keeps
-7.7's constant brand-doc/example edits from churning the snapshot while the framing
-stays byte-pinned.
+description, section headers, schema-block markers) while eliding the four volatile
+bulks to markers: the GitHub domain doc, the UI Description (brand doc), the catalog
+schema render, and the examples. Presence assertions prove each elided bulk is actually
+there. This keeps 7.7's constant knowledge-doc/example edits from churning the snapshot
+while the framing stays byte-pinned.
 """
 
 import re
@@ -18,12 +18,22 @@ from llm_agent.prompt import build_system_prompt
 
 _GOLDEN = Path(__file__).resolve().parent / "golden" / "llm_system_prompt.skeleton.txt"
 
+_DOMAIN_MARKER = "<<<GITHUB_DOMAIN>>>"
 _UI_MARKER = "<<<UI_DESCRIPTION>>>"
 _SCHEMA_MARKER = "<<<CATALOG_SCHEMA>>>"
 _EXAMPLES_MARKER = "<<<EXAMPLES>>>"
 
+_DOMAIN_HEADING = "# GitHub domain knowledge"
+
 
 def _skeletonize(prompt: str) -> str:
+    # 0. Domain doc body -> marker, bounded by the UI Description header that follows it.
+    prompt = re.sub(
+        re.escape(_DOMAIN_HEADING) + r".*?(?=\n\n## UI Description:)",
+        _DOMAIN_MARKER,
+        prompt,
+        flags=re.DOTALL,
+    )
     # 1. UI Description (brand doc) body -> marker, bounded by the schema block start.
     prompt = re.sub(
         r"(## UI Description:\n).*?(?=\n\n" + re.escape(A2UI_SCHEMA_BLOCK_START) + r")",
@@ -57,14 +67,16 @@ def test_prompt_skeleton_matches_golden():
     assert skeleton == _GOLDEN.read_text(encoding="utf-8")
 
 
-def test_skeleton_elided_all_three_bulks():
+def test_skeleton_elided_all_four_bulks():
     skeleton = _skeletonize(build_system_prompt())
+    assert _DOMAIN_MARKER in skeleton
     assert _UI_MARKER in skeleton
     assert _SCHEMA_MARKER in skeleton
     assert _EXAMPLES_MARKER in skeleton
     # the volatile bulk itself must be gone from the skeleton
     assert "Primer brand guidance" not in skeleton
     assert "Catalog Schema:" not in skeleton
+    assert "Whether it can merge" not in skeleton
 
 
 def test_examples_section_frames_the_examples_as_idioms():
@@ -91,6 +103,9 @@ def test_elided_bulk_is_actually_present():
     assert "catalogId" in prompt
     # brand doc present (a stable heading from knowledge/brand-guidance.md)
     assert "Primer brand guidance" in prompt
+    # domain doc present (a stable heading from knowledge/github-domain.md)
+    assert _DOMAIN_HEADING in prompt
+    assert "Whether it can merge" in prompt
     # every curated example present by name
     for path in sorted(EXAMPLES_DIR.glob("*.json")):
         assert path.stem in prompt

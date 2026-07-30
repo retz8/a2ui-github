@@ -58,6 +58,7 @@ Seven beats are self-contained; only beat 3 depends on a predecessor.
 
 Includes: metadata, markdown description, review state, CI checks, reviewers, comment timeline, and a **files-changed summary list**.
 
+- **The seven are a coverage floor at summary depth, not a transcription target.** Each is *represented* — a check tally, a files-changed list, a timeline with its volume stated — and depth is reached through affordances rather than dumped up front. Reproducing the static site's information architecture costs the user streaming time and the agent tokens to arrive at a page they could already load; a generative surface composes for the request instead. Depth reached **within** a surface is a local function; depth reached **as another surface** is navigation (§2).
 - **Deferred (stretch goal):** a full diff viewer. When built, it is the agent composing Primer primitives — never a custom component.
 
 ## 4. Catalog & adapter
