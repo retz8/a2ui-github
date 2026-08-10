@@ -122,7 +122,7 @@ Ship every main-entry `@primer/react` component as a validated A2UI catalog leaf
 
 Order: 6.1 first → 6.2 `Icon` → 6.3 → 6.4 → L0 → L1 → L2. Within a layer, sub-tasks are parallel-eligible (no coupling); cross-layer, a later slotter may defer a slot rather than wait and backfill once the referenced leaf exists (`deferred-catalog-work.md`).
 
-## Phase 7 — Agent [WIP]
+## Phase 7 — Agent [done]
 The live LLM agent that generates A2UI surfaces from the catalog, against the live GitHub repo — single-beat capable, verified beat-by-beat ("the machine works"; the arc is Phase 8). Spec: `_dev/docs/spec/phase-7-agent.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
 - [x] **7.1** Agent knowledge curation — the combined research task: Primer-guidance brand doc + curated GitHub-domain idiom examples (catalog-validated); living artifacts, refined in 7.7. (#109)
