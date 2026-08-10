@@ -1419,3 +1419,74 @@ the authenticated user.
 - **Interactivity** — an item resolves to a **server** action carrying its target. No affordance may
   imply it changed anything on GitHub; a local toggle is acceptable only as visibly local selection.
 - **Not required** — the reference's density, the filters sidebar, repository grouping counts.
+
+### Rounds — approved at R1
+
+| R1 ✓ |
+|---|
+| ![](assets/beat-8-r1.jpg) |
+
+Valid on attempt 1. Five tool calls: `list_notifications({})`, then `get_me({})`, then three in
+parallel — `search_pull_requests` on `review-requested:retz8` and on `author:retz8`, `search_issues`
+on `assignee:retz8` — and finally `search_issues` on `involves:retz8`. **The scope rule resolved the
+viewer without asking**: no repository is named in the prompt and none was requested back.
+
+The surface is `Your Attention Queue`, a `PageHeader` with a bell `Icon` and a `CounterLabel` of 7
+over two `Heading`-titled sections — `Pending Reviews` (1 row) and `Your Open Issues (pastiche)` (6
+rows) — each an `ActionList` with dividers driven by one bound template. Data model **1465 B**.
+
+**The completeness check is the result of this beat.** The failure mode it exists to catch is padding
+a thin result, so the queries were re-run directly against the API rather than the surface graded on
+its own terms:
+
+| Query | API | On the surface |
+|---|---|---|
+| `is:open is:pr review-requested:retz8` | 1 | 1 |
+| `is:open is:issue assignee:retz8` | 0 | — |
+| `is:open is:pr author:retz8` | 0 | — |
+| `GET /notifications` | 0 | — |
+
+Seven items shown, seven items real: the surface is exactly the viewer's public-scope reality, and
+the counter matches. Every field verified — PR `#11 superookie crawler` in
+`KISA-webpage-development-team/KISA-website-server`, opened by `dkim1112`, updated
+`2025-08-10T09:25:10Z`, with **`retz8` a genuine requested reviewer**, so `Pending Reviews` is earned
+rather than assumed; all six `retz8/pastiche` issues exact on number, title, open state and
+timestamp. The row descriptions are prefixes or condensations of the real issue bodies.
+
+**Interactivity, audited off the fiber:** all seven `li` carry an `onClick` and a distinct `basePath`
+(`/reviews/0`, `/issues/0…5`) under two `ResolvedChild` templates, `review-row` and `issue-row`. Each
+resolves to a server `event` — `open-pull-request` / `open-issue` — carrying
+`{"repository": {"path": "repository"}, "number": {"path": "number"}}`. No live click was spent
+(decision 7; beat 1 holds the one).
+
+**This is the first surface in the task whose actions bind a repository as `owner/name`.** The
+standing open thread from beats 6 and 7 — repository actions binding a bare name — does not appear
+here, and it resolved without a lever.
+
+**Flagged, not failed** (decision 2):
+
+- **`role: "listbox"` on both `ActionList`s** while the rows navigate rather than select; the
+  rendered `li`s carry no `option` role to match. A11y semantics, no rubric line.
+- **`retz8/pastiche#1`'s description reads "Shipped placeholder adapter"** — a condensation of "Take
+  the shipped placeholder adapter to working end-to-end support…" that turns a task into a state. It
+  keeps the author's nouns, so it clears the beat-7 standard.
+- **The six issues are authored by the viewer, not assigned** (`assignee:retz8` is 0; they came from
+  `involves:`). "Your Open Issues" is a fair reading and the header says "assigned **or related** to
+  you", so it is honest — but the per-item "why it wants attention" is the weakest line on the
+  surface, carried by the section heading alone.
+
+### Closure
+
+Beat 8 is **approved at R1**. **No example is folded in** — the surface would add the multi-section
+attention-queue archetype and the correctly-qualified repository action, but the set already
+generates this quality without it. The shipped set stays at **four**, and every beat from 6 onward
+has now closed without folding.
+
+### Environment — the tunnel, not localhost
+
+This beat ran over the VS Code dev tunnel rather than localhost, so **decision 14 does not hold for
+it**: the client is served at `vnw20xbg-5173`, the agent at `vnw20xbg-10003` with `--base-url` set to
+its public tunnel URL, and both ports public. Nothing in the result depends on the difference. One
+operational note: the client's first load over the tunnel takes ~40 s, because Vite serves the
+adapter's ~250 unbundled dev modules as individual requests and each pays tunnel latency. It renders
+blank until the last one lands — not a failure, and no console error accompanies it.
