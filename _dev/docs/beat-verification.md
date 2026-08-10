@@ -1490,3 +1490,91 @@ its public tunnel URL, and both ports public. Nothing in the result depends on t
 operational note: the client's first load over the tunnel takes ~40 s, because Vite serves the
 adapter's ~250 unbundled dev modules as individual requests and each pays tunnel latency. It renders
 blank until the last one lands — not a failure, and no console error accompanies it.
+
+## The confirmation pass (decision 4)
+
+Every beat run once against the shipped prompt, since folding was incremental and the prompt each
+beat was verified against is not the final one. Seven live runs — beats 2 and 3 share a conversation,
+and beat 8's R1 above already ran against the shipped prompt. Each run graded against its own rubric
+and every factual claim re-checked against `api.github.com`.
+
+| Beat | Result |
+|---|---|
+| 1 — PR queue | **Regressed**, then fixed and re-run. See below. |
+| 2 — PR detail | Data truth **recovered**; Sufficiency and Composition fail. Status unchanged. |
+| 3 — compose | **Passes.** Validation exercised live. |
+| 4 — issue list | **Passes.** 9 of 9 exact. |
+| 5 — issue detail | **Passes.** Every field exact. |
+| 6 — repository landing | Still defective, in a new way. Status unchanged. |
+| 7 — user profile | Facts **clean**; prose preamble returned. |
+| 8 — attention queue | **Passes** (its R1, above). |
+
+**Beat 3 — the load-bearing line proven again.** `clearValue` emptied the body, the submit button
+went disabled through `not(required(/reviewBody))`, and clicking it produced **no new line in the
+agent log** — the invalid submit was stopped entirely client-side. The stance control moves for real.
+
+**Beat 5** carried the cross-reference in the issue body as two server actions — `open-user` for
+`@jacobsimionato` and `open-pull-request` for `#2058` — rather than as inert text.
+
+**Beat 2** recovered the line it was closed on: "Merged by sugoi-yuzuru", the branches, and the
+`+1,938 / −31 / 22 files` tally all verify. It fails elsewhere — no changed-file list, no check
+tally, no commits (Sufficiency wants all three at summary depth), and it renders the PR's
+`Pre-launch Checklist` as eight checkboxes, which Composition names as the thing to exclude.
+
+**Beat 6** failed in a way no earlier round produced: eleven `TreeViewItem`s emitted with a
+`TreeViewDirectoryIcon` child and **no label**, so the file tree renders as a column of bare icons.
+The catalog permits it — `children` is a plain `ChildList` and the label is a conventional child, not
+a required property — so the validator passes it. Stats are exact (16,046 / 1,258 / 293 / TypeScript)
+and the nav tabs carry actions now, but the `About` block is composed prose where the repository's
+`description` is `null`.
+
+**Beat 7** cleared its wall: no fabricated location or company, and every pull request verified
+including the fork entry `gspencergoog/A2UI#10`. A prose preamble returned above the surface, with
+`**bold**` markup unrendered.
+
+### Beat 1's regression, and what it says about examples
+
+The run narrowed by `label:"status: needs review"` — **11 rows, where `review:required` is 53 of 66
+open**. That is the reading the rubric's last line excludes by name.
+
+**Both levers were already in place and both lost.** `github-domain.md` still carried the rule
+verbatim ("A repository label whose name happens to say so is one project's local convention and
+typically covers a fraction of what is actually waiting"), and `SCOPE_DESCRIPTION` already listed
+`'is:pr is:open review:required'` among its qualifier examples.
+
+**And the example could not help, which is the finding.** Beat 1's own approved surface is in the
+prompt, and its `intent` line is this exact prompt — yet it had nothing to say here, because
+**examples carry surfaces, not tool calls**. No example can teach a query strategy. This inverts the
+task's standing lesson: for a composition defect, examples beat prose and the example is the lever to
+reach for; for a *query* defect there is no example lever at all, and prose is the only surface
+available.
+
+So the audit asked where the two existing rules fell short, rather than writing a third of the same
+kind. They were in the wrong relationship to each other: the domain doc states the fact in a section
+about reviewers, with nothing connecting it to fetching, and the qualifier list is framed as **call
+economy** — one search rather than a per-item fan-out — never as *which* qualifier expresses a state.
+Neither points at the other, and nothing sits at the moment the query is written.
+
+**Lever: the link, stated at the point of query construction** (`SCOPE_DESCRIPTION`, after the
+qualifier list) — when a request names a state, the qualifier is what expresses it; a label whose
+name resembles the state is a hand-applied local convention and filtering on it silently drops
+everything that qualifies but was never labelled; reach for `label:` only when the user names one or
+no qualifier fits, and say on the surface when the label is the basis. It is general, so it serves
+every state-shaped request rather than this beat.
+
+**Re-run — passes.** One call, `repo:a2ui-project/a2ui is:pr is:open review:required`, no label.
+
+![](assets/beat-1-confirm.jpg)
+
+`CounterLabel` **53**, matching the API exactly, with the truncation stated honestly on the surface:
+*"Showing the 23 most recent open, non-draft pull requests needing review. Total: 53."* The non-draft
+claim is true — the six drafts on the result page appear nowhere in the rows, and every sampled row
+(`#2081`, `#2019`, `#2016`, `#2207`) is open, non-draft, with reviewers still pending. 18 components,
+one bound template over `/prs`, per-row `event` carrying `repository` **and** `number`, and the
+uniform state carried once at surface level per the amended State line. Data model 5,179 B.
+
+**Beat 4 re-run — undisturbed.** The lever's blast radius is any beat resolving a fuzzy state, and
+beat 4 is the one whose approved behaviour is a label query. It still queries
+`label:"status: waiting-for-author-response"`, still returns the same 9 rows, and still says the
+basis on the surface — which is what the new clause asks of a label filter. The standing R1 flag
+(the inference narrows to one label) is unchanged.

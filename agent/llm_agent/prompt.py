@@ -119,6 +119,12 @@ SCOPE_DESCRIPTION = (
     "example 'is:pr is:open review:required', 'is:pr is:open review-requested:@me', "
     "'is:pr is:open status:failure', '-author:app/dependabot', 'user:<login>', "
     "'author:<login>' — over listing everything and then reading each item in turn. "
+    "When the request names a STATE — needing review, waiting on someone, failing, stale — "
+    "the qualifier is what expresses it. A repository label whose name resembles that state "
+    "is NOT the state: it is one project's local convention, applied by hand, and filtering "
+    "on it silently drops every item that qualifies but was never labelled. Reach for "
+    "'label:' only when the user names a label, or when no qualifier expresses what they "
+    "asked; if you do filter by label, say on the surface that the label is the basis. "
     "Drilling into one specific pull request is different: fetching its detail, reviews, "
     "comments, status checks, and changed files takes several calls, and that is expected."
 )
