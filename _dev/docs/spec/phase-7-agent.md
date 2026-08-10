@@ -139,6 +139,46 @@ Functions are added to the catalog only as Phase-7 flows bind them; the concrete
 task level. Beat 5 (compose-and-confirm) must genuinely exercise client-side validation, proving
 the local-function mechanism end-to-end.
 
+*(The naming here is stale: the compose beat is 3, not 5 — `SPEC.md` §3.1.)*
+
+#### Resolved — the concrete list, after 7.9 and 7.7
+
+**Nineteen functions ship**, in two groups:
+
+| Origin | Functions |
+|---|---|
+| Hand-rolled (Phase 2, then demand-driven) | `consoleLog`, `windowAlert`, `clearValue`, `countSelected`, `setBoolean` |
+| Adopted from the basic catalog (7.9) | `required`, `regex`, `length`, `numeric`, `email`, `formatString`, `formatNumber`, `formatCurrency`, `formatDate`, `pluralize`, `openUrl`, `and`, `or`, `not` |
+
+The 11 operators `web_core` implements but the basic catalog does not declare stay deferred (task
+7.9 decision 2).
+
+**Phase 7 added none.** That is the answer to this decision rather than a gap in it: the growth was
+demand-driven, and across all eight beats the demand never exceeded the adopted set. 7.9 front-loaded
+the adoption specifically so the emit surface would be stable before beat verification began, and it
+turned out to cover every affordance the beats reached for.
+
+**Exercised live:** `clearValue`, `required` and `not` — beat 3 proved the mechanism end-to-end, with
+`disabled: not(required(/reviewBody))` blocking an empty submit and **no agent turn produced**; beats
+2 and 5 reproduce the same gate on their comment boxes. `openUrl` appears on beat 6, correctly
+limited to genuinely external destinations.
+
+**Never exercised by any beat:** `consoleLog`, `countSelected`, `setBoolean`, `regex`, `length`,
+`numeric`, `email`, `formatString`, `formatNumber`, `formatCurrency`, `formatDate`, `pluralize`,
+`and`, `or`. They are not dead — they are the vocabulary a compose-heavy flow would reach for — but
+nothing in this phase's read-only surface needed them.
+
+Two observations for Phase 8, recorded rather than acted on:
+
+- **`windowAlert` earns its keep negatively.** Its only appearances in the verification record are
+  defects: beat 6 wired a Star button to a `windowAlert` announcing an action that never happened.
+  A function whose natural use is to *claim* something invites claiming something false, and the
+  agent took that invitation three rounds running. Worth reconsidering whether it belongs in an
+  agent-facing catalog at all.
+- **`setBoolean` is the missing half of expand/collapse.** Beat 6's tree bound `expanded` to a data
+  path but wired no action to toggle it, so the affordance renders and does nothing. The function to
+  drive it already exists; nothing has ever bound it.
+
 ### 9. Dev loop — three cost layers, refinement built in
 
 - **L0 — zero LLM calls (default loop):** prompt-assembly snapshot tests, validator tests,
@@ -206,6 +246,7 @@ Order: 7.1 ∥ 7.4 from the start · 7.2 after 7.1 · 7.3 after 7.2 · 7.5 ∥ 7
 ## Open items
 
 Deferred to their own task-level grills: agent/deterministic-executor cohabitation layout in
-`agent/` (7.2), the concrete local-function list (7.7), examples count and contents (7.1), and
+`agent/` (7.2), ~~the concrete local-function list (7.7)~~ — **answered under decision 8** —
+examples count and contents (7.1), and
 explicit provider-side context caching as an optimization. A text-only fallback runner is
 future-if-needed. Template memory remains deferred per SPEC §8.
