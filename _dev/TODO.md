@@ -137,10 +137,19 @@ The live LLM agent that generates A2UI surfaces from the catalog, against the li
 
 Order: 7.1 ∥ 7.4 from the start · 7.2 after 7.1 · 7.3 after 7.2 · 7.5 ∥ 7.6 after 7.3 · 7.9 after 7.3 · 7.7 last (after 7.9) · 7.8 after 7.1 (client-only; parallel to the whole 7.2→7.7 chain).
 
-## Phase 8 — Demo integration
-The full maintainer-triage arc running end-to-end on the live a2ui repo.
+## Phase 8 — Demo integration [WIP]
+The canvas-first generative-UI shell replacing the chat interface, plus the full maintainer-triage arc running end-to-end on the live a2ui repo — one continuous session, all 8 beats, with a standalone thesis stating the paradigm. Spec: `_dev/docs/spec/phase-8-demo-integration.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
-**UI/UX re-frame** — replace the phase-7 chat transcript with a persistent canvas + conversation palette: the transcript carries the dialogue only; the current surface lives in one canvas that navigates in place. Covers: repaint-on-navigation semantics (previous surface stays visible until the replacement validates), surface history/back on the client, and surface lifecycle keyed by `surfaceId` (the shell is a view over a surface registry, not the owner of surface state).
+- [ ] **8.0** Phase-spec understanding & refinement session — user-driven deep-read of the phase spec (paradigm, glossary, storage decisions), refining where wanted; this sub-task may amend the phase spec.
+- [ ] **8.1** Beat fixture recording — run each of the 8 beats live once and persist the streams as replay fixtures; includes the beats-2/6 model-knob retry and re-grade.
+- [ ] **8.2** Canvas core — canvas route + canvas store, stage rendering over the existing pipeline, palette input, status strip; a paint lands on the stage (progressive on empty canvas).
+- [ ] **8.3** Transitions & interaction policy — hold-and-swap with the validation gate, the overlay slot (question paints), the interaction-cost policy, live-registry lifecycle: serialize-on-swap capture + the data-model growth fix.
+- [ ] **8.4** Timeline & time travel — ring store with monotonic paint ids, causes, titles-with-fallback, history UI (back + press-list, return-to-live, stale banner, causal jumps), parked-snapshot restore via sandbox with interaction-state write-back.
+- [ ] **8.5** Agent-side additions — per-paint titles, fork-context attachment on the wire, and the prompt adjustments both imply.
+- [ ] **8.6** Arc definition + live verification — script "the maintainer's morning" (sequencing, glue prompts, re-composition follow-up), live continuous 8-beat sessions on the canvas until green; arc-green triggers chat-page retirement.
+- [ ] **8.7** Thesis doc — `THESIS.md`, the standalone public position piece; `SPEC.md` §1 gains a pointer.
+
+Order: 8.0 first → then 8.1 ∥ (8.2 → 8.3 → 8.4) — the client chain is sequential; fixtures record in parallel, and 8.2–8.4's verification gates run on 8.1's fixtures (zero LLM). 8.5 is parallel-eligible to the client chain but must land before 8.6. 8.6 after everything except 8.7. 8.7 strictly last.
 
 ## Post-Phase 8 — Template finalization
 Additively fold the catalog-authoring skill (Phase 4) and the agent scaffold (Phase 7) into the template repo; finalize as the adoptable A2UI template — its first real use. Plan: `_dev/docs/templatization-plan.md`.
