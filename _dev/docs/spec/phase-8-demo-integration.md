@@ -1,6 +1,6 @@
 # Phase 8 — Demo integration
 
-Phase spec for `## Phase 8` in `_dev/TODO.md`: a canvas-first generative-UI shell that replaces the chat interface, and the full "maintainer's morning" arc running end-to-end on the live `a2ui-project/a2ui` repository. Extends `SPEC.md` §3 — its decisions stand unchanged: the agent is a **general GitHub agent** (any public repository plus the viewer's own PRs/issues/notifications); the morning arc is the demo subject, not the agent's boundary; action scope is read-only with beat 3 stopping at the confirm boundary; the 8-beat capability matrix (§3.1) is the verified vocabulary the arc is sequenced from.
+Phase spec for `## Phase 8` in `_dev/TODO.md`: a canvas-first generative-UI shell that replaces the chat interface, and the full "maintainer's morning" arc running end-to-end on the live `a2ui-project/a2ui` repository. Visual companion (shell mockups, wiring loop, timeline scenarios): <https://claude.ai/code/artifact/2fec59ca-df4a-48ff-991d-9d4fe4cdc125>. Extends `SPEC.md` §3 — its decisions stand unchanged: the agent is a **general GitHub agent** (any public repository plus the viewer's own PRs/issues/notifications); the morning arc is the demo subject, not the agent's boundary; action scope is read-only with beat 3 stopping at the confirm boundary; the 8-beat capability matrix (§3.1) is the verified vocabulary the arc is sequenced from.
 
 ## Scope
 
