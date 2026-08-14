@@ -1,0 +1,3199 @@
+{
+  "name": "beat-8-notifications",
+  "beat": 8,
+  "title": "Viewer-centric, ambiguous scope",
+  "prompt": "What needs my attention today?",
+  "model": "gemini-3.5-flash",
+  "recordedAt": "2026-08-14T07:46:58+00:00",
+  "contextId": "1f50ee2c-fa70-49dc-9410-5fd43796dcae",
+  "chainedFrom": null,
+  "turns": [
+    {
+      "taskId": "ae5cff6f-653d-418d-835b-1c5f69ae3b32",
+      "kind": "utterance",
+      "prompt": "What needs my attention today?",
+      "action": null,
+      "batches": [
+        {
+          "offsetMs": 57652,
+          "messages": [
+            {
+              "version": "v0.9",
+              "createSurface": {
+                "surfaceId": "attention-queue",
+                "catalogId": "https://github.com/retz8/a2ui-github/blob/main/primer-a2ui-adapter/catalogs/v0.9.1/catalog.json",
+                "sendDataModel": true
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 58153,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "loading_ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 58345,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "loading_ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-ta",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 58444,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium"
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 58649,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "loading_ph-lv",
+                      "loading_ph-title",
+                      "loading_ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-lv",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-title",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-tv",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 58970,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon"
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "loading_ph-title",
+                      "loading_ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-title",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-tv",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 59086,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "loading_ph-title",
+                      "loading_ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-title",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-tv",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 59160,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "loading_ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue"
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-tv",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 59249,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "loading_ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-tv",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 59429,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "loading_ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_ph-counter",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 59545,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "loading_ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_ph-nav",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 59668,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation"
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 59774,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "loading_nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_nav-underline",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 60123,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "loading_nav-item-review",
+                      "loading_nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_nav-item-review",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_nav-item-assigned",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 60180,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "loading_nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_nav-item-assigned",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 60357,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "loading_nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_nav-item-assigned",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 60420,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 60492,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "loading_list"
+                    ]
+                  },
+                  {
+                    "id": "loading_list",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 60563,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox"
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 60760,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "loading_pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  },
+                  {
+                    "id": "loading_pr-item-template",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 61296,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "pr-item-template",
+                    "component": "ActionList.Item",
+                    "children": [
+                      "loading_item-leading",
+                      "loading_item-title",
+                      "loading_item-desc",
+                      "loading_item-trailing"
+                    ],
+                    "action": {
+                      "event": {
+                        "name": "open-pull-request",
+                        "context": {
+                          "repository": {
+                            "path": "repository"
+                          },
+                          "number": {
+                            "path": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  },
+                  {
+                    "id": "loading_item-leading",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-title",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-desc",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-trailing",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 61622,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "item-leading",
+                    "component": "ActionList.LeadingVisual",
+                    "children": [
+                      "loading_pr-icon"
+                    ]
+                  },
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "pr-item-template",
+                    "component": "ActionList.Item",
+                    "children": [
+                      "item-leading",
+                      "loading_item-title",
+                      "loading_item-desc",
+                      "loading_item-trailing"
+                    ],
+                    "action": {
+                      "event": {
+                        "name": "open-pull-request",
+                        "context": {
+                          "repository": {
+                            "path": "repository"
+                          },
+                          "number": {
+                            "path": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  },
+                  {
+                    "id": "loading_pr-icon",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-title",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-desc",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-trailing",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 61752,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "item-leading",
+                    "component": "ActionList.LeadingVisual",
+                    "children": [
+                      "pr-icon"
+                    ]
+                  },
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "pr-icon",
+                    "component": "Icon",
+                    "name": "git-pull-request",
+                    "fill": "open",
+                    "accessibility": {
+                      "label": "Pull Request Icon"
+                    }
+                  },
+                  {
+                    "id": "pr-item-template",
+                    "component": "ActionList.Item",
+                    "children": [
+                      "item-leading",
+                      "loading_item-title",
+                      "loading_item-desc",
+                      "loading_item-trailing"
+                    ],
+                    "action": {
+                      "event": {
+                        "name": "open-pull-request",
+                        "context": {
+                          "repository": {
+                            "path": "repository"
+                          },
+                          "number": {
+                            "path": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  },
+                  {
+                    "id": "loading_item-title",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-desc",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-trailing",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 61823,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "item-leading",
+                    "component": "ActionList.LeadingVisual",
+                    "children": [
+                      "pr-icon"
+                    ]
+                  },
+                  {
+                    "id": "item-title",
+                    "component": "Text"
+                  },
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "pr-icon",
+                    "component": "Icon",
+                    "name": "git-pull-request",
+                    "fill": "open",
+                    "accessibility": {
+                      "label": "Pull Request Icon"
+                    }
+                  },
+                  {
+                    "id": "pr-item-template",
+                    "component": "ActionList.Item",
+                    "children": [
+                      "item-leading",
+                      "item-title",
+                      "loading_item-desc",
+                      "loading_item-trailing"
+                    ],
+                    "action": {
+                      "event": {
+                        "name": "open-pull-request",
+                        "context": {
+                          "repository": {
+                            "path": "repository"
+                          },
+                          "number": {
+                            "path": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  },
+                  {
+                    "id": "loading_item-desc",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-trailing",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 61922,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "item-leading",
+                    "component": "ActionList.LeadingVisual",
+                    "children": [
+                      "pr-icon"
+                    ]
+                  },
+                  {
+                    "id": "item-title",
+                    "component": "Text",
+                    "text": {
+                      "path": "title"
+                    },
+                    "weight": "semibold"
+                  },
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "pr-icon",
+                    "component": "Icon",
+                    "name": "git-pull-request",
+                    "fill": "open",
+                    "accessibility": {
+                      "label": "Pull Request Icon"
+                    }
+                  },
+                  {
+                    "id": "pr-item-template",
+                    "component": "ActionList.Item",
+                    "children": [
+                      "item-leading",
+                      "item-title",
+                      "loading_item-desc",
+                      "loading_item-trailing"
+                    ],
+                    "action": {
+                      "event": {
+                        "name": "open-pull-request",
+                        "context": {
+                          "repository": {
+                            "path": "repository"
+                          },
+                          "number": {
+                            "path": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  },
+                  {
+                    "id": "loading_item-desc",
+                    "component": "Row",
+                    "children": []
+                  },
+                  {
+                    "id": "loading_item-trailing",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 62217,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "item-desc",
+                    "component": "ActionList.Description",
+                    "text": {
+                      "path": "metaText"
+                    },
+                    "variant": "block"
+                  },
+                  {
+                    "id": "item-leading",
+                    "component": "ActionList.LeadingVisual",
+                    "children": [
+                      "pr-icon"
+                    ]
+                  },
+                  {
+                    "id": "item-title",
+                    "component": "Text",
+                    "text": {
+                      "path": "title"
+                    },
+                    "weight": "semibold"
+                  },
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "pr-icon",
+                    "component": "Icon",
+                    "name": "git-pull-request",
+                    "fill": "open",
+                    "accessibility": {
+                      "label": "Pull Request Icon"
+                    }
+                  },
+                  {
+                    "id": "pr-item-template",
+                    "component": "ActionList.Item",
+                    "children": [
+                      "item-leading",
+                      "item-title",
+                      "item-desc",
+                      "loading_item-trailing"
+                    ],
+                    "action": {
+                      "event": {
+                        "name": "open-pull-request",
+                        "context": {
+                          "repository": {
+                            "path": "repository"
+                          },
+                          "number": {
+                            "path": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  },
+                  {
+                    "id": "loading_item-trailing",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 62317,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "item-desc",
+                    "component": "ActionList.Description",
+                    "text": {
+                      "path": "metaText"
+                    },
+                    "variant": "block"
+                  },
+                  {
+                    "id": "item-leading",
+                    "component": "ActionList.LeadingVisual",
+                    "children": [
+                      "pr-icon"
+                    ]
+                  },
+                  {
+                    "id": "item-title",
+                    "component": "Text",
+                    "text": {
+                      "path": "title"
+                    },
+                    "weight": "semibold"
+                  },
+                  {
+                    "id": "item-trailing",
+                    "component": "ActionList.TrailingVisual",
+                    "children": [
+                      "loading_pr-time"
+                    ]
+                  },
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "pr-icon",
+                    "component": "Icon",
+                    "name": "git-pull-request",
+                    "fill": "open",
+                    "accessibility": {
+                      "label": "Pull Request Icon"
+                    }
+                  },
+                  {
+                    "id": "pr-item-template",
+                    "component": "ActionList.Item",
+                    "children": [
+                      "item-leading",
+                      "item-title",
+                      "item-desc",
+                      "item-trailing"
+                    ],
+                    "action": {
+                      "event": {
+                        "name": "open-pull-request",
+                        "context": {
+                          "repository": {
+                            "path": "repository"
+                          },
+                          "number": {
+                            "path": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  },
+                  {
+                    "id": "loading_pr-time",
+                    "component": "Row",
+                    "children": []
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 62647,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateComponents": {
+                "components": [
+                  {
+                    "id": "item-desc",
+                    "component": "ActionList.Description",
+                    "text": {
+                      "path": "metaText"
+                    },
+                    "variant": "block"
+                  },
+                  {
+                    "id": "item-leading",
+                    "component": "ActionList.LeadingVisual",
+                    "children": [
+                      "pr-icon"
+                    ]
+                  },
+                  {
+                    "id": "item-title",
+                    "component": "Text",
+                    "text": {
+                      "path": "title"
+                    },
+                    "weight": "semibold"
+                  },
+                  {
+                    "id": "item-trailing",
+                    "component": "ActionList.TrailingVisual",
+                    "children": [
+                      "pr-time"
+                    ]
+                  },
+                  {
+                    "id": "list",
+                    "component": "ActionList",
+                    "role": "listbox",
+                    "showDividers": true,
+                    "children": {
+                      "componentId": "pr-item-template",
+                      "path": "/reviewRequests"
+                    }
+                  },
+                  {
+                    "id": "nav-item-assigned",
+                    "component": "UnderlineNav.Item",
+                    "text": "Assigned",
+                    "counter": "0"
+                  },
+                  {
+                    "id": "nav-item-review",
+                    "component": "UnderlineNav.Item",
+                    "text": "Review Requests",
+                    "aria-current": "page",
+                    "counter": "1"
+                  },
+                  {
+                    "id": "nav-underline",
+                    "component": "UnderlineNav",
+                    "aria-label": "Attention categories",
+                    "children": [
+                      "nav-item-review",
+                      "nav-item-assigned"
+                    ]
+                  },
+                  {
+                    "id": "ph",
+                    "component": "PageHeader",
+                    "aria-label": "Attention Queue Header",
+                    "children": [
+                      "ph-ta",
+                      "ph-nav"
+                    ]
+                  },
+                  {
+                    "id": "ph-counter",
+                    "component": "CounterLabel",
+                    "count": 1,
+                    "variant": "primary"
+                  },
+                  {
+                    "id": "ph-icon",
+                    "component": "Icon",
+                    "name": "bell-fill",
+                    "fill": "accent",
+                    "accessibility": {
+                      "label": "Attention Icon"
+                    }
+                  },
+                  {
+                    "id": "ph-lv",
+                    "component": "PageHeader.LeadingVisual",
+                    "children": [
+                      "ph-icon"
+                    ]
+                  },
+                  {
+                    "id": "ph-nav",
+                    "component": "PageHeader.Navigation",
+                    "children": [
+                      "nav-underline"
+                    ]
+                  },
+                  {
+                    "id": "ph-ta",
+                    "component": "PageHeader.TitleArea",
+                    "variant": "medium",
+                    "children": [
+                      "ph-lv",
+                      "ph-title",
+                      "ph-tv"
+                    ]
+                  },
+                  {
+                    "id": "ph-title",
+                    "component": "PageHeader.Title",
+                    "text": "Attention Queue",
+                    "as": "h1"
+                  },
+                  {
+                    "id": "ph-tv",
+                    "component": "PageHeader.TrailingVisual",
+                    "children": [
+                      "ph-counter"
+                    ]
+                  },
+                  {
+                    "id": "pr-icon",
+                    "component": "Icon",
+                    "name": "git-pull-request",
+                    "fill": "open",
+                    "accessibility": {
+                      "label": "Pull Request Icon"
+                    }
+                  },
+                  {
+                    "id": "pr-item-template",
+                    "component": "ActionList.Item",
+                    "children": [
+                      "item-leading",
+                      "item-title",
+                      "item-desc",
+                      "item-trailing"
+                    ],
+                    "action": {
+                      "event": {
+                        "name": "open-pull-request",
+                        "context": {
+                          "repository": {
+                            "path": "repository"
+                          },
+                          "number": {
+                            "path": "number"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "id": "pr-time",
+                    "component": "RelativeTime",
+                    "datetime": {
+                      "path": "updatedAt"
+                    },
+                    "format": "relative"
+                  },
+                  {
+                    "id": "root",
+                    "component": "Stack",
+                    "direction": "vertical",
+                    "gap": "normal",
+                    "padding": "normal",
+                    "children": [
+                      "ph",
+                      "list"
+                    ]
+                  }
+                ],
+                "surfaceId": "attention-queue"
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 63138,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateDataModel": {
+                "surfaceId": "attention-queue",
+                "value": {
+                  "reviewRequests": [
+                    {
+                      "repository": "KISA-webpage-development-team/KISA-website-server",
+                      "number": 11,
+                      "title": "superookie crawler",
+                      "author": "dkim1112"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 63330,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateDataModel": {
+                "surfaceId": "attention-queue",
+                "value": {
+                  "reviewRequests": [
+                    {
+                      "repository": "KISA-webpage-development-team/KISA-website-server",
+                      "number": 11,
+                      "title": "superookie crawler",
+                      "author": "dkim1112",
+                      "updatedAt": "2025-08-10T09:25:10Z"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 63466,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateDataModel": {
+                "surfaceId": "attention-queue",
+                "value": {
+                  "reviewRequests": [
+                    {
+                      "repository": "KISA-webpage-development-team/KISA-website-server",
+                      "number": 11,
+                      "title": "superookie crawler",
+                      "author": "dkim1112",
+                      "updatedAt": "2025-08-10T09:25:10Z",
+                      "metaText": "KISA-webpage-development-team/KISA-website-server#11 opened by dkim1112 \u2022 11 files changed \u2022 +568 -2 \u2022 Merge conflict (dirty)"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "texts": []
+        },
+        {
+          "offsetMs": 63632,
+          "messages": [
+            {
+              "version": "v0.9",
+              "updateDataModel": {
+                "surfaceId": "attention-queue",
+                "path": "/",
+                "value": {
+                  "reviewRequests": [
+                    {
+                      "repository": "KISA-webpage-development-team/KISA-website-server",
+                      "number": 11,
+                      "title": "superookie crawler",
+                      "author": "dkim1112",
+                      "updatedAt": "2025-08-10T09:25:10Z",
+                      "metaText": "KISA-webpage-development-team/KISA-website-server#11 opened by dkim1112 \u2022 11 files changed \u2022 +568 -2 \u2022 Merge conflict (dirty)"
+                    }
+                  ]
+                }
+              }
+            }
+          ],
+          "texts": []
+        }
+      ],
+      "outcome": "completed",
+      "durationMs": 63774
+    }
+  ]
+}
