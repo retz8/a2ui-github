@@ -10,3 +10,6 @@ _dev
 .claude
 SPEC.md
 CLAUDE.md
+
+# Recorded agent streams — machine-generated, rewritten wholesale by the beat recorder
+agent/recordings
