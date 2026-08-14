@@ -15,6 +15,12 @@ from llm_agent.executor import (
     LenientA2uiStreamParser,
     LlmAgentExecutor,
 )
+from llm_agent.recorder import (
+    RECORD_DIR_ENV,
+    NullRecorder,
+    SessionRecorder,
+    create_recorder,
+)
 from llm_agent.responder import ModelTurnError
 
 
@@ -872,3 +878,95 @@ async def test_invalid_surface_dumps_the_raw_model_response(failed_stream_dump):
 
     assert failed_stream_dump.exists()
     assert "Nope" in failed_stream_dump.read_text(encoding="utf-8")
+
+
+# --- wire recording (task 8.1) -------------------------------------------------------
+
+
+def _recorded_session(record_dir):
+    return json.loads(next(record_dir.glob("*.json")).read_text(encoding="utf-8"))
+
+
+@pytest.mark.asyncio
+async def test_recording_is_off_unless_the_env_knob_is_set(monkeypatch):
+    monkeypatch.delenv(RECORD_DIR_ENV, raising=False)
+    executor = LlmAgentExecutor(_FakeResponder([_valid_surface_text()]))
+    assert isinstance(executor._recorder, NullRecorder)
+
+
+@pytest.mark.asyncio
+async def test_the_env_knob_arms_a_session_recorder(monkeypatch, tmp_path):
+    monkeypatch.setenv(RECORD_DIR_ENV, str(tmp_path))
+    executor = LlmAgentExecutor(_FakeResponder([_valid_surface_text()]))
+    assert isinstance(executor._recorder, SessionRecorder)
+
+
+@pytest.mark.asyncio
+async def test_an_armed_executor_records_the_turn_it_streamed(tmp_path):
+    executor = LlmAgentExecutor(
+        _FakeResponder([_valid_surface_text()]), recorder=create_recorder(str(tmp_path))
+    )
+    await executor.execute(_Ctx("show me open PRs"), _FakeQueue())
+
+    session = _recorded_session(tmp_path)
+    (turn,) = session["turns"]
+    assert turn["kind"] == "utterance"
+    assert turn["prompt"] == "show me open PRs"
+    assert turn["outcome"] == "completed"
+    assert turn["batches"], "a successful turn streamed at least one batch"
+
+
+@pytest.mark.asyncio
+async def test_the_recorded_batches_carry_the_surface_the_client_would_have_received(tmp_path):
+    executor = LlmAgentExecutor(
+        _FakeResponder([_valid_surface_text()]), recorder=create_recorder(str(tmp_path))
+    )
+    await executor.execute(_Ctx("show me open PRs"), _FakeQueue())
+
+    (turn,) = _recorded_session(tmp_path)["turns"]
+    streamed = [msg for batch in turn["batches"] for msg in batch["messages"]]
+    assert any("createSurface" in msg for msg in streamed)
+    assert all(msg["version"] == "v0.9" for msg in streamed)
+
+
+@pytest.mark.asyncio
+async def test_an_action_turn_records_the_action_that_drove_it(tmp_path):
+    action = {"name": "open-pull-request", "context": {"number": 2093}}
+    executor = LlmAgentExecutor(
+        _FakeResponder([_valid_surface_text()]), recorder=create_recorder(str(tmp_path))
+    )
+    await executor.execute(_ActionCtx(action), _FakeQueue())
+
+    (turn,) = _recorded_session(tmp_path)["turns"]
+    assert turn["kind"] == "surface-action"
+    assert turn["action"] == action
+
+
+@pytest.mark.asyncio
+async def test_an_exhausted_turn_is_recorded_as_an_apology(tmp_path, failed_stream_dump):
+    """A failed paint is a fixture too: 8.3 must prove it never reaches the stage."""
+    executor = LlmAgentExecutor(
+        _FakeResponder([_BAD_SURFACE_S1]), recorder=create_recorder(str(tmp_path))
+    )
+    await executor.execute(_Ctx("show me open PRs"), _FakeQueue())
+
+    (turn,) = _recorded_session(tmp_path)["turns"]
+    assert turn["outcome"] == "apology"
+    streamed = [msg for batch in turn["batches"] for msg in batch["messages"]]
+    # The teardown that removes the half-built surface is part of what the client saw.
+    assert any("deleteSurface" in msg for msg in streamed)
+
+
+@pytest.mark.asyncio
+async def test_recording_never_changes_what_the_client_receives(tmp_path):
+    """The knob is diagnostics: armed and unarmed runs must emit the same events."""
+    unarmed_queue, armed_queue = _FakeQueue(), _FakeQueue()
+    await LlmAgentExecutor(_FakeResponder([_valid_surface_text()])).execute(
+        _Ctx("show me open PRs"), unarmed_queue
+    )
+    await LlmAgentExecutor(
+        _FakeResponder([_valid_surface_text()]), recorder=create_recorder(str(tmp_path))
+    ).execute(_Ctx("show me open PRs"), armed_queue)
+
+    assert _all_text(unarmed_queue) == _all_text(armed_queue)
+    assert len(unarmed_queue.events) == len(armed_queue.events)

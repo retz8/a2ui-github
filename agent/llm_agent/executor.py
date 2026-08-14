@@ -5,6 +5,7 @@ from __future__ import annotations
 import contextlib
 import json
 import logging
+import os
 from pathlib import Path
 
 from a2a.server.agent_execution import AgentExecutor, RequestContext
@@ -19,6 +20,7 @@ from a2ui.parser.streaming_v09 import A2uiStreamParserV09
 from a2ui.schema.constants import VERSION_0_9
 
 from llm_agent.catalog import live_ref_fields, validate_surface
+from llm_agent.recorder import RECORD_DIR_ENV, create_recorder
 from llm_agent.responder import LlmResponder, ModelTurnError
 
 logger = logging.getLogger(__name__)
@@ -286,12 +288,24 @@ class LlmAgentExecutor(AgentExecutor):
     validation error (up to `max_attempts` total); exhaustion yields a plain-text apology.
     """
 
-    def __init__(self, responder: LlmResponder, max_attempts: int = MAX_ATTEMPTS):
+    def __init__(
+        self,
+        responder: LlmResponder,
+        max_attempts: int = MAX_ATTEMPTS,
+        recorder=None,
+    ):
         self._responder = responder
         self._max_attempts = max_attempts
+        # Off unless A2UI_RECORD_DIR is set; see llm_agent/recorder.py. Injectable so
+        # tests arm it without touching the environment.
+        self._recorder = recorder or create_recorder(os.environ.get(RECORD_DIR_ENV))
 
     async def execute(self, context: RequestContext, event_queue: EventQueue) -> None:
         prompt = _resolve_prompt(context)
+        action = _extract_action(context)
+        # An action message carries no text; that is what distinguishes the two drivers
+        # of a paint on the wire, and the fixture records which one it was.
+        kind = "surface-action" if action is not None and not _extract_text(context) else "utterance"
 
         task = context.current_task
         if not task:
@@ -319,6 +333,13 @@ class LlmAgentExecutor(AgentExecutor):
             "execute start: task=%s context=%s prompt=%r", task.id, task.context_id, prompt
         )
         _reset_failed_stream_dump()
+        self._recorder.start_turn(
+            context_id=task.context_id,
+            task_id=task.id,
+            kind=kind,
+            prompt=prompt,
+            action=action,
+        )
 
         # One parser persisted across attempts. Its dedup caches make a retry patch the
         # surface attempt 1 created — createSurface and unchanged components are
@@ -383,6 +404,7 @@ class LlmAgentExecutor(AgentExecutor):
                         created_surfaces |= self._surface_ids(response_part)
                         parts = self._parts_for(response_part)
                         if parts:
+                            self._recorder.record_batch(parts)
                             await updater.update_status(
                                 TaskState.working,
                                 new_agent_parts_message(parts, task.context_id, task.id),
@@ -453,6 +475,7 @@ class LlmAgentExecutor(AgentExecutor):
 
             _dump_surface(payload)
             logger.info("attempt %d: surface valid, task %s completed", attempt, task.id)
+            self._recorder.end_turn("completed")
             await updater.update_status(TaskState.completed, final=True)
             return
 
@@ -460,11 +483,12 @@ class LlmAgentExecutor(AgentExecutor):
         # left with broken partial UI), then apologize, matched to the last failure kind.
         await self._teardown(updater, task, created_surfaces)
         apology = UNAVAILABLE_TEXT if model_unavailable else APOLOGY_TEXT
+        apology_parts = [Part(root=TextPart(text=apology))]
+        self._recorder.record_batch(apology_parts)
+        self._recorder.end_turn("unavailable" if model_unavailable else "apology")
         await updater.update_status(
             TaskState.completed,
-            new_agent_parts_message(
-                [Part(root=TextPart(text=apology))], task.context_id, task.id
-            ),
+            new_agent_parts_message(apology_parts, task.context_id, task.id),
             final=True,
         )
 
@@ -493,6 +517,7 @@ class LlmAgentExecutor(AgentExecutor):
             )
             for sid in sorted(surface_ids)
         ]
+        self._recorder.record_batch(parts)
         await updater.update_status(
             TaskState.working,
             new_agent_parts_message(parts, task.context_id, task.id),
