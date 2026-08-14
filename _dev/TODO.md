@@ -141,7 +141,7 @@ Order: 7.1 ∥ 7.4 from the start · 7.2 after 7.1 · 7.3 after 7.2 · 7.5 ∥ 7
 The canvas-first generative-UI shell replacing the chat interface, plus the full maintainer-triage arc running end-to-end on the live a2ui repo — one continuous session, all 8 beats, with a standalone thesis stating the paradigm. Spec: `_dev/docs/spec/phase-8-demo-integration.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
 - [x] **8.0** Phase-spec understanding & refinement session — user-driven deep-read of the phase spec (paradigm, glossary, storage decisions), refining where wanted; this sub-task may amend the phase spec.
-- [WIP] **8.1** Beat fixture recording — run each of the 8 beats live once and persist the streams as replay fixtures; includes the beats-2/6 model-knob retry and re-grade.
+- [x] **8.1** Beat fixture recording — run each of the 8 beats live once and persist the streams as replay fixtures; includes the beats-2/6 model-knob retry and re-grade.
 - [ ] **8.2** Canvas core — canvas route + canvas store, stage rendering over the existing pipeline, palette input, status strip; a paint lands on the stage (progressive on empty canvas).
 - [ ] **8.3** Transitions & interaction policy — hold-and-swap with the validation gate, the overlay slot (question paints), the interaction-cost policy, live-registry lifecycle: serialize-on-swap capture + the data-model growth fix.
 - [ ] **8.4** Timeline & time travel — ring store with monotonic paint ids, causes, titles-with-fallback, history UI (back + press-list, return-to-live, stale banner, causal jumps), parked-snapshot restore via sandbox with interaction-state write-back.
