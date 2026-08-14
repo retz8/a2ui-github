@@ -1578,3 +1578,102 @@ beat 4 is the one whose approved behaviour is a label query. It still queries
 `label:"status: waiting-for-author-response"`, still returns the same 9 rows, and still says the
 basis on the surface — which is what the new clause asks of a label filter. The standing R1 flag
 (the inference narrows to one label) is unchanged.
+
+---
+
+# Task 8.1 — fixture recording, and the beats-2/6 re-grade
+
+Each beat run live once and kept as the batch sequence it streamed, so tasks 8.2–8.4 drive the
+canvas shell with no model in the loop. Recordings live in `agent/recordings/beats/`; the gate that
+says they are consumable is `client/tests/beat-fixtures.test.tsx` — the set is complete, each is a
+stream rather than a dump, and each replays through the client's own apply path into a rendered
+surface with no message failing to apply.
+
+Every claim below was checked against `api.github.com` at recording time, not read off the surface.
+
+## The recorded set
+
+All eight on `gemini-3.5-flash`. Beats 2 and 3 share one conversation; 1, 4, 5, 7 and 8 each landed
+on the first attempt.
+
+| Beat | Batches | Duration | Final components | Server events |
+|---|---|---|---|---|
+| 1 — PR list | 72 | 70s | 35 | 1 |
+| 2 — PR detail | 197 | 125s | 252 | **0** |
+| 3 — compose | 34 | 28s | 40 | 1 |
+| 4 — issue list | 85 | 90s | 37 | 1 |
+| 5 — issue detail | 71 | 42s | 90 | 3 |
+| 6 — repo landing | 151 | 97s | 201 | 17 |
+| 7 — user profile | 100 | 83s | 84 | 2 |
+| 8 — attention queue | 32 | 64s | 38 | 1 |
+
+Beat 1 opens its stream with a `loading_*` skeleton before the content arrives, which is the
+progressive-streaming behaviour 8.2 has to render on an empty canvas.
+
+## Beat 2 — the check tally lands; interactivity does not
+
+**The subject moved.** `#2123` was open with `mergeable_state: unstable` throughout task 7.7. It was
+merged on 2026-07-30, so there is no live merge verdict to misreport any more. Part of this beat's
+data-truth result is the world changing rather than the agent improving, and is marked as such.
+
+| Emitted | Verdict |
+|---|---|
+| "Merged", `StateLabel` `pullMerged`, "sugoi-yuzuru merged 14 commits into main from webframe" | correct — merged by `sugoi-yuzuru`, 14 commits, `webframe` into `main`. **Assisted by the state change** |
+| "Checks completed: 16 successful, 8 skipped, 1 cancelled" | **exact** — 25 check runs, 16 success / 8 skipped / 1 cancelled |
+| "Files Changed (22)", eight rows bound over `/files` with per-file ± | correct total, condensed listing |
+| Timeline: five content-bearing entries including the security review and an approval | present; 26 comment reviews and 2 approvals exist |
+| **Zero actions anywhere on the surface** | **Interactivity fails** |
+| `- [ ]` checklist items rendered as raw text inside a `pre-wrap` `Text` | Composition — R7 rendered these as disabled `Checkbox`es |
+
+**The check tally is a real result, independent of the merge.** R6 and R7 called 28 runs "all
+passed"; R8 called them "30 check runs, passed". This run separates the three conclusions and names
+each count, and the numbers match the API exactly. That is the line beat 2 was closed on.
+
+**Interactivity is a new failure, and it is not the model.** The pro-tier run of the same prompt also
+emitted zero actions. R8 carried one wired `view-file-diff`; this round carries none on either rung.
+
+## Beat 6 — interactivity resolved, the data model still empty
+
+| Emitted | Verdict |
+|---|---|
+| 16,113 stars · 1,265 forks · 303 open issues · TypeScript | **all exact** |
+| `TreeView` with twelve directories, **each carrying `open-directory` with its own path** | **Interactivity met** — the line the beat was closed on |
+| `open-file` offered on `AGENTS.md`, `CONTRIBUTING.md`, `README.md` and nothing else | renderability rule holds — markdown only, and no manifest or lockfile carries an affordance |
+| About text taken verbatim from the README; no invented description sentence | **fabrication wall clean** |
+| **Data model empty (2 bytes); 201 hand-authored components, tree rows unrolled** | the R7 root defect, unchanged |
+
+The `scripts` directory is missing from the twelve listed (thirteen non-dotfile directories exist);
+dot-directories are omitted, which is reasonable.
+
+## The model-knob retry (spec decision 18) — the stronger rung was not the lever
+
+Beats 2, 3 and 6 were recorded on `gemini-3.1-pro-preview` and again on the default rung. **The
+default-rung runs are better on all three and are the ones kept.**
+
+| Beat | `gemini-3.1-pro-preview` | `gemini-3.5-flash` (kept) |
+|---|---|---|
+| 2 | merge state correct; **no file list, no check tally**; 0 actions | merge state correct; **file list and exact check tally**; 0 actions |
+| 3 | validation gate correct, identical structure | same, with a longer draft body carrying beat 2's security discussion |
+| 6 | stats bound and exact, README verbatim; **no file tree at all**; one `openUrl` and no server events | stats exact; **tree present, twelve directories wired** |
+
+So the two beats closed as known defects were not blocked by a model ceiling. Both of the lines they
+were closed on — beat 2's check tally, beat 6's interactivity — are met on the demo model, with no
+prompt or knowledge change since the 7.7 confirmation pass. Beat 6's pro run also contradicts R9,
+which got the templated tree with per-row actions from the same model: the difference between the two
+pro runs is run-to-run variance, which is the reading the whole comparison has to be held to.
+
+**These are single samples.** Each cell above is one live run, and 7.7 recorded oscillation on both
+beats across rounds. The recordings are what they are — good enough to drive the shell — and the
+grades below are provisional pending the human read of the rendered surfaces that decision 2 reserves.
+
+**Provisional grades.** Beat 6 meets every rubric line it was closed on and carries the unrolled data
+model as its remaining defect. Beat 2 resolves its Data truth line and newly fails Interactivity, so
+it does not clear its rubric either — the defect has moved rather than gone.
+
+## Carried into the client chain
+
+- **A recorded turn re-emits components as they heal**, so beat 2 ships 252 final components across
+  197 batches and 3.4 MB on disk. The batches are what the client actually received; the size is the
+  streaming, not the recorder. They compress ~36–68× in git.
+- **No fixture carries an apology.** A failed paint is a first-class fixture for 8.3 (spec decision
+  10 — it must never reach the stage) and every beat completed, so that case has no recording yet.
