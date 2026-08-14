@@ -1,0 +1,30 @@
+/**
+ * The stage: the canvas layer holding the one live surface (phase-8 spec decision 3).
+ * Within-surface composition is the agent's job; the stage just renders whatever surface the
+ * store points at, through the same A2uiSurface pipeline the chat page uses. `appliedSeq`
+ * keys the error boundary so a surface that threw on a half-streamed component retries per
+ * applied batch rather than staying dead.
+ */
+import type {MessageProcessor} from '@a2ui/web_core/v0_9';
+import {A2uiSurface} from '@a2ui/react/v0_9';
+import type {ReactComponentImplementation} from '@a2ui/react/v0_9';
+import {SurfaceErrorBoundary} from '../chat/SurfaceErrorBoundary';
+import type {CanvasState} from './canvasStore';
+
+export interface CanvasStageProps {
+  processor: MessageProcessor<ReactComponentImplementation>;
+  state: CanvasState;
+}
+
+export function CanvasStage({processor, state}: CanvasStageProps) {
+  const surface = state.stageId ? processor.model.surfacesMap.get(state.stageId) : undefined;
+  return (
+    <div className="canvas-stage" data-testid="canvas-stage">
+      {surface && state.stageId && (
+        <SurfaceErrorBoundary surfaceId={state.stageId} resetKey={state.appliedSeq}>
+          <A2uiSurface surface={surface} />
+        </SurfaceErrorBoundary>
+      )}
+    </div>
+  );
+}
