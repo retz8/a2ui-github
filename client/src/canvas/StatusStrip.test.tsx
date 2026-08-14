@@ -10,10 +10,11 @@ import {createCanvasStore} from './canvasStore';
 import {StatusStrip} from './StatusStrip';
 
 describe('StatusStrip', () => {
-  it('idle: shows the summon hint', () => {
+  it('idle: stays quiet — no status, no hint (the Ask pill carries the shortcut)', () => {
     const store = createCanvasStore();
     renderWithPrimer(<StatusStrip state={store.getState()} />);
-    expect(screen.getByText(/⌘K to ask/)).toBeInTheDocument();
+    expect(screen.queryByText(/⌘K/)).toBeNull();
+    expect(screen.getByTestId('canvas-status')).toBeEmptyDOMElement();
   });
 
   it('carries status only — no buttons live in the strip', () => {
