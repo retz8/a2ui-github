@@ -32,7 +32,7 @@ Every paint behaves like the empty-canvas case, streaming progressively straight
 
 ### 6. Status strip states and agent prose
 
-The strip carries status only: in-flight (spinner + derived label, using the chat page's existing label derivation until agent-authored titles arrive in 8.5) and error (sticky until the next dispatch clears it); idle is an empty quiet bar — the shortcut lives on the Ask pill. Agent prose (`onAgentText`) is routed to a transient auto-fading ambient notice — shell furniture, not stored anywhere.
+The strip carries status only: in-flight (spinner + derived label, using the chat page's existing label derivation until agent-authored titles arrive in 8.5) and error (sticky until the next dispatch clears it); idle shows a quiet identity label ("agent-painted GitHub") — the shortcut lives on the Ask pill. Agent prose (`onAgentText`) is routed to a transient auto-fading ambient notice — shell furniture, not stored anywhere.
 
 ### 7. Verification harness: `?beat=` replay, paced by default; vitest gate; no Playwright
 
