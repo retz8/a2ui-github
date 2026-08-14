@@ -46,6 +46,15 @@ describe('Palette', () => {
     expect(onSubmit).not.toHaveBeenCalled();
   });
 
+  it('Escape dismisses even after focus has left the input (clicked outside)', async () => {
+    const onDismiss = vi.fn();
+    renderWithPrimer(<Palette open blocked={false} onDismiss={onDismiss} onSubmit={() => {}} />);
+    screen.getByRole('textbox').blur();
+    expect(screen.getByRole('textbox')).not.toHaveFocus();
+    await userEvent.keyboard('{Escape}');
+    expect(onDismiss).toHaveBeenCalled();
+  });
+
   it('while blocked, send is refused with a cue instead of dispatching', async () => {
     const onSubmit = vi.fn();
     renderWithPrimer(<Palette open blocked onDismiss={() => {}} onSubmit={onSubmit} />);

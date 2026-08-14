@@ -23,6 +23,19 @@ export function Palette({open, blocked, onDismiss, onSubmit}: PaletteProps) {
     if (open) inputRef.current?.focus();
   }, [open]);
 
+  // Escape works wherever focus is — clicking outside the overlay must not trap the user.
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        onDismiss();
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [open, onDismiss]);
+
   if (!open) return null;
 
   const submit = () => {
@@ -51,9 +64,6 @@ export function Palette({open, blocked, onDismiss, onSubmit}: PaletteProps) {
           if (e.key === 'Enter') {
             e.preventDefault();
             submit();
-          } else if (e.key === 'Escape') {
-            e.preventDefault();
-            onDismiss();
           }
         }}
       />
