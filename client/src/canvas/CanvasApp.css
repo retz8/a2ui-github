@@ -66,6 +66,11 @@
   color: var(--fgColor-danger);
 }
 
+.canvas-status-identity {
+  opacity: 0.7;
+  user-select: none;
+}
+
 .canvas-palette {
   position: fixed;
   top: 20vh;

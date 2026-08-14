@@ -1,7 +1,8 @@
 /**
  * The status strip: the thin always-visible region carrying the status register (phase-8 spec
  * decision 2). In-flight spinner + label, or sticky error (cleared by the next dispatch);
- * idle is quiet — no status means an empty bar, and the ⌘K shortcut lives on the Ask pill.
+ * idle shows the quiet identity label — the one thing naming the app once a painted surface
+ * fills the screen with GitHub-shaped content. The ⌘K shortcut lives on the Ask pill.
  * The in-flight label upgrades to the agent-authored paint title in 8.5.
  */
 import {Spinner} from '@primer/react';
@@ -24,7 +25,9 @@ export function StatusStrip({state}: StatusStripProps) {
             <Spinner size="small" />
             {state.inFlight.label}
           </span>
-        ) : null}
+        ) : (
+          <span className="canvas-status-identity">agent-painted GitHub</span>
+        )}
       </div>
     </div>
   );

@@ -10,11 +10,11 @@ import {createCanvasStore} from './canvasStore';
 import {StatusStrip} from './StatusStrip';
 
 describe('StatusStrip', () => {
-  it('idle: stays quiet — no status, no hint (the Ask pill carries the shortcut)', () => {
+  it('idle: shows the quiet identity label, no shortcut hint (the Ask pill carries that)', () => {
     const store = createCanvasStore();
     renderWithPrimer(<StatusStrip state={store.getState()} />);
     expect(screen.queryByText(/⌘K/)).toBeNull();
-    expect(screen.getByTestId('canvas-status')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('canvas-status')).toHaveTextContent('agent-painted GitHub');
   });
 
   it('carries status only — no buttons live in the strip', () => {
