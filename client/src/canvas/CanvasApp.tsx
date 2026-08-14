@@ -8,6 +8,7 @@
  * `&instant` collapses the waits) — the zero-LLM verification path of spec decision 17.
  */
 import {useEffect, useRef, useState, useSyncExternalStore} from 'react';
+import {Button} from '@primer/react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import type {ActionListener} from '@a2ui/web_core/v0_9';
 import {CATALOG} from 'primer-a2ui-adapter';
@@ -143,7 +144,19 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
           void wiring.sendUtterance(utterance);
         }}
       />
-      <StatusStrip state={state} onSummonPalette={() => setPaletteOpen(true)} />
+      {/* The canvas's one call-to-action; yields to the palette while it is open. */}
+      {!paletteOpen && (
+        <Button
+          variant="primary"
+          size="large"
+          className="canvas-ask-pill"
+          aria-label="Ask"
+          onClick={() => setPaletteOpen(true)}
+        >
+          Ask <kbd className="canvas-ask-kbd">⌘K</kbd>
+        </Button>
+      )}
+      <StatusStrip state={state} />
     </main>
   );
 }

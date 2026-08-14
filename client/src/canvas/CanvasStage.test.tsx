@@ -33,17 +33,18 @@ function setup() {
 }
 
 describe('CanvasStage', () => {
-  it('an empty canvas renders an empty stage', () => {
+  it('an empty canvas shows the ghost hint instead of a void', () => {
     const {processor, store} = setup();
     renderWithPrimer(<CanvasStage processor={processor} state={store.getState()} />);
-    expect(screen.getByTestId('canvas-stage')).toBeEmptyDOMElement();
+    expect(screen.getByTestId('canvas-empty-ghost')).toHaveTextContent('⌘K to ask');
   });
 
-  it('renders the stage surface through the A2UI pipeline', () => {
+  it('renders the stage surface through the A2UI pipeline, ghost gone', () => {
     const {processor, store, apply} = setup();
     apply(paint('pull-request-list', 'Hello from the stage'));
     renderWithPrimer(<CanvasStage processor={processor} state={store.getState()} />);
     expect(screen.getByText('Hello from the stage')).toBeInTheDocument();
+    expect(screen.queryByTestId('canvas-empty-ghost')).toBeNull();
   });
 
   it('a repaint shows the new content', () => {

@@ -20,10 +20,15 @@ export function CanvasStage({processor, state}: CanvasStageProps) {
   const surface = state.stageId ? processor.model.surfacesMap.get(state.stageId) : undefined;
   return (
     <div className="canvas-stage" data-testid="canvas-stage">
-      {surface && state.stageId && (
+      {surface && state.stageId ? (
         <SurfaceErrorBoundary surfaceId={state.stageId} resetKey={state.appliedSeq}>
           <A2uiSurface surface={surface} />
         </SurfaceErrorBoundary>
+      ) : (
+        <div className="canvas-empty-ghost" data-testid="canvas-empty-ghost" aria-hidden="true">
+          <div className="canvas-empty-mark">a2ui canvas</div>
+          <div className="canvas-empty-hint">⌘K to ask</div>
+        </div>
       )}
     </div>
   );

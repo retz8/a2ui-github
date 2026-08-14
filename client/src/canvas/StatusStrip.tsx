@@ -1,18 +1,17 @@
 /**
  * The status strip: the thin always-visible region carrying the status register (phase-8 spec
  * decision 2). Three states — idle hint, in-flight spinner + label, sticky error (cleared by
- * the next dispatch) — plus the always-visible palette affordance for viewers who don't know
- * the shortcut. The in-flight label upgrades to the agent-authored paint title in 8.5.
+ * the next dispatch). Status only: the palette affordance is the canvas's floating Ask pill.
+ * The in-flight label upgrades to the agent-authored paint title in 8.5.
  */
-import {Button, Spinner} from '@primer/react';
+import {Spinner} from '@primer/react';
 import type {CanvasState} from './canvasStore';
 
 export interface StatusStripProps {
   state: CanvasState;
-  onSummonPalette: () => void;
 }
 
-export function StatusStrip({state, onSummonPalette}: StatusStripProps) {
+export function StatusStrip({state}: StatusStripProps) {
   return (
     <div className="canvas-status-strip">
       <div className="canvas-status-message">
@@ -29,9 +28,6 @@ export function StatusStrip({state, onSummonPalette}: StatusStripProps) {
           <span className="canvas-status-hint">⌘K to ask</span>
         )}
       </div>
-      <Button size="small" onClick={onSummonPalette}>
-        Ask
-      </Button>
     </div>
   );
 }

@@ -103,8 +103,11 @@ describe('CanvasApp', () => {
     expect(screen.getByRole('textbox', {name: /ask the agent/i})).toHaveFocus();
   });
 
-  it('Esc dismisses; ⌘K and the strip affordance summon it back', async () => {
+  it('Esc dismisses; ⌘K and the floating Ask pill summon it back', async () => {
     renderCanvas();
+    // While the palette is open, the pill yields to it — one call-to-action at a time.
+    expect(screen.queryByRole('button', {name: /^ask$/i})).toBeNull();
+
     await userEvent.keyboard('{Escape}');
     expect(screen.queryByRole('textbox', {name: /ask the agent/i})).toBeNull();
 

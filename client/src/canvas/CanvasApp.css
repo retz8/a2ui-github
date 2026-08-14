@@ -15,12 +15,35 @@
   padding: 16px;
 }
 
+.canvas-empty-ghost {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  user-select: none;
+}
+
+.canvas-empty-mark {
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--fgColor-muted);
+  opacity: 0.35;
+}
+
+.canvas-empty-hint {
+  font-size: 15px;
+  color: var(--fgColor-muted);
+  opacity: 0.5;
+}
+
 .canvas-status-strip {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  padding: 4px 12px;
+  min-height: 32px;
+  padding: 6px 16px;
   border-top: 1px solid var(--borderColor-default);
   background: var(--bgColor-muted);
   font-size: 12px;
@@ -67,6 +90,27 @@
   margin-top: 8px;
   font-size: 12px;
   color: var(--fgColor-attention);
+}
+
+.canvas-ask-pill {
+  position: fixed;
+  bottom: 56px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  padding-inline: 20px;
+  box-shadow: var(--shadow-floating-medium, 0 6px 18px rgba(31, 35, 40, 0.2));
+  z-index: 15;
+}
+
+.canvas-ask-kbd {
+  margin-left: 8px;
+  padding: 1px 6px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: inherit;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
 .canvas-notice {
