@@ -28,11 +28,11 @@ Every paint behaves like the empty-canvas case, streaming progressively straight
 
 ### 5. Palette mechanics
 
-`⌘K` summons the palette, plus a small always-visible affordance in the status strip for discoverability. The palette auto-opens when the canvas is empty and idle. `Esc` dismisses without dispatch; `Enter` dispatches the utterance and closes. While a paint is in flight, send is blocked (with the status cue); 8.3 replaces the block with last-intent-wins cancel.
+`⌘K` summons the palette, plus an always-visible affordance: a floating primary-green Ask pill (bottom-center, carrying the `⌘K` chip) — the canvas's one call-to-action, hidden while the palette is open. The palette auto-opens when the canvas is empty and idle; the empty canvas shows a centered ghost mark instead of a void. `Esc` dismisses without dispatch; `Enter` dispatches the utterance and closes. While a paint is in flight, send is blocked (with the status cue); 8.3 replaces the block with last-intent-wins cancel.
 
 ### 6. Status strip states and agent prose
 
-The strip has three states: idle (a quiet hint, e.g. "⌘K to ask"), in-flight (spinner + derived label, using the chat page's existing label derivation until agent-authored titles arrive in 8.5), and error (sticky until the next dispatch clears it). Agent prose (`onAgentText`) is routed to a transient auto-fading ambient notice — shell furniture, not stored anywhere.
+The strip carries status only: in-flight (spinner + derived label, using the chat page's existing label derivation until agent-authored titles arrive in 8.5) and error (sticky until the next dispatch clears it); idle is an empty quiet bar — the shortcut lives on the Ask pill. Agent prose (`onAgentText`) is routed to a transient auto-fading ambient notice — shell furniture, not stored anywhere.
 
 ### 7. Verification harness: `?beat=` replay, paced by default; vitest gate; no Playwright
 
