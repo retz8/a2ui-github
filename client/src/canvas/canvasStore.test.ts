@@ -1,15 +1,32 @@
 /**
- * The canvas store (task 8.2): stage occupancy + in-flight status, per phase-8 spec
- * decision 21 scoped to the 8.2 slice. Timeline/head/viewing/overlay arrive in 8.3/8.4.
+ * The canvas store (tasks 8.2 + 8.3): stage/overlay occupancy, in-flight status, live-paint
+ * metadata, and the append-only timeline, per phase-8 spec decision 21. Head/viewing (time
+ * travel) and the ring policy arrive in 8.4.
  */
 import {describe, it, expect, vi} from 'vitest';
+import type {PaintCause, PaintSnapshot} from './paint';
 import {createCanvasStore} from './canvasStore';
+
+const CAUSE: PaintCause = {kind: 'utterance', parent: null, payload: {text: 'show my PRs'}};
+
+const snapshot = (paintId: number): PaintSnapshot => ({
+  paintId,
+  surfaceId: 'old-stage',
+  tree: {root: {id: 'root', type: 'Text'}},
+  dataModel: {},
+  cause: CAUSE,
+  paintedAt: 1000,
+  capturedAt: 2000,
+});
 
 describe('createCanvasStore', () => {
   it('starts empty and idle', () => {
     const store = createCanvasStore();
     expect(store.getState()).toEqual({
       stageId: null,
+      livePaint: null,
+      overlay: null,
+      timeline: [],
       inFlight: null,
       error: null,
       notice: null,
@@ -41,6 +58,38 @@ describe('createCanvasStore', () => {
     expect(store.getState().stageId).toBe('pull-request-list');
     store.setStage(null);
     expect(store.getState().stageId).toBeNull();
+  });
+
+  it('setLivePaint and setOverlay move their pointers', () => {
+    const store = createCanvasStore();
+    const livePaint = {paintId: 1, surfaceId: 'stage', cause: CAUSE, paintedAt: 1000};
+    store.setLivePaint(livePaint);
+    expect(store.getState().livePaint).toEqual(livePaint);
+    store.setOverlay({surfaceId: 'question', question: 'Which repository?'});
+    expect(store.getState().overlay).toEqual({
+      surfaceId: 'question',
+      question: 'Which repository?',
+    });
+    store.setLivePaint(null);
+    store.setOverlay(null);
+    expect(store.getState().livePaint).toBeNull();
+    expect(store.getState().overlay).toBeNull();
+  });
+
+  it('appendSnapshot grows the timeline immutably, in order', () => {
+    const store = createCanvasStore();
+    const before = store.getState().timeline;
+    store.appendSnapshot(snapshot(1));
+    store.appendSnapshot(snapshot(2));
+    expect(before).toEqual([]);
+    expect(store.getState().timeline.map(s => s.paintId)).toEqual([1, 2]);
+  });
+
+  it('nextPaintId is monotonic and never reused', () => {
+    const store = createCanvasStore();
+    expect(store.nextPaintId()).toBe(1);
+    expect(store.nextPaintId()).toBe(2);
+    expect(store.nextPaintId()).toBe(3);
   });
 
   it('each notice gets a fresh key so repeats restart the fade', () => {

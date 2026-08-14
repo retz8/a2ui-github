@@ -18,7 +18,10 @@ export function agentCardUrl(serverUrl: string): string {
 
 /** The slice of A2AClient the send paths need; lets tests inject a fake. */
 export interface A2AMessageSender {
-  sendMessageStream(params: MessageSendParams): AsyncGenerator<A2AStreamEventData, void, undefined>;
+  sendMessageStream(
+    params: MessageSendParams,
+    options?: {signal?: AbortSignal},
+  ): AsyncGenerator<A2AStreamEventData, void, undefined>;
 }
 
 export interface A2ASenderOptions {
@@ -56,7 +59,8 @@ export function createSenderResolver(opts: A2ASenderOptions): GetSender {
 /**
  * Send one message over the event stream, applying the A2UI carried by each event as it arrives
  * and capturing the conversation contextId into the session. Throws on wire failure — callers own
- * their error policy.
+ * their error policy. An aborted `signal` tears the stream down mid-flight (true cancel); the
+ * throw it produces is the caller's to recognise via `signal.aborted`.
  */
 export async function sendAndApply(
   sender: A2AMessageSender,
@@ -64,8 +68,9 @@ export async function sendAndApply(
   apply: (messages: A2uiMessage[]) => void,
   session?: A2ASession,
   onAgentText?: (text: string) => void,
+  signal?: AbortSignal,
 ): Promise<void> {
-  for await (const event of sender.sendMessageStream(params)) {
+  for await (const event of sender.sendMessageStream(params, {signal})) {
     const contextId = extractContextId(event);
     if (contextId) session?.set(contextId);
     const messages = extractA2uiMessagesFromEvent(event);

@@ -25,6 +25,11 @@ export interface StreamUserMessageOptions {
    * build a surface; without this the turn leaves nothing on screen.
    */
   onAgentText?: (text: string) => void;
+  /**
+   * Aborts the underlying request (last-intent-wins cancel). An abort resolves silently —
+   * a canceled turn is not an error, so `onError` is not called for it.
+   */
+  signal?: AbortSignal;
 }
 
 /**
@@ -36,7 +41,7 @@ export async function streamUserMessage(
   text: string,
   opts: StreamUserMessageOptions,
 ): Promise<void> {
-  const {getSender, apply, session, getClientDataModel, onError, onAgentText} = opts;
+  const {getSender, apply, session, getClientDataModel, onError, onAgentText, signal} = opts;
   try {
     const sender = await getSender();
     await sendAndApply(
@@ -45,8 +50,10 @@ export async function streamUserMessage(
       apply,
       session,
       onAgentText,
+      signal,
     );
   } catch (err) {
+    if (signal?.aborted) return;
     console.error('[A2UI:a2a]', err);
     onError?.(err);
   }
