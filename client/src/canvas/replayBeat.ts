@@ -1,20 +1,23 @@
 /**
- * Drives a recorded beat (task 8.1 fixture) through the canvas apply pipeline — the zero-LLM
- * verification path of phase-8 spec decision 17. Paced by the recorded `offsetMs` by default,
- * so the replay rehearses the same progressive-streaming behaviour the live agent produces;
- * instant mode collapses the waits for tests and the `&instant` query param.
+ * Drives a recorded beat (task 8.1 fixture) through the canvas turn runner — the zero-LLM
+ * verification path of phase-8 spec decision 17. Each recorded turn runs as a real canvas
+ * turn (begin → apply per batch → end), so the replay rehearses the same hold-and-swap gate,
+ * paced by the recorded `offsetMs` by default; instant mode collapses the waits for tests and
+ * the `&instant` query param.
  *
  * Unlike `beats/replay.ts` (the 8.1 gate's bare apply-loop), this rehearses the full shell:
- * in-flight state around each turn, and the recorded agent prose routed into the ambient-notice
+ * turn lifecycle around each turn, and the recorded agent prose routed into the ambient-notice
  * channel.
  */
-import type {A2uiMessage} from '@a2ui/web_core/v0_9';
-import type {BeatFixture} from '../beats/beatFixtures';
+import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
+import type {BeatFixture, BeatTurn} from '../beats/beatFixtures';
 import type {CanvasStore} from './canvasStore';
+import type {TurnHandle} from './canvasTurn';
+import type {PaintCause} from './paint';
 
 export interface ReplayBeatOptions {
-  /** The canvas apply pipeline; one call per recorded batch, exactly as the live client does. */
-  apply: (messages: A2uiMessage[]) => void;
+  /** The canvas turn runner; one turn per recorded turn, exactly as the live client runs. */
+  runner: {begin(cause: PaintCause): TurnHandle};
   store: CanvasStore;
   /** Honour the recorded offsets (default); false applies everything immediately. */
   paced?: boolean;
@@ -22,12 +25,24 @@ export interface ReplayBeatOptions {
 
 const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 
+function causeOf(turn: BeatTurn, store: CanvasStore): PaintCause {
+  const parent = store.getState().livePaint?.paintId ?? null;
+  if (turn.kind === 'surface-action' && turn.action) {
+    return {
+      kind: 'surface-action',
+      parent,
+      payload: {action: turn.action as unknown as A2uiClientAction},
+    };
+  }
+  return {kind: 'utterance', parent, payload: {text: turn.prompt}};
+}
+
 export async function replayBeatOnCanvas(
   fixture: BeatFixture,
-  {apply, store, paced = true}: ReplayBeatOptions,
+  {runner, store, paced = true}: ReplayBeatOptions,
 ): Promise<void> {
   for (const turn of fixture.turns) {
-    store.beginPaint('Generating…');
+    const handle = runner.begin(causeOf(turn, store));
     try {
       let elapsed = 0;
       // Recorded texts are stream fragments (a sentence can split mid-word across events), so
@@ -39,14 +54,14 @@ export async function replayBeatOnCanvas(
           await sleep(batch.offsetMs - elapsed);
           elapsed = batch.offsetMs;
         }
-        if (batch.messages.length) apply(batch.messages);
+        if (batch.messages.length) handle.apply(batch.messages);
         for (const text of batch.texts) {
           prose += text;
           if (prose.trim()) store.showNotice(prose);
         }
       }
     } finally {
-      store.endPaint();
+      handle.end();
     }
   }
 }

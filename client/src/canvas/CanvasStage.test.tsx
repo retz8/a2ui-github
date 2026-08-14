@@ -9,7 +9,7 @@ import type {A2uiMessage} from '@a2ui/web_core/v0_9';
 import {CATALOG, CATALOG_ID} from 'primer-a2ui-adapter';
 import {renderWithPrimer} from '../../tests/helpers';
 import {createCanvasStore} from './canvasStore';
-import {createCanvasApplier} from './canvasApplier';
+import {createTurnRunner} from './canvasTurn';
 import {CanvasStage} from './CanvasStage';
 
 function paint(surfaceId: string, text: string): A2uiMessage[] {
@@ -28,7 +28,16 @@ function paint(surfaceId: string, text: string): A2uiMessage[] {
 function setup() {
   const processor = new MessageProcessor([CATALOG]);
   const store = createCanvasStore();
-  const apply = createCanvasApplier({processor, store});
+  const runner = createTurnRunner({
+    processor,
+    store,
+    createStaging: () => new MessageProcessor([CATALOG]),
+  });
+  const apply = (messages: A2uiMessage[]) => {
+    const turn = runner.begin({kind: 'utterance', parent: null, payload: {text: 'paint'}});
+    turn.apply(messages);
+    turn.end();
+  };
   return {processor, store, apply};
 }
 
