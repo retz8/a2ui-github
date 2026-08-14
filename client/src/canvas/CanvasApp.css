@@ -118,9 +118,10 @@
   border: 1px solid rgba(255, 255, 255, 0.35);
 }
 
+/* Top-anchored so it never overlaps the bottom furniture (Ask pill, status strip). */
 .canvas-notice {
   position: fixed;
-  bottom: 48px;
+  top: 16px;
   left: 50%;
   transform: translateX(-50%);
   max-width: min(560px, calc(100vw - 32px));
