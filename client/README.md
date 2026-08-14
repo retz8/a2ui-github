@@ -16,6 +16,12 @@ by a dropdown with an `?example=` URL param, each shown with its natural-languag
 above the rendered surface. No action handler is wired, so it needs no `VITE_A2A_SERVER_URL`, no
 agent, and no tunnel — `functionCall` actions run live while `event` actions are inert.
 
+A fourth source of known-good A2UI is the **recorded beats** in `agent/recordings/beats/*.json`,
+bundled through the same glob mechanism and loaded by `src/beats/`. Unlike a fixture, a recording
+keeps the batch sequence the agent streamed, so replaying one (`src/beats/replay.ts`) exercises the
+incremental path rather than a single dump — which is what the canvas shell is verified against with
+no LLM in the loop. Re-record them from `agent/` (see its README).
+
 ## Commands
 
 ```bash
