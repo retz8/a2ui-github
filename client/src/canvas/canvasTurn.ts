@@ -152,7 +152,8 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
   /** A newer question replaces any pending one — an unanswered question leaves no trace. */
   const replaceOverlay = (surfaceId: string) => {
     const pending = store.getState().overlay;
-    if (pending && pending.surfaceId !== surfaceId) processor.model.deleteSurface(pending.surfaceId);
+    if (pending && pending.surfaceId !== surfaceId)
+      processor.model.deleteSurface(pending.surfaceId);
     store.setOverlay({surfaceId, question: questionTitleOf(processor, surfaceId)});
   };
 
@@ -232,7 +233,9 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
         }
         // Unknown target (an update racing ahead of its create, or a malformed message):
         // stage it — errors surface through the same channel, stray deletes no-op.
-        applyA2uiMessages(staging as TurnProcessor, [message], {onMessageError: reportMessageError});
+        applyA2uiMessages(staging as TurnProcessor, [message], {
+          onMessageError: reportMessageError,
+        });
         buffered.push(message);
       }
       if (touchedLive) store.bumpApplied();

@@ -1,8 +1,13 @@
 /**
- * The canvas page (task 8.2): the canvas-first shell — a full-screen stage, a summonable
- * command palette as the language control plane, a thin status strip, and transient ambient
- * notices (phase-8 spec decisions 1–3). Transport is the chat page's, reused wholesale; every
- * inbound message goes through the canvas applier, which enforces the stage semantics.
+ * The canvas page (tasks 8.2 + 8.3): the canvas-first shell — a full-screen stage, an overlay
+ * slot for question paints, a summonable command palette as the language control plane, a thin
+ * status strip, and transient ambient notices (phase-8 spec decisions 1–3). Transport is the
+ * chat page's, reused wholesale; every inbound turn runs through the canvas turn runner, which
+ * enforces hold-and-swap, the validation gate, and the live-registry lifecycle.
+ *
+ * Interaction policy while a paint is in flight (spec decision 11): palette utterances are
+ * last-intent-wins (the runner cancels the in-flight turn, the transport aborts); agent-bound
+ * surface actions are blocked with a status cue; answering an overlay question is always live.
  *
  * `?beat=N` replays a task-8.1 recorded beat onto the stage (paced by the recorded offsets;
  * `&instant` collapses the waits) — the zero-LLM verification path of spec decision 17.
@@ -10,20 +15,21 @@
 import {useEffect, useRef, useState, useSyncExternalStore} from 'react';
 import {Button} from '@primer/react';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
-import type {ActionListener} from '@a2ui/web_core/v0_9';
+import type {ActionListener, A2uiClientAction} from '@a2ui/web_core/v0_9';
 import {CATALOG} from 'primer-a2ui-adapter';
 import type {A2ASenderOptions} from '../a2a/client';
-import {createSenderResolver} from '../a2a/client';
-import {createA2AActionHandler} from '../a2a/createA2AActionHandler';
+import {createSenderResolver, sendAndApply} from '../a2a/client';
+import {buildActionMessageParams} from '../a2a/messages';
 import {createA2ASession} from '../a2a/session';
 import {streamUserMessage} from '../a2a/streamUserMessage';
-import {describeAction} from '../chat/describeAction';
 import {describeError} from '../chat/describeError';
 import {getBeatFixture} from '../beats/beatFixtures';
 import {createCanvasStore} from './canvasStore';
-import {createCanvasApplier} from './canvasApplier';
+import {createTurnRunner} from './canvasTurn';
+import type {PaintCause} from './paint';
 import {replayBeatOnCanvas} from './replayBeat';
 import {AmbientNotice} from './AmbientNotice';
+import {CanvasOverlay} from './CanvasOverlay';
 import {CanvasStage} from './CanvasStage';
 import {Palette} from './Palette';
 import {StatusStrip} from './StatusStrip';
@@ -35,59 +41,94 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
     const session = createA2ASession();
     const getSender = createSenderResolver({serverUrl, client});
     const processor = new MessageProcessor([CATALOG], action => actionHandler(action));
-    const apply = createCanvasApplier({processor, store});
+    const runner = createTurnRunner({
+      processor,
+      store,
+      createStaging: () => new MessageProcessor([CATALOG]),
+    });
     const getClientDataModel = () => processor.getClientDataModel();
+    const parentId = () => store.getState().livePaint?.paintId ?? null;
 
     // Agent prose streams as fragments; one growing notice per paint, chat-style grouping.
     let prose = '';
-    const beginPaint = (label: string) => {
+    const startTurn = (cause: PaintCause) => {
       prose = '';
-      store.beginPaint(label);
+      return runner.begin(cause);
     };
     const reportAgentText = (text: string) => {
       prose += text;
       if (prose.trim()) store.showNotice(prose);
     };
 
-    const rawActionHandler = createA2AActionHandler({
-      apply,
-      getSender,
-      session,
-      getClientDataModel,
-      onError: err => store.reportError(`That action failed. ${describeError(err)}`),
-      onAgentText: reportAgentText,
-      onActionStart: action => {
-        const subject = describeAction(action);
-        beginPaint(subject ? `${subject} — generating…` : 'Generating…');
-      },
-      onActionSettled: () => store.endPaint(),
-    });
-    // The 8.2 interaction guard: agent-bound actions are blocked while a paint is in flight
-    // (spec decision 11's final answer for this channel; 8.3 adds the status cue and the
-    // local-vs-agent-bound split).
-    const actionHandler: ActionListener = action => {
-      if (store.getState().inFlight) return;
-      return rawActionHandler(action);
-    };
-
     const sendUtterance = async (utterance: string) => {
-      if (store.getState().inFlight) return;
-      beginPaint('Generating…');
+      // Q5: speaking past a pending question dismisses it, no trace. Last-intent-wins over
+      // any in-flight paint is the runner's job (begin cancels it, aborting the transport).
+      runner.removeOverlay();
+      const turn = startTurn({kind: 'utterance', parent: parentId(), payload: {text: utterance}});
       try {
         await streamUserMessage(utterance, {
           getSender,
-          apply,
+          apply: turn.apply,
           session,
           getClientDataModel,
+          signal: turn.signal,
           onError: err => store.reportError(`The agent request failed. ${describeError(err)}`),
           onAgentText: reportAgentText,
         });
       } finally {
-        store.endPaint();
+        turn.end();
       }
     };
 
-    return {store, processor, apply, sendUtterance};
+    const sendCausedAction = async (action: A2uiClientAction, cause: PaintCause) => {
+      const turn = startTurn(cause);
+      try {
+        const sender = await getSender();
+        await sendAndApply(
+          sender,
+          buildActionMessageParams(action, session.get(), getClientDataModel()),
+          turn.apply,
+          session,
+          reportAgentText,
+          turn.signal,
+        );
+      } catch (err) {
+        if (!turn.signal.aborted) {
+          console.error('[A2UI:a2a]', err);
+          store.reportError(`That action failed. ${describeError(err)}`);
+        }
+      } finally {
+        turn.end();
+      }
+    };
+
+    const actionHandler: ActionListener = action => {
+      const state = store.getState();
+      if (state.overlay && action.surfaceId === state.overlay.surfaceId) {
+        // Answering the question (either dialog action): capture the Q&A into the cause and
+        // remove the dialog at dispatch (task-8.3 spec decision 8) — always live.
+        const cause: PaintCause = {
+          kind: 'overlay-answer',
+          parent: parentId(),
+          payload: {question: state.overlay.question, answer: action},
+        };
+        runner.removeOverlay();
+        return sendCausedAction(action, cause);
+      }
+      if (state.inFlight) {
+        // Spec decision 11: agent-bound actions are blocked while a paint is in flight —
+        // a status cue instead of firing.
+        store.showNotice('Hold on — a paint is in flight. Try again when it lands.');
+        return;
+      }
+      return sendCausedAction(action, {
+        kind: 'surface-action',
+        parent: parentId(),
+        payload: {action},
+      });
+    };
+
+    return {store, processor, runner, sendUtterance};
   });
 
   const state = useSyncExternalStore(wiring.store.subscribe, wiring.store.getState);
@@ -113,7 +154,7 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
       return;
     }
     void replayBeatOnCanvas(fixture, {
-      apply: wiring.apply,
+      runner: wiring.runner,
       store: wiring.store,
       paced: !beatParams.instant,
     });
@@ -134,10 +175,10 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
   return (
     <main className="canvas-app">
       <CanvasStage processor={wiring.processor} state={state} />
+      <CanvasOverlay processor={wiring.processor} state={state} />
       <AmbientNotice notice={state.notice} onDismiss={wiring.store.dismissNotice} />
       <Palette
         open={paletteOpen}
-        blocked={state.inFlight !== null}
         onDismiss={() => setPaletteOpen(false)}
         onSubmit={utterance => {
           setPaletteOpen(false);

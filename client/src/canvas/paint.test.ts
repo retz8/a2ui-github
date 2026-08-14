@@ -39,9 +39,9 @@ describe('describeCause', () => {
   });
 
   it('falls back to a generic label for an empty action', () => {
-    expect(
-      describeCause({kind: 'surface-action', parent: 1, payload: {action: action('')}}),
-    ).toBe('Generating…');
+    expect(describeCause({kind: 'surface-action', parent: 1, payload: {action: action('')}})).toBe(
+      'Generating…',
+    );
   });
 
   it('labels an overlay answer by its question', () => {

@@ -1,6 +1,8 @@
 /**
- * The canvas page (task 8.2): stage + palette + status strip + ambient notice assembled over
- * the chat page's transport, with the ?beat= fixture-replay affordance.
+ * The canvas page (tasks 8.2 + 8.3): stage + overlay + palette + status strip + ambient notice
+ * assembled over the chat page's transport and the turn runner, with the ?beat= fixture-replay
+ * affordance and the decision-11 interaction policy (last-intent-wins palette, blocked actions
+ * with a cue, always-live overlay answers).
  */
 import {describe, it, expect, afterEach} from 'vitest';
 import {render, screen, cleanup, waitFor} from '@testing-library/react';
@@ -159,7 +161,127 @@ describe('CanvasApp', () => {
     expect(screen.queryByText('Open issue')).toBeNull();
   });
 
-  it('blocks agent-bound surface actions while a paint is in flight', async () => {
+  it('holds the stage while a new paint streams, swapping only when it lands', async () => {
+    // First send resolves immediately; the second stays gated so the hold is observable.
+    const sent: MessageSendParams[] = [];
+    let release: () => void = () => {};
+    const gate = new Promise<void>(resolve => {
+      release = resolve;
+    });
+    const sender: A2AMessageSender = {
+      async *sendMessageStream(params) {
+        const index = sent.length;
+        sent.push(params);
+        if (index === 0) {
+          yield eventOf(SURFACE_MESSAGES);
+          return;
+        }
+        await gate;
+        yield eventOf(ACTIONABLE_MESSAGES);
+      },
+    };
+    renderCanvas(sender);
+    await ask('show me something');
+    expect(await screen.findByText('hello from the agent')).toBeInTheDocument();
+
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await ask('now the issues');
+    // The hold: the outgoing surface stays visible while the new paint is in flight.
+    expect(screen.getByTestId('canvas-pending')).toBeInTheDocument();
+    expect(screen.getByText('hello from the agent')).toBeInTheDocument();
+    expect(screen.queryByText('Open issue')).toBeNull();
+
+    release();
+    expect(await screen.findByRole('button', {name: 'Open issue'})).toBeInTheDocument();
+    expect(screen.queryByText('hello from the agent')).toBeNull();
+  });
+
+  it('a palette utterance while a paint is in flight cancels it and dispatches (last-intent-wins)', async () => {
+    // Send 0 lands the first stage; send 1 never resolves until released (the paint to cancel);
+    // send 2 is the overriding utterance. The stale send-1 event released later must be inert.
+    const sent: MessageSendParams[] = [];
+    let releaseStale: () => void = () => {};
+    const staleGate = new Promise<void>(resolve => {
+      releaseStale = resolve;
+    });
+    const sender: A2AMessageSender = {
+      async *sendMessageStream(params) {
+        const index = sent.length;
+        sent.push(params);
+        if (index === 0) {
+          yield eventOf(ACTIONABLE_MESSAGES);
+          return;
+        }
+        if (index === 1) {
+          await staleGate;
+          yield eventOf(ACTIONABLE_MESSAGES);
+          return;
+        }
+        yield eventOf(SURFACE_MESSAGES);
+      },
+    };
+    renderCanvas(sender);
+    await ask('show me issues');
+    await screen.findByRole('button', {name: 'Open issue'});
+
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await ask('slow one');
+    expect(screen.getByTestId('canvas-pending')).toBeInTheDocument();
+
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await ask('actually, show me something else');
+
+    expect(sent).toHaveLength(3);
+    expect(await screen.findByText('hello from the agent')).toBeInTheDocument();
+    await waitFor(() => expect(screen.queryByTestId('canvas-pending')).toBeNull());
+
+    // The canceled turn's late stream is discarded, not painted.
+    releaseStale();
+    await waitFor(() => expect(screen.getByText('hello from the agent')).toBeInTheDocument());
+    expect(screen.queryByText('Open issue')).toBeNull();
+  });
+
+  it('a question paint lands in the overlay; answering dispatches the action and dismisses it', async () => {
+    const QUESTION_MESSAGES = [
+      {version: 'v0.9', createSurface: {surfaceId: 'which-repo', catalogId: CATALOG_ID}},
+      {
+        version: 'v0.9',
+        updateComponents: {
+          surfaceId: 'which-repo',
+          components: [
+            {
+              id: 'root',
+              component: 'ConfirmationDialog',
+              title: 'Which repository?',
+              confirmButtonContent: 'a2ui-project/a2ui',
+              cancelButtonContent: 'Somewhere else',
+              confirmAction: {event: {name: 'choose-repo', context: {}}},
+              cancelAction: {event: {name: 'choose-other', context: {}}},
+            },
+          ],
+        },
+      },
+    ];
+    const {sender, sent} = scriptedSender([eventOf(QUESTION_MESSAGES), eventOf(SURFACE_MESSAGES)]);
+    renderCanvas(sender);
+
+    await ask('do the ambiguous thing');
+    expect(await screen.findByText('Which repository?')).toBeInTheDocument();
+
+    await userEvent.click(screen.getByRole('button', {name: 'a2ui-project/a2ui'}));
+
+    // The answer rode the wire as the raw action event, and the resulting paint landed.
+    expect(await screen.findByText('hello from the agent')).toBeInTheDocument();
+    expect(sent).toHaveLength(2);
+    const dataPart = sent[1].message.parts.find(p => p.kind === 'data') as
+      | Extract<Part, {kind: 'data'}>
+      | undefined;
+    expect(dataPart?.data.action).toMatchObject({name: 'choose-repo', surfaceId: 'which-repo'});
+    // The dialog is gone — removed at answer dispatch.
+    expect(screen.queryByText('Which repository?')).toBeNull();
+  });
+
+  it('blocks agent-bound surface actions while a paint is in flight, with a status cue', async () => {
     // First send resolves immediately with the actionable surface; the second stays gated so
     // the click's paint is observably in flight when the third click arrives.
     const sent: MessageSendParams[] = [];
@@ -188,6 +310,7 @@ describe('CanvasApp', () => {
     await userEvent.click(button);
 
     expect(sent).toHaveLength(2);
+    expect(screen.getByTestId('canvas-notice')).toHaveTextContent(/paint is in flight/i);
     release();
     await waitFor(() => expect(screen.queryByTestId('canvas-pending')).toBeNull());
   });

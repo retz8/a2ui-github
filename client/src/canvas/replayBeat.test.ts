@@ -76,9 +76,7 @@ describe('replayBeatOnCanvas', () => {
     const store = createCanvasStore();
     const runner = mockRunner(store);
     await replayBeatOnCanvas(fixture(), {runner, store, paced: false});
-    expect(runner.causes).toEqual([
-      {kind: 'utterance', parent: null, payload: {text: 'show me'}},
-    ]);
+    expect(runner.causes).toEqual([{kind: 'utterance', parent: null, payload: {text: 'show me'}}]);
   });
 
   it('maps a surface-action turn to a surface-action cause with the live paint as parent', async () => {

@@ -1,23 +1,21 @@
 /**
  * The command palette: language input as a summonable overlay — summon, speak, dismiss
- * (phase-8 spec decision 1). While a paint is in flight, send is blocked with a cue; 8.3
- * replaces the block with last-intent-wins cancel.
+ * (phase-8 spec decision 1). The palette never blocks: an utterance while a paint is in
+ * flight is last-intent-wins — the wiring cancels the in-flight paint and dispatches
+ * (spec decision 11, task 8.3).
  */
 import {useEffect, useRef, useState} from 'react';
 import {TextInput} from '@primer/react';
 
 export interface PaletteProps {
   open: boolean;
-  /** True while a paint is in flight — the input stays open, send is refused with a cue. */
-  blocked: boolean;
   onDismiss: () => void;
   onSubmit: (utterance: string) => void;
 }
 
-export function Palette({open, blocked, onDismiss, onSubmit}: PaletteProps) {
+export function Palette({open, onDismiss, onSubmit}: PaletteProps) {
   const [text, setText] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-  const [refusedWhileBlocked, setRefusedWhileBlocked] = useState(false);
 
   useEffect(() => {
     if (open) inputRef.current?.focus();
@@ -41,12 +39,7 @@ export function Palette({open, blocked, onDismiss, onSubmit}: PaletteProps) {
   const submit = () => {
     const utterance = text.trim();
     if (!utterance) return;
-    if (blocked) {
-      setRefusedWhileBlocked(true);
-      return;
-    }
     setText('');
-    setRefusedWhileBlocked(false);
     onSubmit(utterance);
   };
 
@@ -67,9 +60,6 @@ export function Palette({open, blocked, onDismiss, onSubmit}: PaletteProps) {
           }
         }}
       />
-      {blocked && refusedWhileBlocked && (
-        <div className="canvas-palette-cue">Wait — a paint is in flight.</div>
-      )}
       <div className="canvas-palette-hint">Enter to ask · Esc to dismiss</div>
     </div>
   );

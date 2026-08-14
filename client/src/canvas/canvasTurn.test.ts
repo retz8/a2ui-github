@@ -60,7 +60,7 @@ function paintStage(runner: ReturnType<typeof setup>['runner'], id: string, text
   turn.end();
 }
 
-const rootText = (processor: MessageProcessor, id: string): unknown =>
+const rootText = (processor: ReturnType<typeof setup>['processor'], id: string): unknown =>
   processor.model.getSurface(id)?.componentsModel.get('root')?.properties.text;
 
 describe('progressive mode (empty canvas)', () => {
@@ -250,7 +250,12 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
     paintStage(runner, 'old-stage', 'old');
 
     const turn = runner.begin(utterance('two views', 1));
-    turn.apply([create('first'), textRoot('first', 'one'), create('second'), textRoot('second', 'two')]);
+    turn.apply([
+      create('first'),
+      textRoot('first', 'one'),
+      create('second'),
+      textRoot('second', 'two'),
+    ]);
     turn.end();
 
     const state = store.getState();
