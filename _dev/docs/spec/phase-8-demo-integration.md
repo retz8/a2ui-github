@@ -20,6 +20,7 @@ The phase's terms, used throughout this spec and its sub-tasks:
 - **Stage / overlay** — the canvas's two layers: the stage holds the one live surface; the overlay holds at most one transient question surface.
 - **Head / live** — the newest paint; what the canvas shows by default and the only thing reported to the agent.
 - **Parked** — a restored snapshot being viewed from the timeline.
+- **Repaint (affordance)** — regenerate a parked view: re-fire its cause, producing a new paint at the head. The parked snapshot is untouched. (Overlaps the descriptive use of "repaint" — a surface id painted again; the two coincide whenever the agent reuses a semantic id.)
 
 ## Locked decisions
 
@@ -41,7 +42,7 @@ The agent's Phase-7 semantic-id convention is unchanged. The client snapshots th
 
 ### 5. Append-only DVR timeline with a pinned live head
 
-History is an append-only sequence of snapshots; the newest is live. Viewing a snapshot is scrubbing back; nothing ever truncates. A new paint always appends at the head and the canvas jumps to live. If the agent paints while the user is parked, the head advances, the canvas stays parked, and the status region says so.
+History is an append-only sequence of snapshots; the newest is live. Viewing a snapshot is scrubbing back; nothing ever truncates. A new paint always appends at the head. The canvas jumps to live at **dispatch**: the moment the user dispatches a turn from a parked view, the view returns to the live stage, which holds while the paint streams. A paint that **lands** while the user is parked leaves them parked — the head advances behind them, with a distinct newer-view signal alongside the stale banner. (Refined by task 8.4.)
 
 ### 6. Chronological order with causal links
 
@@ -49,7 +50,7 @@ Timeline order is strictly chronological; entries never move. When a paint is sp
 
 ### 7. Ring-capped storage now; tiered history in the thesis
 
-Phase 8 keeps the last N full snapshots in a ring (N generous, settled in the sub-task). A causal link into an evicted paint renders as inert provenance text. The thesis states the future model: older entries degrade to metadata-only stubs whose restoration is re-asking the agent.
+Phase 8 keeps the last N full snapshots in a ring (N = 50, per task 8.4). A causal link into an evicted paint renders as inert provenance text, still naming the paint: the parent's title is denormalised into the cause at fork time, so it survives the parent's eviction. The thesis states the future model: older entries degrade to metadata-only stubs whose restoration is repainting.
 
 ### 8. Titles: agent-authored per paint, cause-derived fallback
 
@@ -57,7 +58,7 @@ The agent emits a short human title alongside every surface it paints; when abse
 
 ### 9. History affordance: Chrome-shaped, plus return-to-live
 
-Back button always; press/right-click reveals a top-K titled history list. Deviation from Chrome: while parked, a **return-to-live** affordance jumps to the head from any depth, housed with the stale banner ("past view — data as of then") and the re-ask affordance.
+Back button always; press/right-click reveals the titled history list (all retained entries). Deviation from Chrome: while parked, a **return-to-live** affordance jumps to the head from any depth, housed with the stale banner ("past view — data as of then") and the Repaint affordance.
 
 ### 10. Transitions: hold-and-swap on an occupied canvas, progressive streaming on an empty one
 
@@ -65,7 +66,7 @@ While a new paint generates against an occupied stage, the current surface stays
 
 ### 11. Interaction policy while a paint is in flight
 
-Split by channel: **local** interactions on the old surface stay live (client-side, free); **agent-bound surface actions** are blocked, with a status cue instead of firing; **palette utterances** are last-intent-wins — cancel the in-flight paint and dispatch. A canceled paint never enters the timeline. Exception: answering an overlay question is always live.
+Split by channel: **local** interactions on the old surface stay live (client-side, free); **agent-bound surface actions** are blocked, with a status cue instead of firing; **palette utterances** are last-intent-wins — cancel the in-flight paint and dispatch. A canceled paint never enters the timeline. Exception: answering an overlay question is always live. **Shell chrome is the user's command channel and is never blocked** — only actions embedded in an agent-painted surface are the blocked class; Repaint is last-intent-wins alongside the palette (task 8.4).
 
 ### 12. Snapshots are materialized, not replayable logs
 
@@ -73,15 +74,15 @@ A snapshot is the serialized final state, captured once at replacement (serializ
 
 ### 13. Content frozen, interaction state persistent
 
-A snapshot's component tree and agent-supplied data never change. The user's local interaction state (data-model mutations) is persistent: edits made while the paint was live or during any later parked visit write into the stored snapshot — "state as of the last time you touched it." Re-ask spawns a new paint at the head; agent-bound actions from a parked snapshot fork their consequences to the head with `parent` = the snapshot. Parked snapshots are never in the live registry and never reported to the agent.
+A snapshot's component tree and agent-supplied data never change. The user's local interaction state (data-model mutations) is persistent: edits made while the paint was live or during any later parked visit write into the stored snapshot — "state as of the last time you touched it." Repaint spawns a new paint at the head; agent-bound actions from a parked snapshot fork their consequences to the head with `parent` = the snapshot. Parked snapshots are never in the live registry.
 
-### 14. Live registry ≡ canvas occupancy — the data-model growth fix
+### 14. Live registry ≡ what the agent may see — the data-model growth fix
 
 When a paint replaces the stage, the outgoing surface is snapshotted into the timeline and removed from the live processor; the overlay is removed when answered. At most two surfaces are live at any moment, and reporting to the agent draws from the live registry only. The agent stops receiving past surfaces' data models.
 
 ### 15. Single linear agent conversation with explicit fork context
 
-The agent session is never rewound or branched. When an action fires from a parked snapshot, the client attaches the fork context to the outgoing message: that it is a historical view, which paint it was (title, position, painted-at), and the parked snapshot's current data model. Carrier mechanism is sub-task-level.
+The agent session is never rewound or branched. When an action fires from a parked snapshot, the client attaches the fork context to the outgoing message: that it is a historical view, which paint it was (title, position, painted-at), and the parked snapshot's current data model. A forked turn reports the parked snapshot's data model, not the head's (task 8.4). Carrier mechanism for the fork metadata is sub-task-level (8.5).
 
 ### 16. The arc: all 8 beats, one continuous session, on the canvas shell
 
@@ -110,7 +111,7 @@ No new stack: the canvas is a new route in the existing client (Vite + React 19 
 ## Invariants
 
 - Snapshot content immutability is enforced (deep-frozen), not promised.
-- The live registry is exactly canvas occupancy: stage plus at most one overlay.
+- The live registry is exactly what the agent may see: the head's stage plus at most one overlay, regardless of what the user is viewing. Parked sandboxes are outside it. (Reworded by task 8.4.)
 - A paint that fails validation or is canceled never reaches the stage and never enters the timeline.
 - Nothing in the shell is triage-specific; the agent remains a general GitHub agent.
 - Read-only against live GitHub; the confirm boundary per `SPEC.md` §3.
