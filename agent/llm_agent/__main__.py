@@ -33,7 +33,16 @@ load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 )
 def main(host: str, port: int, base_url: str | None) -> None:
     # log_config=None: let uvicorn's loggers propagate to the timestamped root handler.
-    uvicorn.run(build_app(host, port, base_url), host=host, port=port, log_config=None)
+    # timeout_keep_alive: uvicorn's 5s default kills idle sockets between turns; a tunnel
+    # data-plane that reuses the dead upstream connection then hangs the next POST until
+    # the browser gives up. Hold connections across realistic turn gaps instead.
+    uvicorn.run(
+        build_app(host, port, base_url),
+        host=host,
+        port=port,
+        log_config=None,
+        timeout_keep_alive=300,
+    )
 
 
 if __name__ == "__main__":
