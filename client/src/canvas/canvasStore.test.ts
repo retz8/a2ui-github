@@ -7,7 +7,12 @@ import {describe, it, expect, vi} from 'vitest';
 import type {PaintCause, PaintEntry, PaintSnapshot} from './paint';
 import {createCanvasStore, currentPaintId, TIMELINE_CAP} from './canvasStore';
 
-const CAUSE: PaintCause = {kind: 'utterance', parent: null, forked: false, payload: {text: 'show my PRs'}};
+const CAUSE: PaintCause = {
+  kind: 'utterance',
+  parent: null,
+  forked: false,
+  payload: {text: 'show my PRs'},
+};
 
 const entry = (paintId: number, overrides: Partial<PaintEntry> = {}): PaintEntry => ({
   paintId,
@@ -161,7 +166,10 @@ describe('createCanvasStore', () => {
   it('setOverlay moves the overlay pointer', () => {
     const store = createCanvasStore();
     store.setOverlay({surfaceId: 'question', question: 'Which repository?'});
-    expect(store.getState().overlay).toEqual({surfaceId: 'question', question: 'Which repository?'});
+    expect(store.getState().overlay).toEqual({
+      surfaceId: 'question',
+      question: 'Which repository?',
+    });
     store.setOverlay(null);
     expect(store.getState().overlay).toBeNull();
   });

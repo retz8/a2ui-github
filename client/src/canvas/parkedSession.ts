@@ -47,7 +47,8 @@ export function createParkedSession<T extends ComponentApi>(
   {catalogs, store, onAction}: ParkedSessionOptions<T>,
 ): ParkedSession<T> {
   const {snapshot, surfaceId, catalogId, paintId} = entry;
-  if (!snapshot) throw new Error(`Paint #${paintId} has no snapshot — the live paint is not parkable.`);
+  if (!snapshot)
+    throw new Error(`Paint #${paintId} has no snapshot — the live paint is not parkable.`);
 
   const processor = new MessageProcessor<T>(catalogs, onAction);
   const messages = [

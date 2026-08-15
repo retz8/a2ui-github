@@ -35,7 +35,9 @@ function departedEntry(paintId = 1): PaintEntry {
         ],
       },
     }),
-    msg({updateDataModel: {surfaceId: 'pull-request-list', value: {title: 'Open PRs', urgent: false}}}),
+    msg({
+      updateDataModel: {surfaceId: 'pull-request-list', value: {title: 'Open PRs', urgent: false}},
+    }),
   ]);
   const surface = live.model.getSurface('pull-request-list')!;
   return {

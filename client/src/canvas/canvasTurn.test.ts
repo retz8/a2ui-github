@@ -153,7 +153,10 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
     // Serialize-on-swap: the departed entry filled in place; the new head has no snapshot yet.
     expect(state.timeline).toHaveLength(2);
     expect(state.timeline[0]).toMatchObject({paintId: 1, surfaceId: 'old-stage'});
-    expect(state.timeline[0].snapshot?.tree.root).toMatchObject({type: 'Text', text: 'old content'});
+    expect(state.timeline[0].snapshot?.tree.root).toMatchObject({
+      type: 'Text',
+      text: 'old content',
+    });
     expect(Object.isFrozen(state.timeline[0].snapshot?.tree.root)).toBe(true);
     expect(state.timeline[1]).toMatchObject({paintId: 2, surfaceId: 'issue-list', snapshot: null});
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual(['issue-list']);

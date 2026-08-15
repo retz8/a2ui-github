@@ -43,9 +43,7 @@ describe('parked-restore round-trip fidelity', () => {
       // Land the beat live and capture what the live stage renders.
       await replayBeatOnCanvas(fixture, {runner, store, paced: false});
       expect(store.getState().error).toBeNull();
-      const live = renderWithPrimer(
-        <CanvasStage processor={processor} state={store.getState()} />,
-      );
+      const live = renderWithPrimer(<CanvasStage processor={processor} state={store.getState()} />);
       const liveHtml = live.container.querySelector('.canvas-stage')!.innerHTML;
       expect(liveHtml.length).toBeGreaterThan(0);
       live.unmount();

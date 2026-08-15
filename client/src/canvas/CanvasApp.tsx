@@ -225,9 +225,7 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
     const repaint = () => {
       const state = store.getState();
       const entry =
-        state.viewing !== null
-          ? state.timeline.find(e => e.paintId === state.viewing)
-          : undefined;
+        state.viewing !== null ? state.timeline.find(e => e.paintId === state.viewing) : undefined;
       if (!entry) return;
       runner.removeOverlay();
       const base = {parent: entry.paintId, forked: true, parentTitle: entryTitle(entry)};

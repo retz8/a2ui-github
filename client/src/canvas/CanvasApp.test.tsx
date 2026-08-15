@@ -367,7 +367,10 @@ const BOUND_MESSAGES = [
 /** Land two paints so there is a past to park on: `filters` departs, `answer` is live. */
 async function landTwoPaints(script: TaskStatusUpdateEvent[] = []) {
   const {sender, sent, release} = scriptedSender(
-    [eventOf(BOUND_MESSAGES), eventOf(SURFACE_MESSAGES), ...script.slice(2)].slice(0, 2 + script.length),
+    [eventOf(BOUND_MESSAGES), eventOf(SURFACE_MESSAGES), ...script.slice(2)].slice(
+      0,
+      2 + script.length,
+    ),
   );
   renderCanvas(sender);
   await ask('show my filters');
@@ -412,7 +415,10 @@ describe('CanvasApp time travel', () => {
   it('right-clicking Back opens the titled history list; picking an entry parks on it', async () => {
     await landTwoPaints();
 
-    await userEvent.pointer({keys: '[MouseRight]', target: screen.getByRole('button', {name: 'Back'})});
+    await userEvent.pointer({
+      keys: '[MouseRight]',
+      target: screen.getByRole('button', {name: 'Back'}),
+    });
     const list = await screen.findByRole('menu');
     // Every retained entry, titles cause-derived, the live head marked.
     expect(list).toHaveTextContent('“show my filters”');
