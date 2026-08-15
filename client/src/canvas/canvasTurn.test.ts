@@ -394,3 +394,88 @@ describe('cancel: last-intent-wins', () => {
     expect(state.timeline.map(e => e.surfaceId)).toEqual(['stage', 'b']);
   });
 });
+
+describe('paint meta (task 8.5)', () => {
+  it('the accepted title upgrades the in-flight label and lands on the entry', () => {
+    const {store, runner} = setup();
+    const turn = runner.begin(utterance('show my PRs'));
+    expect(store.getState().inFlight?.label).toBe('“show my PRs” — generating…');
+    turn.acceptPaintMeta({surfaceId: 'pull-request-list', title: 'Open PRs — a2ui'});
+    expect(store.getState().inFlight?.label).toBe('Open PRs — a2ui — generating…');
+
+    turn.apply([create('pull-request-list'), textRoot('pull-request-list', 'PRs')]);
+    turn.end();
+    expect(store.getState().timeline[0].title).toBe('Open PRs — a2ui');
+  });
+
+  it('a titled staged paint carries its title onto the swapped-in entry', () => {
+    const {store, runner} = setup();
+    paintStage(runner, 'first', 'one');
+    const turn = runner.begin(utterance('next'));
+    turn.acceptPaintMeta({surfaceId: 'second', title: 'Second view'});
+    turn.apply([create('second'), textRoot('second', 'two')]);
+    turn.end();
+
+    const state = store.getState();
+    expect(state.stageId).toBe('second');
+    expect(state.timeline[1].title).toBe('Second view');
+    expect(state.timeline[0].title).toBeUndefined(); // untitled paints keep the fallback
+  });
+
+  it('kind="question" routes a non-dialog paint to the overlay — the marker is the contract', () => {
+    const {store, runner} = setup();
+    const turn = runner.begin(utterance('which repo?'));
+    turn.acceptPaintMeta({surfaceId: 'which-repo', title: 'Which repository?', kind: 'question'});
+    turn.apply([create('which-repo'), textRoot('which-repo', 'a2ui or a2ui-github?')]);
+    turn.end();
+
+    const state = store.getState();
+    expect(state.stageId).toBeNull();
+    expect(state.overlay?.surfaceId).toBe('which-repo');
+    expect(state.timeline).toEqual([]); // questions never enter the timeline
+  });
+
+  it('an explicit non-question kind keeps a dialog-rooted paint on the stage', () => {
+    const {store, runner} = setup();
+    const turn = runner.begin(utterance('show the dialog demo'));
+    turn.acceptPaintMeta({surfaceId: 'dlg', kind: 'view'});
+    turn.apply([create('dlg'), dialogRoot('dlg', 'Not a question')]);
+    turn.end();
+
+    const state = store.getState();
+    expect(state.stageId).toBe('dlg');
+    expect(state.overlay).toBeNull();
+    expect(state.timeline).toHaveLength(1);
+  });
+
+  it('staged mode routes a marker-declared question to the overlay while the stage holds', () => {
+    const {store, runner} = setup();
+    paintStage(runner, 'first', 'one');
+    const turn = runner.begin(utterance('which repo?'));
+    turn.acceptPaintMeta({surfaceId: 'q', kind: 'question'});
+    turn.apply([create('q'), textRoot('q', 'a or b?')]);
+    turn.end();
+
+    const state = store.getState();
+    expect(state.stageId).toBe('first'); // the held stage survives a question paint
+    expect(state.overlay?.surfaceId).toBe('q');
+    expect(state.timeline).toHaveLength(1);
+  });
+
+  it('paintMeta objects inline in an applied batch are consumed, not fed to the processor', () => {
+    // Replay tolerance: recorded fixtures carry paintMeta alongside the A2UI messages.
+    const {store, runner} = setup();
+    const turn = runner.begin(utterance('replayed'));
+    turn.apply([
+      {paintMeta: {surfaceId: 's', title: 'Replayed title'}} as unknown as A2uiMessage,
+      create('s'),
+      textRoot('s', 'body'),
+    ]);
+    turn.end();
+
+    const state = store.getState();
+    expect(state.error).toBeNull();
+    expect(state.stageId).toBe('s');
+    expect(state.timeline[0].title).toBe('Replayed title');
+  });
+});

@@ -19,6 +19,8 @@
  *   canceled paint never reaches the stage and never enters the timeline.
  */
 import type {A2uiMessage} from '@a2ui/web_core/v0_9';
+import type {PaintMeta} from '../a2a/messages';
+import {paintMetaOf, QUESTION_PAINT_KIND} from '../a2a/messages';
 import {applyA2uiMessages} from '../a2ui/applyMessages';
 import {describeError} from '../chat/describeError';
 import type {CanvasStore} from './canvasStore';
@@ -52,6 +54,13 @@ export interface TurnHandle {
   readonly canceled: boolean;
   /** Apply one streamed batch — the routing described in the module header. */
   apply(messages: A2uiMessage[]): void;
+  /**
+   * Accept one paintMeta shell object (task 8.5): the agent-authored title upgrades the
+   * in-flight label immediately and lands on the paint's timeline entry; the kind marker
+   * is the routing contract — `kind` present routes by it, absent falls back to the
+   * structural ConfirmationDialog rule (markerless streams: 8.1 fixtures, pre-8.5 agents).
+   */
+  acceptPaintMeta(meta: PaintMeta): void;
   /** The stream is exhausted: run the gate — swap in, or discard. No-op if canceled. */
   end(): void;
   /** Last-intent-wins: abort transport, discard the staged work, free the in-flight slot. */
@@ -130,7 +139,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
   };
 
   /** A landed stage paint enters the timeline as the live head — snapshot pending. */
-  const appendLiveEntry = (surfaceId: string, cause: PaintCause) => {
+  const appendLiveEntry = (surfaceId: string, cause: PaintCause, title?: string) => {
     const surface = processor.model.getSurface(surfaceId);
     if (!surface) return;
     store.appendEntry({
@@ -139,6 +148,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
       catalogId: surface.catalog.id,
       cause,
       paintedAt: Date.now(),
+      ...(title !== undefined ? {title} : {}),
       snapshot: null,
     });
   };
@@ -187,10 +197,33 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
     const buffered: A2uiMessage[] = [];
     let canceled = false;
 
+    /** The paintMetas accepted this turn, by surface id (task 8.5). */
+    const metas = new Map<string, PaintMeta>();
+    const titleOf = (surfaceId: string) => metas.get(surfaceId)?.title;
+
+    /**
+     * Question routing (task-8.5 decision: the marker is the contract): a declared `kind`
+     * routes the paint; only a markerless paint falls back to the structural
+     * ConfirmationDialog rule (8.1 fixtures, pre-8.5 streams).
+     */
+    const isQuestion = (proc: TurnProcessor, surfaceId: string): boolean => {
+      const kind = metas.get(surfaceId)?.kind;
+      if (kind !== undefined) return kind === QUESTION_PAINT_KIND;
+      return rootTypeOf(proc, surfaceId) === QUESTION_ROOT_TYPE;
+    };
+
+    const acceptPaintMeta = (meta: PaintMeta) => {
+      if (canceled) return;
+      metas.set(meta.surfaceId, meta);
+      // The title leads the paint: it upgrades the in-flight label the moment it arrives.
+      if (meta.title) store.updateInFlightLabel(`${meta.title} — generating…`);
+    };
+
     /** Decision 3: every non-final stage surface of a turn still enters the timeline. */
     const retireIntermediate = (surfaceId: string) => {
       const surface = processor.model.getSurface(surfaceId);
       if (surface) {
+        const title = titleOf(surfaceId);
         // An intermediate lands and departs in one breath — its entry arrives already filled.
         store.appendEntry({
           paintId: store.nextPaintId(),
@@ -198,6 +231,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
           catalogId: surface.catalog.id,
           cause,
           paintedAt: Date.now(),
+          ...(title !== undefined ? {title} : {}),
           snapshot: snapshotOf(surfaceId),
         });
         processor.model.deleteSurface(surfaceId);
@@ -266,14 +300,14 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
         if (createdIds.size > 0) store.reportError(EMPTY_FAILURE_TEXT);
         return;
       }
-      if (rootTypeOf(processor, stageId) === QUESTION_ROOT_TYPE) {
+      if (isQuestion(processor, stageId)) {
         // A question over the empty canvas: overlay slot, empty stage, no timeline entry.
         replaceOverlay(stageId);
         store.setStage(null);
         store.bumpApplied();
         return;
       }
-      appendLiveEntry(stageId, cause);
+      appendLiveEntry(stageId, cause, titleOf(stageId));
     };
 
     const endStaged = () => {
@@ -289,13 +323,10 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
         const {surfaceId} = targetOf(message);
         return surfaceId !== undefined && survivorSet.has(surfaceId);
       });
-      // Classify in staging, before replay: dialogs to the overlay, the rest are stage paints.
-      const stagePaints = survivors.filter(
-        id => rootTypeOf(staging as TurnProcessor, id) !== QUESTION_ROOT_TYPE,
-      );
-      const questions = survivors.filter(
-        id => rootTypeOf(staging as TurnProcessor, id) === QUESTION_ROOT_TYPE,
-      );
+      // Classify in staging, before replay: questions to the overlay, the rest are stage
+      // paints — by declared kind first, structural rule for markerless paints.
+      const stagePaints = survivors.filter(id => !isQuestion(staging as TurnProcessor, id));
+      const questions = survivors.filter(id => isQuestion(staging as TurnProcessor, id));
 
       // The swap: retire the outgoing stage (serialize-on-swap), then replay the validated
       // paint into the live processor.
@@ -305,7 +336,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
       if (stagePaints.length > 0) {
         const stageId = stagePaints[stagePaints.length - 1];
         store.setStage(stageId);
-        appendLiveEntry(stageId, cause);
+        appendLiveEntry(stageId, cause, titleOf(stageId));
       }
       for (const id of questions.slice(0, -1)) processor.model.deleteSurface(id);
       if (questions.length > 0) replaceOverlay(questions[questions.length - 1]);
@@ -319,9 +350,20 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
       },
       apply: messages => {
         if (canceled) return;
-        if (stagedMode) applyStaged(messages);
-        else applyProgressive(messages);
+        // Replay tolerance: a recorded fixture carries paintMeta objects inline with the
+        // A2UI messages (they ride the same recorded batches); route them to the meta
+        // acceptor instead of the processor. Live streams deliver metas via acceptPaintMeta.
+        const rest: A2uiMessage[] = [];
+        for (const message of messages) {
+          const meta = paintMetaOf(message);
+          if (meta) acceptPaintMeta(meta);
+          else rest.push(message);
+        }
+        if (rest.length === 0) return;
+        if (stagedMode) applyStaged(rest);
+        else applyProgressive(rest);
       },
+      acceptPaintMeta,
       end: () => {
         if (canceled) return;
         try {

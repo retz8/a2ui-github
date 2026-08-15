@@ -7,6 +7,7 @@ import type {
   TaskStatusUpdateEvent,
 } from '@a2a-js/sdk';
 import type {A2uiClientAction, A2uiClientDataModel} from '@a2ui/web_core/v0_9';
+import type {ForkContext} from './messages';
 import {
   buildActionMessageParams,
   buildTextMessageParams,
@@ -14,6 +15,8 @@ import {
   extractA2uiMessagesFromEvent,
   extractAgentTextFromEvent,
   extractContextId,
+  extractPaintMetasFromEvent,
+  paintMetaOf,
 } from './messages';
 
 const A2UI_DATA = {version: 'v0.9', createSurface: {surfaceId: 's', catalogId: 'cat'}};
@@ -186,5 +189,82 @@ describe('extractAgentTextFromEvent', () => {
 
   it('drops empty parts, which carry nothing to join or render', () => {
     expect(extractAgentTextFromEvent(agentMessage([{kind: 'text', text: ''}]))).toEqual([]);
+  });
+});
+
+const FORK: ForkContext = {
+  paintId: 4,
+  title: 'Open PRs — a2ui',
+  paintedAt: 1755230000000,
+  position: 3,
+};
+
+describe('fork context metadata (task 8.5)', () => {
+  it('rides beside the client data model on an action message', () => {
+    const params = buildActionMessageParams(ACTION, 'ctx-9', CLIENT_DM, FORK);
+    expect(params.message.metadata).toEqual({
+      a2uiClientDataModel: CLIENT_DM,
+      a2uiForkContext: FORK,
+    });
+  });
+
+  it('rides alone when no data model is reported', () => {
+    const params = buildActionMessageParams(ACTION, 'ctx-9', undefined, FORK);
+    expect(params.message.metadata).toEqual({a2uiForkContext: FORK});
+  });
+
+  it('rides on a text message too — a parked utterance is also a fork', () => {
+    const params = buildTextMessageParams('what changed?', 'ctx-9', CLIENT_DM, FORK);
+    expect(params.message.metadata).toEqual({
+      a2uiClientDataModel: CLIENT_DM,
+      a2uiForkContext: FORK,
+    });
+  });
+
+  it('a live dispatch carries no fork key', () => {
+    const params = buildActionMessageParams(ACTION, 'ctx-9', CLIENT_DM);
+    expect(params.message.metadata).toEqual({a2uiClientDataModel: CLIENT_DM});
+  });
+});
+
+const PAINT_META_PART: Part = {
+  kind: 'data',
+  data: {paintMeta: {surfaceId: 's', title: 'Open PRs — a2ui'}},
+  metadata: {mimeType: 'application/json+a2ui-shell'},
+};
+
+describe('paintMeta extraction (task 8.5)', () => {
+  it('extracts the shell part from a status-update, alongside A2UI parts', () => {
+    const event = statusUpdate([PAINT_META_PART, DATA_PART, TEXT_PART]);
+    expect(extractPaintMetasFromEvent(event)).toEqual([{surfaceId: 's', title: 'Open PRs — a2ui'}]);
+  });
+
+  it('the A2UI extractor never takes a paintMeta part for a protocol message', () => {
+    const event = statusUpdate([PAINT_META_PART, DATA_PART]);
+    expect(extractA2uiMessagesFromEvent(event)).toEqual([A2UI_DATA]);
+  });
+
+  it('carries the question kind through', () => {
+    const part: Part = {
+      kind: 'data',
+      data: {paintMeta: {surfaceId: 'q', title: 'Which repo?', kind: 'question'}},
+    };
+    expect(extractPaintMetasFromEvent(agentMessage([part]))).toEqual([
+      {surfaceId: 'q', title: 'Which repo?', kind: 'question'},
+    ]);
+  });
+
+  it('rejects malformed metas', () => {
+    expect(paintMetaOf({paintMeta: {title: 'no surface'}})).toBeUndefined();
+    expect(paintMetaOf({paintMeta: {surfaceId: 42}})).toBeUndefined();
+    expect(paintMetaOf({paintMeta: 'nope'})).toBeUndefined();
+    expect(paintMetaOf(A2UI_DATA)).toBeUndefined();
+    expect(paintMetaOf(null)).toBeUndefined();
+  });
+
+  it('drops empty title and kind rather than carrying empty strings', () => {
+    expect(paintMetaOf({paintMeta: {surfaceId: 's', title: '', kind: ''}})).toEqual({
+      surfaceId: 's',
+    });
   });
 });

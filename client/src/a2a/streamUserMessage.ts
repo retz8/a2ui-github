@@ -1,6 +1,7 @@
 import type {A2uiClientDataModel, A2uiMessage} from '@a2ui/web_core/v0_9';
 import type {GetSender} from './client';
 import {sendAndApply} from './client';
+import type {ForkContext, PaintMeta} from './messages';
 import {buildTextMessageParams} from './messages';
 import type {A2ASession} from './session';
 
@@ -30,6 +31,13 @@ export interface StreamUserMessageOptions {
    * a canceled turn is not an error, so `onError` is not called for it.
    */
   signal?: AbortSignal;
+  /**
+   * Fork context for a turn dispatched from a parked (historical) view; attached as message
+   * metadata (task 8.5). Absent on a live dispatch.
+   */
+  forkContext?: ForkContext;
+  /** Called for each paintMeta shell object the agent streams (title / question marker). */
+  onPaintMeta?: (meta: PaintMeta) => void;
 }
 
 /**
@@ -46,11 +54,12 @@ export async function streamUserMessage(
     const sender = await getSender();
     await sendAndApply(
       sender,
-      buildTextMessageParams(text, session?.get(), getClientDataModel?.()),
+      buildTextMessageParams(text, session?.get(), getClientDataModel?.(), opts.forkContext),
       apply,
       session,
       onAgentText,
       signal,
+      opts.onPaintMeta,
     );
   } catch (err) {
     if (signal?.aborted) return;

@@ -3,7 +3,7 @@
  * decision 2). In-flight spinner + label, or sticky error (cleared by the next dispatch);
  * idle shows the quiet identity label — the one thing naming the app once a painted surface
  * fills the screen with GitHub-shaped content. The ⌘K shortcut lives on the Ask pill.
- * The in-flight label upgrades to the agent-authored paint title in 8.5.
+ * The in-flight label upgrades to the agent-authored paint title when one streams (task 8.5).
  */
 import {Spinner} from '@primer/react';
 import type {CanvasState} from './canvasStore';

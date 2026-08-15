@@ -27,6 +27,7 @@ import type {ReactComponentImplementation} from '@a2ui/react/v0_9';
 import {CATALOG} from 'primer-a2ui-adapter';
 import type {A2ASenderOptions} from '../a2a/client';
 import {createSenderResolver, sendAndApply} from '../a2a/client';
+import type {ForkContext} from '../a2a/messages';
 import {buildActionMessageParams} from '../a2a/messages';
 import {createA2ASession} from '../a2a/session';
 import {streamUserMessage} from '../a2a/streamUserMessage';
@@ -76,6 +77,27 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
       return {forked: true, ...(entry ? {parentTitle: entryTitle(entry)} : {})};
     };
 
+    /**
+     * The wire half of a fork (task-8.5 decisions 9–10): the parked paint's identity,
+     * attached as message metadata so the agent knows the turn acts on a historical view.
+     * Captured by callers BEFORE the jump-to-live at dispatch; undefined while live.
+     */
+    const forkContextOf = (): ForkContext | undefined => {
+      const state = store.getState();
+      if (state.viewing === null) return undefined;
+      const index = state.timeline.findIndex(e => e.paintId === state.viewing);
+      if (index < 0) return undefined;
+      const entry = state.timeline[index];
+      return {
+        paintId: entry.paintId,
+        title: entryTitle(entry),
+        paintedAt: entry.paintedAt,
+        // Depth behind the live head at dispatch — the agent-meaningful position (ring
+        // indexes shift under eviction; the paintId is the stable identifier).
+        position: state.timeline.length - 1 - index,
+      };
+    };
+
     /** A forked turn reports the parked view's data model — what the user acted on. */
     const parkedClientDataModel = (): A2uiClientDataModel | undefined => {
       const parked = parkedHolder.session;
@@ -98,11 +120,13 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
       if (prose.trim()) store.showNotice(prose);
     };
 
-    /** Cause and data model are captured by the caller BEFORE the jump-to-live at dispatch. */
+    /** Cause, data model and fork context are captured by the caller BEFORE the
+     * jump-to-live at dispatch. */
     const dispatchUtterance = async (
       text: string,
       cause: PaintCause,
       dataModel?: A2uiClientDataModel,
+      forkContext?: ForkContext,
     ) => {
       store.returnToLive();
       const turn = startTurn(cause);
@@ -115,6 +139,8 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
           signal: turn.signal,
           onError: err => store.reportError(`The agent request failed. ${describeError(err)}`),
           onAgentText: reportAgentText,
+          forkContext,
+          onPaintMeta: turn.acceptPaintMeta,
         });
       } finally {
         turn.end();
@@ -132,13 +158,19 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
         ...fork,
         payload: {text: utterance},
       };
-      return dispatchUtterance(utterance, cause, fork.forked ? parkedClientDataModel() : undefined);
+      return dispatchUtterance(
+        utterance,
+        cause,
+        fork.forked ? parkedClientDataModel() : undefined,
+        forkContextOf(),
+      );
     };
 
     const sendCausedAction = async (
       action: A2uiClientAction,
       cause: PaintCause,
       dataModel?: A2uiClientDataModel,
+      forkContext?: ForkContext,
     ) => {
       store.returnToLive();
       const turn = startTurn(cause);
@@ -146,11 +178,17 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
         const sender = await getSender();
         await sendAndApply(
           sender,
-          buildActionMessageParams(action, session.get(), dataModel ?? getClientDataModel()),
+          buildActionMessageParams(
+            action,
+            session.get(),
+            dataModel ?? getClientDataModel(),
+            forkContext,
+          ),
           turn.apply,
           session,
           reportAgentText,
           turn.signal,
+          turn.acceptPaintMeta,
         );
       } catch (err) {
         if (!turn.signal.aborted) {
@@ -176,8 +214,9 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
           payload: {question: state.overlay.question, answer: action},
         };
         const dataModel = fork.forked ? parkedClientDataModel() : undefined;
+        const forkContext = forkContextOf();
         runner.removeOverlay();
-        return sendCausedAction(action, cause, dataModel);
+        return sendCausedAction(action, cause, dataModel, forkContext);
       }
       if (state.inFlight) {
         // Spec decision 11: agent-bound actions are blocked while a paint is in flight —
@@ -206,7 +245,7 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
         ...fork,
         payload: {action},
       };
-      return sendCausedAction(action, cause, parkedClientDataModel());
+      return sendCausedAction(action, cause, parkedClientDataModel(), forkContextOf());
     };
 
     const createParked = (entry: PaintEntry) =>
@@ -230,24 +269,28 @@ export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
       runner.removeOverlay();
       const base = {parent: entry.paintId, forked: true, parentTitle: entryTitle(entry)};
       const dataModel = parkedClientDataModel();
+      const forkContext = forkContextOf();
       const cause = entry.cause;
       if (cause.kind === 'utterance') {
         void dispatchUtterance(
           cause.payload.text,
           {kind: 'utterance', ...base, payload: cause.payload},
           dataModel,
+          forkContext,
         );
       } else if (cause.kind === 'surface-action') {
         void sendCausedAction(
           cause.payload.action,
           {kind: 'surface-action', ...base, payload: cause.payload},
           dataModel,
+          forkContext,
         );
       } else {
         void sendCausedAction(
           cause.payload.answer,
           {kind: 'overlay-answer', ...base, payload: cause.payload},
           dataModel,
+          forkContext,
         );
       }
     };

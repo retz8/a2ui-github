@@ -251,3 +251,18 @@ describe('currentPaintId', () => {
     expect(currentPaintId(store.getState())).toBeNull();
   });
 });
+
+describe('updateInFlightLabel (task 8.5)', () => {
+  it('upgrades the label while a paint is in flight', () => {
+    const store = createCanvasStore();
+    store.beginPaint('“show my PRs” — generating…');
+    store.updateInFlightLabel('Open PRs — a2ui — generating…');
+    expect(store.getState().inFlight).toEqual({label: 'Open PRs — a2ui — generating…'});
+  });
+
+  it('is a no-op while idle — a late title never resurrects a settled turn', () => {
+    const store = createCanvasStore();
+    store.updateInFlightLabel('too late');
+    expect(store.getState().inFlight).toBeNull();
+  });
+});

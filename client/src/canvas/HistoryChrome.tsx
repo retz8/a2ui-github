@@ -6,8 +6,8 @@
  * leaves the past in one gesture, the list addresses any retained entry directly.
  *
  * All of this is shell chrome — the user's command channel, never blocked by an in-flight
- * paint (decision 16). Titles are `entryTitle` fallbacks until 8.5 supplies agent-authored
- * ones; the causal chip renders only on forked entries and goes inert when its parent is
+ * paint (decision 16). Titles are agent-authored when the paint streamed one (task 8.5),
+ * `entryTitle` fallbacks otherwise; the causal chip renders only on forked entries and goes inert when its parent is
  * evicted, naming it via the denormalised `parentTitle`.
  */
 import {useState} from 'react';

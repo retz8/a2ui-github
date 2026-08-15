@@ -46,6 +46,8 @@ export interface CanvasStore {
   getState(): CanvasState;
   subscribe(listener: () => void): () => void;
   beginPaint(label: string): void;
+  /** Upgrade the in-flight label (the agent-authored title, task 8.5); no-op when idle. */
+  updateInFlightLabel(label: string): void;
   endPaint(): void;
   reportError(text: string): void;
   setStage(stageId: string | null): void;
@@ -109,6 +111,9 @@ export function createCanvasStore(): CanvasStore {
       return () => listeners.delete(listener);
     },
     beginPaint: label => set({inFlight: {label}, error: null}),
+    updateInFlightLabel: label => {
+      if (state.inFlight) set({inFlight: {label}});
+    },
     endPaint: () => set({inFlight: null}),
     reportError: text => set({error: text}),
     setStage: stageId => set({stageId}),

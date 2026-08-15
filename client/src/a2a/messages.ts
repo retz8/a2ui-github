@@ -23,13 +23,37 @@ const A2UI_VERSION = 'v0.9' as const;
  */
 export const A2UI_CLIENT_DATA_MODEL_KEY = 'a2uiClientDataModel';
 
-function clientDataModelMetadata(
+/**
+ * A2A message-metadata key under which the canvas attaches fork context when a turn is
+ * dispatched from a parked (historical) view — task-8.5 decisions 9–10. Presence of the
+ * key IS the historical-view flag; a live dispatch never carries it.
+ */
+export const A2UI_FORK_CONTEXT_KEY = 'a2uiForkContext';
+
+/** The fork-context object: which paint the user was acting on, spec-minimal. */
+export interface ForkContext {
+  /** The parked paint's monotonic id — the stable identifier. */
+  paintId: number;
+  /** The paint's display title (agent-authored, or the cause-derived fallback). */
+  title: string;
+  /** Epoch ms of the moment the paint took the stage. */
+  paintedAt: number;
+  /** Depth behind the live head at dispatch time (0 = parked on the head entry). */
+  position: number;
+}
+
+function messageMetadata(
   clientDataModel?: A2uiClientDataModel,
+  forkContext?: ForkContext,
 ): {[k: string]: unknown} | undefined {
-  if (!clientDataModel) return undefined;
-  // Both send paths funnel through here, so this is the one place that sees every payload.
-  logClientDataModelSize(clientDataModel);
-  return {[A2UI_CLIENT_DATA_MODEL_KEY]: clientDataModel};
+  const metadata: {[k: string]: unknown} = {};
+  if (clientDataModel) {
+    // Both send paths funnel through here, so this is the one place that sees every payload.
+    logClientDataModelSize(clientDataModel);
+    metadata[A2UI_CLIENT_DATA_MODEL_KEY] = clientDataModel;
+  }
+  if (forkContext) metadata[A2UI_FORK_CONTEXT_KEY] = forkContext;
+  return Object.keys(metadata).length ? metadata : undefined;
 }
 
 /** Wrap an A2UI client action as A2A send params carrying one v0.9 A2UI DataPart. */
@@ -37,6 +61,7 @@ export function buildActionMessageParams(
   action: A2uiClientAction,
   contextId?: string,
   clientDataModel?: A2uiClientDataModel,
+  forkContext?: ForkContext,
 ): MessageSendParams {
   return {
     message: {
@@ -45,7 +70,7 @@ export function buildActionMessageParams(
       messageId: crypto.randomUUID(),
       contextId,
       parts: [{kind: 'data', data: {version: A2UI_VERSION, action}}],
-      metadata: clientDataModelMetadata(clientDataModel),
+      metadata: messageMetadata(clientDataModel, forkContext),
     },
   };
 }
@@ -55,6 +80,7 @@ export function buildTextMessageParams(
   text: string,
   contextId?: string,
   clientDataModel?: A2uiClientDataModel,
+  forkContext?: ForkContext,
 ): MessageSendParams {
   return {
     message: {
@@ -63,7 +89,7 @@ export function buildTextMessageParams(
       messageId: crypto.randomUUID(),
       contextId,
       parts: [{kind: 'text', text}],
-      metadata: clientDataModelMetadata(clientDataModel),
+      metadata: messageMetadata(clientDataModel, forkContext),
     },
   };
 }
@@ -134,6 +160,56 @@ export function extractAgentTextFromEvent(event: A2AStreamEventData): string[] {
 /** Pull A2UI messages out of a non-streaming A2A send result. */
 export function extractA2uiMessages(result: Task | Message): A2uiMessage[] {
   return extractA2uiMessagesFromEvent(result);
+}
+
+/**
+ * The paintMeta shell object (task 8.5): the agent's per-paint metadata — a short human
+ * title, and the question marker the canvas routes on. Rides the A2A stream as a dedicated
+ * DataPart (`{paintMeta: {...}}`, no inline `version` field), emitted ahead of the
+ * `createSurface` it names, so the A2UI extractor above never sees it.
+ */
+export interface PaintMeta {
+  surfaceId: string;
+  /** The agent-authored paint title; best-effort — absent falls back to cause-derived. */
+  title?: string;
+  /** The paint's declared kind; `"question"` routes to the overlay slot. */
+  kind?: string;
+}
+
+/** The question-marker value of `PaintMeta.kind`. */
+export const QUESTION_PAINT_KIND = 'question';
+
+/** A paintMeta shell object when `data` is one, else undefined. */
+export function paintMetaOf(data: unknown): PaintMeta | undefined {
+  const meta = (data as {paintMeta?: unknown} | null | undefined)?.paintMeta;
+  if (!meta || typeof meta !== 'object') return undefined;
+  const {surfaceId, title, kind} = meta as {surfaceId?: unknown; title?: unknown; kind?: unknown};
+  if (typeof surfaceId !== 'string' || !surfaceId) return undefined;
+  return {
+    surfaceId,
+    ...(typeof title === 'string' && title ? {title} : {}),
+    ...(typeof kind === 'string' && kind ? {kind} : {}),
+  };
+}
+
+/** Pull paintMeta shell objects out of a single A2A stream event. */
+export function extractPaintMetasFromEvent(event: A2AStreamEventData): PaintMeta[] {
+  let parts: Part[];
+  switch (event.kind) {
+    case 'message':
+      parts = event.parts;
+      break;
+    case 'task':
+    case 'status-update':
+      parts = event.status.message?.parts ?? [];
+      break;
+    default:
+      return [];
+  }
+  return parts
+    .filter((p): p is Extract<Part, {kind: 'data'}> => p.kind === 'data')
+    .map(p => paintMetaOf(p.data))
+    .filter((m): m is PaintMeta => m !== undefined);
 }
 
 /** The conversation contextId carried by an A2A stream event, if any. */

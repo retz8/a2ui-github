@@ -53,6 +53,7 @@ function mockRunner(store: ReturnType<typeof createCanvasStore>) {
       signal: new AbortController().signal,
       canceled: false,
       apply: messages => applied.push(messages),
+      acceptPaintMeta: () => {},
       end: () => store.endPaint(),
       cancel: () => {},
     };
@@ -128,6 +129,7 @@ describe('replayBeatOnCanvas', () => {
           apply: () => {
             inFlightDuringApply = store.getState().inFlight !== null;
           },
+          acceptPaintMeta: () => {},
           end: () => store.endPaint(),
           cancel: () => {},
         };

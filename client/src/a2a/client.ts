@@ -1,11 +1,12 @@
 import {A2AClient} from '@a2a-js/sdk/client';
 import type {MessageSendParams} from '@a2a-js/sdk';
 import type {A2uiMessage} from '@a2ui/web_core/v0_9';
-import type {A2AStreamEventData} from './messages';
+import type {A2AStreamEventData, PaintMeta} from './messages';
 import {
   extractA2uiMessagesFromEvent,
   extractAgentTextFromEvent,
   extractContextId,
+  extractPaintMetasFromEvent,
 } from './messages';
 import type {A2ASession} from './session';
 
@@ -69,10 +70,14 @@ export async function sendAndApply(
   session?: A2ASession,
   onAgentText?: (text: string) => void,
   signal?: AbortSignal,
+  onPaintMeta?: (meta: PaintMeta) => void,
 ): Promise<void> {
   for await (const event of sender.sendMessageStream(params, {signal})) {
     const contextId = extractContextId(event);
     if (contextId) session?.set(contextId);
+    // Metas before messages: the title leads the paint, and the shell part is emitted
+    // ahead of the createSurface it names within the same event.
+    if (onPaintMeta) for (const meta of extractPaintMetasFromEvent(event)) onPaintMeta(meta);
     const messages = extractA2uiMessagesFromEvent(event);
     if (messages.length) apply(messages);
     if (onAgentText) for (const text of extractAgentTextFromEvent(event)) onAgentText(text);

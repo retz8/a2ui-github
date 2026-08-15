@@ -535,3 +535,68 @@ describe('CanvasApp time travel', () => {
     expect(await screen.findByRole('button', {name: 'Open issue'})).toBeInTheDocument();
   });
 });
+
+describe('CanvasApp wire contracts (task 8.5)', () => {
+  it('a parked dispatch attaches the exact fork context as message metadata', async () => {
+    const {sender, sent} = scriptedSender([
+      eventOf(ACTIONABLE_MESSAGES),
+      eventOf(SURFACE_MESSAGES),
+      eventOf(BOUND_MESSAGES),
+    ]);
+    renderCanvas(sender);
+    await ask('show me issues');
+    await screen.findByRole('button', {name: 'Open issue'});
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await ask('show me something');
+    await screen.findByText('hello from the agent');
+
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+    await userEvent.click(await screen.findByRole('button', {name: 'Open issue'}));
+    await screen.findByRole('checkbox', {name: 'urgent only'});
+
+    expect(sent).toHaveLength(3);
+    const metadata = sent[2].message.metadata as {a2uiForkContext?: unknown} | undefined;
+    expect(metadata?.a2uiForkContext).toEqual({
+      paintId: 1,
+      title: '“show me issues”',
+      paintedAt: expect.any(Number),
+      position: 1,
+    });
+  });
+
+  it('a live dispatch never carries the fork key', async () => {
+    const {sender, sent} = scriptedSender([
+      eventOf(ACTIONABLE_MESSAGES),
+      eventOf(SURFACE_MESSAGES),
+    ]);
+    renderCanvas(sender);
+    await ask('show me issues');
+    await userEvent.click(await screen.findByRole('button', {name: 'Open issue'}));
+    await screen.findByText('hello from the agent');
+
+    const metadata = sent[1].message.metadata as {a2uiForkContext?: unknown} | undefined;
+    expect(metadata?.a2uiForkContext).toBeUndefined();
+  });
+
+  it('an agent-authored paint title streams into the history list', async () => {
+    const titled = [
+      {paintMeta: {surfaceId: 'answer', title: 'Agent-titled view'}},
+      ...SURFACE_MESSAGES,
+    ];
+    const {sender} = scriptedSender([eventOf(ACTIONABLE_MESSAGES), eventOf(titled)]);
+    renderCanvas(sender);
+    await ask('show me issues');
+    await screen.findByRole('button', {name: 'Open issue'});
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await ask('show me something');
+    await screen.findByText('hello from the agent');
+
+    await userEvent.pointer({
+      keys: '[MouseRight]',
+      target: screen.getByRole('button', {name: 'Back'}),
+    });
+    const list = await screen.findByRole('menu');
+    expect(list).toHaveTextContent('Agent-titled view');
+    expect(list).toHaveTextContent('“show me issues”'); // the untitled entry keeps the fallback
+  });
+});

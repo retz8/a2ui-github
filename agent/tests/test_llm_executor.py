@@ -970,3 +970,111 @@ async def test_recording_never_changes_what_the_client_receives(tmp_path):
 
     assert _all_text(unarmed_queue) == _all_text(armed_queue)
     assert len(unarmed_queue.events) == len(armed_queue.events)
+
+
+# ---- task 8.5: paint titles, question marker, fork context ----
+
+from llm_agent.executor import (  # noqa: E402
+    FORK_CONTEXT_KEY,
+    _frame_fork_context,
+    _resolve_prompt,
+)
+
+
+def _titled_surface_text(surface_id: str = "s1", kind: str | None = None) -> str:
+    tag_kind = f' kind="{kind}"' if kind else ""
+    return (
+        f'<paint-title surface="{surface_id}"{tag_kind}>Open PRs — a2ui</paint-title>\n'
+        + _valid_surface_text_with_id(surface_id)
+    )
+
+
+@pytest.mark.asyncio
+async def test_paint_title_tag_becomes_paint_meta_part_before_create():
+    responder = _FakeResponder([_titled_surface_text("s1")])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    data = _data_parts(queue)
+    meta_indices = [i for i, d in enumerate(data) if "paintMeta" in d]
+    create_indices = [
+        i for i, d in enumerate(data)
+        if "createSurface" in d and d["createSurface"].get("surfaceId") == "s1"
+    ]
+    assert meta_indices and create_indices
+    assert meta_indices[0] < create_indices[0]  # the title leads the paint
+    assert data[meta_indices[0]]["paintMeta"] == {
+        "surfaceId": "s1",
+        "title": "Open PRs — a2ui",
+    }
+    # The tag is stripped from the prose channel.
+    assert "<paint-title" not in _all_text(queue)
+    assert APOLOGY_TEXT not in _all_text(queue)
+
+
+@pytest.mark.asyncio
+async def test_question_marker_without_dialog_root_feeds_correction_retry():
+    # Attempt 1 declares kind="question" on a surface whose root is not a
+    # ConfirmationDialog: validate_surface passes, the marker rule rejects, and the
+    # correction names the idiom. Attempt 2 drops the kind and completes.
+    responder = _FakeResponder(
+        [_titled_surface_text("s1", kind="question"), _titled_surface_text("s1")]
+    )
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+
+    assert responder.calls == 2
+    assert responder.corrections[1] is not None
+    assert "ConfirmationDialog" in responder.corrections[1]
+    assert APOLOGY_TEXT not in _all_text(queue)
+
+
+@pytest.mark.asyncio
+async def test_unclosed_tag_tail_is_flushed_at_stream_end():
+    # An opened <paint-title> whose close never streams is held by the filter for the
+    # whole stream; at stream end it must be released verbatim — no prose is lost.
+    tail = '\n<paint-title surface="s1">never closed'
+    responder = _FakeResponder([_valid_surface_text() + tail])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+    text = _all_text(queue)
+    assert "never closed" in text
+    assert "<paint-title" in text  # released as plain prose, not swallowed
+
+
+def test_fork_context_framed_into_action_prompt():
+    action = {"name": "open-pr", "context": {"number": 48}}
+    fork = {"paintId": 4, "title": "Open PRs — a2ui", "paintedAt": 1755230000000, "position": 3}
+    ctx = _ActionCtx(action, metadata={FORK_CONTEXT_KEY: fork})
+    prompt = _resolve_prompt(ctx)
+    assert "HISTORICAL" in prompt
+    assert "'Open PRs — a2ui'" in prompt
+    assert "3 paints behind the current view" in prompt
+    assert "Refetch live data" in prompt
+    assert "NEWEST view" in prompt
+
+
+def test_fork_context_framed_into_utterance_prompt_before_data_model():
+    fork = {"paintId": 2, "title": "PR #48 review", "paintedAt": 1755230000000, "position": 1}
+    model = {"version": "v0.9", "surfaces": {"s1": {"sel": True}}}
+    ctx = _Ctx(
+        "what changed here?",
+        metadata={FORK_CONTEXT_KEY: fork, "a2uiClientDataModel": model},
+    )
+    prompt = _resolve_prompt(ctx)
+    assert prompt.index("HISTORICAL") < prompt.index("Current data model")
+    assert "1 paint behind the current view" in prompt
+
+
+def test_fork_frame_tolerates_missing_fields():
+    prompt = _frame_fork_context({})
+    assert "a past view" in prompt
+    assert "behind the current view" not in prompt  # no position claimed
+
+
+def test_no_fork_context_means_no_historical_framing():
+    prompt = _resolve_prompt(_Ctx("show me open PRs"))
+    assert "HISTORICAL" not in prompt

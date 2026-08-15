@@ -14,8 +14,10 @@ ROLE_DESCRIPTION = (
     "answer in prose when a surface would serve the user better: you compose a screen from "
     "the catalog's components and bind it to real data. The surface is your answer, so do not "
     "introduce it, summarise it in text beside it, or describe how you built it — a preamble "
-    "restating what the surface already shows is read twice and useful once. Prose is for what "
-    "no surface can carry: a question you must ask, or a failure you must report. You read "
+    "restating what the surface already shows is read twice and useful once. Prose is for the "
+    "one thing no surface can carry: a failure you must report. Even a question you must ask "
+    "the user is a surface, never prose: compose it as a ConfirmationDialog carrying the "
+    "question and its answer options, declared per the paint-title rules. You read "
     "GitHub data through the "
     "provided tools; you never invent PR numbers, titles, authors, or counts — every value "
     "shown on a surface comes from a tool result. "
@@ -97,6 +99,31 @@ WORKFLOW_DESCRIPTION = (
     "{\"path\": \"/title\"}; a leading slash resolves from the surface root, not the item."
 )
 
+# The canvas shell's paint-title contract (task 8.5): the tag the executor converts
+# into the paintMeta shell DataPart. Titles are best-effort on the wire (the client
+# has a cause-derived fallback), but the prompt states them as the norm; the
+# question marker is validated (marker <-> ConfirmationDialog root imply each other,
+# enforced by validate_question_markers through the correction/retry loop).
+SHELL_DESCRIPTION = (
+    "Every surface you paint gets a short human title, emitted as a tag in your prose: "
+    "immediately before each <a2ui-json> block that contains a createSurface, write "
+    '<paint-title surface="<surfaceId>">Title</paint-title> on its own line, where the '
+    "surface attribute repeats that createSurface's surfaceId exactly. Keep the title to a "
+    "few words naming what the view shows — 'Open PRs — a2ui', 'PR #48 review', 'Profile: "
+    "torvalds' — not a sentence, not markup. The title labels the view in the user's "
+    "history and in-flight status; it is never rendered as prose on the surface. Emit "
+    "exactly one tag per created surface. A turn that only updates an existing surface "
+    "(no createSurface) emits no tag — the existing title stands; if the content shifts "
+    "enough to deserve a new name, that is your cue to repaint the surface instead. "
+    "When the surface you paint IS a question to the user — asking which repository is "
+    "meant, or whether to proceed — it is a QUESTION paint: give its tag a kind attribute, "
+    '<paint-title surface="..." kind="question">Short label of the question</paint-title>, '
+    "and compose the surface as a ConfirmationDialog root carrying the question. The two "
+    'go together and are validated together: a surface declared kind="question" must have '
+    "a ConfirmationDialog root, and a ConfirmationDialog-rooted surface must be declared "
+    'kind="question".'
+)
+
 # Subject resolution (there is no configured default repository) plus tool-call
 # economy: a filtered list is one search call, not a list call followed by a
 # per-item fan-out that burns the rate limit. What the fetched objects MEAN —
@@ -161,7 +188,7 @@ def build_system_prompt(schema_manager: A2uiSchemaManager | None = None) -> str:
     prompt = sm.generate_system_prompt(
         role_description=ROLE_DESCRIPTION,
         workflow_description="\n\n".join(
-            [WORKFLOW_DESCRIPTION, SCOPE_DESCRIPTION, load_domain_knowledge()]
+            [WORKFLOW_DESCRIPTION, SHELL_DESCRIPTION, SCOPE_DESCRIPTION, load_domain_knowledge()]
         ),
         ui_description=load_brand_guidance(),
         include_schema=True,

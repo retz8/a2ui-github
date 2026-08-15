@@ -88,7 +88,11 @@ class SessionRecorder:
         texts: list[str] = []
         for part in parts:
             root = part.root
-            if isinstance(root, DataPart) and root.data.get("version") == WIRE_VERSION:
+            if isinstance(root, DataPart) and (
+                root.data.get("version") == WIRE_VERSION or "paintMeta" in root.data
+            ):
+                # paintMeta shell parts (task 8.5) record alongside the A2UI messages,
+                # so a replayed fixture exercises the titled path too.
                 messages.append(root.data)
             elif isinstance(root, TextPart) and root.text:
                 texts.append(root.text)
