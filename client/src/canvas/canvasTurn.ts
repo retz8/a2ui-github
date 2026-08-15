@@ -1,22 +1,24 @@
 /**
- * The turn runner (task 8.3): every agent/replay turn enters the canvas through a turn it
- * begins, applies batches into, and ends — the hold-and-swap gate of phase-8 spec decision 10,
- * mechanised as validate-then-replay (task-8.3 spec decision 3):
+ * The turn runner: every agent/replay turn enters the canvas through a turn it begins, applies
+ * batches into, and ends. It mechanises hold-and-swap as validate-then-replay:
  *
  * - **Staged mode** (occupied stage): messages for surfaces created this turn stream into a
  *   per-turn staging processor (the validator) and are buffered; at turn end the net-effect
  *   rule decides — a surviving surface replays into the single live processor and swaps in,
  *   a turn whose creations were cleaned up again is discarded and the stage holds. Messages
- *   targeting a live surface not created this turn apply directly, progressively (decision 2).
- * - **Progressive mode** (empty canvas): the paint streams straight onto the stage, as 8.2 did.
- * - **Question paints** (decisions 5–6): a validated surface whose root component is a
- *   `ConfirmationDialog` routes to the overlay slot, never the stage or the timeline.
- * - **Timeline entries** (task-8.4 decision 1): a landing stage paint appends its entry with a
- *   null snapshot — the live head. **Serialize-on-swap** (decision 4 + phase decision 14) then
- *   fills that entry when the surface leaves the canvas, before its removal from the live
- *   processor; intermediates of a multi-surface turn append already departed.
- * - **Cancel** (decision 9): aborts the transport signal and discards the staged work; a
- *   canceled paint never reaches the stage and never enters the timeline.
+ *   targeting a live surface not created this turn apply directly, progressively.
+ * - **Progressive mode** (empty canvas): the paint streams straight onto the stage.
+ * - **Question paints**: a validated surface recognised as a question routes to the overlay
+ *   slot, never the stage or the timeline.
+ * - **Timeline entries**: a landing stage paint appends its entry with a null snapshot — the
+ *   live head. Serialize-on-swap then fills that entry when the surface leaves the canvas,
+ *   before its removal from the live processor; intermediates of a multi-surface turn append
+ *   already departed.
+ * - **Cancel**: aborts the transport signal and discards the staged work; a canceled paint
+ *   never reaches the stage and never enters the timeline.
+ *
+ * The live processor is the live registry — exactly what the agent may see. See the
+ * live-registry invariant in `_dev/docs/spec/phase-8-demo-integration.md`.
  */
 import type {A2uiMessage} from '@a2ui/web_core/v0_9';
 import type {PaintMeta} from '../a2a/messages';
@@ -27,26 +29,10 @@ import type {CanvasStore} from './canvasStore';
 import type {PaintCause} from './paint';
 import {describeCause} from './paint';
 import {serializeSurface} from './snapshotSurface';
-import type {SnapshotSourceSurface} from './snapshotSurface';
+import type {TurnProcessor} from './turnMessages';
+import {QUESTION_ROOT_TYPE, questionTitleOf, rootTypeOf, targetOf} from './turnMessages';
 
-/** The slice of a live/staging surface the runner reads: root type, title, catalog, serialization. */
-export interface CanvasSurface extends SnapshotSourceSurface {
-  componentsModel: SnapshotSourceSurface['componentsModel'] & {
-    get(id: string): {type: string; properties: Record<string, unknown>} | undefined;
-  };
-  /** Captured into the entry so rehydration can rebuild the surface's createSurface. */
-  catalog: {readonly id: string};
-}
-
-/** The slice of MessageProcessor the runner drives; MessageProcessor satisfies it. */
-export interface TurnProcessor {
-  processMessages(messages: A2uiMessage[]): void;
-  readonly model: {
-    getSurface(id: string): CanvasSurface | undefined;
-    readonly surfacesMap: ReadonlyMap<string, CanvasSurface>;
-    deleteSurface(id: string): void;
-  };
-}
+export type {CanvasSurface, TurnProcessor} from './turnMessages';
 
 export interface TurnHandle {
   /** Aborts the turn's transport when the turn is canceled. */
@@ -55,10 +41,10 @@ export interface TurnHandle {
   /** Apply one streamed batch — the routing described in the module header. */
   apply(messages: A2uiMessage[]): void;
   /**
-   * Accept one paintMeta shell object (task 8.5): the agent-authored title upgrades the
-   * in-flight label immediately and lands on the paint's timeline entry; the kind marker
-   * is the routing contract — `kind` present routes by it, absent falls back to the
-   * structural ConfirmationDialog rule (markerless streams: 8.1 fixtures, pre-8.5 agents).
+   * Accept one paintMeta shell object: the agent-authored title upgrades the in-flight label
+   * immediately and lands on the paint's timeline entry; the kind marker is the routing
+   * contract — a present `kind` routes by it, an absent one falls back to the structural
+   * ConfirmationDialog rule (for markerless streams: recorded fixtures and older agents).
    */
   acceptPaintMeta(meta: PaintMeta): void;
   /** The stream is exhausted: run the gate — swap in, or discard. No-op if canceled. */
@@ -68,7 +54,7 @@ export interface TurnHandle {
 }
 
 export interface TurnRunnerOptions {
-  /** The single persistent live processor — the live registry (phase decision 14). */
+  /** The single persistent live processor — the live registry, exactly what the agent may see. */
   processor: TurnProcessor;
   store: CanvasStore;
   /** Fresh per-turn staging processor over the same catalog (no action handler needed). */
@@ -87,43 +73,9 @@ export interface TurnRunner {
   removeOverlay(): void;
 }
 
-/** Questions-are-dialogs: the structural recognition rule (task-8.3 spec decision 6). */
-const QUESTION_ROOT_TYPE = 'ConfirmationDialog';
-/** Every surface's root component id, fixed by the renderer. */
-const ROOT_COMPONENT_ID = 'root';
-
 const HELD_FAILURE_TEXT = 'The paint failed and was discarded — keeping the current view.';
 const EMPTY_FAILURE_TEXT = 'The paint failed and was withdrawn.';
 const CANVAS_CLEARED_TEXT = 'The agent cleared the canvas.';
-
-type MessageTarget = {kind: 'create' | 'update' | 'delete' | 'other'; surfaceId?: string};
-
-function targetOf(message: A2uiMessage): MessageTarget {
-  const m = message as {
-    createSurface?: {surfaceId?: unknown};
-    updateComponents?: {surfaceId?: unknown};
-    updateDataModel?: {surfaceId?: unknown};
-    deleteSurface?: {surfaceId?: unknown};
-  };
-  const id = (v: {surfaceId?: unknown} | undefined) =>
-    typeof v?.surfaceId === 'string' ? v.surfaceId : undefined;
-  if (m.createSurface) return {kind: 'create', surfaceId: id(m.createSurface)};
-  if (m.updateComponents) return {kind: 'update', surfaceId: id(m.updateComponents)};
-  if (m.updateDataModel) return {kind: 'update', surfaceId: id(m.updateDataModel)};
-  if (m.deleteSurface) return {kind: 'delete', surfaceId: id(m.deleteSurface)};
-  return {kind: 'other'};
-}
-
-const rootTypeOf = (processor: TurnProcessor, surfaceId: string): string | undefined =>
-  processor.model.getSurface(surfaceId)?.componentsModel.get(ROOT_COMPONENT_ID)?.type;
-
-/** The dialog's title when statically known — a literal on the wire, not a data binding. */
-function questionTitleOf(processor: TurnProcessor, surfaceId: string): string | undefined {
-  const root = processor.model.getSurface(surfaceId)?.componentsModel.get(ROOT_COMPONENT_ID);
-  const title = root?.properties?.title as {literalString?: unknown} | string | undefined;
-  if (typeof title === 'string') return title;
-  return typeof title?.literalString === 'string' ? title.literalString : undefined;
-}
 
 export function createTurnRunner({processor, store, createStaging}: TurnRunnerOptions): TurnRunner {
   let current: TurnHandle | null = null;
@@ -188,7 +140,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
 
     const controller = new AbortController();
     // The mode is fixed at dispatch: an occupied stage holds and swaps; an empty canvas
-    // streams progressively (phase decision 10).
+    // streams progressively.
     const stagedMode = store.getState().stageId !== null;
     const staging = stagedMode ? createStaging() : null;
     /** Surface ids this turn created — the turn's own paint, as opposed to live surfaces. */
@@ -197,14 +149,13 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
     const buffered: A2uiMessage[] = [];
     let canceled = false;
 
-    /** The paintMetas accepted this turn, by surface id (task 8.5). */
+    /** The paintMetas accepted this turn, by surface id. */
     const metas = new Map<string, PaintMeta>();
     const titleOf = (surfaceId: string) => metas.get(surfaceId)?.title;
 
     /**
-     * Question routing (task-8.5 decision: the marker is the contract): a declared `kind`
-     * routes the paint; only a markerless paint falls back to the structural
-     * ConfirmationDialog rule (8.1 fixtures, pre-8.5 streams).
+     * Question routing — the marker is the contract: a declared `kind` routes the paint; only
+     * a markerless paint falls back to the structural ConfirmationDialog rule.
      */
     const isQuestion = (proc: TurnProcessor, surfaceId: string): boolean => {
       const kind = metas.get(surfaceId)?.kind;
@@ -219,7 +170,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
       if (meta.title) store.updateInFlightLabel(`${meta.title} — generating…`);
     };
 
-    /** Decision 3: every non-final stage surface of a turn still enters the timeline. */
+    /** Every non-final stage surface of a turn still enters the timeline. */
     const retireIntermediate = (surfaceId: string) => {
       const surface = processor.model.getSurface(surfaceId);
       if (surface) {
@@ -267,14 +218,14 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
         if (surfaceId !== undefined && processor.model.getSurface(surfaceId)) {
           const state = store.getState();
           if (kind !== 'delete') {
-            // Decision 2: an update to an already-visible surface applies live, progressively.
+            // An update to an already-visible surface applies live, progressively.
             applyA2uiMessages(processor, [message], {onMessageError: reportMessageError});
           } else if (state.overlay?.surfaceId === surfaceId) {
             // The agent withdrew its question; questions never enter the timeline.
             processor.model.deleteSurface(surfaceId);
             store.setOverlay(null);
           } else if (state.stageId === surfaceId) {
-            // Decision 4: a deliberate delete of the live stage — snapshot, remove, go empty.
+            // A deliberate delete of the live stage — snapshot, remove, go empty.
             retireStage();
             store.showNotice(CANVAS_CLEARED_TEXT);
           } else {
