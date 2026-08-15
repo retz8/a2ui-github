@@ -5,136 +5,51 @@
 
 This note began with an observation from working on two seemingly unrelated projects: an LLM-driven scheduler, where a semantic recognition layer sits close to the OS, and an A2UI canvas shell, where an orchestrator generates interfaces above applications.
 
-They initially appeared to solve different problems.
+They initially appeared unrelated.
 
-They no longer do.
+They stopped looking unrelated.
 
-Both are instances of the same architectural shift:
+Both projects point toward a broader architectural possibility:
 
-**moving semantic understanding from the application layer into the computer itself.**
+> **What if semantic state became a first-class abstraction of the computer itself?**
 
-The more interesting possibility is not simply to place an LLM in the UI or inside the operating system. It is to make **semantic state a first-class system abstraction**, shared across the UI, operating system, and hardware.
+Not merely something an application understands.
 
-This note explores that possibility.
+Not merely something an LLM uses to decide what tool to call.
 
-Nothing here is a claim the research proposal makes or requires. The research proposal stands on its own. This is a speculative architectural direction that emerged from thinking about where the recognition layer could eventually lead.
+But something that can flow from **user intent, through the UI and operating system, all the way to hardware policy.**
 
----
+This suggests a possible architecture for an **LLM-native computer**: a computer in which a persistent semantic state is continuously derived from both what the user intends and what the machine is actually doing.
 
-## 1. From AI Applications to a Semantic Computer
+The central abstraction proposed here is a **Semantic State Machine**, or S-FSM.
 
-Today's computers expose mostly mechanical state.
-
-A system can know that:
-
-- Chrome is running.
-- VS Code has 2 GB of memory.
-- A game is consuming 80% of the GPU.
-- A process is waiting on I/O.
-- A network connection is active.
-
-But these facts do not constitute a semantic understanding of what the machine is doing.
-
-The computer does not inherently know that:
-
-- the user is researching a topic;
-- VS Code and Chrome are part of the same task;
-- a game is foreground interactive work;
-- Spotify is merely background activity;
-- a compiler is supporting the user's current development task.
-
-Applications increasingly possess this semantic information. LLM agents possess even more of it.
-
-The operating system largely does not.
-
-This suggests a possible architectural shift:
-
-> **The next computer abstraction may not be another mechanism layer. It may be a semantic layer.**
-
-Instead of treating user intent as something consumed exclusively by applications, the system could maintain a semantic representation of the machine's current state and use that representation across multiple layers.
+Nothing here is a claim the research proposal makes or requires. The research proposal stands on its own. This note is a speculative architectural direction that emerged from thinking about where the recognition layer could eventually lead.
 
 ---
 
-## 2. Semantic State as a First-Class Abstraction
+# 1. From Semantic Computing to a Semantic Computer
 
-A conventional system can be thought of roughly as:
+There is already a broad research tradition around **Semantic Computing**: systems that derive, represent, integrate, and use meaning, context, and intention in computational systems.
 
-```text
-User
-  ↓
-Applications
-  ↓
-Operating System
-  ↓
-Hardware
-```
-
-An LLM-native computer would introduce semantic interpretation throughout this stack:
+The usual direction is roughly:
 
 ```text
-                         USER
-                           │
-                    intent / language
-                           │
-                           ▼
-                 ┌────────────────────┐
-                 │   Semantic UI       │
-                 │   A2UI / agents     │
-                 └─────────┬──────────┘
-                           │
-                           ▼
-                 ┌────────────────────┐
-                 │      S-FSM         │
-                 │ Semantic State     │
-                 │ + Transitions      │
-                 └─────────┬──────────┘
-                           │
-                           ▼
-                 ┌────────────────────┐
-                 │   Semantic OS      │
-                 │ scheduler / I/O /  │
-                 │ memory / power     │
-                 └─────────┬──────────┘
-                           │
-                           ▼
-                 ┌────────────────────┐
-                 │ Semantic Hardware  │
-                 │ CPU / GPU / NPU    │
-                 └────────────────────┘
+User Intent
+     │
+     ▼
+Semantic Interpretation
+     │
+     ▼
+Data / Content / Service / Device
 ```
 
-The key idea is not that every layer becomes an LLM.
+The computer understands more about what something *means*.
 
-Instead:
+The architectural question here is slightly different:
 
-**semantic state becomes shared infrastructure.**
+> **What happens when semantic understanding itself becomes a persistent state of the computer?**
 
-The UI can project it into an interface.
-
-The OS can project it into resource policy.
-
-Hardware can execute the resulting policy.
-
----
-
-## 3. S-FSM: Semantic Finite State Machine
-
-This suggests a possible abstraction:
-
-> **S-FSM — Semantic Finite State Machine**
-
-A conventional FSM represents a system as a set of discrete states and transitions between them.
-
-An S-FSM extends this idea by making the state itself semantic.
-
-A simplified formulation is:
-
-```text
-Semantic State
-    = f(User Intent, Machine State, Context)
-```
-
-The underlying machine remains observable through conventional mechanisms:
+A conventional computer exposes mostly mechanical state:
 
 ```text
 processes
@@ -146,7 +61,142 @@ network
 devices
 ```
 
-But an LLM-based semantic interpreter maps those observations into a bounded semantic representation:
+These are useful facts, but they do not directly describe what the machine *means* to the user.
+
+A system may know that:
+
+```text
+Chrome.exe
+VSCode.exe
+python.exe
+Spotify.exe
+```
+
+are running.
+
+It does not necessarily know that:
+
+```text
+Chrome + VS Code + Python
+    = one research/development workflow
+
+Spotify
+    = background activity
+
+GPU workload
+    = latency-sensitive interactive work
+```
+
+Applications and agents increasingly possess this semantic information.
+
+The operating system largely does not.
+
+This suggests a shift:
+
+> **The next computer abstraction may not be another mechanism layer. It may be a semantic layer.**
+
+---
+
+# 2. Semantic State as a First-Class System Abstraction
+
+The central idea is to introduce a persistent semantic representation between human intent and machine mechanisms.
+
+Instead of:
+
+```text
+User
+  ↓
+Applications
+  ↓
+Operating System
+  ↓
+Hardware
+```
+
+the architecture becomes:
+
+```text
+                         USER
+                           │
+                    intent / actions
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Upper Semantic Layer│
+                │ agents · UI · A2UI  │
+                └──────────┬──────────┘
+                           │
+                    declared intent
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │      S-FSM          │
+                │   Semantic State    │
+                │   + Transitions     │
+                └──────────┬──────────┘
+                           │
+                    semantic policy
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │   Semantic OS       │
+                │ scheduler · memory  │
+                │ I/O · power         │
+                └──────────┬──────────┘
+                           │
+                           ▼
+                ┌─────────────────────┐
+                │ Semantic Hardware   │
+                │ CPU · GPU · NPU     │
+                └─────────────────────┘
+```
+
+The important point is that the semantic layer does not replace the mechanisms below it.
+
+The scheduler remains a scheduler.
+
+The renderer remains a renderer.
+
+The kernel remains a kernel.
+
+Hardware remains hardware.
+
+The difference is that these mechanisms can now receive a representation of **what the machine is semantically doing**.
+
+---
+
+# 3. S-FSM: Semantic State Machine
+
+This suggests a new architectural abstraction:
+
+> **S-FSM — Semantic Finite State Machine**
+
+The name should be treated cautiously because related uses of semantic automata already exist in the literature. The important contribution is not the terminology itself, but the specific role of semantic state as a cross-layer computer abstraction.
+
+A conventional finite-state machine describes:
+
+```text
+state
+  │
+event
+  │
+transition
+  │
+new state
+```
+
+An S-FSM extends this idea by making the state semantic.
+
+A simplified formulation is:
+
+```text
+Semantic State
+    = f(User Intent, Machine State, Context)
+```
+
+The semantic state is not simply a natural-language description.
+
+It should be a bounded, machine-processable representation:
 
 ```text
 STATE {
@@ -159,76 +209,77 @@ STATE {
 }
 ```
 
-The important distinction is that the LLM does **not** become the state machine itself.
+The LLM interprets evidence and proposes state or transitions.
 
-It interprets evidence and proposes semantic state or transitions.
+The system does not blindly execute the LLM's natural-language output.
 
-The actual system operates on a restricted vocabulary and validated state representation.
+Instead:
 
 ```text
-Machine State ────────┐
-                      │
-                      ▼
-                Semantic LLM
-                      │
-User Intent ──────────┘
-                      │
-                      ▼
-                 S-FSM State
-                      │
-             ┌────────┼────────┐
-             ▼        ▼        ▼
-            UI        OS       HW
+LLM interpretation
+       │
+       ▼
+semantic vocabulary
+       │
+       ▼
+validator
+       │
+       ▼
+S-FSM transition
+       │
+       ▼
+system policy
 ```
 
-This separation makes the semantic layer expressive without making the underlying system dependent on arbitrary natural-language output.
+This distinction is fundamental.
+
+> **The LLM interprets the semantic state. It does not own the state machine.**
 
 ---
 
-## 4. The Two Semantic Layers
+# 4. Two Sources of Semantic Knowledge
 
-The original observation remains important.
+The semantic state has two fundamentally different sources.
 
-There are naturally two semantic sources.
+## 4.1 User-declared intent
 
-### Upper semantic layer
+An upper semantic layer sits above applications and agents.
 
-The upper layer belongs to the application and agent ecosystem.
-
-It knows things the OS cannot reliably infer:
-
-- what an agent launched;
-- why it launched it;
-- what task it belongs to;
-- what the user explicitly requested;
-- what the agent believes the next step should be.
+It knows things that the operating system cannot reliably infer.
 
 For example:
 
 ```text
 User:
-"Download the dataset and analyze it."
+"Download this dataset and analyze it."
 
-Agent:
-declares:
+Orchestrator:
     downloader → DATA_ACQUISITION
     python     → DATA_ANALYSIS
 ```
 
-The orchestrator does not need to infer these relationships. It already knows them.
+The orchestrator knows why these processes exist because it created them as part of a task.
 
-### Lower semantic layer
+It has **provenance**.
 
-The lower layer observes the machine itself.
+It does not need to infer the relationship.
 
-It can see things the orchestrator cannot:
+---
+
+## 4.2 Machine-inferred state
+
+The lower semantic layer observes the computer itself.
+
+It sees things that an orchestrator does not necessarily know:
 
 - applications the user launched directly;
+- games;
 - cron jobs;
 - antivirus scans;
 - system daemons;
 - background updates;
-- processes belonging to applications that never interacted with the agent.
+- legacy applications;
+- processes belonging to software that never interacted with an agent.
 
 It therefore needs inference.
 
@@ -239,107 +290,266 @@ resource behavior
 runtime relationships
         │
         ▼
-recognition model
+    Lower LLM
         │
         ▼
-semantic machine state
+Machine Semantic State
 ```
 
-The two layers have complementary blind spots.
+The lower layer has **visibility without provenance**.
 
-| | Upper layer | Lower layer |
+The upper layer has **provenance without full visibility**.
+
+This difference is the foundation for their fusion.
+
+---
+
+# 5. Upper LLM + Lower LLM + Fusion
+
+The architecture can therefore be expressed as three semantic components.
+
+```text
+                  USER
+                    │
+                    ▼
+             ┌─────────────┐
+             │  Upper LLM  │
+             │             │
+             │ declared    │
+             │ intent      │
+             └──────┬──────┘
+                    │
+                    │
+                    ▼
+               ┌─────────┐
+               │         │
+               │ Fusion  │
+               │         │
+               └────┬────┘
+                    │
+                    ▼
+             ┌─────────────┐
+             │    S-FSM    │
+             │             │
+             │  Semantic   │
+             │    State    │
+             └──────┬──────┘
+                    ▲
+                    │
+             ┌──────┴──────┐
+             │  Lower LLM  │
+             │             │
+             │ machine     │
+             │ inference   │
+             └──────▲──────┘
+                    │
+              Machine State
+```
+
+The two models do not necessarily need different weights.
+
+They may be the **same local model operating under different contexts, prompts, schemas, and validators**.
+
+This suggests a useful architecture:
+
+> **One semantic model, multiple bounded roles.**
+
+The upper model answers:
+
+> **What does the user intend?**
+
+The lower model answers:
+
+> **What is the machine doing?**
+
+The fusion layer answers:
+
+> **What semantic state is the computer currently in?**
+
+Formally:
+
+```text
+I = User Intent
+M = Machine Observation
+S = Semantic State
+
+P(S | I, M)
+```
+
+The goal is not to make the LLM produce a beautiful description.
+
+The goal is to maintain a stable, machine-processable estimate of the current semantic state.
+
+---
+
+# 6. Why Fusion Matters
+
+The two sources have complementary blind spots.
+
+| | Upper Semantic Layer | Lower Semantic Layer |
 |---|---|---|
-| Agent-launched process | knows | can infer |
-| User-launched game | does not know why | can infer |
+| Agent-launched process | knows why | can infer |
+| User-launched game | cannot know why | can infer |
 | Cron job | usually does not know | can infer |
 | Antivirus | usually does not know | can infer |
 | System daemon | usually does not know | can infer |
-| User's explicit intent | knows | cannot know |
-| Why a process exists | knows for its own actions | usually cannot know |
+| Explicit user intent | knows | cannot know |
+| Process provenance | strong | weak |
+| Machine-wide visibility | limited | broad |
 
-Therefore the architecture should not choose between declaration and inference.
+Neither layer is complete.
 
-It should combine them.
+The natural architecture is therefore fusion rather than replacement.
 
-> **Declared intent overrides inference for processes it covers. Everything else remains inferred.**
+> **Declared intent should dominate inference where provenance exists. Inference fills the remainder of the machine state.**
 
-This makes inference a permanent part of the architecture rather than temporary scaffolding that disappears once agents become ubiquitous.
+This makes the lower recognition layer permanent.
+
+Even if every future application becomes agentic, users will still launch applications directly. Operating systems will still run daemons. Software will still update itself. Security tools will still operate without asking an agent.
+
+The machine will always contain activity that nobody explicitly declared.
 
 ---
 
-## 5. One Model, Two Hats
+# 7. Semantic State as a Cross-Layer Contract
 
-The upper and lower semantic layers do not necessarily require different models.
+The most important consequence of S-FSM is that semantic state does not belong exclusively to the UI or the OS.
 
-They could potentially use the **same local LLM**, possibly sharing the same weights while operating under different contexts, prompts, schemas, and validators.
+It becomes a **cross-layer contract**.
+
+Suppose the current semantic state is:
 
 ```text
-                         NPU
-                          │
-                 ┌────────▼────────┐
-                 │   Local LLM     │
-                 │   same weights  │
-                 └───────┬─────────┘
-                         │
-              ┌──────────┴──────────┐
-              │                     │
-       Upper semantic         Lower semantic
-          context                context
-              │                     │
-       declared intent         machine state
-              │                     │
-              └──────────┬──────────┘
-                         ▼
-                      S-FSM
-                         │
-                 semantic policy
-                         │
-              ┌──────────┼──────────┐
-              ▼          ▼          ▼
-             UI         OS          HW
+STATE {
+    primary_intent: TECHNICAL_RESEARCH,
+    secondary_intent: CODE_IMPLEMENTATION,
+    context: DEEP_WORK,
+    latency_class: INTERACTIVE,
+    power_preference: BALANCED
+}
 ```
 
-This is potentially more interesting than having an independent AI model at every layer.
+The UI can project this state as:
 
-The computer could have a **persistent semantic substrate** implemented by a local model, while different system components consume different projections of its interpretation.
+```text
+prioritize:
+    browser
+    editor
+    documentation
+```
 
-The distinction is therefore not necessarily:
+The OS can project the same state as:
 
-> one model per layer.
+```text
+increase:
+    interactive priority
+    memory retention
 
-It may instead be:
+decrease:
+    background activity
+```
 
-> **one semantic model, multiple bounded roles.**
+Hardware-facing policy can project it as:
 
-The separation must still be structural.
+```text
+avoid:
+    unnecessary GPU wakeups
 
-The same model weights do not imply the same authority.
+prefer:
+    efficient CPU execution
+
+maintain:
+    NPU semantic monitoring
+```
+
+These are not three separate personalization systems.
+
+They are **three projections of the same semantic state**.
+
+This creates a vertical path:
+
+```text
+Personalized UI
+      │
+      ▼
+Personalized Semantic State
+      │
+      ▼
+Personalized OS Policy
+      │
+      ▼
+Personalized Hardware Behavior
+```
+
+The result is a stronger form of personalization.
+
+The computer is not merely personalized because it remembers the user's preferences.
+
+It is personalized because:
+
+> **the machine understands what the user is doing right now.**
 
 ---
 
-## 6. Knowledge Should Converge; Authority Should Not
+# 8. From Personalized UI to a Personalized Computer
 
-The central security principle is:
+Today's "personal computer" is personal largely because it contains personal data, accounts, applications, files, and preferences.
 
-> **Semantic knowledge may converge. Authority must remain separated.**
+A semantic computer could be personal at a deeper level.
 
-The upper layer reads information from agents and applications.
+It could maintain a model of the relationship between:
 
-The lower layer feeds information into the kernel.
+```text
+the user
+    +
+their intent
+    +
+their applications
+    +
+their workflows
+    +
+their machine
+    +
+their hardware
+```
 
-These should meet at a restricted semantic interface rather than through unrestricted natural-language communication.
+Personalization would therefore extend vertically:
 
-This is structurally similar to A2UI.
+```text
+        Personalized UI
+               │
+               ▼
+        Personalized Intent
+               │
+               ▼
+        Personalized S-FSM
+               │
+               ▼
+         Personalized OS
+               │
+               ▼
+       Personalized Hardware
+```
+
+This is no longer merely personalized software.
+
+It is a **personalized computer architecture**.
+
+---
+
+# 9. The A2UI Connection
+
+The A2UI side of the architecture reveals a surprisingly similar pattern.
 
 A2UI asks:
 
-> How does an agent send a rich UI across a trust boundary without executing arbitrary code?
+> How does an agent send a rich interface across a trust boundary without executing arbitrary code?
 
-Its answer is a declarative description restricted to components that the client has pre-approved.
+Its answer is a declarative representation restricted to components that the client has pre-approved.
 
-The semantic OS asks:
+The semantic OS asks a structurally similar question:
 
-> How does an LLM-derived semantic judgment influence the kernel without granting arbitrary policy authority?
+> How does an LLM-derived semantic judgement influence the kernel without granting arbitrary policy authority?
 
 Its answer can be structurally similar:
 
@@ -359,7 +569,7 @@ policy constraints
 kernel
 ```
 
-In both cases, the model is useful precisely because it is **not trusted with unrestricted execution authority**.
+This produces two related trust patterns:
 
 ```text
 agent
@@ -376,15 +586,21 @@ orchestrator
  kernel
 ```
 
-The vocabulary is the boundary.
+Both systems allow a language model to be useful without trusting it with unrestricted execution authority.
+
+The vocabulary becomes the boundary.
 
 ---
 
-## 7. Why the Semantic Layers Should Not Merge
+# 10. Semantic Knowledge Should Converge; Authority Should Not
 
-They converge on semantic knowledge.
+The two semantic layers should ultimately contribute to the same S-FSM.
 
-They should not converge on authority.
+They should not share unrestricted authority.
+
+> **Semantic knowledge may converge. Authority must remain separated.**
+
+This distinction matters for three reasons.
 
 ### Trust boundary
 
@@ -392,7 +608,7 @@ The orchestrator consumes output from third-party agents.
 
 If that output could directly determine kernel policy, arbitrary application-level text would gain a path into resource allocation.
 
-The lower layer should therefore maintain a narrow, validated interface.
+Declared intent must therefore pass through the same semantic vocabulary, validation, and policy constraints as inferred intent.
 
 ### Availability
 
@@ -408,129 +624,110 @@ The kernel cannot depend on it.
 
 Agents will naturally claim that their work is important.
 
-An agent can describe its task convincingly in natural language.
+They can describe their tasks convincingly in natural language.
 
-That does not mean it should receive unlimited CPU, GPU, memory, or power.
+That does not mean they should receive unlimited CPU, GPU, memory, or power.
 
-Someone must be able to say no.
+The system below the trust boundary must remain capable of saying no.
 
-That authority belongs below the trust boundary.
+The result is:
 
-Declared intent should therefore pass through the same vocabulary restrictions, validation, and policy constraints as inferred intent.
-
-This creates a useful architectural principle:
-
-> **One model, two hats; one semantic state, separate authority domains.**
+> **One semantic model, two semantic roles, one fused state, separate authority domains.**
 
 ---
 
-## 8. The NPU as the Semantic Substrate
+# 11. The NPU as the Semantic Substrate
 
-This architecture also gives the NPU an unusually natural role.
+This architecture also gives the NPU a natural role.
 
-The lower semantic workload has a distinctive profile:
+The semantic workload has an unusual profile:
 
 - low duty cycle;
-- small structured outputs;
+- short structured output;
 - loose latency requirements;
-- relatively small models;
+- relatively small local models;
 - continuous availability;
-- and, critically, little tolerance for competing with the GPU or CPU.
+- and little tolerance for competing with the GPU or CPU.
 
-A semantic recognition model does not need to generate thousands of tokens.
+A recognition model may only need to inspect a set of processes periodically and produce a small structured state update.
 
-It may only need to inspect a set of processes periodically and produce a small structured state update.
+That is a very different workload from image generation or large-scale model inference.
 
-That makes the workload potentially well suited to an NPU.
+The NPU could therefore serve as the computer's **always-available semantic substrate**.
 
 The important point is not:
 
-> “NPU becomes useful when models become sufficiently powerful.”
+> "NPU becomes useful once models become sufficiently powerful."
 
-The more interesting possibility is:
+It may instead be:
 
-> **The semantic layer is an always-available workload that can naturally live on the NPU.**
+> **Semantic computing provides an always-available workload that naturally belongs on the NPU.**
 
-A single local model could potentially support both the upper and lower semantic contexts while leaving the GPU available for the work the user actually cares about.
+A single local model could potentially support:
+
+```text
+Upper semantic inference
+        +
+Lower machine-state inference
+        +
+Semantic-state maintenance
+```
+
+while leaving the GPU available for the user's actual workloads.
 
 ---
 
-## 9. Semantic State as a Cross-Layer Contract
+# 12. One Model, Two Hats
 
-If S-FSM becomes the shared abstraction, the same semantic state can be projected differently by different system layers.
+The architecture does not require a separate AI model at every semantic layer.
 
-Suppose the semantic state is:
-
-```text
-USER_ACTIVITY = TECHNICAL_RESEARCH
-PRIMARY = DOCUMENT_READING
-SECONDARY = CODE_IMPLEMENTATION
-LATENCY = INTERACTIVE
-POWER = BALANCED
-```
-
-The UI might interpret this as:
+Potentially:
 
 ```text
-prioritize:
-    browser
-    editor
-    documentation
+                    NPU
+                     │
+             ┌───────▼───────┐
+             │   Local LLM   │
+             │  shared model │
+             └───────┬───────┘
+                     │
+          ┌──────────┴──────────┐
+          │                     │
+   Upper context          Lower context
+          │                     │
+   declared intent        machine state
+          │                     │
+          └──────────┬──────────┘
+                     ▼
+                   Fusion
+                     │
+                     ▼
+                  S-FSM
 ```
 
-The OS might interpret it as:
+The same weights do not imply the same authority.
 
-```text
-increase:
-    interactive priority
-    memory retention
+Different contexts can expose different inputs.
 
-decrease:
-    background activity
-```
+Different schemas can constrain different outputs.
 
-Hardware-facing policy might interpret it as:
+Different validators can control different transitions.
 
-```text
-avoid:
-    unnecessary GPU wakeups
-
-prefer:
-    CPU efficiency
-
-NPU:
-    maintain semantic monitoring
-```
-
-The important idea is that these are not three independent personalization systems.
-
-They are **three projections of one semantic state**.
-
-That creates a path from:
-
-```text
-Personalized UI
-      ↓
-Personalized semantic state
-      ↓
-Personalized OS policy
-      ↓
-Personalized hardware behavior
-```
-
-This is a deeper form of personalization than changing colors, layouts, recommendations, or application settings.
-
-The computer is personalized because **the machine itself understands the user's current mode of work.**
+This is important because it makes the architecture conceptually closer to a **semantic substrate** than a collection of unrelated AI features.
 
 ---
 
-## 10. Toward an LLM-Native Computer Architecture
+# 13. The Semantic Computer as an LLM-Native Architecture
 
-This leads to a broader architectural hypothesis.
+This leads to a broader definition.
 
 An LLM-native computer is not simply:
 
 > a conventional computer with an LLM application installed.
+
+Nor is it:
+
+> a computer in which every subsystem is replaced by an LLM.
 
 Instead:
 
@@ -555,97 +752,116 @@ Hardware
     = semantic state execution
 ```
 
-The LLM does not replace the mechanisms underneath.
+The mechanisms underneath remain.
 
-It adds a semantic layer above them.
-
-The renderer remains the renderer.
-
-The scheduler remains the scheduler.
-
-The kernel remains the kernel.
-
-The hardware remains the hardware.
-
-What changes is the information available to those mechanisms.
+The information available to those mechanisms changes.
 
 ---
 
-## 11. The Architectural Stack
+# 14. The Full Architecture
 
-The resulting system can be viewed as a semantic stack:
+The complete system can therefore be represented as:
 
 ```text
-┌───────────────────────────────────────────────┐
-│                     USER                      │
-│             language · actions · intent       │
-└───────────────────────┬───────────────────────┘
-                        │
-                        ▼
-┌───────────────────────────────────────────────┐
-│              UPPER SEMANTIC LAYER             │
-│        agents · orchestrator · A2UI            │
-│                                               │
-│        "What is the user trying to do?"       │
-└───────────────────────┬───────────────────────┘
-                        │
-                 declared intent
-                        │
-════════════════════════╪════════════════════════
-                   TRUST BOUNDARY
-════════════════════════╪════════════════════════
-                        │
-                        ▼
-┌───────────────────────────────────────────────┐
-│                    S-FSM                      │
-│                                               │
-│      semantic state + semantic transitions    │
-│                                               │
-│  declared intent + inferred machine state     │
-└───────────────────────┬───────────────────────┘
-                        │
-                        ▼
-┌───────────────────────────────────────────────┐
-│              LOWER SEMANTIC LAYER             │
-│                                               │
-│        process recognition · context          │
-│        resource behavior · machine state      │
-│                                               │
-│        "What is the machine doing?"            │
-└───────────────────────┬───────────────────────┘
-                        │
-                 validated policy
-                        │
-                        ▼
-┌───────────────────────────────────────────────┐
-│                    KERNEL                     │
-│          scheduler · memory · I/O · power     │
-└───────────────────────┬───────────────────────┘
-                        │
-                        ▼
-┌───────────────────────────────────────────────┐
-│                   HARDWARE                    │
-│              CPU · GPU · NPU · I/O            │
-└───────────────────────────────────────────────┘
+                              USER
+                                │
+                         language / actions
+                                │
+                                ▼
+                  ┌─────────────────────────┐
+                  │   UPPER SEMANTIC LAYER  │
+                  │                         │
+                  │  LLM · agents · A2UI    │
+                  │                         │
+                  │  "What does the user    │
+                  │   intend to do?"        │
+                  └────────────┬────────────┘
+                               │
+                        declared intent
+                               │
+═══════════════════════════════╪════════════════════════
+                         TRUST BOUNDARY
+═══════════════════════════════╪════════════════════════
+                               │
+                               ▼
+                  ┌─────────────────────────┐
+                  │         FUSION          │
+                  │                         │
+                  │ declared intent         │
+                  │          +              │
+                  │ inferred machine state  │
+                  └────────────┬────────────┘
+                               │
+                               ▼
+                  ╔═════════════════════════╗
+                  ║          S-FSM          ║
+                  ║                         ║
+                  ║   Persistent Semantic   ║
+                  ║         State           ║
+                  ║                         ║
+                  ║   + Semantic Transitions║
+                  ╚════════════╤════════════╝
+                               │
+                     semantic state / policy
+                               │
+                 ┌─────────────┼─────────────┐
+                 ▼             ▼             ▼
+        ┌────────────────┐ ┌────────────┐ ┌───────────────┐
+        │ Semantic UI    │ │ Semantic OS│ │ HW Interface  │
+        │                │ │            │ │               │
+        │ A2UI           │ │ scheduler  │ │ CPU / GPU     │
+        │ adaptive UI    │ │ memory     │ │ power / I/O   │
+        └────────────────┘ │ I/O / power│ └───────┬───────┘
+                           └─────┬──────┘         │
+                                 │                │
+                                 ▼                ▼
+                           ┌──────────┐      ┌──────────┐
+                           │  Kernel  │      │ Hardware │
+                           └──────────┘      └──────────┘
+
+                               ▲
+                               │
+                       machine observation
+                               │
+                    ┌──────────┴──────────┐
+                    │   LOWER SEMANTIC   │
+                    │       LAYER         │
+                    │                     │
+                    │      Lower LLM      │
+                    │ process recognition │
+                    │ context inference   │
+                    └─────────────────────┘
 ```
 
-The semantic layer therefore becomes a bridge between **human intent and machine mechanism**.
+The machine therefore has two semantic directions:
+
+```text
+USER → intent → semantic state → mechanism
+```
+
+and
+
+```text
+mechanism → observation → semantic inference → semantic state
+```
+
+The S-FSM sits where these two directions meet.
 
 ---
 
-## 12. What Is Actually Hard?
+# 15. What Is Actually Hard?
 
-The most difficult parts are not necessarily model intelligence.
+The hardest parts may not be model intelligence.
 
-### The lower layer
+## The lower semantic layer
 
 The lower layer is comparatively self-contained.
 
 It can observe machine state, infer process intent, and produce a bounded semantic representation.
 
-It can potentially attach to an existing OS mechanism such as `sched_ext` without requiring the entire computer ecosystem to change.
+It can potentially attach to existing OS mechanisms such as `sched_ext` without requiring the entire computer ecosystem to change.
 
-It also degrades naturally:
+It can also degrade naturally:
 
 ```text
 semantic scheduler unavailable
@@ -655,7 +871,7 @@ ordinary scheduler
 
 That makes incremental deployment plausible.
 
-### The upper layer
+## The upper semantic layer
 
 An orchestrator is also technically feasible as a product.
 
@@ -663,53 +879,149 @@ A single organization can build one.
 
 Failure is largely contained to the application.
 
-### The S-FSM interface
+## The fusion layer
 
-The difficult question is defining the semantic contract.
+Fusion introduces a deeper problem:
 
-What exactly constitutes a semantic state?
+**How should conflicting semantic evidence be resolved?**
 
-What vocabulary is expressive enough to represent real user activity but constrained enough to be safe?
-
-How are transitions validated?
-
-How is confidence represented?
-
-How quickly should semantic state change?
-
-How do competing semantic interpretations coexist?
-
-These are architecture questions, not merely model questions.
-
-### The cross-vendor layer
-
-A shared semantic computer becomes harder when multiple vendors are involved.
-
-A2UI already demonstrates the coordination problem: multiple agents and clients need to agree on a protocol and component vocabulary.
-
-The same problem appears one level below:
+For example:
 
 ```text
-agent ecosystem
-        ↓
-semantic vocabulary
-        ↓
-OS
-        ↓
-hardware vendors
+Upper LLM:
+    GAMEPLAY
+
+Lower LLM:
+    VIDEO_ENCODING
+
+Machine:
+    GPU 94%
+
+User:
+    "I'm just recording this."
 ```
 
-There is no obvious reason for every vendor to expose the same semantic contract.
+The semantic state cannot simply choose whichever model speaks last.
 
-A fully integrated implementation may therefore arrive before a universal standard.
+It needs:
+
+- provenance;
+- confidence;
+- precedence;
+- temporal stability;
+- contradiction handling;
+- and bounded transitions.
+
+This may be one of the central research problems of the architecture.
+
+## The S-FSM itself
+
+A semantic state must be:
+
+- expressive enough to capture useful context;
+- stable enough for system policy;
+- constrained enough to validate;
+- compact enough for local inference;
+- and general enough to be consumed by multiple system layers.
+
+This is fundamentally different from generating a textual description of the machine.
+
+The state must become an actual systems abstraction.
 
 ---
 
-## 13. A Possible Future
+# 16. The Interface Problem
+
+The most difficult deployment problem may not be technical capability.
+
+It may be coordination.
+
+For the semantic state to influence the kernel, somebody must define and ship the interface.
+
+But:
+
+```text
+No semantic OS interface
+        ↓
+orchestrators have no reason to declare intent
+
+No orchestrators
+        ↓
+OS vendors have no reason to expose the interface
+```
+
+This is a classic chicken-and-egg problem.
+
+Better models do not solve it.
+
+A standard may eventually emerge.
+
+Alternatively, a vertically integrated vendor may own enough of:
+
+```text
+UI
++
+agent
++
+OS
++
+hardware
+```
+
+to introduce the entire semantic stack as one product.
+
+That may be more likely than immediate cross-vendor standardization.
+
+---
+
+# 17. The A2UI Problem Reappears
+
+The upper layer makes a similar assumption.
+
+Multiple vendors' agents rendering into one shared canvas require agreement on:
+
+- protocol;
+- component vocabulary;
+- trust model;
+- interaction semantics.
+
+The same coordination problem therefore exists both above and below the semantic state:
+
+```text
+Agents
+   ↓
+A2UI vocabulary
+   ↓
+Client
+
+
+Agents / UI
+   ↓
+Semantic vocabulary
+   ↓
+S-FSM
+   ↓
+OS
+
+
+OS
+   ↓
+Hardware interface
+   ↓
+CPU / GPU / NPU
+```
+
+The architecture is technically composable.
+
+The ecosystem may not be.
+
+---
+
+# 18. A Possible Evolution
 
 A plausible progression is:
 
-### Phase 1 — Semantic applications
+### Phase 1 — Semantic Applications
 
 Agents understand user intent and generate interfaces.
 
@@ -717,120 +1029,204 @@ Agents understand user intent and generate interfaces.
 
 The operating system begins inferring what processes mean and adapting resource allocation.
 
-### Phase 3 — S-FSM
+### Phase 3 — Semantic Fusion
 
-Declared intent and inferred machine state become a shared semantic state representation.
+Declared intent and inferred machine state are combined.
 
-### Phase 4 — Semantic hardware interfaces
+### Phase 4 — S-FSM
 
-Hardware begins exposing mechanisms optimized for semantic policy rather than only mechanical resource requests.
+Semantic state becomes a persistent, validated system abstraction.
 
-### Phase 5 — LLM-native computer
+### Phase 5 — Cross-Layer Projection
 
-UI, OS, and hardware become projections of a shared semantic model.
+UI, OS, and hardware consume different projections of the same semantic state.
 
-The computer no longer merely executes applications.
+### Phase 6 — LLM-Native Computer
 
-It continuously maintains an interpretation of what the user and the machine are doing.
+The semantic state becomes a fundamental part of the computer architecture.
+
+At that point:
+
+```text
+UI
+OS
+Hardware
+```
+
+are no longer independent consumers of AI.
+
+They are different layers operating on a shared semantic model of the machine.
 
 ---
 
-## 14. A Personal Computer in the Strongest Sense
+# 19. What the Computer Gains
 
-This changes the meaning of "personal computer."
+The resulting computer does not merely know more.
 
-The current personal computer is personal largely because it contains the user's files, applications, accounts, and preferences.
+It can behave differently.
 
-A semantic computer could be personal at a deeper level.
-
-It could learn the relationship between:
+Consider a user entering a state:
 
 ```text
-the user
-      +
-their intent
-      +
-their applications
-      +
-their workflows
-      +
-their machine
-      +
-their hardware constraints
+RESEARCH
++
+CODE_IMPLEMENTATION
++
+DEEP_WORK
 ```
 
-The personalization would therefore extend vertically:
+The UI can reorganize itself.
 
-```text
-        Personalized UI
-              │
-              ▼
-       Personalized Intent
-              │
-              ▼
-       Personalized S-FSM
-              │
-              ▼
-        Personalized OS
-              │
-              ▼
-       Personalized Hardware
-```
+The OS can suppress irrelevant background work.
 
-This is not merely a more personalized interface.
+The scheduler can prioritize interactive processes.
 
-It is a **personalized computer architecture**.
+Power management can make different tradeoffs.
+
+The GPU can avoid unnecessary contention.
+
+The NPU can maintain semantic monitoring.
+
+The same semantic transition can therefore produce coordinated changes throughout the system.
+
+This is the deeper promise of S-FSM:
+
+> **A semantic transition at the user level can become a coordinated system transition at the machine level.**
 
 ---
 
-## 15. The Open Research Question
+# 20. The Strongest Form of Personalization
 
-The original recognition problem remains meaningful regardless of whether the rest of this architecture ever exists.
+This suggests a different definition of personalized computing.
 
-The fundamental question is:
+Current personalization mostly changes:
+
+```text
+appearance
+recommendations
+layout
+preferences
+content
+```
+
+A semantic computer could personalize:
+
+```text
+what the machine believes you are doing
+        ↓
+what the UI presents
+        ↓
+what the OS prioritizes
+        ↓
+what hardware resources are emphasized
+```
+
+The personalization becomes architectural.
+
+The machine adapts not only its interface but its behavior.
+
+That is:
+
+> **Personalized UI → Personalized semantic state → Personalized OS → Personalized hardware.**
+
+---
+
+# 21. The Core Research Question
+
+The original recognition project asks:
 
 > **How well can a system infer intent when nobody declared it?**
 
-But the larger architectural question becomes:
+That remains an important and independently useful question.
 
-> **What happens when semantic understanding becomes a first-class abstraction of the computer?**
+The larger architectural question is:
 
-S-FSM is one possible answer.
+> **Can semantic state become a stable, safe, and useful intermediate representation between human intent and computer mechanisms?**
 
-It provides a place where:
+This breaks down into several questions:
 
-- declared intent from agents,
-- inferred intent from machine observation,
-- and persistent machine context
+1. Can an upper LLM reliably encode declared user intent?
+2. Can a lower LLM infer useful semantic information from machine state?
+3. Can the two sources be fused without losing provenance?
+4. Can semantic state remain stable under noisy observations?
+5. Can an S-FSM provide safe, bounded transitions?
+6. Can the same semantic state be projected meaningfully into UI, OS, and hardware?
+7. Can a local NPU-hosted model maintain this semantic substrate efficiently?
+8. Does semantic state actually improve system behavior enough to justify the additional complexity?
 
-can meet without granting any single semantic interpreter unrestricted authority.
+If these questions can be answered positively, the result is more than an LLM-powered scheduler or an AI-powered interface.
 
-If that abstraction proves useful, it could become the connective tissue between the layers of an LLM-native computer:
+It becomes a candidate architecture for a new kind of computer.
+
+---
+
+# 22. Toward the Semantic Computer
+
+The original observation was that two projects appeared to contain the same pattern:
 
 ```text
-                 USER
-                   │
-                   ▼
-              semantic UI
-                   │
-                   ▼
-              ┌─────────┐
-              │  S-FSM  │
-              └────┬────┘
-                   │
-          ┌────────┼────────┐
-          ▼        ▼        ▼
-         UI        OS       HW
-                   │
-                   ▼
-                 NPU
-          semantic substrate
+semantic interpretation
+        ↓
+restricted declarative representation
+        ↓
+trusted mechanism
+```
+
+The broader hypothesis is now stronger.
+
+Perhaps the computer can maintain a persistent semantic state that sits between **human intention and machine mechanism**.
+
+The upper semantic layer knows what the user and agents intend.
+
+The lower semantic layer knows what the machine is actually doing.
+
+Fusion reconciles the two.
+
+S-FSM maintains the resulting semantic state.
+
+The UI presents it.
+
+The OS acts on it.
+
+Hardware executes the resulting policy.
+
+And an NPU-hosted local LLM provides the continuously available semantic substrate.
+
+```text
+                         USER
+                           │
+                           ▼
+                    ┌────────────┐
+                    │  Upper LLM │
+                    │  intent    │
+                    └─────┬──────┘
+                          │
+                          ▼
+                    ┌────────────┐
+                    │   FUSION   │◄──────── Lower LLM
+                    └─────┬──────┘           ▲
+                          │                   │
+                          ▼             Machine State
+                    ╔════════════╗
+                    ║   S-FSM    ║
+                    ║            ║
+                    ║ Semantic   ║
+                    ║   State    ║
+                    ╚═════╤══════╝
+                          │
+               ┌──────────┼──────────┐
+               ▼          ▼          ▼
+              UI          OS         HW
+               │          │          │
+              A2UI     scheduler   CPU/GPU
+                         memory      NPU
+                         power
 ```
 
 The mechanism underneath does not disappear.
 
 The computer simply gains something it historically lacked:
 
-**a semantic model of itself.**
+> **a semantic model of itself.**
 
-That may be the more fundamental transition from an AI-enabled computer to an **LLM-native computer**.
+That may be the deeper transition from an AI-enabled computer to an **LLM-native computer**.
