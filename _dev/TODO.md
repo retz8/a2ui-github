@@ -146,7 +146,7 @@ The canvas-first generative-UI shell replacing the chat interface, plus the full
 - [x] **8.3** Transitions & interaction policy — hold-and-swap with the validation gate, the overlay slot (question paints), the interaction-cost policy, live-registry lifecycle: serialize-on-swap capture + the data-model growth fix. Note for the grill (observed in 8.2's live smoke): when an agent turn fails server-side validation, the client receives the partial paint's stream and then the agent's cleanup `deleteSurface` — on the naive 8.2 canvas the surface shows, then blanks. Hold-and-swap's validation gate should absorb this case (failed paint never reaches the stage); settle how the swap gate treats a turn that ends in a cleanup delete.
 - [x] **8.4** Timeline & time travel — ring store with monotonic paint ids, causes, titles-with-fallback, history UI (back + press-list, return-to-live, stale banner, causal jumps), parked-snapshot restore via sandbox with interaction-state write-back.
 - [x] **8.5** Agent-side additions — per-paint titles, fork-context attachment on the wire, and the prompt adjustments both imply. Spec: `_dev/docs/spec/task-8.5-agent-side-additions.md`.
-- [ ] **8.6** Arc definition + live verification — script "the maintainer's morning" (sequencing, glue prompts, re-composition follow-up), live continuous 8-beat sessions on the canvas until green; arc-green triggers chat-page retirement.
+- [WIP] **8.6** Arc definition + live verification — script "the maintainer's morning" (sequencing, glue prompts, re-composition follow-up), live continuous 8-beat sessions on the canvas until green; arc-green triggers chat-page retirement.
 - [ ] **8.7** Thesis doc — `THESIS.md`, the standalone public position piece; `SPEC.md` §1 gains a pointer.
 
 Order: 8.0 first → then 8.1 ∥ (8.2 → 8.3 → 8.4) — the client chain is sequential; fixtures record in parallel, and 8.2–8.4's verification gates run on 8.1's fixtures (zero LLM). 8.5 is parallel-eligible to the client chain but must land before 8.6. 8.6 after everything except 8.7. 8.7 strictly last.
@@ -157,7 +157,7 @@ Additively fold the catalog-authoring skill (Phase 4) and the agent scaffold (Ph
 ## Backlog
 - Registry-driven catalog smoke test (at Phase 6 start): replace the per-component `has()` assertions in `catalog.test.ts` with one exact-set assertion against the parity test's `COMPONENTS`/`FUNCTIONS` registry; update the Build skill's steps 5/7 to the single registry touch-point in the same change.
 - Client fixture backfill: the shipped `Text`/`Button` client fixtures + Playwright baselines lag the exhaustive per-prop standard the catalog-authoring skills now prescribe — `Button` ships 3 of 11 prop-walk fixtures, `Text` 2 of 6. Backfill the missing fixtures + baselines. Sets enumerated in `_dev/docs/new-components/{text,button}.md`.
-- Client data model growth: resolved on the canvas by 8.3's live-registry lifecycle (a send reports only stage + overlay). The chat page still accumulates every session surface; it retires at 8.6.
+- Client data model growth: resolved on the canvas by 8.3's live-registry lifecycle (a send reports only stage + overlay). The chat page (demoted to `chat.html` at 8.6 arc-green, dev-only) still accumulates every session surface within a session.
 - `FixtureView.tsx` still applies A2UI messages through a raw `processMessages` call, bypassing `applyA2uiMessages` (repeat-`createSurface` repaint + per-message failure isolation). It drives known-good local fixtures, so it is not broken today.
 - Diff viewer (stretch)
 - Agent template memory
