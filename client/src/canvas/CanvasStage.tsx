@@ -21,9 +21,12 @@ export function CanvasStage({processor, state}: CanvasStageProps) {
   return (
     <div className="canvas-stage" data-testid="canvas-stage">
       {surface && state.stageId ? (
-        <SurfaceErrorBoundary surfaceId={state.stageId} resetKey={state.appliedSeq}>
-          <A2uiSurface surface={surface} />
-        </SurfaceErrorBoundary>
+        // The inner wrapper bounds the surface content alone — what the chrome baselines mask.
+        <div data-testid="canvas-stage-content">
+          <SurfaceErrorBoundary surfaceId={state.stageId} resetKey={state.appliedSeq}>
+            <A2uiSurface surface={surface} />
+          </SurfaceErrorBoundary>
+        </div>
       ) : (
         <div className="canvas-empty-ghost" data-testid="canvas-empty-ghost" aria-hidden="true">
           <div className="canvas-empty-mark">a2ui canvas</div>

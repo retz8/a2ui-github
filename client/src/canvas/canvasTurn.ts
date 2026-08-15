@@ -11,9 +11,10 @@
  * - **Progressive mode** (empty canvas): the paint streams straight onto the stage, as 8.2 did.
  * - **Question paints** (decisions 5–6): a validated surface whose root component is a
  *   `ConfirmationDialog` routes to the overlay slot, never the stage or the timeline.
- * - **Serialize-on-swap** (decision 4 + phase decision 14): a surface leaving the canvas is
- *   snapshotted into the timeline first, then removed from the live processor — the live
- *   registry stays exactly canvas occupancy.
+ * - **Timeline entries** (task-8.4 decision 1): a landing stage paint appends its entry with a
+ *   null snapshot — the live head. **Serialize-on-swap** (decision 4 + phase decision 14) then
+ *   fills that entry when the surface leaves the canvas, before its removal from the live
+ *   processor; intermediates of a multi-surface turn append already departed.
  * - **Cancel** (decision 9): aborts the transport signal and discards the staged work; a
  *   canceled paint never reaches the stage and never enters the timeline.
  */
@@ -26,11 +27,13 @@ import {describeCause} from './paint';
 import {serializeSurface} from './snapshotSurface';
 import type {SnapshotSourceSurface} from './snapshotSurface';
 
-/** The slice of a live/staging surface the runner reads: root type, title, serialization. */
+/** The slice of a live/staging surface the runner reads: root type, title, catalog, serialization. */
 export interface CanvasSurface extends SnapshotSourceSurface {
   componentsModel: SnapshotSourceSurface['componentsModel'] & {
     get(id: string): {type: string; properties: Record<string, unknown>} | undefined;
   };
+  /** Captured into the entry so rehydration can rebuild the surface's createSurface. */
+  catalog: {readonly id: string};
 }
 
 /** The slice of MessageProcessor the runner drives; MessageProcessor satisfies it. */
@@ -119,33 +122,38 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
   const reportMessageError = (err: unknown) =>
     store.reportError(`Part of this response could not be displayed. ${describeError(err)}`);
 
-  const snapshotOf = (surfaceId: string, paintId: number, cause: PaintCause, paintedAt: number) => {
+  /** Materialize a live surface's content — the snapshot half of a paint entry. */
+  const snapshotOf = (surfaceId: string) => {
     const surface = processor.model.getSurface(surfaceId);
     if (!surface) return null;
-    return Object.freeze({
-      paintId,
+    return Object.freeze({...serializeSurface(surface), capturedAt: Date.now()});
+  };
+
+  /** A landed stage paint enters the timeline as the live head — snapshot pending. */
+  const appendLiveEntry = (surfaceId: string, cause: PaintCause) => {
+    const surface = processor.model.getSurface(surfaceId);
+    if (!surface) return;
+    store.appendEntry({
+      paintId: store.nextPaintId(),
       surfaceId,
-      ...serializeSurface(surface),
+      catalogId: surface.catalog.id,
       cause,
-      paintedAt,
-      capturedAt: Date.now(),
+      paintedAt: Date.now(),
+      snapshot: null,
     });
   };
 
-  /** Serialize-on-swap: the stage is leaving the canvas — snapshot into the timeline, remove. */
+  /** Serialize-on-swap: the stage is leaving the canvas — fill its entry, then remove. */
   const retireStage = () => {
-    const {livePaint, stageId} = store.getState();
-    if (livePaint) {
-      const snapshot = snapshotOf(
-        livePaint.surfaceId,
-        livePaint.paintId,
-        livePaint.cause,
-        livePaint.paintedAt,
-      );
-      if (snapshot) store.appendSnapshot(snapshot);
-      store.setLivePaint(null);
+    const {stageId, timeline} = store.getState();
+    if (stageId) {
+      const head = timeline[timeline.length - 1];
+      if (head && head.surfaceId === stageId && head.snapshot === null) {
+        const snapshot = snapshotOf(stageId);
+        if (snapshot) store.fillSnapshot(head.paintId, snapshot);
+      }
+      processor.model.deleteSurface(stageId);
     }
-    if (stageId) processor.model.deleteSurface(stageId);
     store.setStage(null);
   };
 
@@ -181,9 +189,19 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
 
     /** Decision 3: every non-final stage surface of a turn still enters the timeline. */
     const retireIntermediate = (surfaceId: string) => {
-      const snapshot = snapshotOf(surfaceId, store.nextPaintId(), cause, Date.now());
-      if (snapshot) store.appendSnapshot(snapshot);
-      processor.model.deleteSurface(surfaceId);
+      const surface = processor.model.getSurface(surfaceId);
+      if (surface) {
+        // An intermediate lands and departs in one breath — its entry arrives already filled.
+        store.appendEntry({
+          paintId: store.nextPaintId(),
+          surfaceId,
+          catalogId: surface.catalog.id,
+          cause,
+          paintedAt: Date.now(),
+          snapshot: snapshotOf(surfaceId),
+        });
+        processor.model.deleteSurface(surfaceId);
+      }
     };
 
     const applyProgressive = (messages: A2uiMessage[]) => {
@@ -255,12 +273,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
         store.bumpApplied();
         return;
       }
-      store.setLivePaint({
-        paintId: store.nextPaintId(),
-        surfaceId: stageId,
-        cause,
-        paintedAt: Date.now(),
-      });
+      appendLiveEntry(stageId, cause);
     };
 
     const endStaged = () => {
@@ -292,12 +305,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
       if (stagePaints.length > 0) {
         const stageId = stagePaints[stagePaints.length - 1];
         store.setStage(stageId);
-        store.setLivePaint({
-          paintId: store.nextPaintId(),
-          surfaceId: stageId,
-          cause,
-          paintedAt: Date.now(),
-        });
+        appendLiveEntry(stageId, cause);
       }
       for (const id of questions.slice(0, -1)) processor.model.deleteSurface(id);
       if (questions.length > 0) replaceOverlay(questions[questions.length - 1]);

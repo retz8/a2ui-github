@@ -38,7 +38,8 @@ describe('validation-failure turn (partial paint → cleanup delete → final)',
     const state = store.getState();
     expect(state.stageId).toBe(held);
     expect(state.error).toMatch(/keeping the current view/);
-    expect(state.timeline).toEqual([]);
+    // The failed paint added nothing: only the held beat's own live entry is present.
+    expect(state.timeline.map(e => e.surfaceId)).toEqual([held]);
     expect(state.inFlight).toBeNull();
     expect(processor.model.getSurface('doomed-view')).toBeFalsy();
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual([held]);
@@ -64,16 +65,15 @@ describe('question paint (ConfirmationDialog root)', () => {
     const {processor, store, runner} = setup();
     await replayBeatOnCanvas(BEAT_FIXTURES[0], {runner, store, paced: false});
     const held = store.getState().stageId;
-    const heldPaint = store.getState().livePaint;
+    const heldTimeline = store.getState().timeline;
 
     await replayBeatOnCanvas(QUESTION_BEAT, {runner, store, paced: false});
 
     const state = store.getState();
     expect(state.overlay).toEqual({surfaceId: 'which-repo', question: 'Which repository?'});
     expect(state.stageId).toBe(held);
-    expect(state.livePaint).toEqual(heldPaint);
     // Questions are never timeline nodes; the live registry is stage + overlay, nothing else.
-    expect(state.timeline).toEqual([]);
+    expect(state.timeline).toEqual(heldTimeline);
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual([held, 'which-repo']);
   });
 });
@@ -98,7 +98,8 @@ describe('cancel mid-stream (last-intent-wins)', () => {
     const state = store.getState();
     expect(state.stageId).toBe(held);
     expect(state.inFlight).toBeNull();
-    expect(state.timeline).toEqual([]);
+    // The canceled paint added nothing: only the held beat's own live entry is present.
+    expect(state.timeline.map(e => e.surfaceId)).toEqual([held]);
     expect(processor.model.getSurface('doomed-view')).toBeFalsy();
   });
 });

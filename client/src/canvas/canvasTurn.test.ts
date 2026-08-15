@@ -1,7 +1,8 @@
 /**
- * The turn runner (task 8.3): hold-and-swap with the net-effect validation gate, the overlay
- * slot for question paints, serialize-on-swap into the timeline, and last-intent-wins cancel —
- * task-8.3 spec decisions 1–9 as unit gates over a real processor + catalog.
+ * The turn runner (tasks 8.3 + 8.4): hold-and-swap with the net-effect validation gate, the
+ * overlay slot for question paints, last-intent-wins cancel, and the timeline entry lifecycle —
+ * an entry appended the moment a paint lands, its snapshot filled at serialize-on-swap
+ * (task-8.4 spec decision 1).
  */
 import {describe, it, expect} from 'vitest';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
@@ -39,6 +40,7 @@ const dialogRoot = (surfaceId: string, title: string) =>
 const utterance = (text: string, parent: number | null = null): PaintCause => ({
   kind: 'utterance',
   parent,
+  forked: false,
   payload: {text},
 });
 
@@ -64,23 +66,28 @@ const rootText = (processor: ReturnType<typeof setup>['processor'], id: string):
   processor.model.getSurface(id)?.componentsModel.get('root')?.properties.text;
 
 describe('progressive mode (empty canvas)', () => {
-  it('streams the paint straight onto the stage and assigns the live paint at turn end', () => {
+  it('streams the paint straight onto the stage and appends its live entry at turn end', () => {
     const {processor, store, runner} = setup();
     const turn = runner.begin(utterance('show my PRs'));
     expect(store.getState().inFlight?.label).toBe('“show my PRs” — generating…');
 
     turn.apply([create('pull-request-list')]);
-    // Progressive: visible mid-turn, before the stream ends.
+    // Progressive: visible mid-turn, before the stream ends — but not yet a timeline entry.
     expect(store.getState().stageId).toBe('pull-request-list');
     turn.apply([textRoot('pull-request-list', 'PRs')]);
-    expect(store.getState().livePaint).toBeNull();
+    expect(store.getState().timeline).toEqual([]);
 
     turn.end();
     const state = store.getState();
     expect(state.inFlight).toBeNull();
-    expect(state.livePaint).toMatchObject({paintId: 1, surfaceId: 'pull-request-list'});
-    expect(state.livePaint?.cause).toEqual(utterance('show my PRs'));
-    expect(state.timeline).toEqual([]);
+    expect(state.timeline).toHaveLength(1);
+    expect(state.timeline[0]).toMatchObject({
+      paintId: 1,
+      surfaceId: 'pull-request-list',
+      catalogId: CATALOG_ID,
+      snapshot: null,
+    });
+    expect(state.timeline[0].cause).toEqual(utterance('show my PRs'));
     expect(processor.model.getSurface('pull-request-list')).toBeTruthy();
   });
 
@@ -93,13 +100,12 @@ describe('progressive mode (empty canvas)', () => {
 
     const state = store.getState();
     expect(state.stageId).toBeNull();
-    expect(state.livePaint).toBeNull();
     expect(state.timeline).toEqual([]);
     expect(state.error).toMatch(/withdrawn/);
     expect(processor.model.getSurface('broken')).toBeFalsy();
   });
 
-  it('a dialog-rooted paint routes to the overlay, not the stage', () => {
+  it('a dialog-rooted paint routes to the overlay, not the stage or the timeline', () => {
     const {store, runner} = setup();
     const turn = runner.begin(utterance('delete everything'));
     turn.apply([create('confirm-wipe'), dialogRoot('confirm-wipe', 'Really wipe it all?')]);
@@ -108,7 +114,6 @@ describe('progressive mode (empty canvas)', () => {
     const state = store.getState();
     expect(state.stageId).toBeNull();
     expect(state.overlay).toEqual({surfaceId: 'confirm-wipe', question: 'Really wipe it all?'});
-    expect(state.livePaint).toBeNull();
     expect(state.timeline).toEqual([]);
   });
 
@@ -130,7 +135,7 @@ describe('progressive mode (empty canvas)', () => {
 });
 
 describe('staged mode (occupied stage): hold-and-swap', () => {
-  it('holds the stage while the new paint streams off-stage, then swaps and snapshots', () => {
+  it('holds the stage while the new paint streams off-stage, then swaps and fills the snapshot', () => {
     const {processor, store, runner} = setup();
     paintStage(runner, 'old-stage', 'old content');
 
@@ -145,16 +150,19 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
     const state = store.getState();
     expect(state.stageId).toBe('issue-list');
     expect(rootText(processor, 'issue-list')).toBe('Issues');
-    expect(state.livePaint).toMatchObject({paintId: 2, surfaceId: 'issue-list'});
-    // Serialize-on-swap: the outgoing paint entered the timeline; live registry is solo.
-    expect(state.timeline).toHaveLength(1);
+    // Serialize-on-swap: the departed entry filled in place; the new head has no snapshot yet.
+    expect(state.timeline).toHaveLength(2);
     expect(state.timeline[0]).toMatchObject({paintId: 1, surfaceId: 'old-stage'});
-    expect(state.timeline[0].tree.root).toMatchObject({type: 'Text', text: 'old content'});
-    expect(Object.isFrozen(state.timeline[0].tree.root)).toBe(true);
+    expect(state.timeline[0].snapshot?.tree.root).toMatchObject({
+      type: 'Text',
+      text: 'old content',
+    });
+    expect(Object.isFrozen(state.timeline[0].snapshot?.tree.root)).toBe(true);
+    expect(state.timeline[1]).toMatchObject({paintId: 2, surfaceId: 'issue-list', snapshot: null});
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual(['issue-list']);
   });
 
-  it('a same-id repaint holds the old content until the swap', () => {
+  it('a same-id repaint holds the old content until the swap, then departs as its own entry', () => {
     const {processor, store, runner} = setup();
     paintStage(runner, 'user-profile', 'v1');
 
@@ -167,8 +175,9 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
     expect(rootText(processor, 'user-profile')).toBe('v2');
     const state = store.getState();
     expect(state.stageId).toBe('user-profile');
-    expect(state.timeline).toHaveLength(1);
-    expect(state.timeline[0].tree.root).toMatchObject({text: 'v1'});
+    expect(state.timeline.map(e => e.paintId)).toEqual([1, 2]);
+    expect(state.timeline[0].snapshot?.tree.root).toMatchObject({text: 'v1'});
+    expect(state.timeline[1].snapshot).toBeNull();
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual(['user-profile']);
   });
 
@@ -183,8 +192,9 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
     const state = store.getState();
     expect(state.stageId).toBe('old-stage');
     expect(rootText(processor, 'old-stage')).toBe('still here');
-    expect(state.livePaint).toMatchObject({paintId: 1, surfaceId: 'old-stage'});
-    expect(state.timeline).toEqual([]);
+    // The held paint is still the live head — no departure, no new entry.
+    expect(state.timeline).toHaveLength(1);
+    expect(state.timeline[0]).toMatchObject({paintId: 1, surfaceId: 'old-stage', snapshot: null});
     expect(state.error).toMatch(/keeping the current view/);
     expect(processor.model.getSurface('doomed')).toBeFalsy();
   });
@@ -200,8 +210,8 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
     turn.end();
 
     const state = store.getState();
-    expect(state.livePaint).toMatchObject({paintId: 1});
-    expect(state.timeline).toEqual([]);
+    expect(state.timeline).toHaveLength(1);
+    expect(state.timeline[0]).toMatchObject({paintId: 1, snapshot: null});
     expect(state.error).toBeNull();
   });
 
@@ -224,10 +234,10 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
     turn.apply([dataUpdate('stage', {title: 'two'})]);
     expect(processor.model.getSurface('stage')?.dataModel.get('/')).toMatchObject({title: 'two'});
     turn.end();
-    expect(store.getState().timeline).toEqual([]);
+    expect(store.getState().timeline).toHaveLength(1);
   });
 
-  it('a deliberate delete of the live stage is honored: snapshot, remove, back to empty', () => {
+  it('a deliberate delete of the live stage is honored: snapshot fills, canvas is live and empty', () => {
     const {processor, store, runner} = setup();
     paintStage(runner, 'stage', 'goodbye');
 
@@ -237,9 +247,10 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
 
     const state = store.getState();
     expect(state.stageId).toBeNull();
-    expect(state.livePaint).toBeNull();
+    // Live and empty: the newest entry is a departed paint.
     expect(state.timeline).toHaveLength(1);
     expect(state.timeline[0]).toMatchObject({paintId: 1, surfaceId: 'stage'});
+    expect(state.timeline[0].snapshot?.tree.root).toMatchObject({text: 'goodbye'});
     expect(state.notice?.text).toMatch(/cleared/);
     expect(state.error).toBeNull();
     expect(processor.model.getSurface('stage')).toBeFalsy();
@@ -260,8 +271,9 @@ describe('staged mode (occupied stage): hold-and-swap', () => {
 
     const state = store.getState();
     expect(state.stageId).toBe('second');
-    expect(state.timeline.map(s => s.surfaceId)).toEqual(['old-stage', 'first']);
-    expect(state.livePaint?.surfaceId).toBe('second');
+    expect(state.timeline.map(e => e.surfaceId)).toEqual(['old-stage', 'first', 'second']);
+    // Intermediates arrive already departed; only the head is live.
+    expect(state.timeline.map(e => e.snapshot === null)).toEqual([false, false, true]);
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual(['second']);
   });
 });
@@ -280,8 +292,8 @@ describe('question paints and the overlay slot', () => {
     const state = store.getState();
     expect(state.overlay).toEqual({surfaceId: 'which-repo', question: 'Which repository?'});
     expect(state.stageId).toBe('stage');
-    expect(state.livePaint).toMatchObject({paintId: 1, surfaceId: 'stage'});
-    expect(state.timeline).toEqual([]);
+    expect(state.timeline).toHaveLength(1);
+    expect(state.timeline[0]).toMatchObject({paintId: 1, surfaceId: 'stage', snapshot: null});
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual(['stage', 'which-repo']);
   });
 
@@ -299,7 +311,7 @@ describe('question paints and the overlay slot', () => {
 
     const state = store.getState();
     expect(state.overlay).toEqual({surfaceId: 'question-2', question: 'Second?'});
-    expect(state.timeline).toEqual([]);
+    expect(state.timeline).toHaveLength(1);
     expect(processor.model.getSurface('question-1')).toBeFalsy();
   });
 
@@ -313,7 +325,7 @@ describe('question paints and the overlay slot', () => {
     runner.removeOverlay();
     const state = store.getState();
     expect(state.overlay).toBeNull();
-    expect(state.timeline).toEqual([]);
+    expect(state.timeline).toHaveLength(1);
     expect(processor.model.getSurface('question')).toBeFalsy();
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual(['stage']);
   });
@@ -334,7 +346,7 @@ describe('question paints and the overlay slot', () => {
     const state = store.getState();
     expect(state.stageId).toBe('new-stage');
     expect(state.overlay).toEqual({surfaceId: 'question', question: 'Also this?'});
-    expect(state.timeline.map(s => s.surfaceId)).toEqual(['old-stage']);
+    expect(state.timeline.map(e => e.surfaceId)).toEqual(['old-stage', 'new-stage']);
   });
 });
 
@@ -351,14 +363,14 @@ describe('cancel: last-intent-wins', () => {
     expect(turn.signal.aborted).toBe(true);
     expect(state.stageId).toBe('stage');
     expect(state.inFlight).toBeNull();
-    expect(state.timeline).toEqual([]);
+    expect(state.timeline).toHaveLength(1);
     expect(processor.model.getSurface('slow')).toBeFalsy();
 
     // A canceled turn is inert: late batches and the stream-exhaustion end are no-ops.
     turn.apply([textRoot('slow', 'late')]);
     turn.end();
     expect(store.getState().stageId).toBe('stage');
-    expect(store.getState().timeline).toEqual([]);
+    expect(store.getState().timeline).toHaveLength(1);
   });
 
   it('beginning a new turn cancels the in-flight one and takes over the in-flight slot', () => {
@@ -377,8 +389,8 @@ describe('cancel: last-intent-wins', () => {
     second.apply([create('b'), textRoot('b', 'B')]);
     second.end();
     const state = store.getState();
+    // Only the real swap departed the old stage — the canceled paint left nothing.
     expect(state.stageId).toBe('b');
-    // Only the real swap entered the timeline — the canceled paint left nothing.
-    expect(state.timeline.map(s => s.surfaceId)).toEqual(['stage']);
+    expect(state.timeline.map(e => e.surfaceId)).toEqual(['stage', 'b']);
   });
 });

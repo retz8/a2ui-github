@@ -76,17 +76,23 @@ describe('replayBeatOnCanvas', () => {
     const store = createCanvasStore();
     const runner = mockRunner(store);
     await replayBeatOnCanvas(fixture(), {runner, store, paced: false});
-    expect(runner.causes).toEqual([{kind: 'utterance', parent: null, payload: {text: 'show me'}}]);
+    expect(runner.causes).toEqual([
+      {kind: 'utterance', parent: null, forked: false, payload: {text: 'show me'}},
+    ]);
   });
 
   it('maps a surface-action turn to a surface-action cause with the live paint as parent', async () => {
     const store = createCanvasStore();
-    store.setLivePaint({
+    // A live paint on the stage: entry #7 is the head and its surface occupies the stage.
+    store.appendEntry({
       paintId: 7,
       surfaceId: 'stage',
-      cause: {kind: 'utterance', parent: null, payload: {text: 'earlier'}},
+      catalogId: 'primer',
+      cause: {kind: 'utterance', parent: null, forked: false, payload: {text: 'earlier'}},
       paintedAt: 1000,
+      snapshot: null,
     });
+    store.setStage('stage');
     const runner = mockRunner(store);
     const beat = fixture();
     beat.turns = [
@@ -102,6 +108,7 @@ describe('replayBeatOnCanvas', () => {
       {
         kind: 'surface-action',
         parent: 7,
+        forked: false,
         payload: {action: {name: 'open-issue', context: {}}},
       },
     ]);

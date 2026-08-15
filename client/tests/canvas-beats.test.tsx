@@ -6,7 +6,7 @@
  * Complements `beat-fixtures.test.tsx` (the 8.1 recording gate): that one proves the
  * recordings are consumable; this one proves the canvas shell consumes them — zero apply
  * failures, the stage pointer on the last-created surface, single occupancy, a rendered
- * surface, the live paint assigned, and the in-flight state settled back to idle. The chained
+ * surface, the live entry appended, and the in-flight state settled back to idle. The chained
  * pair at the end exercises hold-and-swap over an occupied stage: the real recordings are
  * stitched back-to-back (the shell consumes message streams, not meaning).
  */
@@ -55,8 +55,9 @@ describe('canvas shell over the recorded beats', () => {
       // Last createSurface wins the stage; the live registry is exactly canvas occupancy.
       expect(state.stageId).toBe(lastCreatedSurfaceId(fixture));
       expect(Array.from(processor.model.surfacesMap.keys())).toEqual([state.stageId]);
-      // The turn produced the live paint and settled back to idle.
-      expect(state.livePaint).toMatchObject({surfaceId: state.stageId});
+      // The turn appended its live entry and settled back to idle.
+      const head = state.timeline[state.timeline.length - 1];
+      expect(head).toMatchObject({surfaceId: state.stageId, snapshot: null});
       expect(state.inFlight).toBeNull();
 
       // And the stage actually renders it.
@@ -71,19 +72,20 @@ describe('canvas shell over the recorded beats', () => {
 
     await replayBeatOnCanvas(first, {runner, store, paced: false});
     const firstStage = store.getState().stageId;
-    const firstPaintId = store.getState().livePaint?.paintId;
+    const firstPaintId = store.getState().timeline.at(-1)?.paintId;
     await replayBeatOnCanvas(second, {runner, store, paced: false});
 
     const state = store.getState();
     expect(state.error).toBeNull();
     expect(state.stageId).toBe(lastCreatedSurfaceId(second));
-    // Serialize-on-swap: the first beat's paint departed into the timeline, deep-frozen,
-    // and left the live registry (the data-model growth fix — reporting sees only the stage).
-    expect(state.timeline).toHaveLength(1);
+    // Serialize-on-swap: the first beat's entry filled with its deep-frozen snapshot and
+    // left the live registry (the data-model growth fix — reporting sees only the stage).
+    expect(state.timeline).toHaveLength(2);
     expect(state.timeline[0]).toMatchObject({paintId: firstPaintId, surfaceId: firstStage});
-    expect(Object.keys(state.timeline[0].tree).length).toBeGreaterThan(0);
-    expect(Object.isFrozen(state.timeline[0].tree)).toBe(true);
-    expect(state.livePaint?.paintId).not.toBe(firstPaintId);
+    expect(Object.keys(state.timeline[0].snapshot!.tree).length).toBeGreaterThan(0);
+    expect(Object.isFrozen(state.timeline[0].snapshot!.tree)).toBe(true);
+    expect(state.timeline[1].snapshot).toBeNull();
+    expect(state.timeline[1].paintId).not.toBe(firstPaintId);
     expect(Array.from(processor.model.surfacesMap.keys())).toEqual([state.stageId]);
   });
 });
