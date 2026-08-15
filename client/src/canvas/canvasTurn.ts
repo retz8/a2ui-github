@@ -22,7 +22,7 @@ import type {A2uiMessage} from '@a2ui/web_core/v0_9';
 import type {PaintMeta} from '../a2a/messages';
 import {paintMetaOf, QUESTION_PAINT_KIND} from '../a2a/messages';
 import {applyA2uiMessages} from '../a2ui/applyMessages';
-import {describeError} from '../chat/describeError';
+import {describeError} from '../shared/describeError';
 import type {CanvasStore} from './canvasStore';
 import type {PaintCause} from './paint';
 import {describeCause} from './paint';

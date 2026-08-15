@@ -31,7 +31,7 @@ import type {ForkContext} from '../a2a/messages';
 import {buildActionMessageParams} from '../a2a/messages';
 import {createA2ASession} from '../a2a/session';
 import {streamUserMessage} from '../a2a/streamUserMessage';
-import {describeError} from '../chat/describeError';
+import {describeError} from '../shared/describeError';
 import {getBeatFixture} from '../beats/beatFixtures';
 import {createCanvasStore, currentPaintId} from './canvasStore';
 import {createTurnRunner} from './canvasTurn';
