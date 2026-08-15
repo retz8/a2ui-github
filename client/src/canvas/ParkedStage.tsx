@@ -28,9 +28,12 @@ export function ParkedStage({entry, create, attach}: ParkedStageProps) {
   return (
     <div className="canvas-stage canvas-stage--parked" data-testid="canvas-parked-stage">
       {surface ? (
-        <SurfaceErrorBoundary surfaceId={session.surfaceId} resetKey={entry.paintId}>
-          <A2uiSurface surface={surface} />
-        </SurfaceErrorBoundary>
+        // The inner wrapper bounds the surface content alone — what the chrome baselines mask.
+        <div data-testid="canvas-stage-content">
+          <SurfaceErrorBoundary surfaceId={session.surfaceId} resetKey={entry.paintId}>
+            <A2uiSurface surface={surface} />
+          </SurfaceErrorBoundary>
+        </div>
       ) : null}
     </div>
   );

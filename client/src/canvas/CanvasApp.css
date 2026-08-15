@@ -269,7 +269,11 @@
 /* The parked stage: same layout slot as the live stage; the banner carries the past-state
    signal, so the stage itself gets only a whisper of tint. */
 .canvas-stage--parked {
-  background: var(--bgColor-attention-muted, #fff8c51a);
+  background: color-mix(
+    in srgb,
+    var(--bgColor-attention-muted, #fff8c5) 22%,
+    var(--bgColor-default)
+  );
 }
 
 /* Both the banner and the notice claim the top edge; the notice offsets down while parked. */
