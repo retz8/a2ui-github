@@ -34,7 +34,12 @@ function setup() {
     createStaging: () => new MessageProcessor([CATALOG]),
   });
   const apply = (messages: A2uiMessage[]) => {
-    const turn = runner.begin({kind: 'utterance', parent: null, payload: {text: 'paint'}});
+    const turn = runner.begin({
+      kind: 'utterance',
+      parent: null,
+      forked: false,
+      payload: {text: 'paint'},
+    });
     turn.apply(messages);
     turn.end();
   };

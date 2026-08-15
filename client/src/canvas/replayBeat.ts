@@ -12,6 +12,7 @@
 import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
 import type {BeatFixture, BeatTurn} from '../beats/beatFixtures';
 import type {CanvasStore} from './canvasStore';
+import {currentPaintId} from './canvasStore';
 import type {TurnHandle} from './canvasTurn';
 import type {PaintCause} from './paint';
 
@@ -26,15 +27,18 @@ export interface ReplayBeatOptions {
 const sleep = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 
 function causeOf(turn: BeatTurn, store: CanvasStore): PaintCause {
-  const parent = store.getState().livePaint?.paintId ?? null;
+  const state = store.getState();
+  const parent = currentPaintId(state);
+  const forked = state.viewing !== null;
   if (turn.kind === 'surface-action' && turn.action) {
     return {
       kind: 'surface-action',
       parent,
+      forked,
       payload: {action: turn.action as unknown as A2uiClientAction},
     };
   }
-  return {kind: 'utterance', parent, payload: {text: turn.prompt}};
+  return {kind: 'utterance', parent, forked, payload: {text: turn.prompt}};
 }
 
 export async function replayBeatOnCanvas(

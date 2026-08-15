@@ -315,6 +315,17 @@ describe('CanvasApp', () => {
     await waitFor(() => expect(screen.queryByTestId('canvas-pending')).toBeNull());
   });
 
+  it('?beat= accepts a comma-separated list and replays the beats in sequence', async () => {
+    window.history.replaceState(null, '', '?beat=8,1&instant');
+    renderCanvas();
+
+    await waitFor(() => expect(screen.getByTestId('canvas-stage')).not.toBeEmptyDOMElement());
+    await waitFor(() => expect(screen.queryByTestId('canvas-pending')).toBeNull());
+    // Both beats ran: the first departed into the timeline, the second is the live head.
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+    expect(await screen.findByText(/past view/i)).toBeInTheDocument();
+  });
+
   it('?beat= replays a recorded beat onto the stage', async () => {
     window.history.replaceState(null, '', '?beat=1&instant');
     renderCanvas();
@@ -331,5 +342,190 @@ describe('CanvasApp', () => {
     window.history.replaceState(null, '', '?beat=42');
     renderCanvas();
     expect(await screen.findByRole('alert')).toHaveTextContent(/beat/i);
+  });
+});
+
+const BOUND_MESSAGES = [
+  {version: 'v0.9', createSurface: {surfaceId: 'filters', catalogId: CATALOG_ID}},
+  {
+    version: 'v0.9',
+    updateComponents: {
+      surfaceId: 'filters',
+      components: [
+        {
+          id: 'root',
+          component: 'Checkbox',
+          checked: {path: '/urgent'},
+          accessibility: {label: 'urgent only'},
+        },
+      ],
+    },
+  },
+  {version: 'v0.9', updateDataModel: {surfaceId: 'filters', value: {urgent: false}}},
+];
+
+/** Land two paints so there is a past to park on: `filters` departs, `answer` is live. */
+async function landTwoPaints(script: TaskStatusUpdateEvent[] = []) {
+  const {sender, sent, release} = scriptedSender(
+    [eventOf(BOUND_MESSAGES), eventOf(SURFACE_MESSAGES), ...script.slice(2)].slice(0, 2 + script.length),
+  );
+  renderCanvas(sender);
+  await ask('show my filters');
+  await screen.findByRole('checkbox', {name: 'urgent only'});
+  await userEvent.keyboard('{Meta>}k{/Meta}');
+  await ask('show me something');
+  await screen.findByText('hello from the agent');
+  return {sent, release};
+}
+
+describe('CanvasApp time travel', () => {
+  it('Back parks on the previous paint: its content renders under the past-view banner', async () => {
+    await landTwoPaints();
+
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+
+    expect(await screen.findByRole('checkbox', {name: 'urgent only'})).toBeInTheDocument();
+    expect(screen.queryByText('hello from the agent')).toBeNull();
+    expect(screen.getByText(/past view/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Return to live'})).toBeInTheDocument();
+    expect(screen.getByRole('button', {name: 'Repaint'})).toBeInTheDocument();
+  });
+
+  it('Back is disabled with nothing to go back to; the parked chrome is absent while live', async () => {
+    renderCanvas();
+    expect(screen.getByRole('button', {name: 'Back'})).toBeDisabled();
+    expect(screen.queryByRole('button', {name: 'Return to live'})).toBeNull();
+    expect(screen.queryByText(/past view/i)).toBeNull();
+  });
+
+  it('Return to live restores the head', async () => {
+    await landTwoPaints();
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+    await screen.findByRole('checkbox', {name: 'urgent only'});
+
+    await userEvent.click(screen.getByRole('button', {name: 'Return to live'}));
+
+    expect(await screen.findByText('hello from the agent')).toBeInTheDocument();
+    expect(screen.queryByText(/past view/i)).toBeNull();
+  });
+
+  it('right-clicking Back opens the titled history list; picking an entry parks on it', async () => {
+    await landTwoPaints();
+
+    await userEvent.pointer({keys: '[MouseRight]', target: screen.getByRole('button', {name: 'Back'})});
+    const list = await screen.findByRole('menu');
+    // Every retained entry, titles cause-derived, the live head marked.
+    expect(list).toHaveTextContent('“show my filters”');
+    expect(list).toHaveTextContent('“show me something”');
+    expect(list).toHaveTextContent(/live/i);
+
+    await userEvent.click(screen.getByRole('menuitem', {name: /show my filters/i}));
+    expect(await screen.findByRole('checkbox', {name: 'urgent only'})).toBeInTheDocument();
+    expect(screen.getByText(/past view/i)).toBeInTheDocument();
+  });
+
+  it('Repaint re-fires the parked cause as a fork and jumps to live', async () => {
+    const {sent} = await landTwoPaints([
+      eventOf(BOUND_MESSAGES),
+      eventOf(SURFACE_MESSAGES),
+      eventOf(ACTIONABLE_MESSAGES),
+    ]);
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+    await screen.findByRole('checkbox', {name: 'urgent only'});
+
+    await userEvent.click(screen.getByRole('button', {name: 'Repaint'}));
+
+    // The cause re-fired verbatim; the resulting paint landed at the head, live.
+    expect(await screen.findByRole('button', {name: 'Open issue'})).toBeInTheDocument();
+    expect(sent).toHaveLength(3);
+    const textPart = sent[2].message.parts.find(p => p.kind === 'text') as
+      | Extract<Part, {kind: 'text'}>
+      | undefined;
+    expect(textPart?.text).toBe('show my filters');
+    // A forked turn reports the parked snapshot's data model, not the head's.
+    const metadata = sent[2].message.metadata as
+      | {a2uiClientDataModel?: {surfaces: Record<string, unknown>}}
+      | undefined;
+    expect(metadata?.a2uiClientDataModel?.surfaces).toEqual({filters: {urgent: false}});
+    expect(screen.queryByText(/past view/i)).toBeNull();
+  });
+
+  it('an agent-bound action fired from a parked surface forks and jumps to live', async () => {
+    // Land the actionable surface first, then a second paint, then park back onto it.
+    const {sender, sent} = scriptedSender([
+      eventOf(ACTIONABLE_MESSAGES),
+      eventOf(SURFACE_MESSAGES),
+      eventOf(BOUND_MESSAGES),
+    ]);
+    renderCanvas(sender);
+    await ask('show me issues');
+    await screen.findByRole('button', {name: 'Open issue'});
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await ask('show me something');
+    await screen.findByText('hello from the agent');
+
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+    await userEvent.click(await screen.findByRole('button', {name: 'Open issue'}));
+
+    // Dispatched from the past: the consequence lands at the head, live.
+    expect(await screen.findByRole('checkbox', {name: 'urgent only'})).toBeInTheDocument();
+    expect(sent).toHaveLength(3);
+    expect(screen.queryByText(/past view/i)).toBeNull();
+  });
+
+  it('parked interaction state persists across visits (teardown write-back)', async () => {
+    await landTwoPaints();
+
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+    await userEvent.click(await screen.findByRole('checkbox', {name: 'urgent only'}));
+    expect(screen.getByRole('checkbox', {name: 'urgent only'})).toBeChecked();
+
+    await userEvent.click(screen.getByRole('button', {name: 'Return to live'}));
+    await screen.findByText('hello from the agent');
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+
+    // State as of the last time you touched it.
+    expect(await screen.findByRole('checkbox', {name: 'urgent only'})).toBeChecked();
+  });
+
+  it('a paint landing while parked leaves the view parked, with a newer-view signal', async () => {
+    // Sends: two immediate paints, then a gated third dispatched from live before parking.
+    const sent: MessageSendParams[] = [];
+    let release: () => void = () => {};
+    const gate = new Promise<void>(resolve => {
+      release = resolve;
+    });
+    const sender: A2AMessageSender = {
+      async *sendMessageStream(params) {
+        const index = sent.length;
+        sent.push(params);
+        if (index === 0) yield eventOf(BOUND_MESSAGES);
+        else if (index === 1) yield eventOf(SURFACE_MESSAGES);
+        else {
+          await gate;
+          yield eventOf(ACTIONABLE_MESSAGES);
+        }
+      },
+    };
+    renderCanvas(sender);
+    await ask('show my filters');
+    await screen.findByRole('checkbox', {name: 'urgent only'});
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await ask('show me something');
+    await screen.findByText('hello from the agent');
+    await userEvent.keyboard('{Meta>}k{/Meta}');
+    await ask('now the issues');
+
+    // Park during the flight; the paint lands behind the parked view.
+    await userEvent.click(screen.getByRole('button', {name: 'Back'}));
+    await screen.findByRole('checkbox', {name: 'urgent only'});
+    release();
+
+    expect(await screen.findByText(/newer view/i)).toBeInTheDocument();
+    expect(screen.getByRole('checkbox', {name: 'urgent only'})).toBeInTheDocument();
+    expect(screen.queryByRole('button', {name: 'Open issue'})).toBeNull();
+
+    await userEvent.click(screen.getByRole('button', {name: 'Return to live'}));
+    expect(await screen.findByRole('button', {name: 'Open issue'})).toBeInTheDocument();
   });
 });

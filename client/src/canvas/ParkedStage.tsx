@@ -1,0 +1,37 @@
+/**
+ * The parked stage (task 8.4): renders a departed paint from its snapshot through a per-visit
+ * sandbox session (spec decision 4). The session is constructed once per mount; attaching
+ * registers it as the current parked view and returns the teardown — unmount IS the write-back
+ * commit, which uniformly catches every exit: return-to-live, jumping to another entry, causal
+ * jumps, and dispatch-from-parked. The parent keys this component by paint id so switching
+ * parked entries remounts cleanly.
+ */
+import {useEffect, useState} from 'react';
+import {A2uiSurface} from '@a2ui/react/v0_9';
+import type {ReactComponentImplementation} from '@a2ui/react/v0_9';
+import {SurfaceErrorBoundary} from '../chat/SurfaceErrorBoundary';
+import type {PaintEntry} from './paint';
+import type {ParkedSession} from './parkedSession';
+
+export interface ParkedStageProps {
+  entry: PaintEntry;
+  create: (entry: PaintEntry) => ParkedSession<ReactComponentImplementation>;
+  /** Register the session as the active parked view; returns the commit-and-release teardown. */
+  attach: (session: ParkedSession<ReactComponentImplementation>) => () => void;
+}
+
+export function ParkedStage({entry, create, attach}: ParkedStageProps) {
+  const [session] = useState(() => create(entry));
+  useEffect(() => attach(session), [session, attach]);
+
+  const surface = session.processor.model.getSurface(session.surfaceId);
+  return (
+    <div className="canvas-stage canvas-stage--parked" data-testid="canvas-parked-stage">
+      {surface ? (
+        <SurfaceErrorBoundary surfaceId={session.surfaceId} resetKey={entry.paintId}>
+          <A2uiSurface surface={surface} />
+        </SurfaceErrorBoundary>
+      ) : null}
+    </div>
+  );
+}
