@@ -148,7 +148,7 @@ The canvas-first generative-UI shell replacing the chat interface, plus the full
 - [x] **8.5** Agent-side additions — per-paint titles, fork-context attachment on the wire, and the prompt adjustments both imply. Spec: `_dev/docs/spec/task-8.5-agent-side-additions.md`.
 - [x] **8.6** Arc definition + live verification — script "the maintainer's morning" (sequencing, glue prompts, re-composition follow-up), live continuous 8-beat sessions on the canvas until green; arc-green triggers chat-page retirement.
 - [x] **8.7** Thesis doc — `THESIS.md`, the standalone public position piece; `SPEC.md` §1 gains a pointer.
-- [ ] **8.8** Docs & code wrap-up — refresh the deprecated READMEs (root and `primer-a2ui-adapter/` are badly stale; `client/`+`agent/` need review) and refactor `client/src/canvas/`. The root README must gain a `THESIS.md` pointer (deferred from 8.7 so it is written once, in the new README's voice).
+- [WIP] **8.8** Docs & code wrap-up — refresh the deprecated READMEs (root and `primer-a2ui-adapter/` are badly stale; `client/`+`agent/` need review) and refactor `client/src/canvas/`. The root README must gain a `THESIS.md` pointer (deferred from 8.7 so it is written once, in the new README's voice). Spec: `_dev/docs/spec/task-8.8-docs-code-wrap-up.md`. Code half delegated (#119); docs half live after its merge.
 
 Order: 8.0 first → then 8.1 ∥ (8.2 → 8.3 → 8.4) — the client chain is sequential; fixtures record in parallel, and 8.2–8.4's verification gates run on 8.1's fixtures (zero LLM). 8.5 is parallel-eligible to the client chain but must land before 8.6. 8.6 after everything except 8.7/8.8. 8.7 then 8.8 last — the thesis fixes the vocabulary the docs sweep then uses.
 
