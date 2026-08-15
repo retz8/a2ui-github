@@ -14,7 +14,7 @@ const chromeShot = (page: Page) => ({
 
 /** Replay two beats instantly so a departed paint exists to park on. */
 async function settleTwoBeats(page: Page) {
-  await page.goto('/canvas.html?beat=8,1&instant');
+  await page.goto('/?beat=8,1&instant');
   await expect(page.getByTestId('canvas-pending')).toBeHidden({timeout: 20_000});
   await expect(page.getByTestId('canvas-stage')).not.toBeEmpty();
 }

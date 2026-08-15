@@ -24,13 +24,14 @@ export default defineConfig(({command}) => ({
   css: {lightningcss: {errorRecovery: true}},
   build: {
     rollupOptions: {
-      // Four pages: the chat client (default), the fixture dev page, the examples showcase,
-      // and the phase-8 canvas shell (becomes the default at arc-green, spec decision 19).
+      // Four pages: the canvas shell (default since arc-green, task 8.6), the fixture dev
+      // page, the examples showcase, and the demoted chat client (dev-only live-agent
+      // reference, spec decision 19).
       input: {
         index: fileURLToPath(new URL('./index.html', import.meta.url)),
         dev: fileURLToPath(new URL('./dev.html', import.meta.url)),
         examples: fileURLToPath(new URL('./examples.html', import.meta.url)),
-        canvas: fileURLToPath(new URL('./canvas.html', import.meta.url)),
+        chat: fileURLToPath(new URL('./chat.html', import.meta.url)),
       },
     },
   },
