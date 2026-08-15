@@ -6,7 +6,7 @@
 import {describe, it, expect, vi} from 'vitest';
 import {screen} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import {renderWithPrimer} from '../../tests/helpers';
+import {renderWithPrimer} from '../../../tests/helpers';
 import {Palette} from './Palette';
 
 describe('Palette', () => {

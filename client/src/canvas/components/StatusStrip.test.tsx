@@ -5,8 +5,8 @@
  */
 import {describe, it, expect} from 'vitest';
 import {screen} from '@testing-library/react';
-import {renderWithPrimer} from '../../tests/helpers';
-import {createCanvasStore} from './canvasStore';
+import {renderWithPrimer} from '../../../tests/helpers';
+import {createCanvasStore} from '../canvasStore';
 import {StatusStrip} from './StatusStrip';
 
 describe('StatusStrip', () => {

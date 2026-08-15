@@ -4,7 +4,7 @@
  */
 import {describe, it, expect, vi, afterEach} from 'vitest';
 import {act, screen} from '@testing-library/react';
-import {renderWithPrimer} from '../../tests/helpers';
+import {renderWithPrimer} from '../../../tests/helpers';
 import {AmbientNotice, NOTICE_DURATION_MS} from './AmbientNotice';
 
 afterEach(() => {

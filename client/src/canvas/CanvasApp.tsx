@@ -14,13 +14,13 @@ import type {A2ASenderOptions} from '../a2a/client';
 import {getBeatFixture} from '../beats/beatFixtures';
 import {createCanvasWiring} from './createCanvasWiring';
 import {replayBeatOnCanvas} from './replayBeat';
-import {AmbientNotice} from './AmbientNotice';
-import {CanvasOverlay} from './CanvasOverlay';
-import {CanvasStage} from './CanvasStage';
-import {HistoryChrome} from './HistoryChrome';
-import {ParkedStage} from './ParkedStage';
-import {Palette} from './Palette';
-import {StatusStrip} from './StatusStrip';
+import {AmbientNotice} from './components/AmbientNotice';
+import {CanvasOverlay} from './components/CanvasOverlay';
+import {CanvasStage} from './components/CanvasStage';
+import {HistoryChrome} from './components/HistoryChrome';
+import {ParkedStage} from './components/ParkedStage';
+import {Palette} from './components/Palette';
+import {StatusStrip} from './components/StatusStrip';
 import './CanvasApp.css';
 
 export function CanvasApp({serverUrl, client}: A2ASenderOptions) {
