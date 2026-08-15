@@ -6,6 +6,10 @@
 
 ## 1. Thesis & framing
 
+> This section holds the design premises the project builds on. The position the project argues
+> for — canvas-first generative UI, and why chat is the wrong shell for it — is a standalone
+> document: [`THESIS.md`](THESIS.md).
+
 - **Generative UI: the agent is the frontend, not a BFF.** The agent owns the UI/UX logic — page flow, layout, and what a screen looks like — and composes screens live from catalog primitives.
 - **Never invent components outside Primer/React.** The catalog is Primer primitives only. Anything complex (e.g. a diff view) is the agent composing a view from existing primitives — *not* a bespoke custom component.
 - **Don't over-determine the agent.** We give it important constraints + knowledge and trust it to make UI/flow decisions. Less dev-specified logic than today's apps, not more.
