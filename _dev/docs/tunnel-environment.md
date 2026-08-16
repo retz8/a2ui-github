@@ -1,33 +1,32 @@
 # Tunnel environment
 
-Development normally runs over a VS Code dev tunnel: the dev machine (home Mac)
-runs the servers and the tunnel host, and the browser is on a remote machine
-that reaches everything through the tunnel. In that browser, `localhost:<port>`
-resolves to the browser's machine — not the dev machine — so **every URL the
-browser touches must be a tunnel URL**, including any server URL the app itself
-calls (the agent port), not just the page address.
+Instead of `localhost:<port>`, use the tunnel URL:
+`https://vnw20xbg-<port>.asse.devtunnels.ms`. This applies to every URL the
+browser touches — the page address and any server URL the app calls (the agent
+port).
 
-Tunnel URL format: `https://vnw20xbg-<port>.asse.devtunnels.ms`
+This setup is only for Jioh In (@retz8); it does not apply to anyone else
+working with this repo.
 
 ## Rules
 
-- **Forward the ports and set them Public.** Client `5173`, deterministic agent
-  `10002`, live agent `10003`. A private port returns `401` to cross-origin
-  fetches (surfaces as a `404`/`502` at the tunnel and `Failed to fetch` in the
-  browser).
-- **Client:** set `VITE_A2A_SERVER_URL` to the **agent's tunnel URL** so the
-  browser reaches the agent (default is `http://localhost:10002`, which the
-  remote browser cannot reach).
+- **Client:** set `VITE_A2A_SERVER_URL` to the **agent's tunnel URL** (its
+  default is `http://localhost:10002`, which the remote browser cannot reach).
 - **Agent:** run with `--base-url <agent tunnel URL>` so the agent card
-  advertises the public endpoint. Its default card URL is
-  `http://<host>:<port>` — with that, the card fetch succeeds but the
-  `message/send` POST targets an unreachable `localhost` and 404s.
-- First visit to each tunnel host shows a one-time "you are connecting to a dev
+  advertises the public endpoint. With the default (`http://<host>:<port>`),
+  the card fetch succeeds but the `message/send` POST targets an unreachable
+  `localhost` and 404s.
+- Ports in play: client `5173`, deterministic agent `10002`, live agent
+  `10003`. Jioh forwards them and sets them **Public** manually at the start of
+  a session. If you see `Failed to fetch` in the browser (or `401`/`404`/`502`
+  at the tunnel), suspect a non-public or unforwarded port before debugging the
+  app — ask Jioh to check the port.
+- First visit to a tunnel host shows a one-time "you are connecting to a dev
   tunnel" interstitial — click **Continue**.
 - The servers' CORS policy already allows `localhost` and `*.devtunnels.ms`;
   no server-side change is needed.
-- **Browser verification (Claude-in-Chrome) always uses tunnel URLs, never
-  `localhost`** — the controlled browser is on the remote side.
+- Claude-in-Chrome always drives tunnel URLs, never `localhost` — the
+  controlled browser is on the remote side.
 
 ## Run commands
 

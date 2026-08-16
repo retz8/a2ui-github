@@ -43,10 +43,6 @@ This project targets a single protocol version at a time.
 
 Catalog-authoring and renderer-design conventions live in the `a2ui-sdk-design` skill (read per the top instruction before that work).
 
-### Local testing in a tunnel environment
-
-The dev machine is normally reached through a VS Code dev tunnel, so the controlled browser is remote and `localhost:<port>` does not resolve to the dev machine. When driving the app or agent for live verification — including `review-nightly` — use tunnel URLs, not `localhost`, unless the user explicitly says otherwise. Setup, rules, and run commands: `_dev/docs/tunnel-environment.md`.
-
 ### Daily-work harness
 
 The dev workflow (phases → sub-tasks, dispatch, branching, wrap-up) lives in the **`daily-work-harness` plugin** — its skills (`daily-work-harness:pick-up-task` / `:wrap-up` / `:rebase-with-main` / `:grill-to-spec`) and the `daily-workflow.md` reference doc they read. Operational rules it relies on:
