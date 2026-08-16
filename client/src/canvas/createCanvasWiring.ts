@@ -133,7 +133,12 @@ export function createCanvasWiring({serverUrl, client}: A2ASenderOptions): Canva
       const sender = await getSender();
       await sendAndApply(
         sender,
-        buildActionMessageParams(action, session.get(), dataModel ?? getClientDataModel(), forkContext),
+        buildActionMessageParams(
+          action,
+          session.get(),
+          dataModel ?? getClientDataModel(),
+          forkContext,
+        ),
         turn.apply,
         session,
         reportAgentText,
