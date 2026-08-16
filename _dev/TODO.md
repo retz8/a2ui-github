@@ -137,7 +137,7 @@ The live LLM agent that generates A2UI surfaces from the catalog, against the li
 
 Order: 7.1 ∥ 7.4 from the start · 7.2 after 7.1 · 7.3 after 7.2 · 7.5 ∥ 7.6 after 7.3 · 7.9 after 7.3 · 7.7 last (after 7.9) · 7.8 after 7.1 (client-only; parallel to the whole 7.2→7.7 chain).
 
-## Phase 8 — Demo integration [WIP]
+## Phase 8 — Demo integration [done]
 The canvas-first generative-UI shell replacing the chat interface, plus the full maintainer-triage arc running end-to-end on the live a2ui repo — one continuous session, all 8 beats, with a standalone thesis stating the paradigm. Spec: `_dev/docs/spec/phase-8-demo-integration.md`. Handles below are non-restrictive — each sub-task's scope is settled in its own grill.
 
 - [x] **8.0** Phase-spec understanding & refinement session — user-driven deep-read of the phase spec (paradigm, glossary, storage decisions), refining where wanted; this sub-task may amend the phase spec.
