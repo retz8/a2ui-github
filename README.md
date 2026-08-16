@@ -1,35 +1,81 @@
 # a2ui-github
 
-A downstream consumer of the [A2UI](https://github.com/a2ui-project/a2ui) protocol, exploring
-generative UI for GitHub maintainer triage: an agent composes live UI from a curated
-[Primer](https://primer.style/) component catalog instead of a hand-built frontend.
+**Generative UI for GitHub.** An LLM agent that answers questions about GitHub
+not with text, but by painting live UI onto a full-screen canvas — built on the
+[A2UI](https://github.com/a2ui-project/a2ui) protocol and GitHub's own
+[Primer](https://primer.style/) design system.
 
-The repository is a polyglot monorepo:
+Ask *"show me the open pull requests that need review"* and the agent composes
+a PR list from a validated catalog of Primer components and streams it onto the
+canvas. Everything it paints is interactive: open a PR from that list and the
+next surface swaps in — one continuous session, steered by language.
 
-- **`primer-a2ui-adapter/`** — the publishable A2UI catalog/adapter mapping A2UI components to Primer
-  React wrappers, built over [`@a2ui/react`](https://www.npmjs.com/package/@a2ui/react).
-- **`client/`** — a thin React + Primer demo app that renders A2UI surfaces through the adapter.
-- **`agent/`** — _(planned)_ a Python agent that generates A2UI surfaces against the live GitHub repo.
+![The canvas shell painting live GitHub data: a prompt paints the PR list, a follow-up swaps in the PR detail, and the timeline steps back and returns to live](docs/assets/a2ui-github-canvas-hero.gif)
 
-> 🚧 **In active development.** APIs, structure, and catalog contents are still moving.
+Why a canvas instead of a chat transcript — the paradigm this demo argues — is
+laid out in **[THESIS.md](THESIS.md)**.
 
-## Getting started
+## How it works
 
-The TypeScript workspaces use **Yarn 4** (via [corepack](https://nodejs.org/api/corepack.html)):
-
-```bash
-corepack enable
-yarn install
+```
+   prompt / interaction
+          │
+          ▼               A2A (streaming)
+  client (canvas shell) ◄──────────────► agent (Gemini via ADK)
+          │                                      │
+   renders through                        reads GitHub via the
+  primer-a2ui-adapter                   official MCP server (read-only)
 ```
 
-Root scripts orchestrate the whole repo in dependency order:
+The agent generates against the catalog's JSON-Schema contract and every
+surface is validated before it reaches the stage; the client renders the same
+contract's React implementations.
+
+## The packages
+
+| Package | Role |
+| --- | --- |
+| [`primer-a2ui-adapter/`](primer-a2ui-adapter/) | The A2UI catalog + React adapter for Primer: 146 component entries and 19 client-side functions, parity-tested against the catalog document. |
+| [`client/`](client/) | The web app: the canvas shell (default page), a conventional chat client, and two no-LLM dev pages. The canvas's concepts live in [`client/src/canvas/`](client/src/canvas/). |
+| [`agent/`](agent/) | Two Python A2A servers: the live LLM agent (Gemini, read-only GitHub MCP) and a deterministic canned-response agent for token-free testing. |
+
+Each package README is the manual for that package; this one is the map.
+
+## Running it
+
+TypeScript workspaces use **Yarn 4** (via [corepack](https://nodejs.org/api/corepack.html));
+the agent is a separate [uv](https://docs.astral.sh/uv/)-managed Python project.
 
 ```bash
-yarn build:all      # build every workspace (adapter before client)
-yarn typecheck:all  # type-check every workspace
-yarn lint:all       # lint the repo
-yarn test:all       # run every workspace's tests
-yarn verify:all     # build + typecheck + lint + test, in that order
+corepack enable && yarn install
+cd agent && uv sync && cp .env.example .env   # then fill in the two keys
 ```
 
-Each workspace also exposes its own commands in its `package.json`.
+Two terminals:
+
+```bash
+# 1 — the live agent
+cd agent && uv run python -m llm_agent --host localhost --port 10003
+
+# 2 — the client
+VITE_A2A_SERVER_URL=http://localhost:10003 yarn workspace client run dev
+```
+
+Open http://localhost:5173 and ask for something. To try it without any
+API keys, see "Working without the LLM" in [`client/README.md`](client/README.md).
+
+## Verifying the repo
+
+```bash
+yarn build:all      # build every workspace, dependency order
+yarn typecheck:all
+yarn lint:all
+yarn test:all
+yarn verify:all     # build + typecheck + lint + format check + test
+```
+
+The agent's suite runs separately: `cd agent && uv run pytest`.
+
+## License
+
+[MIT](LICENSE)
