@@ -15,9 +15,9 @@ from llm_agent.tools import STUB_TOOLS
 
 logger = logging.getLogger(__name__)
 
-# The model the demo runs on; overridable via MODEL_NAME. Not the lite tier — it could
-# not reliably emit a well-formed surface at this payload size (task 7.7, round 1).
-DEFAULT_MODEL = "gemini-3.5-flash"
+# Overridable via MODEL_NAME. Not the lite tier — it could not reliably emit a
+# well-formed surface at this payload size.
+DEFAULT_MODEL = "gemini-3.7-flash"
 
 # Live GitHub by default. The stub exists so testing and manual client work need
 # not consume GitHub MCP call allowance, but it is always an explicit opt-in.
