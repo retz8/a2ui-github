@@ -12,8 +12,8 @@ import {createCanvasStore} from '../src/canvas/canvasStore';
 import {createTurnRunner} from '../src/canvas/canvasTurn';
 import {createParkedSession} from '../src/canvas/parkedSession';
 import {replayBeatOnCanvas} from '../src/canvas/replayBeat';
-import {CanvasStage} from '../src/canvas/CanvasStage';
-import {ParkedStage} from '../src/canvas/ParkedStage';
+import {CanvasStage} from '../src/canvas/components/CanvasStage';
+import {ParkedStage} from '../src/canvas/components/ParkedStage';
 import {renderWithPrimer} from './helpers';
 
 function setup() {

@@ -7,13 +7,13 @@ import {CATALOG} from 'primer-a2ui-adapter';
 import type {A2ASenderOptions} from '../a2a/client';
 import {createSenderResolver} from '../a2a/client';
 import {createA2AActionHandler} from '../a2a/createA2AActionHandler';
-import {describeAction} from './describeAction';
-import {describeError} from './describeError';
+import {describeAction} from '../shared/describeAction';
+import {describeError} from '../shared/describeError';
 import {createA2ASession} from '../a2a/session';
 import {streamUserMessage} from '../a2a/streamUserMessage';
 import {applyA2uiMessages} from '../a2ui/applyMessages';
 import type {A2uiMessageTarget} from '../a2ui/applyMessages';
-import {SurfaceErrorBoundary} from './SurfaceErrorBoundary';
+import {SurfaceErrorBoundary} from '../shared/SurfaceErrorBoundary';
 import './ChatView.css';
 
 /**

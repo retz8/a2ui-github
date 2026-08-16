@@ -9,9 +9,9 @@
 import {useEffect, useState} from 'react';
 import {A2uiSurface} from '@a2ui/react/v0_9';
 import type {ReactComponentImplementation} from '@a2ui/react/v0_9';
-import {SurfaceErrorBoundary} from '../chat/SurfaceErrorBoundary';
-import type {PaintEntry} from './paint';
-import type {ParkedSession} from './parkedSession';
+import {SurfaceErrorBoundary} from '../../shared/SurfaceErrorBoundary';
+import type {PaintEntry} from '../paint';
+import type {ParkedSession} from '../parkedSession';
 
 export interface ParkedStageProps {
   entry: PaintEntry;

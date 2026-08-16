@@ -8,8 +8,8 @@
 import type {MessageProcessor} from '@a2ui/web_core/v0_9';
 import {A2uiSurface} from '@a2ui/react/v0_9';
 import type {ReactComponentImplementation} from '@a2ui/react/v0_9';
-import {SurfaceErrorBoundary} from '../chat/SurfaceErrorBoundary';
-import type {CanvasState} from './canvasStore';
+import {SurfaceErrorBoundary} from '../../shared/SurfaceErrorBoundary';
+import type {CanvasState} from '../canvasStore';
 
 export interface CanvasStageProps {
   processor: MessageProcessor<ReactComponentImplementation>;

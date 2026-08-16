@@ -6,7 +6,7 @@
  * The in-flight label upgrades to the agent-authored paint title when one streams (task 8.5).
  */
 import {Spinner} from '@primer/react';
-import type {CanvasState} from './canvasStore';
+import type {CanvasState} from '../canvasStore';
 
 export interface StatusStripProps {
   state: CanvasState;

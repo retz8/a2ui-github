@@ -4,7 +4,7 @@
  * the fade; stored nowhere once dismissed.
  */
 import {useEffect} from 'react';
-import type {CanvasState} from './canvasStore';
+import type {CanvasState} from '../canvasStore';
 
 export const NOTICE_DURATION_MS = 6000;
 

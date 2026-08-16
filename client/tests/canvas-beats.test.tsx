@@ -19,7 +19,7 @@ import type {BeatFixture} from '../src/beats/beatFixtures';
 import {createCanvasStore} from '../src/canvas/canvasStore';
 import {createTurnRunner} from '../src/canvas/canvasTurn';
 import {replayBeatOnCanvas} from '../src/canvas/replayBeat';
-import {CanvasStage} from '../src/canvas/CanvasStage';
+import {CanvasStage} from '../src/canvas/components/CanvasStage';
 import {renderWithPrimer} from './helpers';
 
 /** The last surface the painting turn creates — the one decision 3 says takes the stage. */
