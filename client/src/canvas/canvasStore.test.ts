@@ -4,7 +4,7 @@
  * 1, 3, 12, 13).
  */
 import {describe, it, expect, vi} from 'vitest';
-import type {PaintCause, PaintEntry, PaintSnapshot} from './paint';
+import type {PaintCause, PaintEntry, PaintSnapshot} from './timeline/paint';
 import {createCanvasStore, currentPaintId, TIMELINE_CAP} from './canvasStore';
 
 const CAUSE: PaintCause = {

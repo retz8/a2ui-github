@@ -5,7 +5,7 @@
  * orchestration and calls into here.
  */
 import type {A2uiMessage} from '@a2ui/web_core/v0_9';
-import type {SnapshotSourceSurface} from './snapshotSurface';
+import type {SnapshotSourceSurface} from '../timeline/snapshotSurface';
 
 /** The slice of a live/staging surface the runner reads: root type, title, catalog, serialization. */
 export interface CanvasSurface extends SnapshotSourceSurface {

@@ -7,9 +7,9 @@
  */
 import type {A2uiClientDataModel} from '@a2ui/web_core/v0_9';
 import type {ReactComponentImplementation} from '@a2ui/react/v0_9';
-import type {ForkContext} from '../a2a/messages';
-import type {CanvasStore} from './canvasStore';
-import {currentPaintId} from './canvasStore';
+import type {ForkContext} from '../../a2a/messages';
+import type {CanvasStore} from '../canvasStore';
+import {currentPaintId} from '../canvasStore';
 import {entryTitle} from './paint';
 import type {ParkedSession} from './parkedSession';
 

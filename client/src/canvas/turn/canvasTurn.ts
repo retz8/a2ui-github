@@ -24,14 +24,14 @@
  * live-registry invariant in `_dev/docs/spec/phase-8-demo-integration.md`.
  */
 import type {A2uiMessage} from '@a2ui/web_core/v0_9';
-import type {PaintMeta} from '../a2a/messages';
-import {paintMetaOf, QUESTION_PAINT_KIND} from '../a2a/messages';
-import {applyA2uiMessages} from '../a2ui/applyMessages';
-import {describeError} from '../shared/describeError';
-import type {CanvasStore} from './canvasStore';
-import type {PaintCause} from './paint';
-import {describeCause} from './paint';
-import {serializeSurface} from './snapshotSurface';
+import type {PaintMeta} from '../../a2a/messages';
+import {paintMetaOf, QUESTION_PAINT_KIND} from '../../a2a/messages';
+import {applyA2uiMessages} from '../../a2ui/applyMessages';
+import {describeError} from '../../shared/describeError';
+import type {CanvasStore} from '../canvasStore';
+import type {PaintCause} from '../timeline/paint';
+import {describeCause} from '../timeline/paint';
+import {serializeSurface} from '../timeline/snapshotSurface';
 import type {TurnProcessor} from './turnMessages';
 import {QUESTION_ROOT_TYPE, questionTitleOf, rootTypeOf, targetOf} from './turnMessages';
 

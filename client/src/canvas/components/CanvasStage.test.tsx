@@ -9,7 +9,7 @@ import type {A2uiMessage} from '@a2ui/web_core/v0_9';
 import {CATALOG, CATALOG_ID} from 'primer-a2ui-adapter';
 import {renderWithPrimer} from '../../../tests/helpers';
 import {createCanvasStore} from '../canvasStore';
-import {createTurnRunner} from '../canvasTurn';
+import {createTurnRunner} from '../turn/canvasTurn';
 import {CanvasStage} from './CanvasStage';
 
 function paint(surfaceId: string, text: string): A2uiMessage[] {

@@ -6,7 +6,7 @@
  * the replay driver, the A2A callbacks), which is why it is a closure module and not
  * component state.
  */
-import type {PaintEntry, PaintSnapshot} from './paint';
+import type {PaintEntry, PaintSnapshot} from './timeline/paint';
 
 /** The ring cap — a stated policy bound, not a memory guard (task-8.4 spec decision 13). */
 export const TIMELINE_CAP = 50;

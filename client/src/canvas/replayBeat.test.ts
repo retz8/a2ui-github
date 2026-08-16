@@ -6,8 +6,8 @@
 import {describe, it, expect, vi, afterEach} from 'vitest';
 import type {A2uiMessage} from '@a2ui/web_core/v0_9';
 import {createCanvasStore} from './canvasStore';
-import type {TurnHandle} from './canvasTurn';
-import type {PaintCause} from './paint';
+import type {TurnHandle} from './turn/canvasTurn';
+import type {PaintCause} from './timeline/paint';
 import {replayBeatOnCanvas} from './replayBeat';
 import type {BeatFixture} from '../beats/beatFixtures';
 

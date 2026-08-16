@@ -13,8 +13,8 @@
 import {useState} from 'react';
 import {Button} from '@primer/react';
 import type {CanvasState} from '../canvasStore';
-import type {PaintEntry} from '../paint';
-import {entryTitle} from '../paint';
+import type {PaintEntry} from '../timeline/paint';
+import {entryTitle} from '../timeline/paint';
 
 export interface HistoryChromeProps {
   state: CanvasState;

@@ -28,13 +28,13 @@ import {createA2ASession} from '../a2a/session';
 import {streamUserMessage} from '../a2a/streamUserMessage';
 import {describeError} from '../shared/describeError';
 import {createCanvasStore} from './canvasStore';
-import {createTurnRunner} from './canvasTurn';
-import {createCauseContext} from './causeContext';
-import type {ParkedHolder} from './causeContext';
-import type {PaintCause, PaintEntry} from './paint';
-import {entryTitle} from './paint';
-import type {ParkedSession} from './parkedSession';
-import {createParkedSession} from './parkedSession';
+import {createTurnRunner} from './turn/canvasTurn';
+import {createCauseContext} from './timeline/causeContext';
+import type {ParkedHolder} from './timeline/causeContext';
+import type {PaintCause, PaintEntry} from './timeline/paint';
+import {entryTitle} from './timeline/paint';
+import type {ParkedSession} from './timeline/parkedSession';
+import {createParkedSession} from './timeline/parkedSession';
 
 const BLOCKED_CUE = 'Hold on — a paint is in flight. Try again when it lands.';
 

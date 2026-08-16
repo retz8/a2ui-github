@@ -8,7 +8,7 @@
  * parent's eviction. These fallbacks are permanent — the 8.5 agent-authored `title` sits on top.
  */
 import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
-import {describeAction} from '../shared/describeAction';
+import {describeAction} from '../../shared/describeAction';
 
 /** Fields every cause records, whatever its kind. */
 interface CauseCommon {

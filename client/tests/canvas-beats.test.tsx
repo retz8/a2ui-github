@@ -17,7 +17,7 @@ import {CATALOG} from 'primer-a2ui-adapter';
 import {BEAT_FIXTURES, messagesOf} from '../src/beats/beatFixtures';
 import type {BeatFixture} from '../src/beats/beatFixtures';
 import {createCanvasStore} from '../src/canvas/canvasStore';
-import {createTurnRunner} from '../src/canvas/canvasTurn';
+import {createTurnRunner} from '../src/canvas/turn/canvasTurn';
 import {replayBeatOnCanvas} from '../src/canvas/replayBeat';
 import {CanvasStage} from '../src/canvas/components/CanvasStage';
 import {renderWithPrimer} from './helpers';

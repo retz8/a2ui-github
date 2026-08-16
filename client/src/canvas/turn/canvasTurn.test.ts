@@ -8,8 +8,8 @@ import {describe, it, expect} from 'vitest';
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import type {A2uiMessage} from '@a2ui/web_core/v0_9';
 import {CATALOG, CATALOG_ID} from 'primer-a2ui-adapter';
-import type {PaintCause} from './paint';
-import {createCanvasStore} from './canvasStore';
+import type {PaintCause} from '../timeline/paint';
+import {createCanvasStore} from '../canvasStore';
 import {createTurnRunner} from './canvasTurn';
 
 const msg = (m: Record<string, unknown>): A2uiMessage =>

@@ -12,7 +12,7 @@
  */
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import type {ActionListener, A2uiMessage, Catalog, ComponentApi} from '@a2ui/web_core/v0_9';
-import type {CanvasStore} from './canvasStore';
+import type {CanvasStore} from '../canvasStore';
 import type {PaintEntry} from './paint';
 import {deepFreeze} from './snapshotSurface';
 

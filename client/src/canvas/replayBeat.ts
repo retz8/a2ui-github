@@ -13,8 +13,8 @@ import type {A2uiClientAction} from '@a2ui/web_core/v0_9';
 import type {BeatFixture, BeatTurn} from '../beats/beatFixtures';
 import type {CanvasStore} from './canvasStore';
 import {currentPaintId} from './canvasStore';
-import type {TurnHandle} from './canvasTurn';
-import type {PaintCause} from './paint';
+import type {TurnHandle} from './turn/canvasTurn';
+import type {PaintCause} from './timeline/paint';
 
 export interface ReplayBeatOptions {
   /** The canvas turn runner; one turn per recorded turn, exactly as the live client runs. */

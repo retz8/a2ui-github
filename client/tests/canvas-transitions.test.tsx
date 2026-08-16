@@ -8,7 +8,7 @@ import {MessageProcessor} from '@a2ui/web_core/v0_9';
 import {CATALOG} from 'primer-a2ui-adapter';
 import {BEAT_FIXTURES} from '../src/beats/beatFixtures';
 import {createCanvasStore} from '../src/canvas/canvasStore';
-import {createTurnRunner} from '../src/canvas/canvasTurn';
+import {createTurnRunner} from '../src/canvas/turn/canvasTurn';
 import {replayBeatOnCanvas} from '../src/canvas/replayBeat';
 import {VALIDATION_FAILURE_BEAT, QUESTION_BEAT} from './syntheticBeats';
 
