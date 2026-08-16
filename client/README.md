@@ -1,27 +1,67 @@
 # client
 
-The thin React + [Primer](https://primer.style/) demo app that renders A2UI surfaces through
-[`primer-a2ui-adapter`](../primer-a2ui-adapter) and round-trips Button `event` actions to the
-deterministic A2A server in [`agent/`](../agent).
+The React + [Primer](https://primer.style/) app that renders A2UI surfaces
+through [`primer-a2ui-adapter`](../primer-a2ui-adapter) and talks A2A to the
+agents in [`agent/`](../agent). Its primary interface is the **canvas shell**
+driven by the live LLM agent: language in, full-screen generative UI out.
 
-The fixture-driven test space is a **dev oracle**: known-good A2UI loaded locally, so no LLM is
-involved during development. `functionCall` actions run locally; `event` actions go over A2A to the
-server and the response feeds back into the same processor to re-render.
+## Pages
 
-The build serves four pages: the canvas shell (`index.html`, the default since arc-green — task
-8.6), the demoted chat client (`chat.html`, a dev-only live-agent reference), the fixture dev page (`dev.html`), and
-the **examples showcase** (`examples.html`, open `/examples.html` in dev). The examples page is a
-third, **server-independent** dev oracle: it renders the curated agent knowledge examples from
-`agent/knowledge/examples/*.json` (bundled read-only via `import.meta.glob`) one at a time, selected
-by a dropdown with an `?example=` URL param, each shown with its natural-language intent as a caption
-above the rendered surface. No action handler is wired, so it needs no `VITE_A2A_SERVER_URL`, no
-agent, and no tunnel — `functionCall` actions run live while `event` actions are inert.
+| Page | What it is | Needs a server? |
+| --- | --- | --- |
+| `index.html` (default) | The **canvas shell** — the canvas-first generative-UI interface. Concepts and internals: [`src/canvas/README.md`](src/canvas/README.md). | live agent |
+| `chat.html` | The **chat client** — a conventional chat interface over the same agent and transport, for trying the GitHub agent through chat. | live agent |
+| `dev.html` | The **fixture dev space** — known-good A2UI fixtures loaded locally, one per catalog scenario; the render-correctness oracle. | no |
+| `examples.html` | The **examples showcase** — renders the agent's curated knowledge examples (`agent/knowledge/examples/*.json`), selected by dropdown or `?example=`. | no |
 
-A fourth source of known-good A2UI is the **recorded beats** in `agent/recordings/beats/*.json`,
-bundled through the same glob mechanism and loaded by `src/beats/`. Unlike a fixture, a recording
-keeps the batch sequence the agent streamed, so replaying one (`src/beats/replay.ts`) exercises the
-incremental path rather than a single dump — which is what the canvas shell is verified against with
-no LLM in the loop. Re-record them from `agent/` (see its README).
+## Running
+
+```bash
+yarn workspace client run dev        # vite dev server (5173)
+```
+
+The canvas and chat pages send to `VITE_A2A_SERVER_URL` (default
+`http://localhost:10002`, the deterministic agent's port). To drive the live
+agent, start it per [`agent/README.md`](../agent/README.md) and point the
+client at it:
+
+```bash
+VITE_A2A_SERVER_URL=http://localhost:10003 yarn workspace client run dev
+```
+
+`dev.html` and `examples.html` are server-independent — `functionCall` actions
+run locally in both; `event` actions go over the wire only where a server is
+wired.
+
+## Working without the LLM
+
+Three no-LLM paths cover most development:
+
+- **Fixtures** (`dev.html`): hand-authored known-good A2UI per catalog
+  scenario, in `src/fixtures/`.
+- **Beat replay** (`index.html?beat=N[,M…]`, `&instant` to skip pacing):
+  replays recorded live-agent streams (`agent/recordings/beats/*.json`)
+  through the full canvas turn lifecycle — real agent output, zero tokens.
+  Re-recording them is documented in `agent/README.md`.
+- **Examples showcase** (`examples.html`): the curated agent knowledge
+  examples rendered through the same pipeline.
+
+## Source map
+
+```
+src/
+  canvas/          the canvas shell — has its own README
+  chat/            the chat client page
+  a2a/             the A2A transport both pages consume: agent-card resolution,
+                   session, streaming send, action handler, and the canvas's
+                   wire additions (paintMeta, fork context — see the canvas README)
+  a2ui/            applying streamed A2UI message batches to a processor
+  beats/           bundling + parsing the recorded beat fixtures
+  fixtures/        known-good A2UI fixtures for the dev space
+  test-space/      the dev-space UI (fixture picker + view)
+  examples-space/  the examples-showcase UI
+  shared/          cross-page helpers (action/error describers, error boundary)
+```
 
 ## Commands
 
@@ -30,50 +70,9 @@ yarn workspace client run dev        # vite dev server
 yarn workspace client run build      # tsc --noEmit && vite build
 yarn workspace client run typecheck
 yarn workspace client run test       # vitest (jsdom + RTL)
-yarn workspace client run test:e2e   # playwright visual regression
+yarn workspace client run test:e2e   # playwright visual regression (builds the adapter first)
 ```
 
-## A2A server URL
-
-The client sends `event` actions to `VITE_A2A_SERVER_URL` (default `http://localhost:10002`):
-
-```bash
-VITE_A2A_SERVER_URL=http://localhost:10002 yarn workspace client run dev
-```
-
-### Over a VS Code dev tunnel
-
-When the browser reaches the app through a tunnel (not the same machine as the servers),
-`localhost` resolves to the browser's machine, not the server host. The client **and** the agent
-card must both use the tunnel URL — otherwise the card resolves but its advertised `message/send`
-endpoint points at an unreachable `localhost` (you'll see the card fetch succeed, then a `404` on
-`localhost`). Forward ports `5173` (client) and `10002` (agent) and set both to **Public** visibility
-(a private port returns `401` to cross-origin fetches).
-
-```bash
-# Agent — advertise the tunnel URL in its agent card (not localhost):
-cd agent && uv run python -m deterministic_agent \
-  --host localhost --port 10002 \
-  --base-url https://vnw20xbg-10002.asse.devtunnels.ms
-
-# Client (separate terminal) — point at the same agent tunnel URL:
-VITE_A2A_SERVER_URL=https://vnw20xbg-10002.asse.devtunnels.ms \
-  yarn workspace client run dev
-```
-
-First visit to each tunnel host shows a one-time "you are connecting to a dev tunnel" interstitial —
-click **Continue**. The server's CORS policy already allows `localhost` and `*.devtunnels.ms`.
-
-## Manual round-trip verification (not in CI)
-
-Closes the genuine FE↔server `event` round-trip. CI covers marshalling/extraction and re-render
-reactivity with the transport mocked; this confirms the real wire.
-
-1. Start the deterministic server: `cd agent && uv run python -m deterministic_agent --host localhost --port 10002`.
-2. Start the client: `yarn workspace client run dev`, open it, select the **button-event** fixture.
-3. **Re-render:** click **Send event** → the label flips to `✅ Sent — server received submit` and
-   the button becomes disabled. (Confirm live in Claude Chrome with before/after screenshots.)
-4. **Wire confirmed:** the request actually hit the Python server — verify via the server log or a
-   `message/send` POST to `:10002` in the browser Network panel (not just the UI changing).
-5. **Failure path:** stop the server and click again → the console logs `[A2UI:a2a]` with the error
-   and the UI stays put (no throw).
+Playwright snapshots are the visual-regression baselines for the fixture set;
+`test:e2e` rebuilds `primer-a2ui-adapter` before running so the baselines see
+the current catalog.
