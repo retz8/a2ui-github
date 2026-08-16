@@ -36,3 +36,6 @@ tool_shapes.dump.jsonl
 # Raw per-conversation recorder output; only the finalized per-beat fixtures under
 # agent/recordings/beats/ are tracked.
 agent/.recordings/
+
+# Adapter Template (WIP)
+adapter-template/
