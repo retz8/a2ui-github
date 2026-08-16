@@ -2,8 +2,8 @@
  * Provenance builders for a canvas turn: they read the store and the active parked session to
  * assemble the cause and fork metadata a dispatch needs. A parked view makes a turn a fork —
  * its cause records the parent it forked from, and the turn reports the parked snapshot's data
- * model rather than the live head's. Callers capture these BEFORE the jump-to-live at dispatch,
- * since dispatch clears the parked view.
+ * model rather than the live head's. The parked view stays mounted through the turn — the view
+ * returns to live only when the forked paint lands.
  */
 import type {A2uiClientDataModel} from '@a2ui/web_core/v0_9';
 import type {ReactComponentImplementation} from '@a2ui/react/v0_9';

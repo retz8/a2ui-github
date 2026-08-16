@@ -42,7 +42,7 @@ The agent's Phase-7 semantic-id convention is unchanged. The client snapshots th
 
 ### 5. Append-only DVR timeline with a pinned live head
 
-History is an append-only sequence of snapshots; the newest is live. Viewing a snapshot is scrubbing back; nothing ever truncates. A new paint always appends at the head. The canvas jumps to live at **dispatch**: the moment the user dispatches a turn from a parked view, the view returns to the live stage, which holds while the paint streams. A paint that **lands** while the user is parked leaves them parked — the head advances behind them, with a distinct newer-view signal alongside the stale banner. (Refined by task 8.4.)
+History is an append-only sequence of snapshots; the newest is live. Viewing a snapshot is scrubbing back; nothing ever truncates. A new paint always appends at the head. The canvas jumps to live at **landing**: a turn dispatched from a parked view holds that view while the paint streams, and the view returns to live when the forked paint lands — a fork that fails, is canceled, or resolves to a question leaves the user where they acted. A paint that **lands** while the user is parked and is not their own fork leaves them parked — the head advances behind them, with a distinct newer-view signal alongside the stale banner. (Refined by task 8.4; jump moved from dispatch to landing post-8.8.)
 
 ### 6. Chronological order with causal links
 

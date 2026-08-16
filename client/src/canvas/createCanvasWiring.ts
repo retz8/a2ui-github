@@ -9,10 +9,11 @@
  * cue; answering an overlay question and all shell chrome are always live.
  *
  * Time travel: every cause records the paint the user was looking at (`parent`) and whether the
- * view was parked (`forked`, with the parent's title denormalised). Any dispatch from a parked
- * view jumps to live first — the parked session's unmount commits its write-back — and a forked
- * turn reports the parked snapshot's data model, not the head's. The live processor is the live
- * registry, exactly what the agent may see (see the invariant in
+ * view was parked (`forked`, with the parent's title denormalised). A dispatch from a parked
+ * view holds that view while the forked paint is in flight — the turn runner returns the view
+ * to live when the paint lands, and the parked session's unmount then commits its write-back.
+ * A forked turn reports the parked snapshot's data model, not the head's. The live processor is
+ * the live registry, exactly what the agent may see (see the invariant in
  * `_dev/docs/spec/phase-8-demo-integration.md`).
  */
 import {MessageProcessor} from '@a2ui/web_core/v0_9';
@@ -76,14 +77,12 @@ export function createCanvasWiring({serverUrl, client}: A2ASenderOptions): Canva
     if (prose.trim()) store.showNotice(prose);
   };
 
-  /** Cause, data model and fork context are captured by the caller BEFORE the jump-to-live. */
   const dispatchUtterance = async (
     text: string,
     cause: PaintCause,
     dataModel?: A2uiClientDataModel,
     forkContext?: ForkContext,
   ) => {
-    store.returnToLive();
     const turn = startTurn(cause);
     try {
       await streamUserMessage(text, {
@@ -127,7 +126,6 @@ export function createCanvasWiring({serverUrl, client}: A2ASenderOptions): Canva
     dataModel?: A2uiClientDataModel,
     forkContext?: ForkContext,
   ) => {
-    store.returnToLive();
     const turn = startTurn(cause);
     try {
       const sender = await getSender();

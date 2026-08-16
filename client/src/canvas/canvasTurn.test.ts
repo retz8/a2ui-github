@@ -479,3 +479,86 @@ describe('paint meta (task 8.5)', () => {
     expect(state.timeline[0].title).toBe('Replayed title');
   });
 });
+
+describe('forked turns (dispatched from a parked view)', () => {
+  const forkedUtterance = (text: string, parent: number): PaintCause => ({
+    kind: 'utterance',
+    parent,
+    forked: true,
+    parentTitle: 'parent view',
+    payload: {text},
+  });
+
+  /** Two landed paints with the first parked — the canonical fork starting point. */
+  function setupParked() {
+    const ctx = setup();
+    paintStage(ctx.runner, 's1', 'first');
+    paintStage(ctx.runner, 's2', 'second');
+    const parkedId = ctx.store.getState().timeline[0].paintId;
+    ctx.store.park(parkedId);
+    return {...ctx, parkedId};
+  }
+
+  it('holds the parked view while the fork streams, then returns to live when it lands', () => {
+    const {store, runner, parkedId} = setupParked();
+    const turn = runner.begin(forkedUtterance('fork it', parkedId));
+    turn.apply([create('s3'), textRoot('s3', 'third')]);
+    expect(store.getState().viewing).toBe(parkedId);
+
+    turn.end();
+    const state = store.getState();
+    expect(state.stageId).toBe('s3');
+    expect(state.viewing).toBeNull();
+    expect(state.headAdvancedWhileParked).toBe(false);
+  });
+
+  it('a failed fork leaves the user parked on the view they acted from', () => {
+    const {store, runner, parkedId} = setupParked();
+    const turn = runner.begin(forkedUtterance('fork it', parkedId));
+    turn.apply([create('s3'), textRoot('s3', 'third'), del('s3')]);
+    turn.end();
+
+    const state = store.getState();
+    expect(state.stageId).toBe('s2');
+    expect(state.viewing).toBe(parkedId);
+    expect(state.error).not.toBeNull();
+  });
+
+  it('a canceled fork leaves the user parked', () => {
+    const {store, runner, parkedId} = setupParked();
+    const turn = runner.begin(forkedUtterance('fork it', parkedId));
+    turn.apply([create('s3')]);
+    turn.cancel();
+
+    expect(store.getState().viewing).toBe(parkedId);
+  });
+
+  it('a fork resolving to a question stays parked — the overlay shows over the parked view', () => {
+    const {store, runner, parkedId} = setupParked();
+    const turn = runner.begin(forkedUtterance('fork it', parkedId));
+    turn.apply([create('q'), dialogRoot('q', 'Proceed?')]);
+    turn.end();
+
+    const state = store.getState();
+    expect(state.overlay?.surfaceId).toBe('q');
+    expect(state.viewing).toBe(parkedId);
+  });
+
+  it('a forked paint landing on an empty stage also returns the view to live', () => {
+    const {store, runner, parkedId} = setupParked();
+    // Clear the stage first (a deliberate delete of the live surface).
+    const clearing = runner.begin(utterance('clear'));
+    clearing.apply([del('s2')]);
+    clearing.end();
+    expect(store.getState().stageId).toBeNull();
+    expect(store.getState().viewing).toBe(parkedId);
+
+    const turn = runner.begin(forkedUtterance('fork it', parkedId));
+    turn.apply([create('s3'), textRoot('s3', 'third')]);
+    turn.end();
+
+    const state = store.getState();
+    expect(state.stageId).toBe('s3');
+    expect(state.viewing).toBeNull();
+  });
+});

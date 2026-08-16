@@ -14,6 +14,9 @@
  *   live head. Serialize-on-swap then fills that entry when the surface leaves the canvas,
  *   before its removal from the live processor; intermediates of a multi-surface turn append
  *   already departed.
+ * - **Forked turns**: a turn dispatched from a parked view leaves the user parked while it
+ *   streams; its stage paint's landing is what returns the view to live. A fork that fails,
+ *   is canceled, or resolves to a question leaves the user where they acted.
  * - **Cancel**: aborts the transport signal and discards the staged work; a canceled paint
  *   never reaches the stage and never enters the timeline.
  *
@@ -259,6 +262,12 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
         return;
       }
       appendLiveEntry(stageId, cause, titleOf(stageId));
+      jumpToLiveIfForked();
+    };
+
+    /** A forked paint's landing is the moment the view leaves the parked parent. */
+    const jumpToLiveIfForked = () => {
+      if (cause.forked && store.getState().viewing !== null) store.returnToLive();
     };
 
     const endStaged = () => {
@@ -288,6 +297,7 @@ export function createTurnRunner({processor, store, createStaging}: TurnRunnerOp
         const stageId = stagePaints[stagePaints.length - 1];
         store.setStage(stageId);
         appendLiveEntry(stageId, cause, titleOf(stageId));
+        jumpToLiveIfForked();
       }
       for (const id of questions.slice(0, -1)) processor.model.deleteSurface(id);
       if (questions.length > 0) replaceOverlay(questions[questions.length - 1]);
