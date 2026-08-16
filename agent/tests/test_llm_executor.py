@@ -1078,3 +1078,54 @@ def test_fork_frame_tolerates_missing_fields():
 def test_no_fork_context_means_no_historical_framing():
     prompt = _resolve_prompt(_Ctx("show me open PRs"))
     assert "HISTORICAL" not in prompt
+
+
+def _all_data_parts(queue: _FakeQueue) -> list[dict]:
+    """Every DataPart payload across every emitted event/message."""
+    datas = []
+
+    def _scan(obj):
+        parts = getattr(obj, "parts", None)
+        if parts:
+            for p in parts:
+                root = getattr(p, "root", p)
+                data = getattr(root, "data", None)
+                if isinstance(data, dict):
+                    datas.append(data)
+
+    for event in queue.events:
+        _scan(event)
+        status = getattr(event, "status", None)
+        if status is not None:
+            _scan(getattr(status, "message", None))
+    return datas
+
+
+@pytest.mark.asyncio
+async def test_declared_no_surface_turn_completes_without_painting():
+    responder = _FakeResponder(
+        [
+            "I cannot post comments — every tool is read-only. "
+            "Your draft stays unsubmitted, still in the view.\n<no-surface/>\n"
+        ]
+    )
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("confirm posting the comment"), queue)
+    assert responder.calls == 1  # a declared prose-only turn is valid: no retry
+    assert responder.corrections == [None]
+    text = _all_text(queue)
+    assert "read-only" in text
+    assert "no-surface" not in text  # the marker never reaches the prose channel
+    assert _all_data_parts(queue) == []  # nothing painted, nothing torn down
+
+
+@pytest.mark.asyncio
+async def test_undeclared_surfaceless_response_still_retries():
+    responder = _FakeResponder(["just prose, no marker", _valid_surface_text()])
+    executor = LlmAgentExecutor(responder)
+    queue = _FakeQueue()
+    await executor.execute(_Ctx("show me open PRs"), queue)
+    assert responder.calls == 2
+    assert responder.corrections[1] is not None
+    assert "no A2UI surface" in responder.corrections[1]

@@ -14,6 +14,13 @@ the question marker is not: kind="question" and a ConfirmationDialog root imply 
 other, enforced by validate_question_markers through the correction/retry loop. That
 consistency is THIS agent's policy (Primer's question idiom), not a canvas invariant
 -- the client routes on the marker alone.
+
+The same tag channel carries one more shell marker: <no-surface/>, the model's
+declared prose-only turn. Emitting it says "this turn deliberately paints nothing"
+(the one sanctioned case: an action the read-only agent cannot perform). The filter
+strips it from the prose and raises its `no_surface` flag; the executor accepts a
+surfaceless response only under that flag -- an undeclared surfaceless response is
+still a validation failure that retries.
 """
 
 from __future__ import annotations
@@ -32,8 +39,11 @@ QUESTION_KIND = "question"
 QUESTION_ROOT_COMPONENT = "ConfirmationDialog"
 
 _TAG_RE = re.compile(r"<paint-title\b([^>]*)>(.*?)</paint-title>", re.DOTALL)
+# Any spelling of the no-surface marker: <no-surface/>, <no-surface>, </no-surface>.
+_NO_SURFACE_RE = re.compile(r"</?no-surface\b[^>]*>")
 _ATTR_RE = re.compile(r'([a-zA-Z-]+)\s*=\s*"([^"]*)"')
 _OPEN_PREFIX = "<paint-title"
+_HOLD_PREFIXES = (_OPEN_PREFIX, "<no-surface", "</no-surface")
 
 
 def create_paint_meta_part(meta: dict) -> Part:
@@ -61,44 +71,54 @@ def _parse_tag(attr_text: str, inner: str) -> dict | None:
 
 
 def _possible_tag_start(text: str) -> int:
-    """Index of the earliest suffix that could still become a <paint-title> tag
+    """Index of the earliest suffix that could still become a shell tag
     (a partial opener at a chunk boundary, or an open tag whose close has not
     streamed yet); len(text) when nothing needs holding back."""
     idx = text.find("<")
     while idx != -1:
         rest = text[idx:]
-        if rest.startswith(_OPEN_PREFIX) or _OPEN_PREFIX.startswith(rest):
+        if any(rest.startswith(p) or p.startswith(rest) for p in _HOLD_PREFIXES):
             return idx
         idx = text.find("<", idx + 1)
     return len(text)
 
 
 class PaintTitleTagFilter:
-    """Streaming filter: strips complete <paint-title> tags out of prose chunks.
+    """Streaming filter: strips complete shell tags out of prose chunks.
 
     feed() returns (clean_text, metas): the chunk's prose with tags removed, plus one
-    meta dict per tag completed by this chunk. Text that could still become a tag is
-    held back until it resolves — a lone '<' releases as soon as the next characters
-    rule the tag out; an open tag holds until its close arrives (its inner text is
-    the title and never reaches the prose channel). flush() releases whatever never
-    resolved, so a truncated stream loses no prose.
+    meta dict per <paint-title> tag completed by this chunk. A completed <no-surface/>
+    tag raises the `no_surface` flag instead of yielding a meta. Text that could still
+    become a tag is held back until it resolves — a lone '<' releases as soon as the
+    next characters rule the tag out; an open tag holds until its close arrives (its
+    inner text is the title and never reaches the prose channel). flush() releases
+    whatever never resolved, so a truncated stream loses no prose.
     """
 
     def __init__(self) -> None:
         self._buffer = ""
+        self.no_surface = False
 
     def feed(self, text: str) -> tuple[str, list[dict]]:
         self._buffer += text
         out: list[str] = []
         metas: list[dict] = []
         while True:
-            match = _TAG_RE.search(self._buffer)
-            if not match:
+            candidates = [
+                m
+                for m in (_TAG_RE.search(self._buffer), _NO_SURFACE_RE.search(self._buffer))
+                if m
+            ]
+            if not candidates:
                 break
+            match = min(candidates, key=lambda m: m.start())
             out.append(self._buffer[: match.start()])
-            meta = _parse_tag(match.group(1), match.group(2))
-            if meta:
-                metas.append(meta)
+            if match.re is _TAG_RE:
+                meta = _parse_tag(match.group(1), match.group(2))
+                if meta:
+                    metas.append(meta)
+            else:
+                self.no_surface = True
             self._buffer = self._buffer[match.end() :]
         held_at = _possible_tag_start(self._buffer)
         out.append(self._buffer[:held_at])

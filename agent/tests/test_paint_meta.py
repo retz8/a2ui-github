@@ -85,6 +85,32 @@ def test_multiple_tags_in_one_stream():
     assert [m["surfaceId"] for m in metas] == ["a", "b"]
 
 
+def test_no_surface_tag_is_stripped_and_raises_the_flag():
+    f = PaintTitleTagFilter()
+    text, metas = f.feed("Cannot post — read-only access.\n<no-surface/>\n")
+    assert text == "Cannot post — read-only access.\n\n"
+    assert metas == []
+    assert f.no_surface is True
+
+
+def test_no_surface_tag_split_across_chunks():
+    f = PaintTitleTagFilter()
+    out = ""
+    for chunk in ("draft kept. <no-su", "rface/", "> done"):
+        text, _ = f.feed(chunk)
+        out += text
+    out += f.flush()
+    assert out == "draft kept.  done"
+    assert f.no_surface is True
+
+
+def test_no_surface_flag_defaults_false():
+    f = PaintTitleTagFilter()
+    text, _ = f.feed('prose <paint-title surface="s1">T</paint-title>')
+    assert f.no_surface is False
+    assert text == "prose "
+
+
 def test_create_paint_meta_part_shape():
     part = create_paint_meta_part({"surfaceId": "s1", "title": "T"})
     assert part.root.data == {"paintMeta": {"surfaceId": "s1", "title": "T"}}

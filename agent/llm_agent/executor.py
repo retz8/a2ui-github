@@ -518,6 +518,21 @@ class LlmAgentExecutor(AgentExecutor):
                 )
 
             payload = _collect_payload(accumulated)
+            if not payload and stream_error is None and tag_filter.no_surface:
+                # A declared prose-only turn (<no-surface/>): the explanation has
+                # already streamed as prose, and nothing is painted — the client
+                # holds its current view. Only the declaration makes this valid; an
+                # undeclared surfaceless response still fails below and retries. A
+                # response carrying both the marker and a surface takes the normal
+                # surface path (the marker is simply stripped from the prose).
+                logger.info(
+                    "attempt %d: declared no-surface turn, task %s completed",
+                    attempt,
+                    task.id,
+                )
+                self._recorder.end_turn("completed")
+                await updater.update_status(TaskState.completed, final=True)
+                return
             try:
                 if stream_error is not None:
                     raise stream_error

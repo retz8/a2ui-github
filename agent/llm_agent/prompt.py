@@ -127,7 +127,16 @@ SHELL_DESCRIPTION = (
     "and compose the surface as a ConfirmationDialog root carrying the question. The two "
     'go together and are validated together: a surface declared kind="question" must have '
     "a ConfirmationDialog root, and a ConfirmationDialog-rooted surface must be declared "
-    'kind="question".'
+    'kind="question". '
+    "One kind of turn deliberately paints nothing: the user confirms an action you cannot "
+    "perform — every tool you hold is read-only, so posting, merging, approving, or closing "
+    "cannot happen. Do NOT compose a surface for it, do not refetch data, and do not repaint "
+    "the view the user is on — it is still correct, and repainting it falsely implies "
+    "something changed. Reply with one or two plain sentences saying the action is not "
+    "supported (and that any draft stays unsubmitted, still in the view), then emit "
+    "<no-surface/> on its own line to declare the turn paints nothing. The tag is stripped "
+    "from your prose. A turn with neither a surface nor a <no-surface/> declaration is a "
+    "failure and will be retried."
 )
 
 # Subject resolution (there is no configured default repository) plus tool-call
