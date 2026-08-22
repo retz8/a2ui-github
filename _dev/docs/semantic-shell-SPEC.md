@@ -307,7 +307,7 @@ CLIENT (canvas shell)                        ORCHESTRATOR (A2A agent server)
 | **IntegrityChecker** | ▪ | Per-binding validity (key resolution / generation). Gates whether the Synthesizer runs. |
 | **Validator** | ▪ | Agent trees against their declared catalog; LLM output against its schema. |
 | **AuthVault** | ▪ | Credentials by `(app, account)`. Triggers consent; never paints it. |
-| **Registry** | ▪ | Installed bundles. |
+| **Registry** | ▪ | Installed bundles. Presents the orchestrator's own AgentCard as the union of installed apps' skills, A2UI extensions, and supported catalog IDs, plus the orchestrator's own skills. |
 | **IntentJournal** | ▪ | Per turn: free-form intent descriptor + embedding. The thin machine-facing projection is left unbuilt. |
 | **Composition** | state | §6. |
 
@@ -390,7 +390,7 @@ Constraint protected throughout: **an existing A2UI agent composes with zero cha
 | Cross-partition qualified refs `ref(source, path)` in bindings | upstream candidate |
 | Path predicates (key-based refs) in the formula vocabulary | upstream candidate |
 | Arithmetic functions (`min`, `add`, …) in the shell catalog | local; exists in upstream basic catalog |
-| Partitioned data model on a shared surface (agents address paths as root; shell namespaces) | upstream candidate |
+| Partitioned data model on a shared surface (agents address paths as root; shell namespaces) | upstream candidate — prior art: the upstream orchestrator sample strips `a2uiClientDataModel.surfaces` to the target agent's own surfaces via a client interceptor (§18); ours generalizes surface → partition |
 | Unsuppressable attribution on a grafted subtree | local convention |
 | Credential components barred from all catalogs | normative review rule |
 | `sendDataModel`, multi-catalog `MessageProcessor`, `catalogId` scoping | already in protocol — no delta |
@@ -419,7 +419,7 @@ Properties that follow from the decisions above, recorded so they are not discov
 - Two filters with different scopes sit on one screen: the synthesis surface's (shell-owned, free, filters the merge) and a vendor's (vendor-owned, one round trip, filters only that fragment). A visual design problem for the shell's container language.
 - Two vendors' adapters and the shell's consent surfaces share one document. Isolation is deferred; first-party-only is what makes that acceptable.
 - Two apps wanting different versions of the same design-system library put both in one document.
-- A publisher can style a fragment to resemble the shell catalog. Attribution is shell-rendered for this reason; lookalike review belongs to the marketplace.
+- A publisher can style a fragment to resemble the shell catalog. Attribution is shell-rendered for this reason; lookalike review belongs to the marketplace. The upstream orchestrator sample's README states the same threat (spoofed interfaces, crafted AgentCard fields as prompt injection) from the protocol authors' side (§18).
 - The shell chooses the merge's columns and criterion. The criterion is named, displayed, and user-changeable for this reason.
 
 ---
@@ -427,3 +427,25 @@ Properties that follow from the decisions above, recorded so they are not discov
 ## 17. Out of scope
 
 Named so they do not creep in: native shell · adapter isolation · third-party adapter review/signing · OS bridge · machine-facing intent projection · cross-vendor transactions · act-on-synthesis-surface · multi-account exercised · local-model inference · per-user shell catalog (theme) · deployment.
+
+---
+
+## 18. References
+
+### Upstream orchestrator sample
+
+`a2ui-project/a2ui` — `samples/community/agent/adk/orchestrator` at `upstream/main` `c6ea14e7`.
+
+An ADK `LlmAgent` instructed to route each request to exactly one subagent via `transfer_to_agent`. The L0 case of this project's orchestrator.
+
+| Sample | This spec |
+|---|---|
+| Subagent skill descriptions/examples serialized into the system prompt; no taxonomy | Taxonomy-free routing (§10) — same principle; ours retrieves then reranks |
+| `SubagentRouteManager`: `surfaceId → subagent` in session state on `beginRendering` | Fragment provenance tag (§4.1), per subtree |
+| `before_model_callback` routes `userAction` to the owning subagent without inference | Interaction routes by provenance, free (§7) |
+| Client interceptor strips `a2uiClientDataModel.surfaces` to the target's own surfaces | Partition isolation (§4.1); delta register (§14) |
+| Orchestrator AgentCard = union of subagent skills and A2UI extensions | Registry (§10) |
+| `metadata["a2a_subagent"]` on outgoing events | Attribution element (§4.3), rendered and unsuppressable |
+| Routing re-inferred on every turn; `streaming=False` | Invalidation tiers (§6); mid-turn streaming (§5.5) |
+
+Not present, structurally: fan-out. `transfer_to_agent` hands the conversation to one agent at a time — no parallel dispatch, no two live surfaces, no composition. AgentsPool's parallel `(endpoint, credential)` dispatch is the replacement. ADK is not adopted.
