@@ -1,6 +1,6 @@
-# semantic-shell — Project Spec
+# A2UIVerse — Project Spec
 
-> Working name. The project name is deferred; `semantic-shell` stands in everywhere below.
+> **A2UIVerse = A2UI + Universe.** The application ecosystem for A2UI agents. A2UI defines how agents describe user interfaces; A2UIVerse defines how those interfaces become composable applications — agents as first-class, composable application primitives that can be packaged, discovered, installed, orchestrated, and composed into interactive experiences.
 
 ## 1. What this is
 
@@ -364,8 +364,8 @@ Until M7, the registry is hardcoded.
 Three repos, one per trust domain.
 
 ```
-semantic-shell/         platform monorepo: client · orchestrator · marketplace · shell-catalog · bundle
-semantic-shell-apps/    mock vendor agents
+a2uiverse/              platform monorepo: client · orchestrator · marketplace · shell-catalog · bundle
+a2uiverse-apps/         mock vendor agents
 a2ui-github/            unchanged. The first external app.
 ```
 
